@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "outDir": "./esm",
+    "target": "esnext",
+    "moduleResolution": "node",
+    "declaration": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "sourceRoot": "",
+    "declarationMap": true
+  },
+  "include": ["**/*.d.ts", "**/*.ts", "**/*.js"]
+}

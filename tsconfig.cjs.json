@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "outDir": "./cjs",
+    "target": "es2015",
+    "moduleResolution": "node",
+    "declaration": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "sourceRoot": "",
+    "declarationMap": true
+  },
+  "include": ["**/*.d.ts", "**/*.ts", "**/*.js"]
+}

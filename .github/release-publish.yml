@@ -1,0 +1,52 @@
+name: Release and Publish SDK
+
+on:
+  pull_request:
+    types:
+      - closed
+    paths:
+      - src/**
+      - package.json
+      - .github/workflows/release-publish.yml
+permissions:
+  contents: write
+
+jobs:
+  Release-publish:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3 # Checkout our working repository
+    - name: Conventional Changelog Action
+      id: changelog
+      uses: TriPSs/conventional-changelog-action@v3
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        output-file: false
+        pre-release: true
+        git-push: true
+        # skip-on-empty: true
+        # skip-version-file: false
+        # skip-commit: false
+    - name: Create Release # This action will create the actual release
+      uses: actions/create-release@v1.1.4
+      if: ${{ steps.changelog.outputs.skipped == 'false' }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.changelog.outputs.tag }}
+        release_name: ${{ steps.changelog.outputs.tag }}
+        body: ${{ steps.changelog.outputs.clean_changelog }}
+        prerelease: true
+    - uses: actions/setup-node@v3
+      id: setup-node
+      with:
+        node-version: 18.15
+        cache: yarn
+        registry-url: https://npm.pkg.github.com/
+        node-auth-token: ${{ secrets.GITHUB_TOKEN }}
+    - name: build and publish
+      run: |
+        yarn install
+        yarn build
+        yarn publish

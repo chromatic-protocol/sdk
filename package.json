@@ -14,7 +14,9 @@
     "url": "git+https://github.com/@chromatic-protocol/sdk.git"
   },
   "files": [
-    "src.ts"
+    "src",
+    "cjs",
+    "esm"
   ],
   "peerDependencies": {
     "@ethersproject/abi": "^5.0.0",

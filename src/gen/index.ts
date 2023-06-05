@@ -3,6 +3,8 @@ import type { Signer } from '@ethersproject/abstract-signer'
 import type { Provider } from '@ethersproject/providers'
 import type { BaseContract } from '@ethersproject/contracts'
 export * from './typechain'
+export type * from './typechain'
+
 import * as factoryModule from './typechain'
 import { deployedAddress } from './deployedAddress'
 export { deployedAddress }

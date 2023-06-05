@@ -38,11 +38,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "ExistSlotEarningDistributionTask",
-    type: "error",
-  },
-  {
-    inputs: [],
     name: "NotEnoughBalance",
     type: "error",
   },
@@ -532,11 +527,11 @@ const _abi = [
       },
       {
         internalType: "uint256",
-        name: "slotBalance",
+        name: "binBalance",
         type: "uint256",
       },
     ],
-    name: "getPendingSlotShare",
+    name: "getPendingBinShare",
     outputs: [
       {
         internalType: "uint256",

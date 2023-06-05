@@ -23,12 +23,12 @@ import type {
   PromiseOrValue,
 } from "../../common";
 
-export type LpSlotMarginStruct = {
+export type BinMarginStruct = {
   tradingFeeRate: PromiseOrValue<BigNumberish>;
   amount: PromiseOrValue<BigNumberish>;
 };
 
-export type LpSlotMarginStructOutput = [number, BigNumber] & {
+export type BinMarginStructOutput = [number, BigNumber] & {
   tradingFeeRate: number;
   amount: BigNumber;
 };
@@ -43,7 +43,7 @@ export type PositionStruct = {
   closeTimestamp: PromiseOrValue<BigNumberish>;
   takerMargin: PromiseOrValue<BigNumberish>;
   owner: PromiseOrValue<string>;
-  _slotMargins: LpSlotMarginStruct[];
+  _binMargins: BinMarginStruct[];
 };
 
 export type PositionStructOutput = [
@@ -56,7 +56,7 @@ export type PositionStructOutput = [
   BigNumber,
   BigNumber,
   string,
-  LpSlotMarginStructOutput[]
+  BinMarginStructOutput[]
 ] & {
   id: BigNumber;
   openVersion: BigNumber;
@@ -67,7 +67,7 @@ export type PositionStructOutput = [
   closeTimestamp: BigNumber;
   takerMargin: BigNumber;
   owner: string;
-  _slotMargins: LpSlotMarginStructOutput[];
+  _binMargins: BinMarginStructOutput[];
 };
 
 export interface AccountInterface extends utils.Interface {

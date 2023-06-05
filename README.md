@@ -1,1 +1,1 @@
-# sdk-typechain
+# @chromatic-protocol/sdk

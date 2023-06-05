@@ -44,7 +44,8 @@ jobs:
         node-version: 18.15
         cache: yarn
         registry-url: https://npm.pkg.github.com/
-        node-auth-token: ${{ secrets.GITHUB_TOKEN }}
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
     - name: build and publish
       run: |
         yarn install

@@ -10,6 +10,7 @@ on:
       - .github/workflows/release-publish.yml
 permissions:
   contents: write
+  packages: write
 
 jobs:
   Release-publish:

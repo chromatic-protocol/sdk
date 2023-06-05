@@ -13,7 +13,9 @@
     "type": "git",
     "url": "git+https://github.com/@chromatic-protocol/sdk.git"
   },
-  "files": ["src.ts"],
+  "files": [
+    "src.ts"
+  ],
   "peerDependencies": {
     "@ethersproject/abi": "^5.0.0",
     "@ethersproject/bytes": "^5.0.0",
@@ -36,5 +38,6 @@
     "build:cjs": "rm -rf cjs && tsc --build --force tsconfig.cjs.json",
     "build:esm": "rm -rf esm && tsc --build --force tsconfig.esm.json",
     "build": "yarn build:cjs && yarn build:esm"
-  }
+  },
+  "version": "0.1.0-rc.0"
 }

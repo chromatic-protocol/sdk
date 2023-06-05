@@ -38,7 +38,7 @@ export interface ChromaticVaultInterface extends utils.Interface {
     "distributeMakerEarning(address)": FunctionFragment;
     "distributeMarketEarning(address)": FunctionFragment;
     "flashLoan(address,uint256,address,bytes)": FunctionFragment;
-    "getPendingSlotShare(address,uint256)": FunctionFragment;
+    "getPendingBinShare(address,uint256)": FunctionFragment;
     "makerBalances(address)": FunctionFragment;
     "makerEarningDistributionTaskIds(address)": FunctionFragment;
     "makerMarketBalances(address)": FunctionFragment;
@@ -70,7 +70,7 @@ export interface ChromaticVaultInterface extends utils.Interface {
       | "distributeMakerEarning"
       | "distributeMarketEarning"
       | "flashLoan"
-      | "getPendingSlotShare"
+      | "getPendingBinShare"
       | "makerBalances"
       | "makerEarningDistributionTaskIds"
       | "makerMarketBalances"
@@ -130,7 +130,7 @@ export interface ChromaticVaultInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "getPendingSlotShare",
+    functionFragment: "getPendingBinShare",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
@@ -251,7 +251,7 @@ export interface ChromaticVaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "flashLoan", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getPendingSlotShare",
+    functionFragment: "getPendingBinShare",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -586,9 +586,9 @@ export interface ChromaticVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    getPendingSlotShare(
+    getPendingBinShare(
       market: PromiseOrValue<string>,
-      slotBalance: PromiseOrValue<BigNumberish>,
+      binBalance: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -735,9 +735,9 @@ export interface ChromaticVault extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  getPendingSlotShare(
+  getPendingBinShare(
     market: PromiseOrValue<string>,
-    slotBalance: PromiseOrValue<BigNumberish>,
+    binBalance: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -884,9 +884,9 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    getPendingSlotShare(
+    getPendingBinShare(
       market: PromiseOrValue<string>,
-      slotBalance: PromiseOrValue<BigNumberish>,
+      binBalance: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1168,9 +1168,9 @@ export interface ChromaticVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    getPendingSlotShare(
+    getPendingBinShare(
       market: PromiseOrValue<string>,
-      slotBalance: PromiseOrValue<BigNumberish>,
+      binBalance: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1320,9 +1320,9 @@ export interface ChromaticVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    getPendingSlotShare(
+    getPendingBinShare(
       market: PromiseOrValue<string>,
-      slotBalance: PromiseOrValue<BigNumberish>,
+      binBalance: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

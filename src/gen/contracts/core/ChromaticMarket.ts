@@ -52,12 +52,12 @@ export type LpReceiptStructOutput = [
   tradingFeeRate: number;
 };
 
-export type LpSlotMarginStruct = {
+export type BinMarginStruct = {
   tradingFeeRate: PromiseOrValue<BigNumberish>;
   amount: PromiseOrValue<BigNumberish>;
 };
 
-export type LpSlotMarginStructOutput = [number, BigNumber] & {
+export type BinMarginStructOutput = [number, BigNumber] & {
   tradingFeeRate: number;
   amount: BigNumber;
 };
@@ -72,7 +72,7 @@ export type PositionStruct = {
   closeTimestamp: PromiseOrValue<BigNumberish>;
   takerMargin: PromiseOrValue<BigNumberish>;
   owner: PromiseOrValue<string>;
-  _slotMargins: LpSlotMarginStruct[];
+  _binMargins: BinMarginStruct[];
 };
 
 export type PositionStructOutput = [
@@ -85,7 +85,7 @@ export type PositionStructOutput = [
   BigNumber,
   BigNumber,
   string,
-  LpSlotMarginStructOutput[]
+  BinMarginStructOutput[]
 ] & {
   id: BigNumber;
   openVersion: BigNumber;
@@ -96,7 +96,7 @@ export type PositionStructOutput = [
   closeTimestamp: BigNumber;
   takerMargin: BigNumber;
   owner: string;
-  _slotMargins: LpSlotMarginStructOutput[];
+  _binMargins: BinMarginStructOutput[];
 };
 
 export interface ChromaticMarketInterface extends utils.Interface {
@@ -111,12 +111,12 @@ export interface ChromaticMarketInterface extends utils.Interface {
     "claimPosition(uint256,address,uint256)": FunctionFragment;
     "clbToken()": FunctionFragment;
     "closePosition(uint256)": FunctionFragment;
-    "distributeEarningToSlots(uint256,uint256)": FunctionFragment;
+    "distributeEarningToBins(uint256,uint256)": FunctionFragment;
     "factory()": FunctionFragment;
+    "getBinFreeLiquidities(int16[])": FunctionFragment;
+    "getBinLiquidities(int16[])": FunctionFragment;
     "getPositions(uint256[])": FunctionFragment;
     "getProtocolFee(uint256)": FunctionFragment;
-    "getSlotFreeLiquidities(int16[])": FunctionFragment;
-    "getSlotLiquidities(int16[])": FunctionFragment;
     "keeperFeePayer()": FunctionFragment;
     "liquidate(uint256,address,uint256)": FunctionFragment;
     "liquidator()": FunctionFragment;
@@ -144,12 +144,12 @@ export interface ChromaticMarketInterface extends utils.Interface {
       | "claimPosition(uint256,address,uint256)"
       | "clbToken"
       | "closePosition"
-      | "distributeEarningToSlots"
+      | "distributeEarningToBins"
       | "factory"
+      | "getBinFreeLiquidities"
+      | "getBinLiquidities"
       | "getPositions"
       | "getProtocolFee"
-      | "getSlotFreeLiquidities"
-      | "getSlotLiquidities"
       | "keeperFeePayer"
       | "liquidate"
       | "liquidator"
@@ -215,10 +215,18 @@ export interface ChromaticMarketInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "distributeEarningToSlots",
+    functionFragment: "distributeEarningToBins",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(functionFragment: "factory", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "getBinFreeLiquidities",
+    values: [PromiseOrValue<BigNumberish>[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBinLiquidities",
+    values: [PromiseOrValue<BigNumberish>[]]
+  ): string;
   encodeFunctionData(
     functionFragment: "getPositions",
     values: [PromiseOrValue<BigNumberish>[]]
@@ -226,14 +234,6 @@ export interface ChromaticMarketInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "getProtocolFee",
     values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getSlotFreeLiquidities",
-    values: [PromiseOrValue<BigNumberish>[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getSlotLiquidities",
-    values: [PromiseOrValue<BigNumberish>[]]
   ): string;
   encodeFunctionData(
     functionFragment: "keeperFeePayer",
@@ -347,24 +347,24 @@ export interface ChromaticMarketInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "distributeEarningToSlots",
+    functionFragment: "distributeEarningToBins",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getBinFreeLiquidities",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBinLiquidities",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getPositions",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "getProtocolFee",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getSlotFreeLiquidities",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getSlotLiquidities",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -621,13 +621,23 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    distributeEarningToSlots(
+    distributeEarningToBins(
       earning: PromiseOrValue<BigNumberish>,
       marketBalance: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     factory(overrides?: CallOverrides): Promise<[string]>;
+
+    getBinFreeLiquidities(
+      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[]] & { amounts: BigNumber[] }>;
+
+    getBinLiquidities(
+      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[]] & { amounts: BigNumber[] }>;
 
     getPositions(
       positionIds: PromiseOrValue<BigNumberish>[],
@@ -640,16 +650,6 @@ export interface ChromaticMarket extends BaseContract {
       margin: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[number]>;
-
-    getSlotFreeLiquidities(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<[BigNumber[]] & { amounts: BigNumber[] }>;
-
-    getSlotLiquidities(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<[BigNumber[]] & { amounts: BigNumber[] }>;
 
     keeperFeePayer(overrides?: CallOverrides): Promise<[string]>;
 
@@ -791,13 +791,23 @@ export interface ChromaticMarket extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  distributeEarningToSlots(
+  distributeEarningToBins(
     earning: PromiseOrValue<BigNumberish>,
     marketBalance: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   factory(overrides?: CallOverrides): Promise<string>;
+
+  getBinFreeLiquidities(
+    tradingFeeRates: PromiseOrValue<BigNumberish>[],
+    overrides?: CallOverrides
+  ): Promise<BigNumber[]>;
+
+  getBinLiquidities(
+    tradingFeeRates: PromiseOrValue<BigNumberish>[],
+    overrides?: CallOverrides
+  ): Promise<BigNumber[]>;
 
   getPositions(
     positionIds: PromiseOrValue<BigNumberish>[],
@@ -808,16 +818,6 @@ export interface ChromaticMarket extends BaseContract {
     margin: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<number>;
-
-  getSlotFreeLiquidities(
-    tradingFeeRates: PromiseOrValue<BigNumberish>[],
-    overrides?: CallOverrides
-  ): Promise<BigNumber[]>;
-
-  getSlotLiquidities(
-    tradingFeeRates: PromiseOrValue<BigNumberish>[],
-    overrides?: CallOverrides
-  ): Promise<BigNumber[]>;
 
   keeperFeePayer(overrides?: CallOverrides): Promise<string>;
 
@@ -959,13 +959,23 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    distributeEarningToSlots(
+    distributeEarningToBins(
       earning: PromiseOrValue<BigNumberish>,
       marketBalance: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     factory(overrides?: CallOverrides): Promise<string>;
+
+    getBinFreeLiquidities(
+      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
+
+    getBinLiquidities(
+      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
 
     getPositions(
       positionIds: PromiseOrValue<BigNumberish>[],
@@ -976,16 +986,6 @@ export interface ChromaticMarket extends BaseContract {
       margin: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<number>;
-
-    getSlotFreeLiquidities(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber[]>;
-
-    getSlotLiquidities(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber[]>;
 
     keeperFeePayer(overrides?: CallOverrides): Promise<string>;
 
@@ -1221,13 +1221,23 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    distributeEarningToSlots(
+    distributeEarningToBins(
       earning: PromiseOrValue<BigNumberish>,
       marketBalance: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     factory(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getBinFreeLiquidities(
+      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getBinLiquidities(
+      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getPositions(
       positionIds: PromiseOrValue<BigNumberish>[],
@@ -1236,16 +1246,6 @@ export interface ChromaticMarket extends BaseContract {
 
     getProtocolFee(
       margin: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getSlotFreeLiquidities(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getSlotLiquidities(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1390,13 +1390,23 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    distributeEarningToSlots(
+    distributeEarningToBins(
       earning: PromiseOrValue<BigNumberish>,
       marketBalance: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getBinFreeLiquidities(
+      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getBinLiquidities(
+      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     getPositions(
       positionIds: PromiseOrValue<BigNumberish>[],
@@ -1405,16 +1415,6 @@ export interface ChromaticMarket extends BaseContract {
 
     getProtocolFee(
       margin: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getSlotFreeLiquidities(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getSlotLiquidities(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

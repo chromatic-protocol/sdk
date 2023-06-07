@@ -242,6 +242,11 @@ export interface Account extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Callback function called after claiming a position.
+     * @param data Additional data related to the callback.
+     * @param positionId The ID of the claimed position.
+     */
     claimPositionCallback(
       positionId: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
@@ -282,6 +287,13 @@ export interface Account extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Callback function called after opening a position.
+     * @param data Additional data related to the callback.
+     * @param marginRequired The amount of margin required for the position.
+     * @param settlementToken The address of the settlement token used in the position.
+     * @param vault The address of the vault contract.
+     */
     openPositionCallback(
       settlementToken: PromiseOrValue<string>,
       vault: PromiseOrValue<string>,
@@ -315,6 +327,11 @@ export interface Account extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Callback function called after claiming a position.
+   * @param data Additional data related to the callback.
+   * @param positionId The ID of the claimed position.
+   */
   claimPositionCallback(
     positionId: PromiseOrValue<BigNumberish>,
     data: PromiseOrValue<BytesLike>,
@@ -355,6 +372,13 @@ export interface Account extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Callback function called after opening a position.
+   * @param data Additional data related to the callback.
+   * @param marginRequired The amount of margin required for the position.
+   * @param settlementToken The address of the settlement token used in the position.
+   * @param vault The address of the vault contract.
+   */
   openPositionCallback(
     settlementToken: PromiseOrValue<string>,
     vault: PromiseOrValue<string>,
@@ -388,6 +412,11 @@ export interface Account extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Callback function called after claiming a position.
+     * @param data Additional data related to the callback.
+     * @param positionId The ID of the claimed position.
+     */
     claimPositionCallback(
       positionId: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
@@ -428,6 +457,13 @@ export interface Account extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PositionStructOutput>;
 
+    /**
+     * Callback function called after opening a position.
+     * @param data Additional data related to the callback.
+     * @param marginRequired The amount of margin required for the position.
+     * @param settlementToken The address of the settlement token used in the position.
+     * @param vault The address of the vault contract.
+     */
     openPositionCallback(
       settlementToken: PromiseOrValue<string>,
       vault: PromiseOrValue<string>,
@@ -464,6 +500,11 @@ export interface Account extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Callback function called after claiming a position.
+     * @param data Additional data related to the callback.
+     * @param positionId The ID of the claimed position.
+     */
     claimPositionCallback(
       positionId: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
@@ -504,6 +545,13 @@ export interface Account extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Callback function called after opening a position.
+     * @param data Additional data related to the callback.
+     * @param marginRequired The amount of margin required for the position.
+     * @param settlementToken The address of the settlement token used in the position.
+     * @param vault The address of the vault contract.
+     */
     openPositionCallback(
       settlementToken: PromiseOrValue<string>,
       vault: PromiseOrValue<string>,
@@ -538,6 +586,11 @@ export interface Account extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Callback function called after claiming a position.
+     * @param data Additional data related to the callback.
+     * @param positionId The ID of the claimed position.
+     */
     claimPositionCallback(
       positionId: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
@@ -578,6 +631,13 @@ export interface Account extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Callback function called after opening a position.
+     * @param data Additional data related to the callback.
+     * @param marginRequired The amount of margin required for the position.
+     * @param settlementToken The address of the settlement token used in the position.
+     * @param vault The address of the vault contract.
+     */
     openPositionCallback(
       settlementToken: PromiseOrValue<string>,
       vault: PromiseOrValue<string>,

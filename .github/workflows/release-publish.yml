@@ -26,7 +26,7 @@ jobs:
         output-file: false
         pre-release: true
         git-push: true
-        # skip-on-empty: true
+        skip-on-empty: false
         # skip-version-file: false
         # skip-commit: false
     - name: Create Release # This action will create the actual release

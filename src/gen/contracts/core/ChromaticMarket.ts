@@ -565,6 +565,12 @@ export interface ChromaticMarket extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    /**
+     * Adds liquidity to the market.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address to receive the liquidity tokens.
+     * @param tradingFeeRate The trading fee rate for the liquidity.
+     */
     addLiquidity(
       recipient: PromiseOrValue<string>,
       tradingFeeRate: PromiseOrValue<BigNumberish>,
@@ -572,34 +578,63 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Calculates the amount of CLB tokens to mint for the given parameters.
+     * @param amount The amount of liquidity.
+     * @param tradingFeeRate The trading fee rate.
+     */
     calculateCLBTokenMinting(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    /**
+     * Calculates the value of CLB tokens for the given parameters.
+     * @param clbTokenAmount The amount of CLB tokens.
+     * @param tradingFeeRate The trading fee rate.
+     */
     calculateCLBTokenValue(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       clbTokenAmount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    /**
+     * Checks if a position is eligible for claim.
+     * @param positionId The ID of the position to check.
+     */
     checkClaimPosition(
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    /**
+     * Checks if a position is eligible for liquidation.
+     * @param positionId The ID of the position to check.
+     */
     checkLiquidation(
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[boolean] & { _liquidate: boolean }>;
 
+    /**
+     * Claims liquidity from a liquidity receipt.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptId The ID of the liquidity receipt.
+     */
     claimLiquidity(
       receiptId: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Claims a closed position in the market.
+     * @param data Additional data for the claim callback.
+     * @param positionId The ID of the position to claim.
+     * @param recipient The address of the recipient of the claimed position.
+     */
     "claimPosition(uint256,address,bytes)"(
       positionId: PromiseOrValue<BigNumberish>,
       recipient: PromiseOrValue<string>,
@@ -607,6 +642,12 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Claims a closed position on behalf of a keeper.
+     * @param keeper The address of the keeper claiming the position.
+     * @param keeperFee The native token amount of the keeper's fee.
+     * @param positionId The ID of the position to claim.
+     */
     "claimPosition(uint256,address,uint256)"(
       positionId: PromiseOrValue<BigNumberish>,
       keeper: PromiseOrValue<string>,
@@ -616,11 +657,20 @@ export interface ChromaticMarket extends BaseContract {
 
     clbToken(overrides?: CallOverrides): Promise<[string]>;
 
+    /**
+     * Closes a position in the market.
+     * @param positionId The ID of the position to close.
+     */
     closePosition(
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Distributes earning to the liquidity bins.
+     * @param earning The amount of earning to distribute.
+     * @param marketBalance The balance of the market.
+     */
     distributeEarningToBins(
       earning: PromiseOrValue<BigNumberish>,
       marketBalance: PromiseOrValue<BigNumberish>,
@@ -629,16 +679,28 @@ export interface ChromaticMarket extends BaseContract {
 
     factory(overrides?: CallOverrides): Promise<[string]>;
 
+    /**
+     * Retrieves the bin free liquidities for the given trading fee rates.
+     * @param tradingFeeRates The trading fee rates to retrieve bin free liquidities for.
+     */
     getBinFreeLiquidities(
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<[BigNumber[]] & { amounts: BigNumber[] }>;
 
+    /**
+     * Retrieves the bin liquidities for the given trading fee rates.
+     * @param tradingFeeRates The trading fee rates to retrieve bin liquidities for.
+     */
     getBinLiquidities(
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<[BigNumber[]] & { amounts: BigNumber[] }>;
 
+    /**
+     * Retrieves multiple positions by their IDs.
+     * @param positionIds The IDs of the positions to retrieve.
+     */
     getPositions(
       positionIds: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
@@ -653,6 +715,12 @@ export interface ChromaticMarket extends BaseContract {
 
     keeperFeePayer(overrides?: CallOverrides): Promise<[string]>;
 
+    /**
+     * Liquidates a position.
+     * @param keeper The address of the keeper performing the liquidation.
+     * @param keeperFee The native token amount of the keeper's fee.
+     * @param positionId The ID of the position to liquidate.
+     */
     liquidate(
       positionId: PromiseOrValue<BigNumberish>,
       keeper: PromiseOrValue<string>,
@@ -696,6 +764,15 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    /**
+     * Opens a new position in the market.
+     * @param data Additional data for the position callback.
+     * @param leverage The leverage of the position in basis points.
+     * @param makerMargin The margin amount provided by the maker.
+     * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
+     * @param qty The quantity of the position.
+     * @param takerMargin The margin amount provided by the taker.
+     */
     openPosition(
       qty: PromiseOrValue<BigNumberish>,
       leverage: PromiseOrValue<BigNumberish>,
@@ -708,6 +785,12 @@ export interface ChromaticMarket extends BaseContract {
 
     oracleProvider(overrides?: CallOverrides): Promise<[string]>;
 
+    /**
+     * Removes liquidity from the market.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address to receive the removed liquidity.
+     * @param tradingFeeRate The trading fee rate for the liquidity.
+     */
     removeLiquidity(
       recipient: PromiseOrValue<string>,
       tradingFeeRate: PromiseOrValue<BigNumberish>,
@@ -721,6 +804,9 @@ export interface ChromaticMarket extends BaseContract {
 
     settlementToken(overrides?: CallOverrides): Promise<[string]>;
 
+    /**
+     * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
+     */
     supportsInterface(
       interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -728,6 +814,11 @@ export interface ChromaticMarket extends BaseContract {
 
     vault(overrides?: CallOverrides): Promise<[string]>;
 
+    /**
+     * Withdraws liquidity from a liquidity receipt.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptId The ID of the liquidity receipt.
+     */
     withdrawLiquidity(
       receiptId: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
@@ -735,6 +826,12 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
+  /**
+   * Adds liquidity to the market.
+   * @param data Additional data for the liquidity callback.
+   * @param recipient The address to receive the liquidity tokens.
+   * @param tradingFeeRate The trading fee rate for the liquidity.
+   */
   addLiquidity(
     recipient: PromiseOrValue<string>,
     tradingFeeRate: PromiseOrValue<BigNumberish>,
@@ -742,34 +839,63 @@ export interface ChromaticMarket extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Calculates the amount of CLB tokens to mint for the given parameters.
+   * @param amount The amount of liquidity.
+   * @param tradingFeeRate The trading fee rate.
+   */
   calculateCLBTokenMinting(
     tradingFeeRate: PromiseOrValue<BigNumberish>,
     amount: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  /**
+   * Calculates the value of CLB tokens for the given parameters.
+   * @param clbTokenAmount The amount of CLB tokens.
+   * @param tradingFeeRate The trading fee rate.
+   */
   calculateCLBTokenValue(
     tradingFeeRate: PromiseOrValue<BigNumberish>,
     clbTokenAmount: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  /**
+   * Checks if a position is eligible for claim.
+   * @param positionId The ID of the position to check.
+   */
   checkClaimPosition(
     positionId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  /**
+   * Checks if a position is eligible for liquidation.
+   * @param positionId The ID of the position to check.
+   */
   checkLiquidation(
     positionId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  /**
+   * Claims liquidity from a liquidity receipt.
+   * @param data Additional data for the liquidity callback.
+   * @param receiptId The ID of the liquidity receipt.
+   */
   claimLiquidity(
     receiptId: PromiseOrValue<BigNumberish>,
     data: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Claims a closed position in the market.
+   * @param data Additional data for the claim callback.
+   * @param positionId The ID of the position to claim.
+   * @param recipient The address of the recipient of the claimed position.
+   */
   "claimPosition(uint256,address,bytes)"(
     positionId: PromiseOrValue<BigNumberish>,
     recipient: PromiseOrValue<string>,
@@ -777,6 +903,12 @@ export interface ChromaticMarket extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Claims a closed position on behalf of a keeper.
+   * @param keeper The address of the keeper claiming the position.
+   * @param keeperFee The native token amount of the keeper's fee.
+   * @param positionId The ID of the position to claim.
+   */
   "claimPosition(uint256,address,uint256)"(
     positionId: PromiseOrValue<BigNumberish>,
     keeper: PromiseOrValue<string>,
@@ -786,11 +918,20 @@ export interface ChromaticMarket extends BaseContract {
 
   clbToken(overrides?: CallOverrides): Promise<string>;
 
+  /**
+   * Closes a position in the market.
+   * @param positionId The ID of the position to close.
+   */
   closePosition(
     positionId: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Distributes earning to the liquidity bins.
+   * @param earning The amount of earning to distribute.
+   * @param marketBalance The balance of the market.
+   */
   distributeEarningToBins(
     earning: PromiseOrValue<BigNumberish>,
     marketBalance: PromiseOrValue<BigNumberish>,
@@ -799,16 +940,28 @@ export interface ChromaticMarket extends BaseContract {
 
   factory(overrides?: CallOverrides): Promise<string>;
 
+  /**
+   * Retrieves the bin free liquidities for the given trading fee rates.
+   * @param tradingFeeRates The trading fee rates to retrieve bin free liquidities for.
+   */
   getBinFreeLiquidities(
     tradingFeeRates: PromiseOrValue<BigNumberish>[],
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
+  /**
+   * Retrieves the bin liquidities for the given trading fee rates.
+   * @param tradingFeeRates The trading fee rates to retrieve bin liquidities for.
+   */
   getBinLiquidities(
     tradingFeeRates: PromiseOrValue<BigNumberish>[],
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
+  /**
+   * Retrieves multiple positions by their IDs.
+   * @param positionIds The IDs of the positions to retrieve.
+   */
   getPositions(
     positionIds: PromiseOrValue<BigNumberish>[],
     overrides?: CallOverrides
@@ -821,6 +974,12 @@ export interface ChromaticMarket extends BaseContract {
 
   keeperFeePayer(overrides?: CallOverrides): Promise<string>;
 
+  /**
+   * Liquidates a position.
+   * @param keeper The address of the keeper performing the liquidation.
+   * @param keeperFee The native token amount of the keeper's fee.
+   * @param positionId The ID of the position to liquidate.
+   */
   liquidate(
     positionId: PromiseOrValue<BigNumberish>,
     keeper: PromiseOrValue<string>,
@@ -864,6 +1023,15 @@ export interface ChromaticMarket extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  /**
+   * Opens a new position in the market.
+   * @param data Additional data for the position callback.
+   * @param leverage The leverage of the position in basis points.
+   * @param makerMargin The margin amount provided by the maker.
+   * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
+   * @param qty The quantity of the position.
+   * @param takerMargin The margin amount provided by the taker.
+   */
   openPosition(
     qty: PromiseOrValue<BigNumberish>,
     leverage: PromiseOrValue<BigNumberish>,
@@ -876,6 +1044,12 @@ export interface ChromaticMarket extends BaseContract {
 
   oracleProvider(overrides?: CallOverrides): Promise<string>;
 
+  /**
+   * Removes liquidity from the market.
+   * @param data Additional data for the liquidity callback.
+   * @param recipient The address to receive the removed liquidity.
+   * @param tradingFeeRate The trading fee rate for the liquidity.
+   */
   removeLiquidity(
     recipient: PromiseOrValue<string>,
     tradingFeeRate: PromiseOrValue<BigNumberish>,
@@ -889,6 +1063,9 @@ export interface ChromaticMarket extends BaseContract {
 
   settlementToken(overrides?: CallOverrides): Promise<string>;
 
+  /**
+   * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
+   */
   supportsInterface(
     interfaceID: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
@@ -896,6 +1073,11 @@ export interface ChromaticMarket extends BaseContract {
 
   vault(overrides?: CallOverrides): Promise<string>;
 
+  /**
+   * Withdraws liquidity from a liquidity receipt.
+   * @param data Additional data for the liquidity callback.
+   * @param receiptId The ID of the liquidity receipt.
+   */
   withdrawLiquidity(
     receiptId: PromiseOrValue<BigNumberish>,
     data: PromiseOrValue<BytesLike>,
@@ -903,6 +1085,12 @@ export interface ChromaticMarket extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    /**
+     * Adds liquidity to the market.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address to receive the liquidity tokens.
+     * @param tradingFeeRate The trading fee rate for the liquidity.
+     */
     addLiquidity(
       recipient: PromiseOrValue<string>,
       tradingFeeRate: PromiseOrValue<BigNumberish>,
@@ -910,34 +1098,63 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput>;
 
+    /**
+     * Calculates the amount of CLB tokens to mint for the given parameters.
+     * @param amount The amount of liquidity.
+     * @param tradingFeeRate The trading fee rate.
+     */
     calculateCLBTokenMinting(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Calculates the value of CLB tokens for the given parameters.
+     * @param clbTokenAmount The amount of CLB tokens.
+     * @param tradingFeeRate The trading fee rate.
+     */
     calculateCLBTokenValue(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       clbTokenAmount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Checks if a position is eligible for claim.
+     * @param positionId The ID of the position to check.
+     */
     checkClaimPosition(
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    /**
+     * Checks if a position is eligible for liquidation.
+     * @param positionId The ID of the position to check.
+     */
     checkLiquidation(
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    /**
+     * Claims liquidity from a liquidity receipt.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptId The ID of the liquidity receipt.
+     */
     claimLiquidity(
       receiptId: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Claims a closed position in the market.
+     * @param data Additional data for the claim callback.
+     * @param positionId The ID of the position to claim.
+     * @param recipient The address of the recipient of the claimed position.
+     */
     "claimPosition(uint256,address,bytes)"(
       positionId: PromiseOrValue<BigNumberish>,
       recipient: PromiseOrValue<string>,
@@ -945,6 +1162,12 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Claims a closed position on behalf of a keeper.
+     * @param keeper The address of the keeper claiming the position.
+     * @param keeperFee The native token amount of the keeper's fee.
+     * @param positionId The ID of the position to claim.
+     */
     "claimPosition(uint256,address,uint256)"(
       positionId: PromiseOrValue<BigNumberish>,
       keeper: PromiseOrValue<string>,
@@ -954,11 +1177,20 @@ export interface ChromaticMarket extends BaseContract {
 
     clbToken(overrides?: CallOverrides): Promise<string>;
 
+    /**
+     * Closes a position in the market.
+     * @param positionId The ID of the position to close.
+     */
     closePosition(
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Distributes earning to the liquidity bins.
+     * @param earning The amount of earning to distribute.
+     * @param marketBalance The balance of the market.
+     */
     distributeEarningToBins(
       earning: PromiseOrValue<BigNumberish>,
       marketBalance: PromiseOrValue<BigNumberish>,
@@ -967,16 +1199,28 @@ export interface ChromaticMarket extends BaseContract {
 
     factory(overrides?: CallOverrides): Promise<string>;
 
+    /**
+     * Retrieves the bin free liquidities for the given trading fee rates.
+     * @param tradingFeeRates The trading fee rates to retrieve bin free liquidities for.
+     */
     getBinFreeLiquidities(
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
+    /**
+     * Retrieves the bin liquidities for the given trading fee rates.
+     * @param tradingFeeRates The trading fee rates to retrieve bin liquidities for.
+     */
     getBinLiquidities(
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
+    /**
+     * Retrieves multiple positions by their IDs.
+     * @param positionIds The IDs of the positions to retrieve.
+     */
     getPositions(
       positionIds: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
@@ -989,6 +1233,12 @@ export interface ChromaticMarket extends BaseContract {
 
     keeperFeePayer(overrides?: CallOverrides): Promise<string>;
 
+    /**
+     * Liquidates a position.
+     * @param keeper The address of the keeper performing the liquidation.
+     * @param keeperFee The native token amount of the keeper's fee.
+     * @param positionId The ID of the position to liquidate.
+     */
     liquidate(
       positionId: PromiseOrValue<BigNumberish>,
       keeper: PromiseOrValue<string>,
@@ -1032,6 +1282,15 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    /**
+     * Opens a new position in the market.
+     * @param data Additional data for the position callback.
+     * @param leverage The leverage of the position in basis points.
+     * @param makerMargin The margin amount provided by the maker.
+     * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
+     * @param qty The quantity of the position.
+     * @param takerMargin The margin amount provided by the taker.
+     */
     openPosition(
       qty: PromiseOrValue<BigNumberish>,
       leverage: PromiseOrValue<BigNumberish>,
@@ -1044,6 +1303,12 @@ export interface ChromaticMarket extends BaseContract {
 
     oracleProvider(overrides?: CallOverrides): Promise<string>;
 
+    /**
+     * Removes liquidity from the market.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address to receive the removed liquidity.
+     * @param tradingFeeRate The trading fee rate for the liquidity.
+     */
     removeLiquidity(
       recipient: PromiseOrValue<string>,
       tradingFeeRate: PromiseOrValue<BigNumberish>,
@@ -1055,6 +1320,9 @@ export interface ChromaticMarket extends BaseContract {
 
     settlementToken(overrides?: CallOverrides): Promise<string>;
 
+    /**
+     * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
+     */
     supportsInterface(
       interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -1062,6 +1330,11 @@ export interface ChromaticMarket extends BaseContract {
 
     vault(overrides?: CallOverrides): Promise<string>;
 
+    /**
+     * Withdraws liquidity from a liquidity receipt.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptId The ID of the liquidity receipt.
+     */
     withdrawLiquidity(
       receiptId: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
@@ -1165,6 +1438,12 @@ export interface ChromaticMarket extends BaseContract {
   };
 
   estimateGas: {
+    /**
+     * Adds liquidity to the market.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address to receive the liquidity tokens.
+     * @param tradingFeeRate The trading fee rate for the liquidity.
+     */
     addLiquidity(
       recipient: PromiseOrValue<string>,
       tradingFeeRate: PromiseOrValue<BigNumberish>,
@@ -1172,34 +1451,63 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Calculates the amount of CLB tokens to mint for the given parameters.
+     * @param amount The amount of liquidity.
+     * @param tradingFeeRate The trading fee rate.
+     */
     calculateCLBTokenMinting(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Calculates the value of CLB tokens for the given parameters.
+     * @param clbTokenAmount The amount of CLB tokens.
+     * @param tradingFeeRate The trading fee rate.
+     */
     calculateCLBTokenValue(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       clbTokenAmount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Checks if a position is eligible for claim.
+     * @param positionId The ID of the position to check.
+     */
     checkClaimPosition(
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Checks if a position is eligible for liquidation.
+     * @param positionId The ID of the position to check.
+     */
     checkLiquidation(
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Claims liquidity from a liquidity receipt.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptId The ID of the liquidity receipt.
+     */
     claimLiquidity(
       receiptId: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Claims a closed position in the market.
+     * @param data Additional data for the claim callback.
+     * @param positionId The ID of the position to claim.
+     * @param recipient The address of the recipient of the claimed position.
+     */
     "claimPosition(uint256,address,bytes)"(
       positionId: PromiseOrValue<BigNumberish>,
       recipient: PromiseOrValue<string>,
@@ -1207,6 +1515,12 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Claims a closed position on behalf of a keeper.
+     * @param keeper The address of the keeper claiming the position.
+     * @param keeperFee The native token amount of the keeper's fee.
+     * @param positionId The ID of the position to claim.
+     */
     "claimPosition(uint256,address,uint256)"(
       positionId: PromiseOrValue<BigNumberish>,
       keeper: PromiseOrValue<string>,
@@ -1216,11 +1530,20 @@ export interface ChromaticMarket extends BaseContract {
 
     clbToken(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Closes a position in the market.
+     * @param positionId The ID of the position to close.
+     */
     closePosition(
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Distributes earning to the liquidity bins.
+     * @param earning The amount of earning to distribute.
+     * @param marketBalance The balance of the market.
+     */
     distributeEarningToBins(
       earning: PromiseOrValue<BigNumberish>,
       marketBalance: PromiseOrValue<BigNumberish>,
@@ -1229,16 +1552,28 @@ export interface ChromaticMarket extends BaseContract {
 
     factory(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Retrieves the bin free liquidities for the given trading fee rates.
+     * @param tradingFeeRates The trading fee rates to retrieve bin free liquidities for.
+     */
     getBinFreeLiquidities(
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves the bin liquidities for the given trading fee rates.
+     * @param tradingFeeRates The trading fee rates to retrieve bin liquidities for.
+     */
     getBinLiquidities(
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves multiple positions by their IDs.
+     * @param positionIds The IDs of the positions to retrieve.
+     */
     getPositions(
       positionIds: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
@@ -1251,6 +1586,12 @@ export interface ChromaticMarket extends BaseContract {
 
     keeperFeePayer(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Liquidates a position.
+     * @param keeper The address of the keeper performing the liquidation.
+     * @param keeperFee The native token amount of the keeper's fee.
+     * @param positionId The ID of the position to liquidate.
+     */
     liquidate(
       positionId: PromiseOrValue<BigNumberish>,
       keeper: PromiseOrValue<string>,
@@ -1294,6 +1635,15 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Opens a new position in the market.
+     * @param data Additional data for the position callback.
+     * @param leverage The leverage of the position in basis points.
+     * @param makerMargin The margin amount provided by the maker.
+     * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
+     * @param qty The quantity of the position.
+     * @param takerMargin The margin amount provided by the taker.
+     */
     openPosition(
       qty: PromiseOrValue<BigNumberish>,
       leverage: PromiseOrValue<BigNumberish>,
@@ -1306,6 +1656,12 @@ export interface ChromaticMarket extends BaseContract {
 
     oracleProvider(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Removes liquidity from the market.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address to receive the removed liquidity.
+     * @param tradingFeeRate The trading fee rate for the liquidity.
+     */
     removeLiquidity(
       recipient: PromiseOrValue<string>,
       tradingFeeRate: PromiseOrValue<BigNumberish>,
@@ -1319,6 +1675,9 @@ export interface ChromaticMarket extends BaseContract {
 
     settlementToken(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
+     */
     supportsInterface(
       interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -1326,6 +1685,11 @@ export interface ChromaticMarket extends BaseContract {
 
     vault(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Withdraws liquidity from a liquidity receipt.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptId The ID of the liquidity receipt.
+     */
     withdrawLiquidity(
       receiptId: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
@@ -1334,6 +1698,12 @@ export interface ChromaticMarket extends BaseContract {
   };
 
   populateTransaction: {
+    /**
+     * Adds liquidity to the market.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address to receive the liquidity tokens.
+     * @param tradingFeeRate The trading fee rate for the liquidity.
+     */
     addLiquidity(
       recipient: PromiseOrValue<string>,
       tradingFeeRate: PromiseOrValue<BigNumberish>,
@@ -1341,34 +1711,63 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Calculates the amount of CLB tokens to mint for the given parameters.
+     * @param amount The amount of liquidity.
+     * @param tradingFeeRate The trading fee rate.
+     */
     calculateCLBTokenMinting(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Calculates the value of CLB tokens for the given parameters.
+     * @param clbTokenAmount The amount of CLB tokens.
+     * @param tradingFeeRate The trading fee rate.
+     */
     calculateCLBTokenValue(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       clbTokenAmount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Checks if a position is eligible for claim.
+     * @param positionId The ID of the position to check.
+     */
     checkClaimPosition(
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Checks if a position is eligible for liquidation.
+     * @param positionId The ID of the position to check.
+     */
     checkLiquidation(
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Claims liquidity from a liquidity receipt.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptId The ID of the liquidity receipt.
+     */
     claimLiquidity(
       receiptId: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Claims a closed position in the market.
+     * @param data Additional data for the claim callback.
+     * @param positionId The ID of the position to claim.
+     * @param recipient The address of the recipient of the claimed position.
+     */
     "claimPosition(uint256,address,bytes)"(
       positionId: PromiseOrValue<BigNumberish>,
       recipient: PromiseOrValue<string>,
@@ -1376,6 +1775,12 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Claims a closed position on behalf of a keeper.
+     * @param keeper The address of the keeper claiming the position.
+     * @param keeperFee The native token amount of the keeper's fee.
+     * @param positionId The ID of the position to claim.
+     */
     "claimPosition(uint256,address,uint256)"(
       positionId: PromiseOrValue<BigNumberish>,
       keeper: PromiseOrValue<string>,
@@ -1385,11 +1790,20 @@ export interface ChromaticMarket extends BaseContract {
 
     clbToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * Closes a position in the market.
+     * @param positionId The ID of the position to close.
+     */
     closePosition(
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Distributes earning to the liquidity bins.
+     * @param earning The amount of earning to distribute.
+     * @param marketBalance The balance of the market.
+     */
     distributeEarningToBins(
       earning: PromiseOrValue<BigNumberish>,
       marketBalance: PromiseOrValue<BigNumberish>,
@@ -1398,16 +1812,28 @@ export interface ChromaticMarket extends BaseContract {
 
     factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the bin free liquidities for the given trading fee rates.
+     * @param tradingFeeRates The trading fee rates to retrieve bin free liquidities for.
+     */
     getBinFreeLiquidities(
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the bin liquidities for the given trading fee rates.
+     * @param tradingFeeRates The trading fee rates to retrieve bin liquidities for.
+     */
     getBinLiquidities(
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves multiple positions by their IDs.
+     * @param positionIds The IDs of the positions to retrieve.
+     */
     getPositions(
       positionIds: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
@@ -1420,6 +1846,12 @@ export interface ChromaticMarket extends BaseContract {
 
     keeperFeePayer(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * Liquidates a position.
+     * @param keeper The address of the keeper performing the liquidation.
+     * @param keeperFee The native token amount of the keeper's fee.
+     * @param positionId The ID of the position to liquidate.
+     */
     liquidate(
       positionId: PromiseOrValue<BigNumberish>,
       keeper: PromiseOrValue<string>,
@@ -1463,6 +1895,15 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Opens a new position in the market.
+     * @param data Additional data for the position callback.
+     * @param leverage The leverage of the position in basis points.
+     * @param makerMargin The margin amount provided by the maker.
+     * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
+     * @param qty The quantity of the position.
+     * @param takerMargin The margin amount provided by the taker.
+     */
     openPosition(
       qty: PromiseOrValue<BigNumberish>,
       leverage: PromiseOrValue<BigNumberish>,
@@ -1475,6 +1916,12 @@ export interface ChromaticMarket extends BaseContract {
 
     oracleProvider(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * Removes liquidity from the market.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address to receive the removed liquidity.
+     * @param tradingFeeRate The trading fee rate for the liquidity.
+     */
     removeLiquidity(
       recipient: PromiseOrValue<string>,
       tradingFeeRate: PromiseOrValue<BigNumberish>,
@@ -1488,6 +1935,9 @@ export interface ChromaticMarket extends BaseContract {
 
     settlementToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
+     */
     supportsInterface(
       interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -1495,6 +1945,11 @@ export interface ChromaticMarket extends BaseContract {
 
     vault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * Withdraws liquidity from a liquidity receipt.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptId The ID of the liquidity receipt.
+     */
     withdrawLiquidity(
       receiptId: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,

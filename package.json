@@ -41,5 +41,5 @@
     "build:esm": "rm -rf esm && tsc --build --force tsconfig.esm.json",
     "build": "yarn build:cjs && yarn build:esm"
   },
-  "version": "0.1.0-rc.5"
+  "version": "0.1.0-rc.6"
 }

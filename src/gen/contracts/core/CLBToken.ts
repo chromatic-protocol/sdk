@@ -33,14 +33,16 @@ export interface CLBTokenInterface extends utils.Interface {
     "balanceOfBatch(address[],uint256[])": FunctionFragment;
     "burn(address,uint256,uint256)": FunctionFragment;
     "decimals()": FunctionFragment;
+    "description(uint256)": FunctionFragment;
     "exists(uint256)": FunctionFragment;
+    "image(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "market()": FunctionFragment;
     "mint(address,uint256,uint256,bytes)": FunctionFragment;
+    "name(uint256)": FunctionFragment;
     "safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
-    "setImageUri(string)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "totalSupply(uint256)": FunctionFragment;
     "uri(uint256)": FunctionFragment;
@@ -52,14 +54,16 @@ export interface CLBTokenInterface extends utils.Interface {
       | "balanceOfBatch"
       | "burn"
       | "decimals"
+      | "description"
       | "exists"
+      | "image"
       | "isApprovedForAll"
       | "market"
       | "mint"
+      | "name"
       | "safeBatchTransferFrom"
       | "safeTransferFrom"
       | "setApprovalForAll"
-      | "setImageUri"
       | "supportsInterface"
       | "totalSupply"
       | "uri"
@@ -83,7 +87,15 @@ export interface CLBTokenInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "description",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "exists",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "image",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
@@ -99,6 +111,10 @@ export interface CLBTokenInterface extends utils.Interface {
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BytesLike>
     ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "name",
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "safeBatchTransferFrom",
@@ -125,10 +141,6 @@ export interface CLBTokenInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<boolean>]
   ): string;
   encodeFunctionData(
-    functionFragment: "setImageUri",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [PromiseOrValue<BytesLike>]
   ): string;
@@ -148,13 +160,19 @@ export interface CLBTokenInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "description",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "exists", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "image", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "market", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "safeBatchTransferFrom",
     data: BytesLike
@@ -165,10 +183,6 @@ export interface CLBTokenInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setApprovalForAll",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setImageUri",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -296,6 +310,11 @@ export interface CLBToken extends BaseContract {
 
     decimals(overrides?: CallOverrides): Promise<[number]>;
 
+    description(
+      id: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
     /**
      * Indicates whether any token exist with a given id, or not.
      */
@@ -303,6 +322,11 @@ export interface CLBToken extends BaseContract {
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
+
+    image(
+      id: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     /**
      * See {IERC1155-isApprovedForAll}.
@@ -322,6 +346,11 @@ export interface CLBToken extends BaseContract {
       data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    name(
+      id: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     /**
      * See {IERC1155-safeBatchTransferFrom}.
@@ -353,11 +382,6 @@ export interface CLBToken extends BaseContract {
     setApprovalForAll(
       operator: PromiseOrValue<string>,
       approved: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setImageUri(
-      _imageUri: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -407,6 +431,11 @@ export interface CLBToken extends BaseContract {
 
   decimals(overrides?: CallOverrides): Promise<number>;
 
+  description(
+    id: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   /**
    * Indicates whether any token exist with a given id, or not.
    */
@@ -414,6 +443,11 @@ export interface CLBToken extends BaseContract {
     id: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  image(
+    id: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   /**
    * See {IERC1155-isApprovedForAll}.
@@ -433,6 +467,11 @@ export interface CLBToken extends BaseContract {
     data: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  name(
+    id: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   /**
    * See {IERC1155-safeBatchTransferFrom}.
@@ -464,11 +503,6 @@ export interface CLBToken extends BaseContract {
   setApprovalForAll(
     operator: PromiseOrValue<string>,
     approved: PromiseOrValue<boolean>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setImageUri(
-    _imageUri: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -518,6 +552,11 @@ export interface CLBToken extends BaseContract {
 
     decimals(overrides?: CallOverrides): Promise<number>;
 
+    description(
+      id: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     /**
      * Indicates whether any token exist with a given id, or not.
      */
@@ -525,6 +564,11 @@ export interface CLBToken extends BaseContract {
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    image(
+      id: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     /**
      * See {IERC1155-isApprovedForAll}.
@@ -544,6 +588,11 @@ export interface CLBToken extends BaseContract {
       data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    name(
+      id: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     /**
      * See {IERC1155-safeBatchTransferFrom}.
@@ -575,11 +624,6 @@ export interface CLBToken extends BaseContract {
     setApprovalForAll(
       operator: PromiseOrValue<string>,
       approved: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setImageUri(
-      _imageUri: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -679,10 +723,20 @@ export interface CLBToken extends BaseContract {
 
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
+    description(
+      id: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     /**
      * Indicates whether any token exist with a given id, or not.
      */
     exists(
+      id: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    image(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -704,6 +758,11 @@ export interface CLBToken extends BaseContract {
       amount: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    name(
+      id: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     /**
@@ -736,11 +795,6 @@ export interface CLBToken extends BaseContract {
     setApprovalForAll(
       operator: PromiseOrValue<string>,
       approved: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setImageUri(
-      _imageUri: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -791,10 +845,20 @@ export interface CLBToken extends BaseContract {
 
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    description(
+      id: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     /**
      * Indicates whether any token exist with a given id, or not.
      */
     exists(
+      id: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    image(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -816,6 +880,11 @@ export interface CLBToken extends BaseContract {
       amount: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    name(
+      id: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -848,11 +917,6 @@ export interface CLBToken extends BaseContract {
     setApprovalForAll(
       operator: PromiseOrValue<string>,
       approved: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setImageUri(
-      _imageUri: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

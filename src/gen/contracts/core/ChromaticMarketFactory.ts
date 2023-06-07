@@ -661,6 +661,13 @@ export interface ChromaticMarketFactory extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    /**
+     * This function can only be called by the DAO address.
+     * Appends an interest rate record for a settlement token.
+     * @param annualRateBPS The annual interest rate in basis points (BPS).
+     * @param beginTimestamp The timestamp when the interest rate record begins.
+     * @param token The address of the settlement token.
+     */
     appendInterestRateRecord(
       token: PromiseOrValue<string>,
       annualRateBPS: PromiseOrValue<BigNumberish>,
@@ -668,6 +675,13 @@ export interface ChromaticMarketFactory extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Calculates the interest accrued for a given token and amount within a specified time range.
+     * @param amount The amount of the token.
+     * @param from The starting timestamp (inclusive) of the time range.
+     * @param to The ending timestamp (exclusive) of the time range.
+     * @param token The address of the token.
+     */
     calculateInterest(
       token: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
@@ -676,94 +690,176 @@ export interface ChromaticMarketFactory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Cancels a Maker earning distribution task for a token.
+     * @param token The address of the token.
+     */
     cancelMakerEarningDistributionTask(
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Cancels a market earning distribution task for a market.
+     * @param market The address of the market.
+     */
     cancelMarketEarningDistributionTask(
       market: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Creates a Maker earning distribution task for a token.
+     * @param token The address of the token.
+     */
     createMakerEarningDistributionTask(
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Creates a new market associated with an oracle provider and settlement token.
+     * @param oracleProvider The address of the oracle provider.
+     * @param settlementToken The address of the settlement token.
+     */
     createMarket(
       oracleProvider: PromiseOrValue<string>,
       settlementToken: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Creates a market earning distribution task for a market.
+     * @param market The address of the market.
+     */
     createMarketEarningDistributionTask(
       market: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Gets the current interest rate for a settlement token.
+     * @param token The address of the settlement token.
+     */
     currentInterestRate(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { annualRateBPS: BigNumber }>;
 
+    /**
+     * Returns the address of the DAO.
+     */
     dao(overrides?: CallOverrides): Promise<[string]>;
 
+    /**
+     * Gets the earning distribution threshold for a settlement token.
+     * @param token The address of the settlement token.
+     */
     getEarningDistributionThreshold(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    /**
+     * Gets the flash loan fee rate for a settlement token.
+     * @param token The address of the settlement token.
+     */
     getFlashLoanFeeRate(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    /**
+     * Gets all the interest rate records for a settlement token.
+     * @param token The address of the settlement token.
+     */
     getInterestRateRecords(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[InterestRate.RecordStructOutput[]]>;
 
+    /**
+     * Returns the address of a market associated with an oracle provider and settlement token.
+     * @param oracleProvider The address of the oracle provider.
+     * @param settlementToken The address of the settlement token.
+     */
     getMarket(
       oracleProvider: PromiseOrValue<string>,
       settlementToken: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    /**
+     * Returns an array of all market addresses.
+     */
     getMarkets(overrides?: CallOverrides): Promise<[string[]]>;
 
+    /**
+     * Returns an array of market addresses associated with a settlement token.
+     * @param settlementToken The address of the settlement token.
+     */
     getMarketsBySettlmentToken(
       settlementToken: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[string[]]>;
 
+    /**
+     * Gets the minimum taker margin for a settlement token.
+     * @param token The address of the settlement token.
+     */
     getMinimumTakerMargin(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    /**
+     * Gets the Uniswap fee tier for a settlement token.
+     * @param token The address of the settlement token.
+     */
     getUniswapFeeTier(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[number]>;
 
+    /**
+     * Checks if a market is registered.
+     * @param market The address of the market.
+     */
     isRegisteredMarket(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    /**
+     * Checks if an oracle provider is registered.
+     * @param oracleProvider The address of the oracle provider to check.
+     */
     isRegisteredOracleProvider(
       oracleProvider: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    /**
+     * Checks if a settlement token is registered.
+     * @param token The address of the settlement token to check.
+     */
     isRegisteredSettlementToken(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    /**
+     * Returns the address of the keeper fee payer.
+     */
     keeperFeePayer(overrides?: CallOverrides): Promise<[string]>;
 
+    /**
+     * Returns the address of the liquidator.
+     */
     liquidator(overrides?: CallOverrides): Promise<[string]>;
 
     /**
@@ -776,11 +872,26 @@ export interface ChromaticMarketFactory extends BaseContract {
       [string, string] & { oracleProvider: string; settlementToken: string }
     >;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Registers an oracle provider.
+     * @param oracleProvider The address of the oracle provider to register.
+     */
     registerOracleProvider(
       oracleProvider: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Registers a new settlement token.
+     * @param earningDistributionThreshold The earning distribution threshold for the settlement token.
+     * @param flashLoanFeeRate The flash loan fee rate for the settlement token.
+     * @param interestRate The interest rate for the settlement token.
+     * @param minimumTakerMargin The minimum taker margin for the settlement token.
+     * @param token The address of the settlement token to register.
+     * @param uniswapFeeTier The Uniswap fee tier for the settlement token.
+     */
     registerSettlementToken(
       token: PromiseOrValue<string>,
       minimumTakerMargin: PromiseOrValue<BigNumberish>,
@@ -791,77 +902,152 @@ export interface ChromaticMarketFactory extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Gets the registered oracle providers.
+     */
     registeredOracleProviders(overrides?: CallOverrides): Promise<[string[]]>;
 
+    /**
+     * Gets the list of registered settlement tokens.
+     */
     registeredSettlementTokens(overrides?: CallOverrides): Promise<[string[]]>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Removes the last interest rate record for a settlement token.
+     * @param token The address of the settlement token.
+     */
     removeLastInterestRateRecord(
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the earning distribution threshold for a settlement token.
+     * @param earningDistributionThreshold The new earning distribution threshold for the settlement token.
+     * @param token The address of the settlement token.
+     */
     setEarningDistributionThreshold(
       token: PromiseOrValue<string>,
       earningDistributionThreshold: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the flash loan fee rate for a settlement token.
+     * @param flashLoanFeeRate The new flash loan fee rate for the settlement token.
+     * @param token The address of the settlement token.
+     */
     setFlashLoanFeeRate(
       token: PromiseOrValue<string>,
       flashLoanFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the keeper fee payer address.
+     * @param keeperFeePayer The keeper fee payer address.
+     */
     setKeeperFeePayer(
       _keeperFeePayer: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the liquidator address.
+     * @param liquidator The liquidator address.
+     */
     setLiquidator(
       _liquidator: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the minimum taker margin for a settlement token.
+     * @param minimumTakerMargin The new minimum taker margin for the settlement token.
+     * @param token The address of the settlement token.
+     */
     setMinimumTakerMargin(
       token: PromiseOrValue<string>,
       minimumTakerMargin: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the Uniswap fee tier for a settlement token.
+     * @param token The address of the settlement token.
+     * @param uniswapFeeTier The new Uniswap fee tier for the settlement token.
+     */
     setUniswapFeeTier(
       token: PromiseOrValue<string>,
       uniswapFeeTier: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the vault address.
+     * @param vault The vault address.
+     */
     setVault(
       _vault: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Returns the address of the DAO treasury.
+     */
     treasury(overrides?: CallOverrides): Promise<[string]>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Unregisters an oracle provider.
+     * @param oracleProvider The address of the oracle provider to unregister.
+     */
     unregisterOracleProvider(
       oracleProvider: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     /**
-     * @param _dao new DAO address to set
+     * This function can only be called by the DAO address.
+     * Updates the DAO address.
+     * @param dao The new DAO address.
      */
     updateDao(
       _dao: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Updates the DAO treasury address.
+     * @param treasury The new DAO treasury address.
+     */
     updateTreasury(
       _treasury: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Returns the address of the vault.
+     */
     vault(overrides?: CallOverrides): Promise<[string]>;
   };
 
+  /**
+   * This function can only be called by the DAO address.
+   * Appends an interest rate record for a settlement token.
+   * @param annualRateBPS The annual interest rate in basis points (BPS).
+   * @param beginTimestamp The timestamp when the interest rate record begins.
+   * @param token The address of the settlement token.
+   */
   appendInterestRateRecord(
     token: PromiseOrValue<string>,
     annualRateBPS: PromiseOrValue<BigNumberish>,
@@ -869,6 +1055,13 @@ export interface ChromaticMarketFactory extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Calculates the interest accrued for a given token and amount within a specified time range.
+   * @param amount The amount of the token.
+   * @param from The starting timestamp (inclusive) of the time range.
+   * @param to The ending timestamp (exclusive) of the time range.
+   * @param token The address of the token.
+   */
   calculateInterest(
     token: PromiseOrValue<string>,
     amount: PromiseOrValue<BigNumberish>,
@@ -877,94 +1070,176 @@ export interface ChromaticMarketFactory extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  /**
+   * This function can only be called by the DAO address.
+   * Cancels a Maker earning distribution task for a token.
+   * @param token The address of the token.
+   */
   cancelMakerEarningDistributionTask(
     token: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * This function can only be called by the DAO address.
+   * Cancels a market earning distribution task for a market.
+   * @param market The address of the market.
+   */
   cancelMarketEarningDistributionTask(
     market: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * This function can only be called by the DAO address.
+   * Creates a Maker earning distribution task for a token.
+   * @param token The address of the token.
+   */
   createMakerEarningDistributionTask(
     token: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Creates a new market associated with an oracle provider and settlement token.
+   * @param oracleProvider The address of the oracle provider.
+   * @param settlementToken The address of the settlement token.
+   */
   createMarket(
     oracleProvider: PromiseOrValue<string>,
     settlementToken: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * This function can only be called by the DAO address.
+   * Creates a market earning distribution task for a market.
+   * @param market The address of the market.
+   */
   createMarketEarningDistributionTask(
     market: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Gets the current interest rate for a settlement token.
+   * @param token The address of the settlement token.
+   */
   currentInterestRate(
     token: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  /**
+   * Returns the address of the DAO.
+   */
   dao(overrides?: CallOverrides): Promise<string>;
 
+  /**
+   * Gets the earning distribution threshold for a settlement token.
+   * @param token The address of the settlement token.
+   */
   getEarningDistributionThreshold(
     token: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  /**
+   * Gets the flash loan fee rate for a settlement token.
+   * @param token The address of the settlement token.
+   */
   getFlashLoanFeeRate(
     token: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  /**
+   * Gets all the interest rate records for a settlement token.
+   * @param token The address of the settlement token.
+   */
   getInterestRateRecords(
     token: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<InterestRate.RecordStructOutput[]>;
 
+  /**
+   * Returns the address of a market associated with an oracle provider and settlement token.
+   * @param oracleProvider The address of the oracle provider.
+   * @param settlementToken The address of the settlement token.
+   */
   getMarket(
     oracleProvider: PromiseOrValue<string>,
     settlementToken: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<string>;
 
+  /**
+   * Returns an array of all market addresses.
+   */
   getMarkets(overrides?: CallOverrides): Promise<string[]>;
 
+  /**
+   * Returns an array of market addresses associated with a settlement token.
+   * @param settlementToken The address of the settlement token.
+   */
   getMarketsBySettlmentToken(
     settlementToken: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<string[]>;
 
+  /**
+   * Gets the minimum taker margin for a settlement token.
+   * @param token The address of the settlement token.
+   */
   getMinimumTakerMargin(
     token: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  /**
+   * Gets the Uniswap fee tier for a settlement token.
+   * @param token The address of the settlement token.
+   */
   getUniswapFeeTier(
     token: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<number>;
 
+  /**
+   * Checks if a market is registered.
+   * @param market The address of the market.
+   */
   isRegisteredMarket(
     market: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  /**
+   * Checks if an oracle provider is registered.
+   * @param oracleProvider The address of the oracle provider to check.
+   */
   isRegisteredOracleProvider(
     oracleProvider: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  /**
+   * Checks if a settlement token is registered.
+   * @param token The address of the settlement token to check.
+   */
   isRegisteredSettlementToken(
     token: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  /**
+   * Returns the address of the keeper fee payer.
+   */
   keeperFeePayer(overrides?: CallOverrides): Promise<string>;
 
+  /**
+   * Returns the address of the liquidator.
+   */
   liquidator(overrides?: CallOverrides): Promise<string>;
 
   /**
@@ -977,11 +1252,26 @@ export interface ChromaticMarketFactory extends BaseContract {
     [string, string] & { oracleProvider: string; settlementToken: string }
   >;
 
+  /**
+   * This function can only be called by the DAO address.
+   * Registers an oracle provider.
+   * @param oracleProvider The address of the oracle provider to register.
+   */
   registerOracleProvider(
     oracleProvider: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * This function can only be called by the DAO address.
+   * Registers a new settlement token.
+   * @param earningDistributionThreshold The earning distribution threshold for the settlement token.
+   * @param flashLoanFeeRate The flash loan fee rate for the settlement token.
+   * @param interestRate The interest rate for the settlement token.
+   * @param minimumTakerMargin The minimum taker margin for the settlement token.
+   * @param token The address of the settlement token to register.
+   * @param uniswapFeeTier The Uniswap fee tier for the settlement token.
+   */
   registerSettlementToken(
     token: PromiseOrValue<string>,
     minimumTakerMargin: PromiseOrValue<BigNumberish>,
@@ -992,77 +1282,152 @@ export interface ChromaticMarketFactory extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Gets the registered oracle providers.
+   */
   registeredOracleProviders(overrides?: CallOverrides): Promise<string[]>;
 
+  /**
+   * Gets the list of registered settlement tokens.
+   */
   registeredSettlementTokens(overrides?: CallOverrides): Promise<string[]>;
 
+  /**
+   * This function can only be called by the DAO address.
+   * Removes the last interest rate record for a settlement token.
+   * @param token The address of the settlement token.
+   */
   removeLastInterestRateRecord(
     token: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * This function can only be called by the DAO address.
+   * Sets the earning distribution threshold for a settlement token.
+   * @param earningDistributionThreshold The new earning distribution threshold for the settlement token.
+   * @param token The address of the settlement token.
+   */
   setEarningDistributionThreshold(
     token: PromiseOrValue<string>,
     earningDistributionThreshold: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * This function can only be called by the DAO address.
+   * Sets the flash loan fee rate for a settlement token.
+   * @param flashLoanFeeRate The new flash loan fee rate for the settlement token.
+   * @param token The address of the settlement token.
+   */
   setFlashLoanFeeRate(
     token: PromiseOrValue<string>,
     flashLoanFeeRate: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * This function can only be called by the DAO address.
+   * Sets the keeper fee payer address.
+   * @param keeperFeePayer The keeper fee payer address.
+   */
   setKeeperFeePayer(
     _keeperFeePayer: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * This function can only be called by the DAO address.
+   * Sets the liquidator address.
+   * @param liquidator The liquidator address.
+   */
   setLiquidator(
     _liquidator: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * This function can only be called by the DAO address.
+   * Sets the minimum taker margin for a settlement token.
+   * @param minimumTakerMargin The new minimum taker margin for the settlement token.
+   * @param token The address of the settlement token.
+   */
   setMinimumTakerMargin(
     token: PromiseOrValue<string>,
     minimumTakerMargin: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * This function can only be called by the DAO address.
+   * Sets the Uniswap fee tier for a settlement token.
+   * @param token The address of the settlement token.
+   * @param uniswapFeeTier The new Uniswap fee tier for the settlement token.
+   */
   setUniswapFeeTier(
     token: PromiseOrValue<string>,
     uniswapFeeTier: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * This function can only be called by the DAO address.
+   * Sets the vault address.
+   * @param vault The vault address.
+   */
   setVault(
     _vault: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Returns the address of the DAO treasury.
+   */
   treasury(overrides?: CallOverrides): Promise<string>;
 
+  /**
+   * This function can only be called by the DAO address.
+   * Unregisters an oracle provider.
+   * @param oracleProvider The address of the oracle provider to unregister.
+   */
   unregisterOracleProvider(
     oracleProvider: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   /**
-   * @param _dao new DAO address to set
+   * This function can only be called by the DAO address.
+   * Updates the DAO address.
+   * @param dao The new DAO address.
    */
   updateDao(
     _dao: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * This function can only be called by the DAO address.
+   * Updates the DAO treasury address.
+   * @param treasury The new DAO treasury address.
+   */
   updateTreasury(
     _treasury: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Returns the address of the vault.
+   */
   vault(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
+    /**
+     * This function can only be called by the DAO address.
+     * Appends an interest rate record for a settlement token.
+     * @param annualRateBPS The annual interest rate in basis points (BPS).
+     * @param beginTimestamp The timestamp when the interest rate record begins.
+     * @param token The address of the settlement token.
+     */
     appendInterestRateRecord(
       token: PromiseOrValue<string>,
       annualRateBPS: PromiseOrValue<BigNumberish>,
@@ -1070,6 +1435,13 @@ export interface ChromaticMarketFactory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Calculates the interest accrued for a given token and amount within a specified time range.
+     * @param amount The amount of the token.
+     * @param from The starting timestamp (inclusive) of the time range.
+     * @param to The ending timestamp (exclusive) of the time range.
+     * @param token The address of the token.
+     */
     calculateInterest(
       token: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
@@ -1078,94 +1450,176 @@ export interface ChromaticMarketFactory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Cancels a Maker earning distribution task for a token.
+     * @param token The address of the token.
+     */
     cancelMakerEarningDistributionTask(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Cancels a market earning distribution task for a market.
+     * @param market The address of the market.
+     */
     cancelMarketEarningDistributionTask(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Creates a Maker earning distribution task for a token.
+     * @param token The address of the token.
+     */
     createMakerEarningDistributionTask(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Creates a new market associated with an oracle provider and settlement token.
+     * @param oracleProvider The address of the oracle provider.
+     * @param settlementToken The address of the settlement token.
+     */
     createMarket(
       oracleProvider: PromiseOrValue<string>,
       settlementToken: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Creates a market earning distribution task for a market.
+     * @param market The address of the market.
+     */
     createMarketEarningDistributionTask(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Gets the current interest rate for a settlement token.
+     * @param token The address of the settlement token.
+     */
     currentInterestRate(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Returns the address of the DAO.
+     */
     dao(overrides?: CallOverrides): Promise<string>;
 
+    /**
+     * Gets the earning distribution threshold for a settlement token.
+     * @param token The address of the settlement token.
+     */
     getEarningDistributionThreshold(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Gets the flash loan fee rate for a settlement token.
+     * @param token The address of the settlement token.
+     */
     getFlashLoanFeeRate(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Gets all the interest rate records for a settlement token.
+     * @param token The address of the settlement token.
+     */
     getInterestRateRecords(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<InterestRate.RecordStructOutput[]>;
 
+    /**
+     * Returns the address of a market associated with an oracle provider and settlement token.
+     * @param oracleProvider The address of the oracle provider.
+     * @param settlementToken The address of the settlement token.
+     */
     getMarket(
       oracleProvider: PromiseOrValue<string>,
       settlementToken: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<string>;
 
+    /**
+     * Returns an array of all market addresses.
+     */
     getMarkets(overrides?: CallOverrides): Promise<string[]>;
 
+    /**
+     * Returns an array of market addresses associated with a settlement token.
+     * @param settlementToken The address of the settlement token.
+     */
     getMarketsBySettlmentToken(
       settlementToken: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<string[]>;
 
+    /**
+     * Gets the minimum taker margin for a settlement token.
+     * @param token The address of the settlement token.
+     */
     getMinimumTakerMargin(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Gets the Uniswap fee tier for a settlement token.
+     * @param token The address of the settlement token.
+     */
     getUniswapFeeTier(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<number>;
 
+    /**
+     * Checks if a market is registered.
+     * @param market The address of the market.
+     */
     isRegisteredMarket(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    /**
+     * Checks if an oracle provider is registered.
+     * @param oracleProvider The address of the oracle provider to check.
+     */
     isRegisteredOracleProvider(
       oracleProvider: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    /**
+     * Checks if a settlement token is registered.
+     * @param token The address of the settlement token to check.
+     */
     isRegisteredSettlementToken(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    /**
+     * Returns the address of the keeper fee payer.
+     */
     keeperFeePayer(overrides?: CallOverrides): Promise<string>;
 
+    /**
+     * Returns the address of the liquidator.
+     */
     liquidator(overrides?: CallOverrides): Promise<string>;
 
     /**
@@ -1178,11 +1632,26 @@ export interface ChromaticMarketFactory extends BaseContract {
       [string, string] & { oracleProvider: string; settlementToken: string }
     >;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Registers an oracle provider.
+     * @param oracleProvider The address of the oracle provider to register.
+     */
     registerOracleProvider(
       oracleProvider: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Registers a new settlement token.
+     * @param earningDistributionThreshold The earning distribution threshold for the settlement token.
+     * @param flashLoanFeeRate The flash loan fee rate for the settlement token.
+     * @param interestRate The interest rate for the settlement token.
+     * @param minimumTakerMargin The minimum taker margin for the settlement token.
+     * @param token The address of the settlement token to register.
+     * @param uniswapFeeTier The Uniswap fee tier for the settlement token.
+     */
     registerSettlementToken(
       token: PromiseOrValue<string>,
       minimumTakerMargin: PromiseOrValue<BigNumberish>,
@@ -1193,74 +1662,142 @@ export interface ChromaticMarketFactory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Gets the registered oracle providers.
+     */
     registeredOracleProviders(overrides?: CallOverrides): Promise<string[]>;
 
+    /**
+     * Gets the list of registered settlement tokens.
+     */
     registeredSettlementTokens(overrides?: CallOverrides): Promise<string[]>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Removes the last interest rate record for a settlement token.
+     * @param token The address of the settlement token.
+     */
     removeLastInterestRateRecord(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the earning distribution threshold for a settlement token.
+     * @param earningDistributionThreshold The new earning distribution threshold for the settlement token.
+     * @param token The address of the settlement token.
+     */
     setEarningDistributionThreshold(
       token: PromiseOrValue<string>,
       earningDistributionThreshold: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the flash loan fee rate for a settlement token.
+     * @param flashLoanFeeRate The new flash loan fee rate for the settlement token.
+     * @param token The address of the settlement token.
+     */
     setFlashLoanFeeRate(
       token: PromiseOrValue<string>,
       flashLoanFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the keeper fee payer address.
+     * @param keeperFeePayer The keeper fee payer address.
+     */
     setKeeperFeePayer(
       _keeperFeePayer: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the liquidator address.
+     * @param liquidator The liquidator address.
+     */
     setLiquidator(
       _liquidator: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the minimum taker margin for a settlement token.
+     * @param minimumTakerMargin The new minimum taker margin for the settlement token.
+     * @param token The address of the settlement token.
+     */
     setMinimumTakerMargin(
       token: PromiseOrValue<string>,
       minimumTakerMargin: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the Uniswap fee tier for a settlement token.
+     * @param token The address of the settlement token.
+     * @param uniswapFeeTier The new Uniswap fee tier for the settlement token.
+     */
     setUniswapFeeTier(
       token: PromiseOrValue<string>,
       uniswapFeeTier: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the vault address.
+     * @param vault The vault address.
+     */
     setVault(
       _vault: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Returns the address of the DAO treasury.
+     */
     treasury(overrides?: CallOverrides): Promise<string>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Unregisters an oracle provider.
+     * @param oracleProvider The address of the oracle provider to unregister.
+     */
     unregisterOracleProvider(
       oracleProvider: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     /**
-     * @param _dao new DAO address to set
+     * This function can only be called by the DAO address.
+     * Updates the DAO address.
+     * @param dao The new DAO address.
      */
     updateDao(
       _dao: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Updates the DAO treasury address.
+     * @param treasury The new DAO treasury address.
+     */
     updateTreasury(
       _treasury: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Returns the address of the vault.
+     */
     vault(overrides?: CallOverrides): Promise<string>;
   };
 
@@ -1398,6 +1935,13 @@ export interface ChromaticMarketFactory extends BaseContract {
   };
 
   estimateGas: {
+    /**
+     * This function can only be called by the DAO address.
+     * Appends an interest rate record for a settlement token.
+     * @param annualRateBPS The annual interest rate in basis points (BPS).
+     * @param beginTimestamp The timestamp when the interest rate record begins.
+     * @param token The address of the settlement token.
+     */
     appendInterestRateRecord(
       token: PromiseOrValue<string>,
       annualRateBPS: PromiseOrValue<BigNumberish>,
@@ -1405,6 +1949,13 @@ export interface ChromaticMarketFactory extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Calculates the interest accrued for a given token and amount within a specified time range.
+     * @param amount The amount of the token.
+     * @param from The starting timestamp (inclusive) of the time range.
+     * @param to The ending timestamp (exclusive) of the time range.
+     * @param token The address of the token.
+     */
     calculateInterest(
       token: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
@@ -1413,94 +1964,176 @@ export interface ChromaticMarketFactory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Cancels a Maker earning distribution task for a token.
+     * @param token The address of the token.
+     */
     cancelMakerEarningDistributionTask(
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Cancels a market earning distribution task for a market.
+     * @param market The address of the market.
+     */
     cancelMarketEarningDistributionTask(
       market: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Creates a Maker earning distribution task for a token.
+     * @param token The address of the token.
+     */
     createMakerEarningDistributionTask(
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Creates a new market associated with an oracle provider and settlement token.
+     * @param oracleProvider The address of the oracle provider.
+     * @param settlementToken The address of the settlement token.
+     */
     createMarket(
       oracleProvider: PromiseOrValue<string>,
       settlementToken: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Creates a market earning distribution task for a market.
+     * @param market The address of the market.
+     */
     createMarketEarningDistributionTask(
       market: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Gets the current interest rate for a settlement token.
+     * @param token The address of the settlement token.
+     */
     currentInterestRate(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Returns the address of the DAO.
+     */
     dao(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Gets the earning distribution threshold for a settlement token.
+     * @param token The address of the settlement token.
+     */
     getEarningDistributionThreshold(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Gets the flash loan fee rate for a settlement token.
+     * @param token The address of the settlement token.
+     */
     getFlashLoanFeeRate(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Gets all the interest rate records for a settlement token.
+     * @param token The address of the settlement token.
+     */
     getInterestRateRecords(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Returns the address of a market associated with an oracle provider and settlement token.
+     * @param oracleProvider The address of the oracle provider.
+     * @param settlementToken The address of the settlement token.
+     */
     getMarket(
       oracleProvider: PromiseOrValue<string>,
       settlementToken: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Returns an array of all market addresses.
+     */
     getMarkets(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Returns an array of market addresses associated with a settlement token.
+     * @param settlementToken The address of the settlement token.
+     */
     getMarketsBySettlmentToken(
       settlementToken: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Gets the minimum taker margin for a settlement token.
+     * @param token The address of the settlement token.
+     */
     getMinimumTakerMargin(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Gets the Uniswap fee tier for a settlement token.
+     * @param token The address of the settlement token.
+     */
     getUniswapFeeTier(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Checks if a market is registered.
+     * @param market The address of the market.
+     */
     isRegisteredMarket(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Checks if an oracle provider is registered.
+     * @param oracleProvider The address of the oracle provider to check.
+     */
     isRegisteredOracleProvider(
       oracleProvider: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Checks if a settlement token is registered.
+     * @param token The address of the settlement token to check.
+     */
     isRegisteredSettlementToken(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Returns the address of the keeper fee payer.
+     */
     keeperFeePayer(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Returns the address of the liquidator.
+     */
     liquidator(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
@@ -1509,11 +2142,26 @@ export interface ChromaticMarketFactory extends BaseContract {
      */
     parameters(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Registers an oracle provider.
+     * @param oracleProvider The address of the oracle provider to register.
+     */
     registerOracleProvider(
       oracleProvider: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Registers a new settlement token.
+     * @param earningDistributionThreshold The earning distribution threshold for the settlement token.
+     * @param flashLoanFeeRate The flash loan fee rate for the settlement token.
+     * @param interestRate The interest rate for the settlement token.
+     * @param minimumTakerMargin The minimum taker margin for the settlement token.
+     * @param token The address of the settlement token to register.
+     * @param uniswapFeeTier The Uniswap fee tier for the settlement token.
+     */
     registerSettlementToken(
       token: PromiseOrValue<string>,
       minimumTakerMargin: PromiseOrValue<BigNumberish>,
@@ -1524,78 +2172,153 @@ export interface ChromaticMarketFactory extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Gets the registered oracle providers.
+     */
     registeredOracleProviders(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Gets the list of registered settlement tokens.
+     */
     registeredSettlementTokens(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Removes the last interest rate record for a settlement token.
+     * @param token The address of the settlement token.
+     */
     removeLastInterestRateRecord(
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the earning distribution threshold for a settlement token.
+     * @param earningDistributionThreshold The new earning distribution threshold for the settlement token.
+     * @param token The address of the settlement token.
+     */
     setEarningDistributionThreshold(
       token: PromiseOrValue<string>,
       earningDistributionThreshold: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the flash loan fee rate for a settlement token.
+     * @param flashLoanFeeRate The new flash loan fee rate for the settlement token.
+     * @param token The address of the settlement token.
+     */
     setFlashLoanFeeRate(
       token: PromiseOrValue<string>,
       flashLoanFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the keeper fee payer address.
+     * @param keeperFeePayer The keeper fee payer address.
+     */
     setKeeperFeePayer(
       _keeperFeePayer: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the liquidator address.
+     * @param liquidator The liquidator address.
+     */
     setLiquidator(
       _liquidator: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the minimum taker margin for a settlement token.
+     * @param minimumTakerMargin The new minimum taker margin for the settlement token.
+     * @param token The address of the settlement token.
+     */
     setMinimumTakerMargin(
       token: PromiseOrValue<string>,
       minimumTakerMargin: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the Uniswap fee tier for a settlement token.
+     * @param token The address of the settlement token.
+     * @param uniswapFeeTier The new Uniswap fee tier for the settlement token.
+     */
     setUniswapFeeTier(
       token: PromiseOrValue<string>,
       uniswapFeeTier: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the vault address.
+     * @param vault The vault address.
+     */
     setVault(
       _vault: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Returns the address of the DAO treasury.
+     */
     treasury(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Unregisters an oracle provider.
+     * @param oracleProvider The address of the oracle provider to unregister.
+     */
     unregisterOracleProvider(
       oracleProvider: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     /**
-     * @param _dao new DAO address to set
+     * This function can only be called by the DAO address.
+     * Updates the DAO address.
+     * @param dao The new DAO address.
      */
     updateDao(
       _dao: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Updates the DAO treasury address.
+     * @param treasury The new DAO treasury address.
+     */
     updateTreasury(
       _treasury: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Returns the address of the vault.
+     */
     vault(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    /**
+     * This function can only be called by the DAO address.
+     * Appends an interest rate record for a settlement token.
+     * @param annualRateBPS The annual interest rate in basis points (BPS).
+     * @param beginTimestamp The timestamp when the interest rate record begins.
+     * @param token The address of the settlement token.
+     */
     appendInterestRateRecord(
       token: PromiseOrValue<string>,
       annualRateBPS: PromiseOrValue<BigNumberish>,
@@ -1603,6 +2326,13 @@ export interface ChromaticMarketFactory extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Calculates the interest accrued for a given token and amount within a specified time range.
+     * @param amount The amount of the token.
+     * @param from The starting timestamp (inclusive) of the time range.
+     * @param to The ending timestamp (exclusive) of the time range.
+     * @param token The address of the token.
+     */
     calculateInterest(
       token: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
@@ -1611,94 +2341,176 @@ export interface ChromaticMarketFactory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Cancels a Maker earning distribution task for a token.
+     * @param token The address of the token.
+     */
     cancelMakerEarningDistributionTask(
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Cancels a market earning distribution task for a market.
+     * @param market The address of the market.
+     */
     cancelMarketEarningDistributionTask(
       market: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Creates a Maker earning distribution task for a token.
+     * @param token The address of the token.
+     */
     createMakerEarningDistributionTask(
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Creates a new market associated with an oracle provider and settlement token.
+     * @param oracleProvider The address of the oracle provider.
+     * @param settlementToken The address of the settlement token.
+     */
     createMarket(
       oracleProvider: PromiseOrValue<string>,
       settlementToken: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Creates a market earning distribution task for a market.
+     * @param market The address of the market.
+     */
     createMarketEarningDistributionTask(
       market: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Gets the current interest rate for a settlement token.
+     * @param token The address of the settlement token.
+     */
     currentInterestRate(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Returns the address of the DAO.
+     */
     dao(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * Gets the earning distribution threshold for a settlement token.
+     * @param token The address of the settlement token.
+     */
     getEarningDistributionThreshold(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Gets the flash loan fee rate for a settlement token.
+     * @param token The address of the settlement token.
+     */
     getFlashLoanFeeRate(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Gets all the interest rate records for a settlement token.
+     * @param token The address of the settlement token.
+     */
     getInterestRateRecords(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Returns the address of a market associated with an oracle provider and settlement token.
+     * @param oracleProvider The address of the oracle provider.
+     * @param settlementToken The address of the settlement token.
+     */
     getMarket(
       oracleProvider: PromiseOrValue<string>,
       settlementToken: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Returns an array of all market addresses.
+     */
     getMarkets(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * Returns an array of market addresses associated with a settlement token.
+     * @param settlementToken The address of the settlement token.
+     */
     getMarketsBySettlmentToken(
       settlementToken: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Gets the minimum taker margin for a settlement token.
+     * @param token The address of the settlement token.
+     */
     getMinimumTakerMargin(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Gets the Uniswap fee tier for a settlement token.
+     * @param token The address of the settlement token.
+     */
     getUniswapFeeTier(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Checks if a market is registered.
+     * @param market The address of the market.
+     */
     isRegisteredMarket(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Checks if an oracle provider is registered.
+     * @param oracleProvider The address of the oracle provider to check.
+     */
     isRegisteredOracleProvider(
       oracleProvider: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Checks if a settlement token is registered.
+     * @param token The address of the settlement token to check.
+     */
     isRegisteredSettlementToken(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Returns the address of the keeper fee payer.
+     */
     keeperFeePayer(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * Returns the address of the liquidator.
+     */
     liquidator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
@@ -1707,11 +2519,26 @@ export interface ChromaticMarketFactory extends BaseContract {
      */
     parameters(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Registers an oracle provider.
+     * @param oracleProvider The address of the oracle provider to register.
+     */
     registerOracleProvider(
       oracleProvider: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Registers a new settlement token.
+     * @param earningDistributionThreshold The earning distribution threshold for the settlement token.
+     * @param flashLoanFeeRate The flash loan fee rate for the settlement token.
+     * @param interestRate The interest rate for the settlement token.
+     * @param minimumTakerMargin The minimum taker margin for the settlement token.
+     * @param token The address of the settlement token to register.
+     * @param uniswapFeeTier The Uniswap fee tier for the settlement token.
+     */
     registerSettlementToken(
       token: PromiseOrValue<string>,
       minimumTakerMargin: PromiseOrValue<BigNumberish>,
@@ -1722,78 +2549,146 @@ export interface ChromaticMarketFactory extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Gets the registered oracle providers.
+     */
     registeredOracleProviders(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Gets the list of registered settlement tokens.
+     */
     registeredSettlementTokens(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Removes the last interest rate record for a settlement token.
+     * @param token The address of the settlement token.
+     */
     removeLastInterestRateRecord(
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the earning distribution threshold for a settlement token.
+     * @param earningDistributionThreshold The new earning distribution threshold for the settlement token.
+     * @param token The address of the settlement token.
+     */
     setEarningDistributionThreshold(
       token: PromiseOrValue<string>,
       earningDistributionThreshold: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the flash loan fee rate for a settlement token.
+     * @param flashLoanFeeRate The new flash loan fee rate for the settlement token.
+     * @param token The address of the settlement token.
+     */
     setFlashLoanFeeRate(
       token: PromiseOrValue<string>,
       flashLoanFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the keeper fee payer address.
+     * @param keeperFeePayer The keeper fee payer address.
+     */
     setKeeperFeePayer(
       _keeperFeePayer: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the liquidator address.
+     * @param liquidator The liquidator address.
+     */
     setLiquidator(
       _liquidator: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the minimum taker margin for a settlement token.
+     * @param minimumTakerMargin The new minimum taker margin for the settlement token.
+     * @param token The address of the settlement token.
+     */
     setMinimumTakerMargin(
       token: PromiseOrValue<string>,
       minimumTakerMargin: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the Uniswap fee tier for a settlement token.
+     * @param token The address of the settlement token.
+     * @param uniswapFeeTier The new Uniswap fee tier for the settlement token.
+     */
     setUniswapFeeTier(
       token: PromiseOrValue<string>,
       uniswapFeeTier: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the vault address.
+     * @param vault The vault address.
+     */
     setVault(
       _vault: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Returns the address of the DAO treasury.
+     */
     treasury(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Unregisters an oracle provider.
+     * @param oracleProvider The address of the oracle provider to unregister.
+     */
     unregisterOracleProvider(
       oracleProvider: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     /**
-     * @param _dao new DAO address to set
+     * This function can only be called by the DAO address.
+     * Updates the DAO address.
+     * @param dao The new DAO address.
      */
     updateDao(
       _dao: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by the DAO address.
+     * Updates the DAO treasury address.
+     * @param treasury The new DAO treasury address.
+     */
     updateTreasury(
       _treasury: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Returns the address of the vault.
+     */
     vault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

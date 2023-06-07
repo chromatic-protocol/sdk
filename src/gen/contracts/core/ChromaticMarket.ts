@@ -798,6 +798,10 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
+     * Executes the settlement process for the Chromatic market.
+     */
     settle(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -1057,6 +1061,10 @@ export interface ChromaticMarket extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
+   * Executes the settlement process for the Chromatic market.
+   */
   settle(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -1316,6 +1324,10 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput>;
 
+    /**
+     * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
+     * Executes the settlement process for the Chromatic market.
+     */
     settle(overrides?: CallOverrides): Promise<void>;
 
     settlementToken(overrides?: CallOverrides): Promise<string>;
@@ -1669,6 +1681,10 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
+     * Executes the settlement process for the Chromatic market.
+     */
     settle(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -1929,6 +1945,10 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
+     * Executes the settlement process for the Chromatic market.
+     */
     settle(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;

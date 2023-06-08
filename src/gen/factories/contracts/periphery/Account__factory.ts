@@ -44,7 +44,7 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "quote",
+        name: "token",
         type: "address",
       },
     ],
@@ -318,31 +318,8 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "marginRequired",
-        type: "uint256",
-      },
-      {
         internalType: "address",
-        name: "marketAddress",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "settlementToken",
-        type: "address",
-      },
-    ],
-    name: "transferMargin",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "quote",
+        name: "token",
         type: "address",
       },
       {

@@ -301,6 +301,12 @@ export interface CLBToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
 
+    /**
+     * This function can only be called by the Chromatic Market contract.
+     * @param amount The amount of tokens to burn.
+     * @param from The address from which to burn tokens.
+     * @param id The token ID to burn.
+     */
     burn(
       from: PromiseOrValue<string>,
       id: PromiseOrValue<BigNumberish>,
@@ -310,6 +316,10 @@ export interface CLBToken extends BaseContract {
 
     decimals(overrides?: CallOverrides): Promise<[number]>;
 
+    /**
+     * Retrieves the description of a token.
+     * @param id The token ID for which to retrieve the description.
+     */
     description(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -323,6 +333,10 @@ export interface CLBToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    /**
+     * Retrieves the image URI of a token.
+     * @param id The token ID for which to retrieve the image URI.
+     */
     image(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -339,6 +353,13 @@ export interface CLBToken extends BaseContract {
 
     market(overrides?: CallOverrides): Promise<[string]>;
 
+    /**
+     * This function can only be called by the Chromatic Market contract.
+     * @param amount The amount of tokens to mint.
+     * @param data Additional data to pass during the minting process.
+     * @param id The token ID to mint.
+     * @param to The address to which the minted tokens will be assigned.
+     */
     mint(
       to: PromiseOrValue<string>,
       id: PromiseOrValue<BigNumberish>,
@@ -347,6 +368,10 @@ export interface CLBToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Retrieves the name of a token.
+     * @param id The token ID for which to retrieve the name.
+     */
     name(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -393,11 +418,18 @@ export interface CLBToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    /**
+     * Retrieves the total supply of tokens for a given token ID.
+     * @param id The token ID for which to retrieve the total supply.
+     */
     totalSupply(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    /**
+     * Returns the URI for token type `id`. If the `\{id\}` substring is present in the URI, it must be replaced by clients with the actual token type ID.
+     */
     uri(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -422,6 +454,12 @@ export interface CLBToken extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
+  /**
+   * This function can only be called by the Chromatic Market contract.
+   * @param amount The amount of tokens to burn.
+   * @param from The address from which to burn tokens.
+   * @param id The token ID to burn.
+   */
   burn(
     from: PromiseOrValue<string>,
     id: PromiseOrValue<BigNumberish>,
@@ -431,6 +469,10 @@ export interface CLBToken extends BaseContract {
 
   decimals(overrides?: CallOverrides): Promise<number>;
 
+  /**
+   * Retrieves the description of a token.
+   * @param id The token ID for which to retrieve the description.
+   */
   description(
     id: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
@@ -444,6 +486,10 @@ export interface CLBToken extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  /**
+   * Retrieves the image URI of a token.
+   * @param id The token ID for which to retrieve the image URI.
+   */
   image(
     id: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
@@ -460,6 +506,13 @@ export interface CLBToken extends BaseContract {
 
   market(overrides?: CallOverrides): Promise<string>;
 
+  /**
+   * This function can only be called by the Chromatic Market contract.
+   * @param amount The amount of tokens to mint.
+   * @param data Additional data to pass during the minting process.
+   * @param id The token ID to mint.
+   * @param to The address to which the minted tokens will be assigned.
+   */
   mint(
     to: PromiseOrValue<string>,
     id: PromiseOrValue<BigNumberish>,
@@ -468,6 +521,10 @@ export interface CLBToken extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Retrieves the name of a token.
+   * @param id The token ID for which to retrieve the name.
+   */
   name(
     id: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
@@ -514,11 +571,18 @@ export interface CLBToken extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  /**
+   * Retrieves the total supply of tokens for a given token ID.
+   * @param id The token ID for which to retrieve the total supply.
+   */
   totalSupply(
     id: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  /**
+   * Returns the URI for token type `id`. If the `\{id\}` substring is present in the URI, it must be replaced by clients with the actual token type ID.
+   */
   uri(
     id: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
@@ -543,6 +607,12 @@ export interface CLBToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
+    /**
+     * This function can only be called by the Chromatic Market contract.
+     * @param amount The amount of tokens to burn.
+     * @param from The address from which to burn tokens.
+     * @param id The token ID to burn.
+     */
     burn(
       from: PromiseOrValue<string>,
       id: PromiseOrValue<BigNumberish>,
@@ -552,6 +622,10 @@ export interface CLBToken extends BaseContract {
 
     decimals(overrides?: CallOverrides): Promise<number>;
 
+    /**
+     * Retrieves the description of a token.
+     * @param id The token ID for which to retrieve the description.
+     */
     description(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -565,6 +639,10 @@ export interface CLBToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    /**
+     * Retrieves the image URI of a token.
+     * @param id The token ID for which to retrieve the image URI.
+     */
     image(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -581,6 +659,13 @@ export interface CLBToken extends BaseContract {
 
     market(overrides?: CallOverrides): Promise<string>;
 
+    /**
+     * This function can only be called by the Chromatic Market contract.
+     * @param amount The amount of tokens to mint.
+     * @param data Additional data to pass during the minting process.
+     * @param id The token ID to mint.
+     * @param to The address to which the minted tokens will be assigned.
+     */
     mint(
       to: PromiseOrValue<string>,
       id: PromiseOrValue<BigNumberish>,
@@ -589,6 +674,10 @@ export interface CLBToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Retrieves the name of a token.
+     * @param id The token ID for which to retrieve the name.
+     */
     name(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -635,11 +724,18 @@ export interface CLBToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    /**
+     * Retrieves the total supply of tokens for a given token ID.
+     * @param id The token ID for which to retrieve the total supply.
+     */
     totalSupply(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Returns the URI for token type `id`. If the `\{id\}` substring is present in the URI, it must be replaced by clients with the actual token type ID.
+     */
     uri(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -714,6 +810,12 @@ export interface CLBToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by the Chromatic Market contract.
+     * @param amount The amount of tokens to burn.
+     * @param from The address from which to burn tokens.
+     * @param id The token ID to burn.
+     */
     burn(
       from: PromiseOrValue<string>,
       id: PromiseOrValue<BigNumberish>,
@@ -723,6 +825,10 @@ export interface CLBToken extends BaseContract {
 
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Retrieves the description of a token.
+     * @param id The token ID for which to retrieve the description.
+     */
     description(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -736,6 +842,10 @@ export interface CLBToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves the image URI of a token.
+     * @param id The token ID for which to retrieve the image URI.
+     */
     image(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -752,6 +862,13 @@ export interface CLBToken extends BaseContract {
 
     market(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by the Chromatic Market contract.
+     * @param amount The amount of tokens to mint.
+     * @param data Additional data to pass during the minting process.
+     * @param id The token ID to mint.
+     * @param to The address to which the minted tokens will be assigned.
+     */
     mint(
       to: PromiseOrValue<string>,
       id: PromiseOrValue<BigNumberish>,
@@ -760,6 +877,10 @@ export interface CLBToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves the name of a token.
+     * @param id The token ID for which to retrieve the name.
+     */
     name(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -806,11 +927,18 @@ export interface CLBToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves the total supply of tokens for a given token ID.
+     * @param id The token ID for which to retrieve the total supply.
+     */
     totalSupply(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Returns the URI for token type `id`. If the `\{id\}` substring is present in the URI, it must be replaced by clients with the actual token type ID.
+     */
     uri(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -836,6 +964,12 @@ export interface CLBToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by the Chromatic Market contract.
+     * @param amount The amount of tokens to burn.
+     * @param from The address from which to burn tokens.
+     * @param id The token ID to burn.
+     */
     burn(
       from: PromiseOrValue<string>,
       id: PromiseOrValue<BigNumberish>,
@@ -845,6 +979,10 @@ export interface CLBToken extends BaseContract {
 
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the description of a token.
+     * @param id The token ID for which to retrieve the description.
+     */
     description(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -858,6 +996,10 @@ export interface CLBToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the image URI of a token.
+     * @param id The token ID for which to retrieve the image URI.
+     */
     image(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -874,6 +1016,13 @@ export interface CLBToken extends BaseContract {
 
     market(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by the Chromatic Market contract.
+     * @param amount The amount of tokens to mint.
+     * @param data Additional data to pass during the minting process.
+     * @param id The token ID to mint.
+     * @param to The address to which the minted tokens will be assigned.
+     */
     mint(
       to: PromiseOrValue<string>,
       id: PromiseOrValue<BigNumberish>,
@@ -882,6 +1031,10 @@ export interface CLBToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the name of a token.
+     * @param id The token ID for which to retrieve the name.
+     */
     name(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -928,11 +1081,18 @@ export interface CLBToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the total supply of tokens for a given token ID.
+     * @param id The token ID for which to retrieve the total supply.
+     */
     totalSupply(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Returns the URI for token type `id`. If the `\{id\}` substring is present in the URI, it must be replaced by clients with the actual token type ID.
+     */
     uri(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides

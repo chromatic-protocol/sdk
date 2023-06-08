@@ -67,7 +67,7 @@ export interface AccountFactoryInterface extends utils.Interface {
   ): Result;
 
   events: {
-    "AccountCreated(address)": EventFragment;
+    "AccountCreated(address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "AccountCreated"): EventFragment;
@@ -75,9 +75,10 @@ export interface AccountFactoryInterface extends utils.Interface {
 
 export interface AccountCreatedEventObject {
   account: string;
+  owner: string;
 }
 export type AccountCreatedEvent = TypedEvent<
-  [string],
+  [string, string],
   AccountCreatedEventObject
 >;
 
@@ -110,34 +111,67 @@ export interface AccountFactory extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    /**
+     * Only one account can be created per user.      Emits an `AccountCreated` event upon successful creation.
+     * Creates a new user account.
+     */
     createAccount(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Retrieves the address of the caller's account.
+     */
     "getAccount()"(overrides?: CallOverrides): Promise<[string]>;
 
+    /**
+     * Retrieves the address of a user's account.
+     * @param accountAddress The address of the user's account.
+     */
     "getAccount(address)"(
       accountAddress: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[string]>;
   };
 
+  /**
+   * Only one account can be created per user.      Emits an `AccountCreated` event upon successful creation.
+   * Creates a new user account.
+   */
   createAccount(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Retrieves the address of the caller's account.
+   */
   "getAccount()"(overrides?: CallOverrides): Promise<string>;
 
+  /**
+   * Retrieves the address of a user's account.
+   * @param accountAddress The address of the user's account.
+   */
   "getAccount(address)"(
     accountAddress: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<string>;
 
   callStatic: {
+    /**
+     * Only one account can be created per user.      Emits an `AccountCreated` event upon successful creation.
+     * Creates a new user account.
+     */
     createAccount(overrides?: CallOverrides): Promise<void>;
 
+    /**
+     * Retrieves the address of the caller's account.
+     */
     "getAccount()"(overrides?: CallOverrides): Promise<string>;
 
+    /**
+     * Retrieves the address of a user's account.
+     * @param accountAddress The address of the user's account.
+     */
     "getAccount(address)"(
       accountAddress: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -145,17 +179,34 @@ export interface AccountFactory extends BaseContract {
   };
 
   filters: {
-    "AccountCreated(address)"(account?: null): AccountCreatedEventFilter;
-    AccountCreated(account?: null): AccountCreatedEventFilter;
+    "AccountCreated(address,address)"(
+      account?: PromiseOrValue<string> | null,
+      owner?: PromiseOrValue<string> | null
+    ): AccountCreatedEventFilter;
+    AccountCreated(
+      account?: PromiseOrValue<string> | null,
+      owner?: PromiseOrValue<string> | null
+    ): AccountCreatedEventFilter;
   };
 
   estimateGas: {
+    /**
+     * Only one account can be created per user.      Emits an `AccountCreated` event upon successful creation.
+     * Creates a new user account.
+     */
     createAccount(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves the address of the caller's account.
+     */
     "getAccount()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Retrieves the address of a user's account.
+     * @param accountAddress The address of the user's account.
+     */
     "getAccount(address)"(
       accountAddress: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -163,12 +214,23 @@ export interface AccountFactory extends BaseContract {
   };
 
   populateTransaction: {
+    /**
+     * Only one account can be created per user.      Emits an `AccountCreated` event upon successful creation.
+     * Creates a new user account.
+     */
     createAccount(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the address of the caller's account.
+     */
     "getAccount()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the address of a user's account.
+     * @param accountAddress The address of the user's account.
+     */
     "getAccount(address)"(
       accountAddress: PromiseOrValue<string>,
       overrides?: CallOverrides

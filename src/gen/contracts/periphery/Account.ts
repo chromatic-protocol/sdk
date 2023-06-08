@@ -81,7 +81,6 @@ export interface AccountInterface extends utils.Interface {
     "initialize(address,address,address)": FunctionFragment;
     "openPosition(address,int224,uint32,uint256,uint256,uint256)": FunctionFragment;
     "openPositionCallback(address,address,uint256,bytes)": FunctionFragment;
-    "transferMargin(uint256,address,address)": FunctionFragment;
     "withdraw(address,uint256)": FunctionFragment;
   };
 
@@ -96,7 +95,6 @@ export interface AccountInterface extends utils.Interface {
       | "initialize"
       | "openPosition"
       | "openPositionCallback"
-      | "transferMargin"
       | "withdraw"
   ): FunctionFragment;
 
@@ -153,14 +151,6 @@ export interface AccountInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "transferMargin",
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
-    ]
-  ): string;
-  encodeFunctionData(
     functionFragment: "withdraw",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
@@ -195,10 +185,6 @@ export interface AccountInterface extends utils.Interface {
     functionFragment: "openPositionCallback",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferMargin",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {};
@@ -231,11 +217,20 @@ export interface Account extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    /**
+     * Returns the balance of the specified token for the account.
+     * @param token The address of the token.
+     */
     balance(
-      quote: PromiseOrValue<string>,
+      token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    /**
+     * Claims the specified position in the specified market.
+     * @param marketAddress The address of the market.
+     * @param positionId The ID of the position to claim.
+     */
     claimPosition(
       marketAddress: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
@@ -253,23 +248,43 @@ export interface Account extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Closes the specified position in the specified market.
+     * @param marketAddress The address of the market.
+     * @param positionId The ID of the position to close.
+     */
     closePosition(
       marketAddress: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Retrieves an array of position IDs owned by this account for the specified market.
+     * @param marketAddress The address of the market.
+     */
     getPositionIds(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
 
+    /**
+     * Checks if the specified market has the specified position ID.
+     * @param marketAddress The address of the market.
+     * @param positionId The ID of the position.
+     */
     hasPositionId(
       market: PromiseOrValue<string>,
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    /**
+     * Initializes the account with the specified owner, router, and market factory addresses.
+     * @param _marketFactory The address of the market factory contract.
+     * @param _owner The address of the account owner.
+     * @param _router The address of the router contract.
+     */
     initialize(
       _owner: PromiseOrValue<string>,
       _router: PromiseOrValue<string>,
@@ -277,6 +292,15 @@ export interface Account extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Opens a new position in the specified market.
+     * @param leverage The leverage of the position.
+     * @param makerMargin The margin required for the maker.
+     * @param marketAddress The address of the market.
+     * @param maxAllowableTradingFee The maximum allowable trading fee.
+     * @param qty The quantity of the position.
+     * @param takerMargin The margin required for the taker.
+     */
     openPosition(
       marketAddress: PromiseOrValue<string>,
       qty: PromiseOrValue<BigNumberish>,
@@ -302,25 +326,32 @@ export interface Account extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    transferMargin(
-      marginRequired: PromiseOrValue<BigNumberish>,
-      marketAddress: PromiseOrValue<string>,
-      settlementToken: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
+    /**
+     * Withdraws the specified amount of tokens from the account.
+     * @param amount The amount of tokens to withdraw.
+     * @param token The address of the token to withdraw.
+     */
     withdraw(
-      quote: PromiseOrValue<string>,
+      token: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
 
+  /**
+   * Returns the balance of the specified token for the account.
+   * @param token The address of the token.
+   */
   balance(
-    quote: PromiseOrValue<string>,
+    token: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  /**
+   * Claims the specified position in the specified market.
+   * @param marketAddress The address of the market.
+   * @param positionId The ID of the position to claim.
+   */
   claimPosition(
     marketAddress: PromiseOrValue<string>,
     positionId: PromiseOrValue<BigNumberish>,
@@ -338,23 +369,43 @@ export interface Account extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Closes the specified position in the specified market.
+   * @param marketAddress The address of the market.
+   * @param positionId The ID of the position to close.
+   */
   closePosition(
     marketAddress: PromiseOrValue<string>,
     positionId: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Retrieves an array of position IDs owned by this account for the specified market.
+   * @param marketAddress The address of the market.
+   */
   getPositionIds(
     market: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
+  /**
+   * Checks if the specified market has the specified position ID.
+   * @param marketAddress The address of the market.
+   * @param positionId The ID of the position.
+   */
   hasPositionId(
     market: PromiseOrValue<string>,
     id: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  /**
+   * Initializes the account with the specified owner, router, and market factory addresses.
+   * @param _marketFactory The address of the market factory contract.
+   * @param _owner The address of the account owner.
+   * @param _router The address of the router contract.
+   */
   initialize(
     _owner: PromiseOrValue<string>,
     _router: PromiseOrValue<string>,
@@ -362,6 +413,15 @@ export interface Account extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Opens a new position in the specified market.
+   * @param leverage The leverage of the position.
+   * @param makerMargin The margin required for the maker.
+   * @param marketAddress The address of the market.
+   * @param maxAllowableTradingFee The maximum allowable trading fee.
+   * @param qty The quantity of the position.
+   * @param takerMargin The margin required for the taker.
+   */
   openPosition(
     marketAddress: PromiseOrValue<string>,
     qty: PromiseOrValue<BigNumberish>,
@@ -387,25 +447,32 @@ export interface Account extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  transferMargin(
-    marginRequired: PromiseOrValue<BigNumberish>,
-    marketAddress: PromiseOrValue<string>,
-    settlementToken: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
+  /**
+   * Withdraws the specified amount of tokens from the account.
+   * @param amount The amount of tokens to withdraw.
+   * @param token The address of the token to withdraw.
+   */
   withdraw(
-    quote: PromiseOrValue<string>,
+    token: PromiseOrValue<string>,
     amount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    /**
+     * Returns the balance of the specified token for the account.
+     * @param token The address of the token.
+     */
     balance(
-      quote: PromiseOrValue<string>,
+      token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Claims the specified position in the specified market.
+     * @param marketAddress The address of the market.
+     * @param positionId The ID of the position to claim.
+     */
     claimPosition(
       marketAddress: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
@@ -423,23 +490,43 @@ export interface Account extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Closes the specified position in the specified market.
+     * @param marketAddress The address of the market.
+     * @param positionId The ID of the position to close.
+     */
     closePosition(
       marketAddress: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Retrieves an array of position IDs owned by this account for the specified market.
+     * @param marketAddress The address of the market.
+     */
     getPositionIds(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
+    /**
+     * Checks if the specified market has the specified position ID.
+     * @param marketAddress The address of the market.
+     * @param positionId The ID of the position.
+     */
     hasPositionId(
       market: PromiseOrValue<string>,
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    /**
+     * Initializes the account with the specified owner, router, and market factory addresses.
+     * @param _marketFactory The address of the market factory contract.
+     * @param _owner The address of the account owner.
+     * @param _router The address of the router contract.
+     */
     initialize(
       _owner: PromiseOrValue<string>,
       _router: PromiseOrValue<string>,
@@ -447,6 +534,15 @@ export interface Account extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Opens a new position in the specified market.
+     * @param leverage The leverage of the position.
+     * @param makerMargin The margin required for the maker.
+     * @param marketAddress The address of the market.
+     * @param maxAllowableTradingFee The maximum allowable trading fee.
+     * @param qty The quantity of the position.
+     * @param takerMargin The margin required for the taker.
+     */
     openPosition(
       marketAddress: PromiseOrValue<string>,
       qty: PromiseOrValue<BigNumberish>,
@@ -472,15 +568,13 @@ export interface Account extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    transferMargin(
-      marginRequired: PromiseOrValue<BigNumberish>,
-      marketAddress: PromiseOrValue<string>,
-      settlementToken: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
+    /**
+     * Withdraws the specified amount of tokens from the account.
+     * @param amount The amount of tokens to withdraw.
+     * @param token The address of the token to withdraw.
+     */
     withdraw(
-      quote: PromiseOrValue<string>,
+      token: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -489,11 +583,20 @@ export interface Account extends BaseContract {
   filters: {};
 
   estimateGas: {
+    /**
+     * Returns the balance of the specified token for the account.
+     * @param token The address of the token.
+     */
     balance(
-      quote: PromiseOrValue<string>,
+      token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Claims the specified position in the specified market.
+     * @param marketAddress The address of the market.
+     * @param positionId The ID of the position to claim.
+     */
     claimPosition(
       marketAddress: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
@@ -511,23 +614,43 @@ export interface Account extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Closes the specified position in the specified market.
+     * @param marketAddress The address of the market.
+     * @param positionId The ID of the position to close.
+     */
     closePosition(
       marketAddress: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves an array of position IDs owned by this account for the specified market.
+     * @param marketAddress The address of the market.
+     */
     getPositionIds(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Checks if the specified market has the specified position ID.
+     * @param marketAddress The address of the market.
+     * @param positionId The ID of the position.
+     */
     hasPositionId(
       market: PromiseOrValue<string>,
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Initializes the account with the specified owner, router, and market factory addresses.
+     * @param _marketFactory The address of the market factory contract.
+     * @param _owner The address of the account owner.
+     * @param _router The address of the router contract.
+     */
     initialize(
       _owner: PromiseOrValue<string>,
       _router: PromiseOrValue<string>,
@@ -535,6 +658,15 @@ export interface Account extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Opens a new position in the specified market.
+     * @param leverage The leverage of the position.
+     * @param makerMargin The margin required for the maker.
+     * @param marketAddress The address of the market.
+     * @param maxAllowableTradingFee The maximum allowable trading fee.
+     * @param qty The quantity of the position.
+     * @param takerMargin The margin required for the taker.
+     */
     openPosition(
       marketAddress: PromiseOrValue<string>,
       qty: PromiseOrValue<BigNumberish>,
@@ -560,26 +692,33 @@ export interface Account extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    transferMargin(
-      marginRequired: PromiseOrValue<BigNumberish>,
-      marketAddress: PromiseOrValue<string>,
-      settlementToken: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
+    /**
+     * Withdraws the specified amount of tokens from the account.
+     * @param amount The amount of tokens to withdraw.
+     * @param token The address of the token to withdraw.
+     */
     withdraw(
-      quote: PromiseOrValue<string>,
+      token: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    /**
+     * Returns the balance of the specified token for the account.
+     * @param token The address of the token.
+     */
     balance(
-      quote: PromiseOrValue<string>,
+      token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Claims the specified position in the specified market.
+     * @param marketAddress The address of the market.
+     * @param positionId The ID of the position to claim.
+     */
     claimPosition(
       marketAddress: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
@@ -597,23 +736,43 @@ export interface Account extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Closes the specified position in the specified market.
+     * @param marketAddress The address of the market.
+     * @param positionId The ID of the position to close.
+     */
     closePosition(
       marketAddress: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves an array of position IDs owned by this account for the specified market.
+     * @param marketAddress The address of the market.
+     */
     getPositionIds(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Checks if the specified market has the specified position ID.
+     * @param marketAddress The address of the market.
+     * @param positionId The ID of the position.
+     */
     hasPositionId(
       market: PromiseOrValue<string>,
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Initializes the account with the specified owner, router, and market factory addresses.
+     * @param _marketFactory The address of the market factory contract.
+     * @param _owner The address of the account owner.
+     * @param _router The address of the router contract.
+     */
     initialize(
       _owner: PromiseOrValue<string>,
       _router: PromiseOrValue<string>,
@@ -621,6 +780,15 @@ export interface Account extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Opens a new position in the specified market.
+     * @param leverage The leverage of the position.
+     * @param makerMargin The margin required for the maker.
+     * @param marketAddress The address of the market.
+     * @param maxAllowableTradingFee The maximum allowable trading fee.
+     * @param qty The quantity of the position.
+     * @param takerMargin The margin required for the taker.
+     */
     openPosition(
       marketAddress: PromiseOrValue<string>,
       qty: PromiseOrValue<BigNumberish>,
@@ -646,15 +814,13 @@ export interface Account extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    transferMargin(
-      marginRequired: PromiseOrValue<BigNumberish>,
-      marketAddress: PromiseOrValue<string>,
-      settlementToken: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
+    /**
+     * Withdraws the specified amount of tokens from the account.
+     * @param amount The amount of tokens to withdraw.
+     * @param token The address of the token to withdraw.
+     */
     withdraw(
-      quote: PromiseOrValue<string>,
+      token: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;

@@ -426,6 +426,13 @@ export interface ChromaticRouter extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    /**
+     * Adds liquidity to a ChromaticMarket contract.
+     * @param amount The amount to add as liquidity.
+     * @param feeRate The fee rate of the liquidity bin.
+     * @param market The address of the ChromaticMarket contract.
+     * @param recipient The recipient address.
+     */
     addLiquidity(
       market: PromiseOrValue<string>,
       feeRate: PromiseOrValue<BigNumberish>,
@@ -434,6 +441,13 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Adds liquidity to multiple ChromaticMarket contracts in a batch.
+     * @param amounts An array of amounts to add as liquidity for each bin.
+     * @param feeRates An array of fee rates for each liquidity bin.
+     * @param market The address of the ChromaticMarket contract.
+     * @param recipients An array of recipient addresses.
+     */
     addLiquidityBatch(
       market: PromiseOrValue<string>,
       feeRates: PromiseOrValue<BigNumberish>[],
@@ -455,6 +469,12 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Calculates the amount of CLB tokens to mint for multiple trading amounts in a batch.
+     * @param amounts An array of trading amounts for each provider.
+     * @param market The address of the ChromaticMarket contract.
+     * @param tradingFeeRates An array of trading fee rates for each liquidity provider.
+     */
     calculateCLBTokenMintingBatch(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -462,6 +482,12 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber[]] & { results: BigNumber[] }>;
 
+    /**
+     * Calculates the value of CLB tokens for multiple liquidity amounts in a batch.
+     * @param clbTokenAmounts An array of CLB token amounts for each provider.
+     * @param market The address of the ChromaticMarket contract.
+     * @param tradingFeeRates An array of trading fee rates for each liquidity provider.
+     */
     calculateCLBTokenValueBatch(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -469,12 +495,22 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber[]] & { results: BigNumber[] }>;
 
+    /**
+     * Claims liquidity from a ChromaticMarket contract.
+     * @param market The address of the ChromaticMarket contract.
+     * @param receiptId The ID of the LP receipt.
+     */
     claimLiquidity(
       market: PromiseOrValue<string>,
       receiptId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Claims liquidity from multiple ChromaticMarket contracts in a batch.
+     * @param market The address of the ChromaticMarket contract.
+     * @param receiptIds An array of LP receipt IDs to claim liquidity from.
+     */
     claimLiquidityBatch(
       market: PromiseOrValue<string>,
       _receiptIds: PromiseOrValue<BigNumberish>[],
@@ -492,31 +528,62 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Claims a position from a ChromaticMarket contract.
+     * @param market The address of the ChromaticMarket contract.
+     * @param positionId The ID of the position to claim.
+     */
     claimPosition(
       market: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Closes a position in a ChromaticMarket contract.
+     * @param market The address of the ChromaticMarket contract.
+     * @param positionId The ID of the position to close.
+     */
     closePosition(
       market: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Retrieves the account of the caller.
+     */
     getAccount(overrides?: CallOverrides): Promise<[string]>;
 
+    /**
+     * Retrieves the LP receipt IDs of the caller for the specified market.
+     * @param market The address of the ChromaticMarket contract.
+     */
     getLpReceiptIds(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
 
+    /**
+     * Initializes the ChromaticRouter contract.
+     * @param _accountFactory The address of the AccountFactory contract.
+     * @param _marketFactory The address of the ChromaticMarketFactory contract.
+     */
     initialize(
       _accountFactory: PromiseOrValue<string>,
       _marketFactory: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Opens a new position in a ChromaticMarket contract.
+     * @param leverage The leverage of the position.
+     * @param makerMargin The margin amount for the maker.
+     * @param market The address of the ChromaticMarket contract.
+     * @param maxAllowableTradingFee The maximum allowable trading fee.
+     * @param qty The quantity of the position.
+     * @param takerMargin The margin amount for the taker.
+     */
     openPosition(
       market: PromiseOrValue<string>,
       qty: PromiseOrValue<BigNumberish>,
@@ -532,6 +599,13 @@ export interface ChromaticRouter extends BaseContract {
      */
     owner(overrides?: CallOverrides): Promise<[string]>;
 
+    /**
+     * Removes liquidity from a ChromaticMarket contract.
+     * @param clbTokenAmount The amount of CLB tokens to remove as liquidity.
+     * @param feeRate The fee rate of the liquidity bin.
+     * @param market The address of the ChromaticMarket contract.
+     * @param recipient The recipient address.
+     */
     removeLiquidity(
       market: PromiseOrValue<string>,
       feeRate: PromiseOrValue<BigNumberish>,
@@ -540,6 +614,13 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Removes liquidity from multiple ChromaticMarket contracts in a batch.
+     * @param clbTokenAmounts An array of CLB token amounts to remove as liquidity for each bin.
+     * @param feeRates An array of fee rates for each liquidity bin.
+     * @param market The address of the ChromaticMarket contract.
+     * @param recipients An array of recipient addresses.
+     */
     removeLiquidityBatch(
       market: PromiseOrValue<string>,
       feeRates: PromiseOrValue<BigNumberish>[],
@@ -568,6 +649,11 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Retrieves the total supplies of CLB tokens for multiple trading fee rates in a batch.
+     * @param market The address of the ChromaticMarket contract.
+     * @param tradingFeeRates An array of trading fee rates to retrieve total supplies for.
+     */
     totalSupplies(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -582,12 +668,22 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Withdraws liquidity from a ChromaticMarket contract.
+     * @param market The address of the ChromaticMarket contract.
+     * @param receiptId The ID of the LP receipt.
+     */
     withdrawLiquidity(
       market: PromiseOrValue<string>,
       receiptId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Withdraws liquidity from multiple ChromaticMarket contracts in a batch.
+     * @param market The address of the ChromaticMarket contract.
+     * @param receiptIds An array of LP receipt IDs to withdraw liquidity from.
+     */
     withdrawLiquidityBatch(
       market: PromiseOrValue<string>,
       _receiptIds: PromiseOrValue<BigNumberish>[],
@@ -606,6 +702,13 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
+  /**
+   * Adds liquidity to a ChromaticMarket contract.
+   * @param amount The amount to add as liquidity.
+   * @param feeRate The fee rate of the liquidity bin.
+   * @param market The address of the ChromaticMarket contract.
+   * @param recipient The recipient address.
+   */
   addLiquidity(
     market: PromiseOrValue<string>,
     feeRate: PromiseOrValue<BigNumberish>,
@@ -614,6 +717,13 @@ export interface ChromaticRouter extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Adds liquidity to multiple ChromaticMarket contracts in a batch.
+   * @param amounts An array of amounts to add as liquidity for each bin.
+   * @param feeRates An array of fee rates for each liquidity bin.
+   * @param market The address of the ChromaticMarket contract.
+   * @param recipients An array of recipient addresses.
+   */
   addLiquidityBatch(
     market: PromiseOrValue<string>,
     feeRates: PromiseOrValue<BigNumberish>[],
@@ -635,6 +745,12 @@ export interface ChromaticRouter extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Calculates the amount of CLB tokens to mint for multiple trading amounts in a batch.
+   * @param amounts An array of trading amounts for each provider.
+   * @param market The address of the ChromaticMarket contract.
+   * @param tradingFeeRates An array of trading fee rates for each liquidity provider.
+   */
   calculateCLBTokenMintingBatch(
     market: PromiseOrValue<string>,
     tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -642,6 +758,12 @@ export interface ChromaticRouter extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
+  /**
+   * Calculates the value of CLB tokens for multiple liquidity amounts in a batch.
+   * @param clbTokenAmounts An array of CLB token amounts for each provider.
+   * @param market The address of the ChromaticMarket contract.
+   * @param tradingFeeRates An array of trading fee rates for each liquidity provider.
+   */
   calculateCLBTokenValueBatch(
     market: PromiseOrValue<string>,
     tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -649,12 +771,22 @@ export interface ChromaticRouter extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
+  /**
+   * Claims liquidity from a ChromaticMarket contract.
+   * @param market The address of the ChromaticMarket contract.
+   * @param receiptId The ID of the LP receipt.
+   */
   claimLiquidity(
     market: PromiseOrValue<string>,
     receiptId: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Claims liquidity from multiple ChromaticMarket contracts in a batch.
+   * @param market The address of the ChromaticMarket contract.
+   * @param receiptIds An array of LP receipt IDs to claim liquidity from.
+   */
   claimLiquidityBatch(
     market: PromiseOrValue<string>,
     _receiptIds: PromiseOrValue<BigNumberish>[],
@@ -672,31 +804,62 @@ export interface ChromaticRouter extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Claims a position from a ChromaticMarket contract.
+   * @param market The address of the ChromaticMarket contract.
+   * @param positionId The ID of the position to claim.
+   */
   claimPosition(
     market: PromiseOrValue<string>,
     positionId: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Closes a position in a ChromaticMarket contract.
+   * @param market The address of the ChromaticMarket contract.
+   * @param positionId The ID of the position to close.
+   */
   closePosition(
     market: PromiseOrValue<string>,
     positionId: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Retrieves the account of the caller.
+   */
   getAccount(overrides?: CallOverrides): Promise<string>;
 
+  /**
+   * Retrieves the LP receipt IDs of the caller for the specified market.
+   * @param market The address of the ChromaticMarket contract.
+   */
   getLpReceiptIds(
     market: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
+  /**
+   * Initializes the ChromaticRouter contract.
+   * @param _accountFactory The address of the AccountFactory contract.
+   * @param _marketFactory The address of the ChromaticMarketFactory contract.
+   */
   initialize(
     _accountFactory: PromiseOrValue<string>,
     _marketFactory: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Opens a new position in a ChromaticMarket contract.
+   * @param leverage The leverage of the position.
+   * @param makerMargin The margin amount for the maker.
+   * @param market The address of the ChromaticMarket contract.
+   * @param maxAllowableTradingFee The maximum allowable trading fee.
+   * @param qty The quantity of the position.
+   * @param takerMargin The margin amount for the taker.
+   */
   openPosition(
     market: PromiseOrValue<string>,
     qty: PromiseOrValue<BigNumberish>,
@@ -712,6 +875,13 @@ export interface ChromaticRouter extends BaseContract {
    */
   owner(overrides?: CallOverrides): Promise<string>;
 
+  /**
+   * Removes liquidity from a ChromaticMarket contract.
+   * @param clbTokenAmount The amount of CLB tokens to remove as liquidity.
+   * @param feeRate The fee rate of the liquidity bin.
+   * @param market The address of the ChromaticMarket contract.
+   * @param recipient The recipient address.
+   */
   removeLiquidity(
     market: PromiseOrValue<string>,
     feeRate: PromiseOrValue<BigNumberish>,
@@ -720,6 +890,13 @@ export interface ChromaticRouter extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Removes liquidity from multiple ChromaticMarket contracts in a batch.
+   * @param clbTokenAmounts An array of CLB token amounts to remove as liquidity for each bin.
+   * @param feeRates An array of fee rates for each liquidity bin.
+   * @param market The address of the ChromaticMarket contract.
+   * @param recipients An array of recipient addresses.
+   */
   removeLiquidityBatch(
     market: PromiseOrValue<string>,
     feeRates: PromiseOrValue<BigNumberish>[],
@@ -748,6 +925,11 @@ export interface ChromaticRouter extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Retrieves the total supplies of CLB tokens for multiple trading fee rates in a batch.
+   * @param market The address of the ChromaticMarket contract.
+   * @param tradingFeeRates An array of trading fee rates to retrieve total supplies for.
+   */
   totalSupplies(
     market: PromiseOrValue<string>,
     tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -762,12 +944,22 @@ export interface ChromaticRouter extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Withdraws liquidity from a ChromaticMarket contract.
+   * @param market The address of the ChromaticMarket contract.
+   * @param receiptId The ID of the LP receipt.
+   */
   withdrawLiquidity(
     market: PromiseOrValue<string>,
     receiptId: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Withdraws liquidity from multiple ChromaticMarket contracts in a batch.
+   * @param market The address of the ChromaticMarket contract.
+   * @param receiptIds An array of LP receipt IDs to withdraw liquidity from.
+   */
   withdrawLiquidityBatch(
     market: PromiseOrValue<string>,
     _receiptIds: PromiseOrValue<BigNumberish>[],
@@ -786,6 +978,13 @@ export interface ChromaticRouter extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    /**
+     * Adds liquidity to a ChromaticMarket contract.
+     * @param amount The amount to add as liquidity.
+     * @param feeRate The fee rate of the liquidity bin.
+     * @param market The address of the ChromaticMarket contract.
+     * @param recipient The recipient address.
+     */
     addLiquidity(
       market: PromiseOrValue<string>,
       feeRate: PromiseOrValue<BigNumberish>,
@@ -794,6 +993,13 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput>;
 
+    /**
+     * Adds liquidity to multiple ChromaticMarket contracts in a batch.
+     * @param amounts An array of amounts to add as liquidity for each bin.
+     * @param feeRates An array of fee rates for each liquidity bin.
+     * @param market The address of the ChromaticMarket contract.
+     * @param recipients An array of recipient addresses.
+     */
     addLiquidityBatch(
       market: PromiseOrValue<string>,
       feeRates: PromiseOrValue<BigNumberish>[],
@@ -815,6 +1021,12 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Calculates the amount of CLB tokens to mint for multiple trading amounts in a batch.
+     * @param amounts An array of trading amounts for each provider.
+     * @param market The address of the ChromaticMarket contract.
+     * @param tradingFeeRates An array of trading fee rates for each liquidity provider.
+     */
     calculateCLBTokenMintingBatch(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -822,6 +1034,12 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
+    /**
+     * Calculates the value of CLB tokens for multiple liquidity amounts in a batch.
+     * @param clbTokenAmounts An array of CLB token amounts for each provider.
+     * @param market The address of the ChromaticMarket contract.
+     * @param tradingFeeRates An array of trading fee rates for each liquidity provider.
+     */
     calculateCLBTokenValueBatch(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -829,12 +1047,22 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
+    /**
+     * Claims liquidity from a ChromaticMarket contract.
+     * @param market The address of the ChromaticMarket contract.
+     * @param receiptId The ID of the LP receipt.
+     */
     claimLiquidity(
       market: PromiseOrValue<string>,
       receiptId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Claims liquidity from multiple ChromaticMarket contracts in a batch.
+     * @param market The address of the ChromaticMarket contract.
+     * @param receiptIds An array of LP receipt IDs to claim liquidity from.
+     */
     claimLiquidityBatch(
       market: PromiseOrValue<string>,
       _receiptIds: PromiseOrValue<BigNumberish>[],
@@ -852,31 +1080,62 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Claims a position from a ChromaticMarket contract.
+     * @param market The address of the ChromaticMarket contract.
+     * @param positionId The ID of the position to claim.
+     */
     claimPosition(
       market: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Closes a position in a ChromaticMarket contract.
+     * @param market The address of the ChromaticMarket contract.
+     * @param positionId The ID of the position to close.
+     */
     closePosition(
       market: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Retrieves the account of the caller.
+     */
     getAccount(overrides?: CallOverrides): Promise<string>;
 
+    /**
+     * Retrieves the LP receipt IDs of the caller for the specified market.
+     * @param market The address of the ChromaticMarket contract.
+     */
     getLpReceiptIds(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
+    /**
+     * Initializes the ChromaticRouter contract.
+     * @param _accountFactory The address of the AccountFactory contract.
+     * @param _marketFactory The address of the ChromaticMarketFactory contract.
+     */
     initialize(
       _accountFactory: PromiseOrValue<string>,
       _marketFactory: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Opens a new position in a ChromaticMarket contract.
+     * @param leverage The leverage of the position.
+     * @param makerMargin The margin amount for the maker.
+     * @param market The address of the ChromaticMarket contract.
+     * @param maxAllowableTradingFee The maximum allowable trading fee.
+     * @param qty The quantity of the position.
+     * @param takerMargin The margin amount for the taker.
+     */
     openPosition(
       market: PromiseOrValue<string>,
       qty: PromiseOrValue<BigNumberish>,
@@ -892,6 +1151,13 @@ export interface ChromaticRouter extends BaseContract {
      */
     owner(overrides?: CallOverrides): Promise<string>;
 
+    /**
+     * Removes liquidity from a ChromaticMarket contract.
+     * @param clbTokenAmount The amount of CLB tokens to remove as liquidity.
+     * @param feeRate The fee rate of the liquidity bin.
+     * @param market The address of the ChromaticMarket contract.
+     * @param recipient The recipient address.
+     */
     removeLiquidity(
       market: PromiseOrValue<string>,
       feeRate: PromiseOrValue<BigNumberish>,
@@ -900,6 +1166,13 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput>;
 
+    /**
+     * Removes liquidity from multiple ChromaticMarket contracts in a batch.
+     * @param clbTokenAmounts An array of CLB token amounts to remove as liquidity for each bin.
+     * @param feeRates An array of fee rates for each liquidity bin.
+     * @param market The address of the ChromaticMarket contract.
+     * @param recipients An array of recipient addresses.
+     */
     removeLiquidityBatch(
       market: PromiseOrValue<string>,
       feeRates: PromiseOrValue<BigNumberish>[],
@@ -926,6 +1199,11 @@ export interface ChromaticRouter extends BaseContract {
      */
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
+    /**
+     * Retrieves the total supplies of CLB tokens for multiple trading fee rates in a batch.
+     * @param market The address of the ChromaticMarket contract.
+     * @param tradingFeeRates An array of trading fee rates to retrieve total supplies for.
+     */
     totalSupplies(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -940,12 +1218,22 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Withdraws liquidity from a ChromaticMarket contract.
+     * @param market The address of the ChromaticMarket contract.
+     * @param receiptId The ID of the LP receipt.
+     */
     withdrawLiquidity(
       market: PromiseOrValue<string>,
       receiptId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Withdraws liquidity from multiple ChromaticMarket contracts in a batch.
+     * @param market The address of the ChromaticMarket contract.
+     * @param receiptIds An array of LP receipt IDs to withdraw liquidity from.
+     */
     withdrawLiquidityBatch(
       market: PromiseOrValue<string>,
       _receiptIds: PromiseOrValue<BigNumberish>[],
@@ -976,6 +1264,13 @@ export interface ChromaticRouter extends BaseContract {
   };
 
   estimateGas: {
+    /**
+     * Adds liquidity to a ChromaticMarket contract.
+     * @param amount The amount to add as liquidity.
+     * @param feeRate The fee rate of the liquidity bin.
+     * @param market The address of the ChromaticMarket contract.
+     * @param recipient The recipient address.
+     */
     addLiquidity(
       market: PromiseOrValue<string>,
       feeRate: PromiseOrValue<BigNumberish>,
@@ -984,6 +1279,13 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Adds liquidity to multiple ChromaticMarket contracts in a batch.
+     * @param amounts An array of amounts to add as liquidity for each bin.
+     * @param feeRates An array of fee rates for each liquidity bin.
+     * @param market The address of the ChromaticMarket contract.
+     * @param recipients An array of recipient addresses.
+     */
     addLiquidityBatch(
       market: PromiseOrValue<string>,
       feeRates: PromiseOrValue<BigNumberish>[],
@@ -1005,6 +1307,12 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Calculates the amount of CLB tokens to mint for multiple trading amounts in a batch.
+     * @param amounts An array of trading amounts for each provider.
+     * @param market The address of the ChromaticMarket contract.
+     * @param tradingFeeRates An array of trading fee rates for each liquidity provider.
+     */
     calculateCLBTokenMintingBatch(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -1012,6 +1320,12 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Calculates the value of CLB tokens for multiple liquidity amounts in a batch.
+     * @param clbTokenAmounts An array of CLB token amounts for each provider.
+     * @param market The address of the ChromaticMarket contract.
+     * @param tradingFeeRates An array of trading fee rates for each liquidity provider.
+     */
     calculateCLBTokenValueBatch(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -1019,12 +1333,22 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Claims liquidity from a ChromaticMarket contract.
+     * @param market The address of the ChromaticMarket contract.
+     * @param receiptId The ID of the LP receipt.
+     */
     claimLiquidity(
       market: PromiseOrValue<string>,
       receiptId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Claims liquidity from multiple ChromaticMarket contracts in a batch.
+     * @param market The address of the ChromaticMarket contract.
+     * @param receiptIds An array of LP receipt IDs to claim liquidity from.
+     */
     claimLiquidityBatch(
       market: PromiseOrValue<string>,
       _receiptIds: PromiseOrValue<BigNumberish>[],
@@ -1042,31 +1366,62 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Claims a position from a ChromaticMarket contract.
+     * @param market The address of the ChromaticMarket contract.
+     * @param positionId The ID of the position to claim.
+     */
     claimPosition(
       market: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Closes a position in a ChromaticMarket contract.
+     * @param market The address of the ChromaticMarket contract.
+     * @param positionId The ID of the position to close.
+     */
     closePosition(
       market: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves the account of the caller.
+     */
     getAccount(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Retrieves the LP receipt IDs of the caller for the specified market.
+     * @param market The address of the ChromaticMarket contract.
+     */
     getLpReceiptIds(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Initializes the ChromaticRouter contract.
+     * @param _accountFactory The address of the AccountFactory contract.
+     * @param _marketFactory The address of the ChromaticMarketFactory contract.
+     */
     initialize(
       _accountFactory: PromiseOrValue<string>,
       _marketFactory: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Opens a new position in a ChromaticMarket contract.
+     * @param leverage The leverage of the position.
+     * @param makerMargin The margin amount for the maker.
+     * @param market The address of the ChromaticMarket contract.
+     * @param maxAllowableTradingFee The maximum allowable trading fee.
+     * @param qty The quantity of the position.
+     * @param takerMargin The margin amount for the taker.
+     */
     openPosition(
       market: PromiseOrValue<string>,
       qty: PromiseOrValue<BigNumberish>,
@@ -1082,6 +1437,13 @@ export interface ChromaticRouter extends BaseContract {
      */
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Removes liquidity from a ChromaticMarket contract.
+     * @param clbTokenAmount The amount of CLB tokens to remove as liquidity.
+     * @param feeRate The fee rate of the liquidity bin.
+     * @param market The address of the ChromaticMarket contract.
+     * @param recipient The recipient address.
+     */
     removeLiquidity(
       market: PromiseOrValue<string>,
       feeRate: PromiseOrValue<BigNumberish>,
@@ -1090,6 +1452,13 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Removes liquidity from multiple ChromaticMarket contracts in a batch.
+     * @param clbTokenAmounts An array of CLB token amounts to remove as liquidity for each bin.
+     * @param feeRates An array of fee rates for each liquidity bin.
+     * @param market The address of the ChromaticMarket contract.
+     * @param recipients An array of recipient addresses.
+     */
     removeLiquidityBatch(
       market: PromiseOrValue<string>,
       feeRates: PromiseOrValue<BigNumberish>[],
@@ -1118,6 +1487,11 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves the total supplies of CLB tokens for multiple trading fee rates in a batch.
+     * @param market The address of the ChromaticMarket contract.
+     * @param tradingFeeRates An array of trading fee rates to retrieve total supplies for.
+     */
     totalSupplies(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -1132,12 +1506,22 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Withdraws liquidity from a ChromaticMarket contract.
+     * @param market The address of the ChromaticMarket contract.
+     * @param receiptId The ID of the LP receipt.
+     */
     withdrawLiquidity(
       market: PromiseOrValue<string>,
       receiptId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Withdraws liquidity from multiple ChromaticMarket contracts in a batch.
+     * @param market The address of the ChromaticMarket contract.
+     * @param receiptIds An array of LP receipt IDs to withdraw liquidity from.
+     */
     withdrawLiquidityBatch(
       market: PromiseOrValue<string>,
       _receiptIds: PromiseOrValue<BigNumberish>[],
@@ -1157,6 +1541,13 @@ export interface ChromaticRouter extends BaseContract {
   };
 
   populateTransaction: {
+    /**
+     * Adds liquidity to a ChromaticMarket contract.
+     * @param amount The amount to add as liquidity.
+     * @param feeRate The fee rate of the liquidity bin.
+     * @param market The address of the ChromaticMarket contract.
+     * @param recipient The recipient address.
+     */
     addLiquidity(
       market: PromiseOrValue<string>,
       feeRate: PromiseOrValue<BigNumberish>,
@@ -1165,6 +1556,13 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Adds liquidity to multiple ChromaticMarket contracts in a batch.
+     * @param amounts An array of amounts to add as liquidity for each bin.
+     * @param feeRates An array of fee rates for each liquidity bin.
+     * @param market The address of the ChromaticMarket contract.
+     * @param recipients An array of recipient addresses.
+     */
     addLiquidityBatch(
       market: PromiseOrValue<string>,
       feeRates: PromiseOrValue<BigNumberish>[],
@@ -1186,6 +1584,12 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Calculates the amount of CLB tokens to mint for multiple trading amounts in a batch.
+     * @param amounts An array of trading amounts for each provider.
+     * @param market The address of the ChromaticMarket contract.
+     * @param tradingFeeRates An array of trading fee rates for each liquidity provider.
+     */
     calculateCLBTokenMintingBatch(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -1193,6 +1597,12 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Calculates the value of CLB tokens for multiple liquidity amounts in a batch.
+     * @param clbTokenAmounts An array of CLB token amounts for each provider.
+     * @param market The address of the ChromaticMarket contract.
+     * @param tradingFeeRates An array of trading fee rates for each liquidity provider.
+     */
     calculateCLBTokenValueBatch(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -1200,12 +1610,22 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Claims liquidity from a ChromaticMarket contract.
+     * @param market The address of the ChromaticMarket contract.
+     * @param receiptId The ID of the LP receipt.
+     */
     claimLiquidity(
       market: PromiseOrValue<string>,
       receiptId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Claims liquidity from multiple ChromaticMarket contracts in a batch.
+     * @param market The address of the ChromaticMarket contract.
+     * @param receiptIds An array of LP receipt IDs to claim liquidity from.
+     */
     claimLiquidityBatch(
       market: PromiseOrValue<string>,
       _receiptIds: PromiseOrValue<BigNumberish>[],
@@ -1223,31 +1643,62 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Claims a position from a ChromaticMarket contract.
+     * @param market The address of the ChromaticMarket contract.
+     * @param positionId The ID of the position to claim.
+     */
     claimPosition(
       market: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Closes a position in a ChromaticMarket contract.
+     * @param market The address of the ChromaticMarket contract.
+     * @param positionId The ID of the position to close.
+     */
     closePosition(
       market: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the account of the caller.
+     */
     getAccount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the LP receipt IDs of the caller for the specified market.
+     * @param market The address of the ChromaticMarket contract.
+     */
     getLpReceiptIds(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Initializes the ChromaticRouter contract.
+     * @param _accountFactory The address of the AccountFactory contract.
+     * @param _marketFactory The address of the ChromaticMarketFactory contract.
+     */
     initialize(
       _accountFactory: PromiseOrValue<string>,
       _marketFactory: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Opens a new position in a ChromaticMarket contract.
+     * @param leverage The leverage of the position.
+     * @param makerMargin The margin amount for the maker.
+     * @param market The address of the ChromaticMarket contract.
+     * @param maxAllowableTradingFee The maximum allowable trading fee.
+     * @param qty The quantity of the position.
+     * @param takerMargin The margin amount for the taker.
+     */
     openPosition(
       market: PromiseOrValue<string>,
       qty: PromiseOrValue<BigNumberish>,
@@ -1263,6 +1714,13 @@ export interface ChromaticRouter extends BaseContract {
      */
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * Removes liquidity from a ChromaticMarket contract.
+     * @param clbTokenAmount The amount of CLB tokens to remove as liquidity.
+     * @param feeRate The fee rate of the liquidity bin.
+     * @param market The address of the ChromaticMarket contract.
+     * @param recipient The recipient address.
+     */
     removeLiquidity(
       market: PromiseOrValue<string>,
       feeRate: PromiseOrValue<BigNumberish>,
@@ -1271,6 +1729,13 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Removes liquidity from multiple ChromaticMarket contracts in a batch.
+     * @param clbTokenAmounts An array of CLB token amounts to remove as liquidity for each bin.
+     * @param feeRates An array of fee rates for each liquidity bin.
+     * @param market The address of the ChromaticMarket contract.
+     * @param recipients An array of recipient addresses.
+     */
     removeLiquidityBatch(
       market: PromiseOrValue<string>,
       feeRates: PromiseOrValue<BigNumberish>[],
@@ -1299,6 +1764,11 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the total supplies of CLB tokens for multiple trading fee rates in a batch.
+     * @param market The address of the ChromaticMarket contract.
+     * @param tradingFeeRates An array of trading fee rates to retrieve total supplies for.
+     */
     totalSupplies(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -1313,12 +1783,22 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Withdraws liquidity from a ChromaticMarket contract.
+     * @param market The address of the ChromaticMarket contract.
+     * @param receiptId The ID of the LP receipt.
+     */
     withdrawLiquidity(
       market: PromiseOrValue<string>,
       receiptId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Withdraws liquidity from multiple ChromaticMarket contracts in a batch.
+     * @param market The address of the ChromaticMarket contract.
+     * @param receiptIds An array of LP receipt IDs to withdraw liquidity from.
+     */
     withdrawLiquidityBatch(
       market: PromiseOrValue<string>,
       _receiptIds: PromiseOrValue<BigNumberish>[],

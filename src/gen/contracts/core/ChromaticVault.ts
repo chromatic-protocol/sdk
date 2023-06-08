@@ -546,21 +546,37 @@ export interface ChromaticVault extends BaseContract {
   functions: {
     automate(overrides?: CallOverrides): Promise<[string]>;
 
+    /**
+     * Cancels a maker earning distribution task for a token.
+     * @param token The address of the settlement token.
+     */
     cancelMakerEarningDistributionTask(
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Cancels a market earning distribution task for a market.
+     * @param market The address of the market.
+     */
     cancelMarketEarningDistributionTask(
       market: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Creates a maker earning distribution task for a token.
+     * @param token The address of the settlement token.
+     */
     createMakerEarningDistributionTask(
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Creates a market earning distribution task for a market.
+     * @param market The address of the market.
+     */
     createMarketEarningDistributionTask(
       market: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -568,16 +584,31 @@ export interface ChromaticVault extends BaseContract {
 
     dedicatedMsgSender(overrides?: CallOverrides): Promise<[string]>;
 
+    /**
+     * Distributes the maker earning for a token to the each markets.
+     * @param token The address of the settlement token.
+     */
     distributeMakerEarning(
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Distributes the market earning for a market to the each bins.
+     * @param market The address of the market.
+     */
     distributeMarketEarning(
       market: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Executes a flash loan.
+     * @param amount The amount of the flash loan.
+     * @param data Additional data for the flash loan.
+     * @param recipient The address to receive the flash loan.
+     * @param token The address of the token for the flash loan.
+     */
     flashLoan(
       token: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
@@ -586,6 +617,12 @@ export interface ChromaticVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * The pending share of earnings is calculated based on the bin balance, maker balances, and market balances.
+     * Retrieves the pending share of earnings for a specific bin (subset) of funds in a market.
+     * @param binBalance The balance of funds in the bin.
+     * @param market The address of the market.
+     */
     getPendingBinShare(
       market: PromiseOrValue<string>,
       binBalance: PromiseOrValue<BigNumberish>,
@@ -612,11 +649,24 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Called when liquidity is added to the vault by a market contract.
+     * @param amount The amount of liquidity being added.
+     */
     onAddLiquidity(
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Called when a position is claimed by a market contract.
+     * @param positionId The ID of the claimed position.
+     * @param recipient The address that will receive the settlement amount.
+     * @param settlementAmount The amount to be settled for the position.
+     * @param takerMargin The margin amount provided by the taker for the position.
+     */
     onClaimPosition(
       positionId: PromiseOrValue<BigNumberish>,
       recipient: PromiseOrValue<string>,
@@ -625,6 +675,14 @@ export interface ChromaticVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Called when a position is opened by a market contract.
+     * @param positionId The ID of the opened position.
+     * @param protocolFee The protocol fee associated with the position.
+     * @param takerMargin The margin amount provided by the taker for the position.
+     * @param tradingFee The trading fee associated with the position.
+     */
     onOpenPosition(
       positionId: PromiseOrValue<BigNumberish>,
       takerMargin: PromiseOrValue<BigNumberish>,
@@ -633,12 +691,24 @@ export interface ChromaticVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Called when pending liquidity is settled in the vault by a market contract.
+     * @param pendingDeposit The amount of pending deposits being settled.
+     * @param pendingWithdrawal The amount of pending withdrawals being settled.
+     */
     onSettlePendingLiquidity(
       pendingDeposit: PromiseOrValue<BigNumberish>,
       pendingWithdrawal: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Called when liquidity is withdrawn from the vault by a market contract.
+     * @param amount The amount of liquidity to be withdrawn.
+     * @param recipient The address that will receive the withdrawn liquidity.
+     */
     onWithdrawLiquidity(
       recipient: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
@@ -665,11 +735,19 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    /**
+     * Resolves the maker earning distribution for a specific token.
+     * @param token The address of the settlement token.
+     */
     resolveMakerEarningDistribution(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
 
+    /**
+     * Resolves the market earning distribution for a market.
+     * @param market The address of the market.
+     */
     resolveMarketEarningDistribution(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -685,6 +763,13 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Transfers the keeper fee from the market to the specified keeper.
+     * @param fee The amount of the fee to transfer as native token.
+     * @param keeper The address of the keeper to receive the fee.
+     * @param margin The margin amount used for the fee payment.
+     */
     transferKeeperFee(
       keeper: PromiseOrValue<string>,
       fee: PromiseOrValue<BigNumberish>,
@@ -695,21 +780,37 @@ export interface ChromaticVault extends BaseContract {
 
   automate(overrides?: CallOverrides): Promise<string>;
 
+  /**
+   * Cancels a maker earning distribution task for a token.
+   * @param token The address of the settlement token.
+   */
   cancelMakerEarningDistributionTask(
     token: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Cancels a market earning distribution task for a market.
+   * @param market The address of the market.
+   */
   cancelMarketEarningDistributionTask(
     market: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Creates a maker earning distribution task for a token.
+   * @param token The address of the settlement token.
+   */
   createMakerEarningDistributionTask(
     token: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Creates a market earning distribution task for a market.
+   * @param market The address of the market.
+   */
   createMarketEarningDistributionTask(
     market: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -717,16 +818,31 @@ export interface ChromaticVault extends BaseContract {
 
   dedicatedMsgSender(overrides?: CallOverrides): Promise<string>;
 
+  /**
+   * Distributes the maker earning for a token to the each markets.
+   * @param token The address of the settlement token.
+   */
   distributeMakerEarning(
     token: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Distributes the market earning for a market to the each bins.
+   * @param market The address of the market.
+   */
   distributeMarketEarning(
     market: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Executes a flash loan.
+   * @param amount The amount of the flash loan.
+   * @param data Additional data for the flash loan.
+   * @param recipient The address to receive the flash loan.
+   * @param token The address of the token for the flash loan.
+   */
   flashLoan(
     token: PromiseOrValue<string>,
     amount: PromiseOrValue<BigNumberish>,
@@ -735,6 +851,12 @@ export interface ChromaticVault extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * The pending share of earnings is calculated based on the bin balance, maker balances, and market balances.
+   * Retrieves the pending share of earnings for a specific bin (subset) of funds in a market.
+   * @param binBalance The balance of funds in the bin.
+   * @param market The address of the market.
+   */
   getPendingBinShare(
     market: PromiseOrValue<string>,
     binBalance: PromiseOrValue<BigNumberish>,
@@ -761,11 +883,24 @@ export interface ChromaticVault extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  /**
+   * This function can only be called by a market contract.
+   * Called when liquidity is added to the vault by a market contract.
+   * @param amount The amount of liquidity being added.
+   */
   onAddLiquidity(
     amount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * This function can only be called by a market contract.
+   * Called when a position is claimed by a market contract.
+   * @param positionId The ID of the claimed position.
+   * @param recipient The address that will receive the settlement amount.
+   * @param settlementAmount The amount to be settled for the position.
+   * @param takerMargin The margin amount provided by the taker for the position.
+   */
   onClaimPosition(
     positionId: PromiseOrValue<BigNumberish>,
     recipient: PromiseOrValue<string>,
@@ -774,6 +909,14 @@ export interface ChromaticVault extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * This function can only be called by a market contract.
+   * Called when a position is opened by a market contract.
+   * @param positionId The ID of the opened position.
+   * @param protocolFee The protocol fee associated with the position.
+   * @param takerMargin The margin amount provided by the taker for the position.
+   * @param tradingFee The trading fee associated with the position.
+   */
   onOpenPosition(
     positionId: PromiseOrValue<BigNumberish>,
     takerMargin: PromiseOrValue<BigNumberish>,
@@ -782,12 +925,24 @@ export interface ChromaticVault extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * This function can only be called by a market contract.
+   * Called when pending liquidity is settled in the vault by a market contract.
+   * @param pendingDeposit The amount of pending deposits being settled.
+   * @param pendingWithdrawal The amount of pending withdrawals being settled.
+   */
   onSettlePendingLiquidity(
     pendingDeposit: PromiseOrValue<BigNumberish>,
     pendingWithdrawal: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * This function can only be called by a market contract.
+   * Called when liquidity is withdrawn from the vault by a market contract.
+   * @param amount The amount of liquidity to be withdrawn.
+   * @param recipient The address that will receive the withdrawn liquidity.
+   */
   onWithdrawLiquidity(
     recipient: PromiseOrValue<string>,
     amount: PromiseOrValue<BigNumberish>,
@@ -814,11 +969,19 @@ export interface ChromaticVault extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  /**
+   * Resolves the maker earning distribution for a specific token.
+   * @param token The address of the settlement token.
+   */
   resolveMakerEarningDistribution(
     token: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
 
+  /**
+   * Resolves the market earning distribution for a market.
+   * @param market The address of the market.
+   */
   resolveMarketEarningDistribution(
     market: PromiseOrValue<string>,
     overrides?: CallOverrides
@@ -834,6 +997,13 @@ export interface ChromaticVault extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  /**
+   * This function can only be called by a market contract.
+   * Transfers the keeper fee from the market to the specified keeper.
+   * @param fee The amount of the fee to transfer as native token.
+   * @param keeper The address of the keeper to receive the fee.
+   * @param margin The margin amount used for the fee payment.
+   */
   transferKeeperFee(
     keeper: PromiseOrValue<string>,
     fee: PromiseOrValue<BigNumberish>,
@@ -844,21 +1014,37 @@ export interface ChromaticVault extends BaseContract {
   callStatic: {
     automate(overrides?: CallOverrides): Promise<string>;
 
+    /**
+     * Cancels a maker earning distribution task for a token.
+     * @param token The address of the settlement token.
+     */
     cancelMakerEarningDistributionTask(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Cancels a market earning distribution task for a market.
+     * @param market The address of the market.
+     */
     cancelMarketEarningDistributionTask(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Creates a maker earning distribution task for a token.
+     * @param token The address of the settlement token.
+     */
     createMakerEarningDistributionTask(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Creates a market earning distribution task for a market.
+     * @param market The address of the market.
+     */
     createMarketEarningDistributionTask(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -866,16 +1052,31 @@ export interface ChromaticVault extends BaseContract {
 
     dedicatedMsgSender(overrides?: CallOverrides): Promise<string>;
 
+    /**
+     * Distributes the maker earning for a token to the each markets.
+     * @param token The address of the settlement token.
+     */
     distributeMakerEarning(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Distributes the market earning for a market to the each bins.
+     * @param market The address of the market.
+     */
     distributeMarketEarning(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Executes a flash loan.
+     * @param amount The amount of the flash loan.
+     * @param data Additional data for the flash loan.
+     * @param recipient The address to receive the flash loan.
+     * @param token The address of the token for the flash loan.
+     */
     flashLoan(
       token: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
@@ -884,6 +1085,12 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * The pending share of earnings is calculated based on the bin balance, maker balances, and market balances.
+     * Retrieves the pending share of earnings for a specific bin (subset) of funds in a market.
+     * @param binBalance The balance of funds in the bin.
+     * @param market The address of the market.
+     */
     getPendingBinShare(
       market: PromiseOrValue<string>,
       binBalance: PromiseOrValue<BigNumberish>,
@@ -910,11 +1117,24 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Called when liquidity is added to the vault by a market contract.
+     * @param amount The amount of liquidity being added.
+     */
     onAddLiquidity(
       amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Called when a position is claimed by a market contract.
+     * @param positionId The ID of the claimed position.
+     * @param recipient The address that will receive the settlement amount.
+     * @param settlementAmount The amount to be settled for the position.
+     * @param takerMargin The margin amount provided by the taker for the position.
+     */
     onClaimPosition(
       positionId: PromiseOrValue<BigNumberish>,
       recipient: PromiseOrValue<string>,
@@ -923,6 +1143,14 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Called when a position is opened by a market contract.
+     * @param positionId The ID of the opened position.
+     * @param protocolFee The protocol fee associated with the position.
+     * @param takerMargin The margin amount provided by the taker for the position.
+     * @param tradingFee The trading fee associated with the position.
+     */
     onOpenPosition(
       positionId: PromiseOrValue<BigNumberish>,
       takerMargin: PromiseOrValue<BigNumberish>,
@@ -931,12 +1159,24 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Called when pending liquidity is settled in the vault by a market contract.
+     * @param pendingDeposit The amount of pending deposits being settled.
+     * @param pendingWithdrawal The amount of pending withdrawals being settled.
+     */
     onSettlePendingLiquidity(
       pendingDeposit: PromiseOrValue<BigNumberish>,
       pendingWithdrawal: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Called when liquidity is withdrawn from the vault by a market contract.
+     * @param amount The amount of liquidity to be withdrawn.
+     * @param recipient The address that will receive the withdrawn liquidity.
+     */
     onWithdrawLiquidity(
       recipient: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
@@ -963,11 +1203,19 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Resolves the maker earning distribution for a specific token.
+     * @param token The address of the settlement token.
+     */
     resolveMakerEarningDistribution(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
 
+    /**
+     * Resolves the market earning distribution for a market.
+     * @param market The address of the market.
+     */
     resolveMarketEarningDistribution(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -983,6 +1231,13 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Transfers the keeper fee from the market to the specified keeper.
+     * @param fee The amount of the fee to transfer as native token.
+     * @param keeper The address of the keeper to receive the fee.
+     * @param margin The margin amount used for the fee payment.
+     */
     transferKeeperFee(
       keeper: PromiseOrValue<string>,
       fee: PromiseOrValue<BigNumberish>,
@@ -1128,21 +1383,37 @@ export interface ChromaticVault extends BaseContract {
   estimateGas: {
     automate(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Cancels a maker earning distribution task for a token.
+     * @param token The address of the settlement token.
+     */
     cancelMakerEarningDistributionTask(
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Cancels a market earning distribution task for a market.
+     * @param market The address of the market.
+     */
     cancelMarketEarningDistributionTask(
       market: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Creates a maker earning distribution task for a token.
+     * @param token The address of the settlement token.
+     */
     createMakerEarningDistributionTask(
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Creates a market earning distribution task for a market.
+     * @param market The address of the market.
+     */
     createMarketEarningDistributionTask(
       market: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1150,16 +1421,31 @@ export interface ChromaticVault extends BaseContract {
 
     dedicatedMsgSender(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Distributes the maker earning for a token to the each markets.
+     * @param token The address of the settlement token.
+     */
     distributeMakerEarning(
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Distributes the market earning for a market to the each bins.
+     * @param market The address of the market.
+     */
     distributeMarketEarning(
       market: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Executes a flash loan.
+     * @param amount The amount of the flash loan.
+     * @param data Additional data for the flash loan.
+     * @param recipient The address to receive the flash loan.
+     * @param token The address of the token for the flash loan.
+     */
     flashLoan(
       token: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
@@ -1168,6 +1454,12 @@ export interface ChromaticVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * The pending share of earnings is calculated based on the bin balance, maker balances, and market balances.
+     * Retrieves the pending share of earnings for a specific bin (subset) of funds in a market.
+     * @param binBalance The balance of funds in the bin.
+     * @param market The address of the market.
+     */
     getPendingBinShare(
       market: PromiseOrValue<string>,
       binBalance: PromiseOrValue<BigNumberish>,
@@ -1194,11 +1486,24 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Called when liquidity is added to the vault by a market contract.
+     * @param amount The amount of liquidity being added.
+     */
     onAddLiquidity(
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Called when a position is claimed by a market contract.
+     * @param positionId The ID of the claimed position.
+     * @param recipient The address that will receive the settlement amount.
+     * @param settlementAmount The amount to be settled for the position.
+     * @param takerMargin The margin amount provided by the taker for the position.
+     */
     onClaimPosition(
       positionId: PromiseOrValue<BigNumberish>,
       recipient: PromiseOrValue<string>,
@@ -1207,6 +1512,14 @@ export interface ChromaticVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Called when a position is opened by a market contract.
+     * @param positionId The ID of the opened position.
+     * @param protocolFee The protocol fee associated with the position.
+     * @param takerMargin The margin amount provided by the taker for the position.
+     * @param tradingFee The trading fee associated with the position.
+     */
     onOpenPosition(
       positionId: PromiseOrValue<BigNumberish>,
       takerMargin: PromiseOrValue<BigNumberish>,
@@ -1215,12 +1528,24 @@ export interface ChromaticVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Called when pending liquidity is settled in the vault by a market contract.
+     * @param pendingDeposit The amount of pending deposits being settled.
+     * @param pendingWithdrawal The amount of pending withdrawals being settled.
+     */
     onSettlePendingLiquidity(
       pendingDeposit: PromiseOrValue<BigNumberish>,
       pendingWithdrawal: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Called when liquidity is withdrawn from the vault by a market contract.
+     * @param amount The amount of liquidity to be withdrawn.
+     * @param recipient The address that will receive the withdrawn liquidity.
+     */
     onWithdrawLiquidity(
       recipient: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
@@ -1247,11 +1572,19 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Resolves the maker earning distribution for a specific token.
+     * @param token The address of the settlement token.
+     */
     resolveMakerEarningDistribution(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Resolves the market earning distribution for a market.
+     * @param market The address of the market.
+     */
     resolveMarketEarningDistribution(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -1267,6 +1600,13 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Transfers the keeper fee from the market to the specified keeper.
+     * @param fee The amount of the fee to transfer as native token.
+     * @param keeper The address of the keeper to receive the fee.
+     * @param margin The margin amount used for the fee payment.
+     */
     transferKeeperFee(
       keeper: PromiseOrValue<string>,
       fee: PromiseOrValue<BigNumberish>,
@@ -1278,21 +1618,37 @@ export interface ChromaticVault extends BaseContract {
   populateTransaction: {
     automate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * Cancels a maker earning distribution task for a token.
+     * @param token The address of the settlement token.
+     */
     cancelMakerEarningDistributionTask(
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Cancels a market earning distribution task for a market.
+     * @param market The address of the market.
+     */
     cancelMarketEarningDistributionTask(
       market: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Creates a maker earning distribution task for a token.
+     * @param token The address of the settlement token.
+     */
     createMakerEarningDistributionTask(
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Creates a market earning distribution task for a market.
+     * @param market The address of the market.
+     */
     createMarketEarningDistributionTask(
       market: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1302,16 +1658,31 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Distributes the maker earning for a token to the each markets.
+     * @param token The address of the settlement token.
+     */
     distributeMakerEarning(
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Distributes the market earning for a market to the each bins.
+     * @param market The address of the market.
+     */
     distributeMarketEarning(
       market: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Executes a flash loan.
+     * @param amount The amount of the flash loan.
+     * @param data Additional data for the flash loan.
+     * @param recipient The address to receive the flash loan.
+     * @param token The address of the token for the flash loan.
+     */
     flashLoan(
       token: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
@@ -1320,6 +1691,12 @@ export interface ChromaticVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * The pending share of earnings is calculated based on the bin balance, maker balances, and market balances.
+     * Retrieves the pending share of earnings for a specific bin (subset) of funds in a market.
+     * @param binBalance The balance of funds in the bin.
+     * @param market The address of the market.
+     */
     getPendingBinShare(
       market: PromiseOrValue<string>,
       binBalance: PromiseOrValue<BigNumberish>,
@@ -1346,11 +1723,24 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Called when liquidity is added to the vault by a market contract.
+     * @param amount The amount of liquidity being added.
+     */
     onAddLiquidity(
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Called when a position is claimed by a market contract.
+     * @param positionId The ID of the claimed position.
+     * @param recipient The address that will receive the settlement amount.
+     * @param settlementAmount The amount to be settled for the position.
+     * @param takerMargin The margin amount provided by the taker for the position.
+     */
     onClaimPosition(
       positionId: PromiseOrValue<BigNumberish>,
       recipient: PromiseOrValue<string>,
@@ -1359,6 +1749,14 @@ export interface ChromaticVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Called when a position is opened by a market contract.
+     * @param positionId The ID of the opened position.
+     * @param protocolFee The protocol fee associated with the position.
+     * @param takerMargin The margin amount provided by the taker for the position.
+     * @param tradingFee The trading fee associated with the position.
+     */
     onOpenPosition(
       positionId: PromiseOrValue<BigNumberish>,
       takerMargin: PromiseOrValue<BigNumberish>,
@@ -1367,12 +1765,24 @@ export interface ChromaticVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Called when pending liquidity is settled in the vault by a market contract.
+     * @param pendingDeposit The amount of pending deposits being settled.
+     * @param pendingWithdrawal The amount of pending withdrawals being settled.
+     */
     onSettlePendingLiquidity(
       pendingDeposit: PromiseOrValue<BigNumberish>,
       pendingWithdrawal: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Called when liquidity is withdrawn from the vault by a market contract.
+     * @param amount The amount of liquidity to be withdrawn.
+     * @param recipient The address that will receive the withdrawn liquidity.
+     */
     onWithdrawLiquidity(
       recipient: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
@@ -1399,11 +1809,19 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Resolves the maker earning distribution for a specific token.
+     * @param token The address of the settlement token.
+     */
     resolveMakerEarningDistribution(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Resolves the market earning distribution for a market.
+     * @param market The address of the market.
+     */
     resolveMarketEarningDistribution(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -1419,6 +1837,13 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * This function can only be called by a market contract.
+     * Transfers the keeper fee from the market to the specified keeper.
+     * @param fee The amount of the fee to transfer as native token.
+     * @param keeper The address of the keeper to receive the fee.
+     * @param margin The margin amount used for the fee payment.
+     */
     transferKeeperFee(
       keeper: PromiseOrValue<string>,
       fee: PromiseOrValue<BigNumberish>,

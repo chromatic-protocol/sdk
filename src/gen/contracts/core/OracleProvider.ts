@@ -137,6 +137,10 @@ export interface OracleProvider extends BaseContract {
       }
     >;
 
+    /**
+     * Retrieves the Oracle Version instances at the specified versions.
+     * @param versions An array of versions for which to retrieve the Oracle Versions.
+     */
     atVersions(
       versions: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
@@ -157,6 +161,9 @@ export interface OracleProvider extends BaseContract {
       }
     >;
 
+    /**
+     * Retrieves the description of the Oracle Provider.
+     */
     description(overrides?: CallOverrides): Promise<[string]>;
 
     /**
@@ -179,6 +186,10 @@ export interface OracleProvider extends BaseContract {
     overrides?: CallOverrides
   ): Promise<IOracleProvider.OracleVersionStructOutput>;
 
+  /**
+   * Retrieves the Oracle Version instances at the specified versions.
+   * @param versions An array of versions for which to retrieve the Oracle Versions.
+   */
   atVersions(
     versions: PromiseOrValue<BigNumberish>[],
     overrides?: CallOverrides
@@ -191,6 +202,9 @@ export interface OracleProvider extends BaseContract {
     overrides?: CallOverrides
   ): Promise<IOracleProvider.OracleVersionStructOutput>;
 
+  /**
+   * Retrieves the description of the Oracle Provider.
+   */
   description(overrides?: CallOverrides): Promise<string>;
 
   /**
@@ -213,6 +227,10 @@ export interface OracleProvider extends BaseContract {
       overrides?: CallOverrides
     ): Promise<IOracleProvider.OracleVersionStructOutput>;
 
+    /**
+     * Retrieves the Oracle Version instances at the specified versions.
+     * @param versions An array of versions for which to retrieve the Oracle Versions.
+     */
     atVersions(
       versions: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
@@ -225,6 +243,9 @@ export interface OracleProvider extends BaseContract {
       overrides?: CallOverrides
     ): Promise<IOracleProvider.OracleVersionStructOutput>;
 
+    /**
+     * Retrieves the description of the Oracle Provider.
+     */
     description(overrides?: CallOverrides): Promise<string>;
 
     /**
@@ -250,6 +271,10 @@ export interface OracleProvider extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves the Oracle Version instances at the specified versions.
+     * @param versions An array of versions for which to retrieve the Oracle Versions.
+     */
     atVersions(
       versions: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
@@ -260,6 +285,9 @@ export interface OracleProvider extends BaseContract {
      */
     currentVersion(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Retrieves the description of the Oracle Provider.
+     */
     description(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
@@ -283,6 +311,10 @@ export interface OracleProvider extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the Oracle Version instances at the specified versions.
+     * @param versions An array of versions for which to retrieve the Oracle Versions.
+     */
     atVersions(
       versions: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
@@ -293,6 +325,9 @@ export interface OracleProvider extends BaseContract {
      */
     currentVersion(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the description of the Oracle Provider.
+     */
     description(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**

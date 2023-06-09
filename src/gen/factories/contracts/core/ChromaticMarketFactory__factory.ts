@@ -227,11 +227,11 @@ const _abi = [
       {
         indexed: true,
         internalType: "uint256",
-        name: "minimumTakerMargin",
+        name: "minimumMargin",
         type: "uint256",
       },
     ],
-    name: "SetMinimumTakerMargin",
+    name: "SetMinimumMargin",
     type: "event",
   },
   {
@@ -278,7 +278,7 @@ const _abi = [
       {
         indexed: true,
         internalType: "uint256",
-        name: "minimumTakerMargin",
+        name: "minimumMargin",
         type: "uint256",
       },
       {
@@ -627,7 +627,7 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "getMinimumTakerMargin",
+    name: "getMinimumMargin",
     outputs: [
       {
         internalType: "uint256",
@@ -780,7 +780,7 @@ const _abi = [
       },
       {
         internalType: "uint256",
-        name: "minimumTakerMargin",
+        name: "minimumMargin",
         type: "uint256",
       },
       {
@@ -919,11 +919,11 @@ const _abi = [
       },
       {
         internalType: "uint256",
-        name: "minimumTakerMargin",
+        name: "minimumMargin",
         type: "uint256",
       },
     ],
-    name: "setMinimumTakerMargin",
+    name: "setMinimumMargin",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

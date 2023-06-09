@@ -56,7 +56,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "getMarket(address,address)": FunctionFragment;
     "getMarkets()": FunctionFragment;
     "getMarketsBySettlmentToken(address)": FunctionFragment;
-    "getMinimumTakerMargin(address)": FunctionFragment;
+    "getMinimumMargin(address)": FunctionFragment;
     "getUniswapFeeTier(address)": FunctionFragment;
     "isRegisteredMarket(address)": FunctionFragment;
     "isRegisteredOracleProvider(address)": FunctionFragment;
@@ -73,7 +73,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "setFlashLoanFeeRate(address,uint256)": FunctionFragment;
     "setKeeperFeePayer(address)": FunctionFragment;
     "setLiquidator(address)": FunctionFragment;
-    "setMinimumTakerMargin(address,uint256)": FunctionFragment;
+    "setMinimumMargin(address,uint256)": FunctionFragment;
     "setUniswapFeeTier(address,uint24)": FunctionFragment;
     "setVault(address)": FunctionFragment;
     "treasury()": FunctionFragment;
@@ -100,7 +100,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
       | "getMarket"
       | "getMarkets"
       | "getMarketsBySettlmentToken"
-      | "getMinimumTakerMargin"
+      | "getMinimumMargin"
       | "getUniswapFeeTier"
       | "isRegisteredMarket"
       | "isRegisteredOracleProvider"
@@ -117,7 +117,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
       | "setFlashLoanFeeRate"
       | "setKeeperFeePayer"
       | "setLiquidator"
-      | "setMinimumTakerMargin"
+      | "setMinimumMargin"
       | "setUniswapFeeTier"
       | "setVault"
       | "treasury"
@@ -194,7 +194,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
-    functionFragment: "getMinimumTakerMargin",
+    functionFragment: "getMinimumMargin",
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
@@ -269,7 +269,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
-    functionFragment: "setMinimumTakerMargin",
+    functionFragment: "setMinimumMargin",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
@@ -347,7 +347,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getMinimumTakerMargin",
+    functionFragment: "getMinimumMargin",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -409,7 +409,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setMinimumTakerMargin",
+    functionFragment: "setMinimumMargin",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -439,7 +439,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "SetFlashLoanFeeRate(address,uint256)": EventFragment;
     "SetKeeperFeePayer(address)": EventFragment;
     "SetLiquidator(address)": EventFragment;
-    "SetMinimumTakerMargin(address,uint256)": EventFragment;
+    "SetMinimumMargin(address,uint256)": EventFragment;
     "SetUniswapFeeTier(address,uint24)": EventFragment;
     "SetVault(address)": EventFragment;
     "SettlementTokenRegistered(address,uint256,uint256,uint256,uint256,uint24)": EventFragment;
@@ -460,7 +460,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "SetFlashLoanFeeRate"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetKeeperFeePayer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetLiquidator"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SetMinimumTakerMargin"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetMinimumMargin"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetUniswapFeeTier"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetVault"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SettlementTokenRegistered"): EventFragment;
@@ -570,17 +570,17 @@ export type SetLiquidatorEvent = TypedEvent<[string], SetLiquidatorEventObject>;
 
 export type SetLiquidatorEventFilter = TypedEventFilter<SetLiquidatorEvent>;
 
-export interface SetMinimumTakerMarginEventObject {
+export interface SetMinimumMarginEventObject {
   token: string;
-  minimumTakerMargin: BigNumber;
+  minimumMargin: BigNumber;
 }
-export type SetMinimumTakerMarginEvent = TypedEvent<
+export type SetMinimumMarginEvent = TypedEvent<
   [string, BigNumber],
-  SetMinimumTakerMarginEventObject
+  SetMinimumMarginEventObject
 >;
 
-export type SetMinimumTakerMarginEventFilter =
-  TypedEventFilter<SetMinimumTakerMarginEvent>;
+export type SetMinimumMarginEventFilter =
+  TypedEventFilter<SetMinimumMarginEvent>;
 
 export interface SetUniswapFeeTierEventObject {
   token: string;
@@ -603,7 +603,7 @@ export type SetVaultEventFilter = TypedEventFilter<SetVaultEvent>;
 
 export interface SettlementTokenRegisteredEventObject {
   token: string;
-  minimumTakerMargin: BigNumber;
+  minimumMargin: BigNumber;
   interestRate: BigNumber;
   flashLoanFeeRate: BigNumber;
   earningDistributionThreshold: BigNumber;
@@ -808,10 +808,11 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<[string[]]>;
 
     /**
-     * Gets the minimum taker margin for a settlement token.
+     * The minimumMargin is used as the minimum value for the taker margin of a position      or as the minimum value for the maker margin of each bin.
+     * Gets the minimum margin for a settlement token.
      * @param token The address of the settlement token.
      */
-    getMinimumTakerMargin(
+    getMinimumMargin(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
@@ -888,13 +889,13 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param earningDistributionThreshold The earning distribution threshold for the settlement token.
      * @param flashLoanFeeRate The flash loan fee rate for the settlement token.
      * @param interestRate The interest rate for the settlement token.
-     * @param minimumTakerMargin The minimum taker margin for the settlement token.
+     * @param minimumMargin The minimum margin for the settlement token.
      * @param token The address of the settlement token to register.
      * @param uniswapFeeTier The Uniswap fee tier for the settlement token.
      */
     registerSettlementToken(
       token: PromiseOrValue<string>,
-      minimumTakerMargin: PromiseOrValue<BigNumberish>,
+      minimumMargin: PromiseOrValue<BigNumberish>,
       interestRate: PromiseOrValue<BigNumberish>,
       flashLoanFeeRate: PromiseOrValue<BigNumberish>,
       earningDistributionThreshold: PromiseOrValue<BigNumberish>,
@@ -968,13 +969,13 @@ export interface ChromaticMarketFactory extends BaseContract {
 
     /**
      * This function can only be called by the DAO address.
-     * Sets the minimum taker margin for a settlement token.
-     * @param minimumTakerMargin The new minimum taker margin for the settlement token.
+     * Sets the minimum margin for a settlement token.
+     * @param minimumMargin The new minimum margin for the settlement token.
      * @param token The address of the settlement token.
      */
-    setMinimumTakerMargin(
+    setMinimumMargin(
       token: PromiseOrValue<string>,
-      minimumTakerMargin: PromiseOrValue<BigNumberish>,
+      minimumMargin: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -1188,10 +1189,11 @@ export interface ChromaticMarketFactory extends BaseContract {
   ): Promise<string[]>;
 
   /**
-   * Gets the minimum taker margin for a settlement token.
+   * The minimumMargin is used as the minimum value for the taker margin of a position      or as the minimum value for the maker margin of each bin.
+   * Gets the minimum margin for a settlement token.
    * @param token The address of the settlement token.
    */
-  getMinimumTakerMargin(
+  getMinimumMargin(
     token: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
@@ -1268,13 +1270,13 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param earningDistributionThreshold The earning distribution threshold for the settlement token.
    * @param flashLoanFeeRate The flash loan fee rate for the settlement token.
    * @param interestRate The interest rate for the settlement token.
-   * @param minimumTakerMargin The minimum taker margin for the settlement token.
+   * @param minimumMargin The minimum margin for the settlement token.
    * @param token The address of the settlement token to register.
    * @param uniswapFeeTier The Uniswap fee tier for the settlement token.
    */
   registerSettlementToken(
     token: PromiseOrValue<string>,
-    minimumTakerMargin: PromiseOrValue<BigNumberish>,
+    minimumMargin: PromiseOrValue<BigNumberish>,
     interestRate: PromiseOrValue<BigNumberish>,
     flashLoanFeeRate: PromiseOrValue<BigNumberish>,
     earningDistributionThreshold: PromiseOrValue<BigNumberish>,
@@ -1348,13 +1350,13 @@ export interface ChromaticMarketFactory extends BaseContract {
 
   /**
    * This function can only be called by the DAO address.
-   * Sets the minimum taker margin for a settlement token.
-   * @param minimumTakerMargin The new minimum taker margin for the settlement token.
+   * Sets the minimum margin for a settlement token.
+   * @param minimumMargin The new minimum margin for the settlement token.
    * @param token The address of the settlement token.
    */
-  setMinimumTakerMargin(
+  setMinimumMargin(
     token: PromiseOrValue<string>,
-    minimumTakerMargin: PromiseOrValue<BigNumberish>,
+    minimumMargin: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1568,10 +1570,11 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<string[]>;
 
     /**
-     * Gets the minimum taker margin for a settlement token.
+     * The minimumMargin is used as the minimum value for the taker margin of a position      or as the minimum value for the maker margin of each bin.
+     * Gets the minimum margin for a settlement token.
      * @param token The address of the settlement token.
      */
-    getMinimumTakerMargin(
+    getMinimumMargin(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1648,13 +1651,13 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param earningDistributionThreshold The earning distribution threshold for the settlement token.
      * @param flashLoanFeeRate The flash loan fee rate for the settlement token.
      * @param interestRate The interest rate for the settlement token.
-     * @param minimumTakerMargin The minimum taker margin for the settlement token.
+     * @param minimumMargin The minimum margin for the settlement token.
      * @param token The address of the settlement token to register.
      * @param uniswapFeeTier The Uniswap fee tier for the settlement token.
      */
     registerSettlementToken(
       token: PromiseOrValue<string>,
-      minimumTakerMargin: PromiseOrValue<BigNumberish>,
+      minimumMargin: PromiseOrValue<BigNumberish>,
       interestRate: PromiseOrValue<BigNumberish>,
       flashLoanFeeRate: PromiseOrValue<BigNumberish>,
       earningDistributionThreshold: PromiseOrValue<BigNumberish>,
@@ -1728,13 +1731,13 @@ export interface ChromaticMarketFactory extends BaseContract {
 
     /**
      * This function can only be called by the DAO address.
-     * Sets the minimum taker margin for a settlement token.
-     * @param minimumTakerMargin The new minimum taker margin for the settlement token.
+     * Sets the minimum margin for a settlement token.
+     * @param minimumMargin The new minimum margin for the settlement token.
      * @param token The address of the settlement token.
      */
-    setMinimumTakerMargin(
+    setMinimumMargin(
       token: PromiseOrValue<string>,
-      minimumTakerMargin: PromiseOrValue<BigNumberish>,
+      minimumMargin: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1881,14 +1884,14 @@ export interface ChromaticMarketFactory extends BaseContract {
       liquidator?: PromiseOrValue<string> | null
     ): SetLiquidatorEventFilter;
 
-    "SetMinimumTakerMargin(address,uint256)"(
+    "SetMinimumMargin(address,uint256)"(
       token?: PromiseOrValue<string> | null,
-      minimumTakerMargin?: PromiseOrValue<BigNumberish> | null
-    ): SetMinimumTakerMarginEventFilter;
-    SetMinimumTakerMargin(
+      minimumMargin?: PromiseOrValue<BigNumberish> | null
+    ): SetMinimumMarginEventFilter;
+    SetMinimumMargin(
       token?: PromiseOrValue<string> | null,
-      minimumTakerMargin?: PromiseOrValue<BigNumberish> | null
-    ): SetMinimumTakerMarginEventFilter;
+      minimumMargin?: PromiseOrValue<BigNumberish> | null
+    ): SetMinimumMarginEventFilter;
 
     "SetUniswapFeeTier(address,uint24)"(
       token?: PromiseOrValue<string> | null,
@@ -1906,7 +1909,7 @@ export interface ChromaticMarketFactory extends BaseContract {
 
     "SettlementTokenRegistered(address,uint256,uint256,uint256,uint256,uint24)"(
       token?: PromiseOrValue<string> | null,
-      minimumTakerMargin?: PromiseOrValue<BigNumberish> | null,
+      minimumMargin?: PromiseOrValue<BigNumberish> | null,
       interestRate?: PromiseOrValue<BigNumberish> | null,
       flashLoanFeeRate?: null,
       earningDistributionThreshold?: null,
@@ -1914,7 +1917,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): SettlementTokenRegisteredEventFilter;
     SettlementTokenRegistered(
       token?: PromiseOrValue<string> | null,
-      minimumTakerMargin?: PromiseOrValue<BigNumberish> | null,
+      minimumMargin?: PromiseOrValue<BigNumberish> | null,
       interestRate?: PromiseOrValue<BigNumberish> | null,
       flashLoanFeeRate?: null,
       earningDistributionThreshold?: null,
@@ -2082,10 +2085,11 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Gets the minimum taker margin for a settlement token.
+     * The minimumMargin is used as the minimum value for the taker margin of a position      or as the minimum value for the maker margin of each bin.
+     * Gets the minimum margin for a settlement token.
      * @param token The address of the settlement token.
      */
-    getMinimumTakerMargin(
+    getMinimumMargin(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -2158,13 +2162,13 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param earningDistributionThreshold The earning distribution threshold for the settlement token.
      * @param flashLoanFeeRate The flash loan fee rate for the settlement token.
      * @param interestRate The interest rate for the settlement token.
-     * @param minimumTakerMargin The minimum taker margin for the settlement token.
+     * @param minimumMargin The minimum margin for the settlement token.
      * @param token The address of the settlement token to register.
      * @param uniswapFeeTier The Uniswap fee tier for the settlement token.
      */
     registerSettlementToken(
       token: PromiseOrValue<string>,
-      minimumTakerMargin: PromiseOrValue<BigNumberish>,
+      minimumMargin: PromiseOrValue<BigNumberish>,
       interestRate: PromiseOrValue<BigNumberish>,
       flashLoanFeeRate: PromiseOrValue<BigNumberish>,
       earningDistributionThreshold: PromiseOrValue<BigNumberish>,
@@ -2238,13 +2242,13 @@ export interface ChromaticMarketFactory extends BaseContract {
 
     /**
      * This function can only be called by the DAO address.
-     * Sets the minimum taker margin for a settlement token.
-     * @param minimumTakerMargin The new minimum taker margin for the settlement token.
+     * Sets the minimum margin for a settlement token.
+     * @param minimumMargin The new minimum margin for the settlement token.
      * @param token The address of the settlement token.
      */
-    setMinimumTakerMargin(
+    setMinimumMargin(
       token: PromiseOrValue<string>,
-      minimumTakerMargin: PromiseOrValue<BigNumberish>,
+      minimumMargin: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -2459,10 +2463,11 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Gets the minimum taker margin for a settlement token.
+     * The minimumMargin is used as the minimum value for the taker margin of a position      or as the minimum value for the maker margin of each bin.
+     * Gets the minimum margin for a settlement token.
      * @param token The address of the settlement token.
      */
-    getMinimumTakerMargin(
+    getMinimumMargin(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -2535,13 +2540,13 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param earningDistributionThreshold The earning distribution threshold for the settlement token.
      * @param flashLoanFeeRate The flash loan fee rate for the settlement token.
      * @param interestRate The interest rate for the settlement token.
-     * @param minimumTakerMargin The minimum taker margin for the settlement token.
+     * @param minimumMargin The minimum margin for the settlement token.
      * @param token The address of the settlement token to register.
      * @param uniswapFeeTier The Uniswap fee tier for the settlement token.
      */
     registerSettlementToken(
       token: PromiseOrValue<string>,
-      minimumTakerMargin: PromiseOrValue<BigNumberish>,
+      minimumMargin: PromiseOrValue<BigNumberish>,
       interestRate: PromiseOrValue<BigNumberish>,
       flashLoanFeeRate: PromiseOrValue<BigNumberish>,
       earningDistributionThreshold: PromiseOrValue<BigNumberish>,
@@ -2619,13 +2624,13 @@ export interface ChromaticMarketFactory extends BaseContract {
 
     /**
      * This function can only be called by the DAO address.
-     * Sets the minimum taker margin for a settlement token.
-     * @param minimumTakerMargin The new minimum taker margin for the settlement token.
+     * Sets the minimum margin for a settlement token.
+     * @param minimumMargin The new minimum margin for the settlement token.
      * @param token The address of the settlement token.
      */
-    setMinimumTakerMargin(
+    setMinimumMargin(
       token: PromiseOrValue<string>,
-      minimumTakerMargin: PromiseOrValue<BigNumberish>,
+      minimumMargin: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

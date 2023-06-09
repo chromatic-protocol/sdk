@@ -59,21 +59,21 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./docs
     # export markdown docs to docs repository
-    - uses: actions/checkout@v3
-      with:
-        repository: chromatic-protocol/docs
-        ref: main
-        path: docs-repo
-        ssh-key: ${{ secrets.SSH_DOCS_REPO }}
-    - name: export docs:markdown
-      run: |
-        yarn docs:markdown
-        cp -r docs/* docs-repo/docs/sdk/reference/
     - uses: chromatic-protocol/action-github-app-token@v1
       id: generate-token
       with:
         app_id: ${{ secrets.PR_ACTION_APP_ID }}
         private_key: ${{ secrets.PR_ACTION_PRIVATE }}
+    - uses: actions/checkout@v3
+      with:
+        repository: chromatic-protocol/docs
+        ref: main
+        path: docs-repo
+        token: ${{ steps.generate-token.outputs.token }}
+    - name: export docs:markdown and cp
+      run: |
+        yarn docs:markdown
+        cp -r docs/* docs-repo/docs/sdk/reference/
     - name: pull-request
       uses: peter-evans/create-pull-request@v5
       with:

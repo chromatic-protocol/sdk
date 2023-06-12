@@ -104,8 +104,6 @@ export interface ChromaticRouterInterface extends utils.Interface {
     "addLiquidity(address,int16,uint256,address)": FunctionFragment;
     "addLiquidityBatch(address,int16[],uint256[],address[])": FunctionFragment;
     "addLiquidityCallback(address,address,bytes)": FunctionFragment;
-    "calculateCLBTokenMintingBatch(address,int16[],uint256[])": FunctionFragment;
-    "calculateCLBTokenValueBatch(address,int16[],uint256[])": FunctionFragment;
     "claimLiquidity(address,uint256)": FunctionFragment;
     "claimLiquidityBatch(address,uint256[])": FunctionFragment;
     "claimLiquidityCallback(uint256,bytes)": FunctionFragment;
@@ -120,7 +118,6 @@ export interface ChromaticRouterInterface extends utils.Interface {
     "removeLiquidityBatch(address,int16[],uint256[],address[])": FunctionFragment;
     "removeLiquidityCallback(address,uint256,bytes)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "totalSupplies(address,int16[])": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "withdrawLiquidity(address,uint256)": FunctionFragment;
     "withdrawLiquidityBatch(address,uint256[])": FunctionFragment;
@@ -132,8 +129,6 @@ export interface ChromaticRouterInterface extends utils.Interface {
       | "addLiquidity"
       | "addLiquidityBatch"
       | "addLiquidityCallback"
-      | "calculateCLBTokenMintingBatch"
-      | "calculateCLBTokenValueBatch"
       | "claimLiquidity"
       | "claimLiquidityBatch"
       | "claimLiquidityCallback"
@@ -148,7 +143,6 @@ export interface ChromaticRouterInterface extends utils.Interface {
       | "removeLiquidityBatch"
       | "removeLiquidityCallback"
       | "renounceOwnership"
-      | "totalSupplies"
       | "transferOwnership"
       | "withdrawLiquidity"
       | "withdrawLiquidityBatch"
@@ -179,22 +173,6 @@ export interface ChromaticRouterInterface extends utils.Interface {
       PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<BytesLike>
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "calculateCLBTokenMintingBatch",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[]
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "calculateCLBTokenValueBatch",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[]
     ]
   ): string;
   encodeFunctionData(
@@ -272,10 +250,6 @@ export interface ChromaticRouterInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "totalSupplies",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>[]]
-  ): string;
-  encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [PromiseOrValue<string>]
   ): string;
@@ -302,14 +276,6 @@ export interface ChromaticRouterInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "addLiquidityCallback",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "calculateCLBTokenMintingBatch",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "calculateCLBTokenValueBatch",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -357,10 +323,6 @@ export interface ChromaticRouterInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "totalSupplies",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -468,32 +430,6 @@ export interface ChromaticRouter extends BaseContract {
       data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    /**
-     * Calculates the amount of CLB tokens to mint for multiple trading amounts in a batch.
-     * @param amounts An array of trading amounts for each provider.
-     * @param market The address of the ChromaticMarket contract.
-     * @param tradingFeeRates An array of trading fee rates for each liquidity provider.
-     */
-    calculateCLBTokenMintingBatch(
-      market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<[BigNumber[]] & { results: BigNumber[] }>;
-
-    /**
-     * Calculates the value of CLB tokens for multiple liquidity amounts in a batch.
-     * @param clbTokenAmounts An array of CLB token amounts for each provider.
-     * @param market The address of the ChromaticMarket contract.
-     * @param tradingFeeRates An array of trading fee rates for each liquidity provider.
-     */
-    calculateCLBTokenValueBatch(
-      market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<[BigNumber[]] & { results: BigNumber[] }>;
 
     /**
      * Claims liquidity from a ChromaticMarket contract.
@@ -650,17 +586,6 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * Retrieves the total supplies of CLB tokens for multiple trading fee rates in a batch.
-     * @param market The address of the ChromaticMarket contract.
-     * @param tradingFeeRates An array of trading fee rates to retrieve total supplies for.
-     */
-    totalSupplies(
-      market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<[BigNumber[]] & { supplies: BigNumber[] }>;
-
-    /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
     transferOwnership(
@@ -744,32 +669,6 @@ export interface ChromaticRouter extends BaseContract {
     data: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
-
-  /**
-   * Calculates the amount of CLB tokens to mint for multiple trading amounts in a batch.
-   * @param amounts An array of trading amounts for each provider.
-   * @param market The address of the ChromaticMarket contract.
-   * @param tradingFeeRates An array of trading fee rates for each liquidity provider.
-   */
-  calculateCLBTokenMintingBatch(
-    market: PromiseOrValue<string>,
-    tradingFeeRates: PromiseOrValue<BigNumberish>[],
-    amounts: PromiseOrValue<BigNumberish>[],
-    overrides?: CallOverrides
-  ): Promise<BigNumber[]>;
-
-  /**
-   * Calculates the value of CLB tokens for multiple liquidity amounts in a batch.
-   * @param clbTokenAmounts An array of CLB token amounts for each provider.
-   * @param market The address of the ChromaticMarket contract.
-   * @param tradingFeeRates An array of trading fee rates for each liquidity provider.
-   */
-  calculateCLBTokenValueBatch(
-    market: PromiseOrValue<string>,
-    tradingFeeRates: PromiseOrValue<BigNumberish>[],
-    clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-    overrides?: CallOverrides
-  ): Promise<BigNumber[]>;
 
   /**
    * Claims liquidity from a ChromaticMarket contract.
@@ -926,17 +825,6 @@ export interface ChromaticRouter extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * Retrieves the total supplies of CLB tokens for multiple trading fee rates in a batch.
-   * @param market The address of the ChromaticMarket contract.
-   * @param tradingFeeRates An array of trading fee rates to retrieve total supplies for.
-   */
-  totalSupplies(
-    market: PromiseOrValue<string>,
-    tradingFeeRates: PromiseOrValue<BigNumberish>[],
-    overrides?: CallOverrides
-  ): Promise<BigNumber[]>;
-
-  /**
    * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
    */
   transferOwnership(
@@ -1020,32 +908,6 @@ export interface ChromaticRouter extends BaseContract {
       data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    /**
-     * Calculates the amount of CLB tokens to mint for multiple trading amounts in a batch.
-     * @param amounts An array of trading amounts for each provider.
-     * @param market The address of the ChromaticMarket contract.
-     * @param tradingFeeRates An array of trading fee rates for each liquidity provider.
-     */
-    calculateCLBTokenMintingBatch(
-      market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber[]>;
-
-    /**
-     * Calculates the value of CLB tokens for multiple liquidity amounts in a batch.
-     * @param clbTokenAmounts An array of CLB token amounts for each provider.
-     * @param market The address of the ChromaticMarket contract.
-     * @param tradingFeeRates An array of trading fee rates for each liquidity provider.
-     */
-    calculateCLBTokenValueBatch(
-      market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber[]>;
 
     /**
      * Claims liquidity from a ChromaticMarket contract.
@@ -1200,17 +1062,6 @@ export interface ChromaticRouter extends BaseContract {
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     /**
-     * Retrieves the total supplies of CLB tokens for multiple trading fee rates in a batch.
-     * @param market The address of the ChromaticMarket contract.
-     * @param tradingFeeRates An array of trading fee rates to retrieve total supplies for.
-     */
-    totalSupplies(
-      market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber[]>;
-
-    /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
     transferOwnership(
@@ -1305,32 +1156,6 @@ export interface ChromaticRouter extends BaseContract {
       vault: PromiseOrValue<string>,
       data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    /**
-     * Calculates the amount of CLB tokens to mint for multiple trading amounts in a batch.
-     * @param amounts An array of trading amounts for each provider.
-     * @param market The address of the ChromaticMarket contract.
-     * @param tradingFeeRates An array of trading fee rates for each liquidity provider.
-     */
-    calculateCLBTokenMintingBatch(
-      market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
-     * Calculates the value of CLB tokens for multiple liquidity amounts in a batch.
-     * @param clbTokenAmounts An array of CLB token amounts for each provider.
-     * @param market The address of the ChromaticMarket contract.
-     * @param tradingFeeRates An array of trading fee rates for each liquidity provider.
-     */
-    calculateCLBTokenValueBatch(
-      market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     /**
@@ -1488,17 +1313,6 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Retrieves the total supplies of CLB tokens for multiple trading fee rates in a batch.
-     * @param market The address of the ChromaticMarket contract.
-     * @param tradingFeeRates An array of trading fee rates to retrieve total supplies for.
-     */
-    totalSupplies(
-      market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
     transferOwnership(
@@ -1582,32 +1396,6 @@ export interface ChromaticRouter extends BaseContract {
       vault: PromiseOrValue<string>,
       data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Calculates the amount of CLB tokens to mint for multiple trading amounts in a batch.
-     * @param amounts An array of trading amounts for each provider.
-     * @param market The address of the ChromaticMarket contract.
-     * @param tradingFeeRates An array of trading fee rates for each liquidity provider.
-     */
-    calculateCLBTokenMintingBatch(
-      market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Calculates the value of CLB tokens for multiple liquidity amounts in a batch.
-     * @param clbTokenAmounts An array of CLB token amounts for each provider.
-     * @param market The address of the ChromaticMarket contract.
-     * @param tradingFeeRates An array of trading fee rates for each liquidity provider.
-     */
-    calculateCLBTokenValueBatch(
-      market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1762,17 +1550,6 @@ export interface ChromaticRouter extends BaseContract {
      */
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Retrieves the total supplies of CLB tokens for multiple trading fee rates in a batch.
-     * @param market The address of the ChromaticMarket contract.
-     * @param tradingFeeRates An array of trading fee rates to retrieve total supplies for.
-     */
-    totalSupplies(
-      market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     /**

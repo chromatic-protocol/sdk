@@ -202,64 +202,6 @@ const _abi = [
         type: "address",
       },
       {
-        internalType: "int16[]",
-        name: "tradingFeeRates",
-        type: "int16[]",
-      },
-      {
-        internalType: "uint256[]",
-        name: "amounts",
-        type: "uint256[]",
-      },
-    ],
-    name: "calculateCLBTokenMintingBatch",
-    outputs: [
-      {
-        internalType: "uint256[]",
-        name: "results",
-        type: "uint256[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "market",
-        type: "address",
-      },
-      {
-        internalType: "int16[]",
-        name: "tradingFeeRates",
-        type: "int16[]",
-      },
-      {
-        internalType: "uint256[]",
-        name: "clbTokenAmounts",
-        type: "uint256[]",
-      },
-    ],
-    name: "calculateCLBTokenValueBatch",
-    outputs: [
-      {
-        internalType: "uint256[]",
-        name: "results",
-        type: "uint256[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "market",
-        type: "address",
-      },
-      {
         internalType: "uint256",
         name: "receiptId",
         type: "uint256",
@@ -673,30 +615,6 @@ const _abi = [
     name: "renounceOwnership",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "market",
-        type: "address",
-      },
-      {
-        internalType: "int16[]",
-        name: "tradingFeeRates",
-        type: "int16[]",
-      },
-    ],
-    name: "totalSupplies",
-    outputs: [
-      {
-        internalType: "uint256[]",
-        name: "supplies",
-        type: "uint256[]",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
   {

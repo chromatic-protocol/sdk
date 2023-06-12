@@ -113,8 +113,11 @@ export interface ChromaticMarketInterface extends utils.Interface {
     "closePosition(uint256)": FunctionFragment;
     "distributeEarningToBins(uint256,uint256)": FunctionFragment;
     "factory()": FunctionFragment;
-    "getBinFreeLiquidities(int16[])": FunctionFragment;
-    "getBinLiquidities(int16[])": FunctionFragment;
+    "getBinFreeLiquidity(int16)": FunctionFragment;
+    "getBinLiquidity(int16)": FunctionFragment;
+    "getBinValue(int16)": FunctionFragment;
+    "getClaimBurning((uint256,uint256,uint256,address,uint8,int16))": FunctionFragment;
+    "getLpReceipt(uint256)": FunctionFragment;
     "getPositions(uint256[])": FunctionFragment;
     "getProtocolFee(uint256)": FunctionFragment;
     "keeperFeePayer()": FunctionFragment;
@@ -146,8 +149,11 @@ export interface ChromaticMarketInterface extends utils.Interface {
       | "closePosition"
       | "distributeEarningToBins"
       | "factory"
-      | "getBinFreeLiquidities"
-      | "getBinLiquidities"
+      | "getBinFreeLiquidity"
+      | "getBinLiquidity"
+      | "getBinValue"
+      | "getClaimBurning"
+      | "getLpReceipt"
       | "getPositions"
       | "getProtocolFee"
       | "keeperFeePayer"
@@ -220,12 +226,24 @@ export interface ChromaticMarketInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "factory", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "getBinFreeLiquidities",
-    values: [PromiseOrValue<BigNumberish>[]]
+    functionFragment: "getBinFreeLiquidity",
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "getBinLiquidities",
-    values: [PromiseOrValue<BigNumberish>[]]
+    functionFragment: "getBinLiquidity",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBinValue",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getClaimBurning",
+    values: [LpReceiptStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getLpReceipt",
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "getPositions",
@@ -352,11 +370,23 @@ export interface ChromaticMarketInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getBinFreeLiquidities",
+    functionFragment: "getBinFreeLiquidity",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getBinLiquidities",
+    functionFragment: "getBinLiquidity",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBinValue",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getClaimBurning",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getLpReceipt",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -679,23 +709,36 @@ export interface ChromaticMarket extends BaseContract {
 
     factory(overrides?: CallOverrides): Promise<[string]>;
 
-    /**
-     * Retrieves the bin free liquidities for the given trading fee rates.
-     * @param tradingFeeRates The trading fee rates to retrieve bin free liquidities for.
-     */
-    getBinFreeLiquidities(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+    getBinFreeLiquidity(
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[BigNumber[]] & { amounts: BigNumber[] }>;
+    ): Promise<[BigNumber] & { amount: BigNumber }>;
 
-    /**
-     * Retrieves the bin liquidities for the given trading fee rates.
-     * @param tradingFeeRates The trading fee rates to retrieve bin liquidities for.
-     */
-    getBinLiquidities(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+    getBinLiquidity(
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[BigNumber[]] & { amounts: BigNumber[] }>;
+    ): Promise<[BigNumber] & { amount: BigNumber }>;
+
+    getBinValue(
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { value: BigNumber }>;
+
+    getClaimBurning(
+      receipt: LpReceiptStruct,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber, BigNumber] & {
+        clbTokenAmount: BigNumber;
+        burningAmount: BigNumber;
+        tokenAmount: BigNumber;
+      }
+    >;
+
+    getLpReceipt(
+      receiptId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[LpReceiptStructOutput] & { receipt: LpReceiptStructOutput }>;
 
     /**
      * Retrieves multiple positions by their IDs.
@@ -944,23 +987,36 @@ export interface ChromaticMarket extends BaseContract {
 
   factory(overrides?: CallOverrides): Promise<string>;
 
-  /**
-   * Retrieves the bin free liquidities for the given trading fee rates.
-   * @param tradingFeeRates The trading fee rates to retrieve bin free liquidities for.
-   */
-  getBinFreeLiquidities(
-    tradingFeeRates: PromiseOrValue<BigNumberish>[],
+  getBinFreeLiquidity(
+    tradingFeeRate: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
-  ): Promise<BigNumber[]>;
+  ): Promise<BigNumber>;
 
-  /**
-   * Retrieves the bin liquidities for the given trading fee rates.
-   * @param tradingFeeRates The trading fee rates to retrieve bin liquidities for.
-   */
-  getBinLiquidities(
-    tradingFeeRates: PromiseOrValue<BigNumberish>[],
+  getBinLiquidity(
+    tradingFeeRate: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
-  ): Promise<BigNumber[]>;
+  ): Promise<BigNumber>;
+
+  getBinValue(
+    tradingFeeRate: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getClaimBurning(
+    receipt: LpReceiptStruct,
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, BigNumber, BigNumber] & {
+      clbTokenAmount: BigNumber;
+      burningAmount: BigNumber;
+      tokenAmount: BigNumber;
+    }
+  >;
+
+  getLpReceipt(
+    receiptId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<LpReceiptStructOutput>;
 
   /**
    * Retrieves multiple positions by their IDs.
@@ -1207,23 +1263,36 @@ export interface ChromaticMarket extends BaseContract {
 
     factory(overrides?: CallOverrides): Promise<string>;
 
-    /**
-     * Retrieves the bin free liquidities for the given trading fee rates.
-     * @param tradingFeeRates The trading fee rates to retrieve bin free liquidities for.
-     */
-    getBinFreeLiquidities(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+    getBinFreeLiquidity(
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<BigNumber[]>;
+    ): Promise<BigNumber>;
 
-    /**
-     * Retrieves the bin liquidities for the given trading fee rates.
-     * @param tradingFeeRates The trading fee rates to retrieve bin liquidities for.
-     */
-    getBinLiquidities(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+    getBinLiquidity(
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<BigNumber[]>;
+    ): Promise<BigNumber>;
+
+    getBinValue(
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getClaimBurning(
+      receipt: LpReceiptStruct,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber, BigNumber] & {
+        clbTokenAmount: BigNumber;
+        burningAmount: BigNumber;
+        tokenAmount: BigNumber;
+      }
+    >;
+
+    getLpReceipt(
+      receiptId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<LpReceiptStructOutput>;
 
     /**
      * Retrieves multiple positions by their IDs.
@@ -1564,21 +1633,28 @@ export interface ChromaticMarket extends BaseContract {
 
     factory(overrides?: CallOverrides): Promise<BigNumber>;
 
-    /**
-     * Retrieves the bin free liquidities for the given trading fee rates.
-     * @param tradingFeeRates The trading fee rates to retrieve bin free liquidities for.
-     */
-    getBinFreeLiquidities(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+    getBinFreeLiquidity(
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    /**
-     * Retrieves the bin liquidities for the given trading fee rates.
-     * @param tradingFeeRates The trading fee rates to retrieve bin liquidities for.
-     */
-    getBinLiquidities(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+    getBinLiquidity(
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getBinValue(
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getClaimBurning(
+      receipt: LpReceiptStruct,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getLpReceipt(
+      receiptId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1828,21 +1904,28 @@ export interface ChromaticMarket extends BaseContract {
 
     factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    /**
-     * Retrieves the bin free liquidities for the given trading fee rates.
-     * @param tradingFeeRates The trading fee rates to retrieve bin free liquidities for.
-     */
-    getBinFreeLiquidities(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+    getBinFreeLiquidity(
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    /**
-     * Retrieves the bin liquidities for the given trading fee rates.
-     * @param tradingFeeRates The trading fee rates to retrieve bin liquidities for.
-     */
-    getBinLiquidities(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+    getBinLiquidity(
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getBinValue(
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getClaimBurning(
+      receipt: LpReceiptStruct,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getLpReceipt(
+      receiptId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

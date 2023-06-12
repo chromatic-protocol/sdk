@@ -116,7 +116,7 @@ export interface ChromaticMarketInterface extends utils.Interface {
     "getBinFreeLiquidity(int16)": FunctionFragment;
     "getBinLiquidity(int16)": FunctionFragment;
     "getBinValue(int16)": FunctionFragment;
-    "getClaimBurning((uint256,uint256,uint256,address,uint8,int16))": FunctionFragment;
+    "getClaimBurning(int16,uint256)": FunctionFragment;
     "getLpReceipt(uint256)": FunctionFragment;
     "getPositions(uint256[])": FunctionFragment;
     "getProtocolFee(uint256)": FunctionFragment;
@@ -239,7 +239,7 @@ export interface ChromaticMarketInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getClaimBurning",
-    values: [LpReceiptStruct]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "getLpReceipt",
@@ -725,7 +725,8 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<[BigNumber] & { value: BigNumber }>;
 
     getClaimBurning(
-      receipt: LpReceiptStruct,
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      oracleVersion: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber, BigNumber] & {
@@ -1003,7 +1004,8 @@ export interface ChromaticMarket extends BaseContract {
   ): Promise<BigNumber>;
 
   getClaimBurning(
-    receipt: LpReceiptStruct,
+    tradingFeeRate: PromiseOrValue<BigNumberish>,
+    oracleVersion: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, BigNumber, BigNumber] & {
@@ -1279,7 +1281,8 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<BigNumber>;
 
     getClaimBurning(
-      receipt: LpReceiptStruct,
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      oracleVersion: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber, BigNumber] & {
@@ -1649,7 +1652,8 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<BigNumber>;
 
     getClaimBurning(
-      receipt: LpReceiptStruct,
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      oracleVersion: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1920,7 +1924,8 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getClaimBurning(
-      receipt: LpReceiptStruct,
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      oracleVersion: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

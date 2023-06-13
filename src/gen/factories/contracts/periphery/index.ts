@@ -3,4 +3,5 @@
 /* eslint-disable */
 export { Account__factory } from "./Account__factory";
 export { AccountFactory__factory } from "./AccountFactory__factory";
+export { ChromaticLens__factory } from "./ChromaticLens__factory";
 export { ChromaticRouter__factory } from "./ChromaticRouter__factory";

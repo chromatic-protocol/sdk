@@ -30,5 +30,7 @@ export type { Account } from "./contracts/periphery/Account";
 export { Account__factory } from "./factories/contracts/periphery/Account__factory";
 export type { AccountFactory } from "./contracts/periphery/AccountFactory";
 export { AccountFactory__factory } from "./factories/contracts/periphery/AccountFactory__factory";
+export type { ChromaticLens } from "./contracts/periphery/ChromaticLens";
+export { ChromaticLens__factory } from "./factories/contracts/periphery/ChromaticLens__factory";
 export type { ChromaticRouter } from "./contracts/periphery/ChromaticRouter";
 export { ChromaticRouter__factory } from "./factories/contracts/periphery/ChromaticRouter__factory";

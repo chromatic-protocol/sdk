@@ -1005,41 +1005,14 @@ const _abi = [
   {
     inputs: [
       {
-        components: [
-          {
-            internalType: "uint256",
-            name: "id",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "oracleVersion",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "amount",
-            type: "uint256",
-          },
-          {
-            internalType: "address",
-            name: "recipient",
-            type: "address",
-          },
-          {
-            internalType: "enum LpAction",
-            name: "action",
-            type: "uint8",
-          },
-          {
-            internalType: "int16",
-            name: "tradingFeeRate",
-            type: "int16",
-          },
-        ],
-        internalType: "struct LpReceipt",
-        name: "receipt",
-        type: "tuple",
+        internalType: "int16",
+        name: "tradingFeeRate",
+        type: "int16",
+      },
+      {
+        internalType: "uint256",
+        name: "oracleVersion",
+        type: "uint256",
       },
     ],
     name: "getClaimBurning",

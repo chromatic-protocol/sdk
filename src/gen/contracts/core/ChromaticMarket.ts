@@ -609,9 +609,9 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * Calculates the amount of CLB tokens to mint for the given parameters.
-     * @param amount The amount of liquidity.
-     * @param tradingFeeRate The trading fee rate.
+     * Calculates the amount of CLB tokens to be minted for a given amount of liquidity and trading fee rate.      The CLB token minting amount represents the number of CLB tokens that will be minted when providing liquidity.
+     * @param amount The amount of liquidity for which to calculate the CLB token minting.
+     * @param tradingFeeRate The trading fee rate for which to calculate the CLB token minting.
      */
     calculateCLBTokenMinting(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
@@ -709,21 +709,38 @@ export interface ChromaticMarket extends BaseContract {
 
     factory(overrides?: CallOverrides): Promise<[string]>;
 
+    /**
+     * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
+     */
     getBinFreeLiquidity(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { amount: BigNumber }>;
 
+    /**
+     * Retrieves the total liquidity amount for a specific trading fee rate in the liquidity pool.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
+     */
     getBinLiquidity(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { amount: BigNumber }>;
 
+    /**
+     * Retrieves the value of a specific trading fee rate's bin in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the bin value.
+     */
     getBinValue(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { value: BigNumber }>;
 
+    /**
+     * Retrieves the claim burning details for a given liquidity receipt.
+     * @param oracleVersion The oracle version for which to retrieve the claim burning details.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the claim burning details.
+     */
     getClaimBurning(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       oracleVersion: PromiseOrValue<BigNumberish>,
@@ -736,6 +753,10 @@ export interface ChromaticMarket extends BaseContract {
       }
     >;
 
+    /**
+     * Retrieves the liquidity receipt with the given receipt ID.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
+     * @param receiptId The ID of the liquidity receipt to retrieve.
+     */
     getLpReceipt(
       receiptId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -888,9 +909,9 @@ export interface ChromaticMarket extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * Calculates the amount of CLB tokens to mint for the given parameters.
-   * @param amount The amount of liquidity.
-   * @param tradingFeeRate The trading fee rate.
+   * Calculates the amount of CLB tokens to be minted for a given amount of liquidity and trading fee rate.      The CLB token minting amount represents the number of CLB tokens that will be minted when providing liquidity.
+   * @param amount The amount of liquidity for which to calculate the CLB token minting.
+   * @param tradingFeeRate The trading fee rate for which to calculate the CLB token minting.
    */
   calculateCLBTokenMinting(
     tradingFeeRate: PromiseOrValue<BigNumberish>,
@@ -988,21 +1009,38 @@ export interface ChromaticMarket extends BaseContract {
 
   factory(overrides?: CallOverrides): Promise<string>;
 
+  /**
+   * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
+   * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
+   */
   getBinFreeLiquidity(
     tradingFeeRate: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  /**
+   * Retrieves the total liquidity amount for a specific trading fee rate in the liquidity pool.
+   * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
+   */
   getBinLiquidity(
     tradingFeeRate: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  /**
+   * Retrieves the value of a specific trading fee rate's bin in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
+   * @param tradingFeeRate The trading fee rate for which to retrieve the bin value.
+   */
   getBinValue(
     tradingFeeRate: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  /**
+   * Retrieves the claim burning details for a given liquidity receipt.
+   * @param oracleVersion The oracle version for which to retrieve the claim burning details.
+   * @param tradingFeeRate The trading fee rate for which to retrieve the claim burning details.
+   */
   getClaimBurning(
     tradingFeeRate: PromiseOrValue<BigNumberish>,
     oracleVersion: PromiseOrValue<BigNumberish>,
@@ -1015,6 +1053,10 @@ export interface ChromaticMarket extends BaseContract {
     }
   >;
 
+  /**
+   * Retrieves the liquidity receipt with the given receipt ID.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
+   * @param receiptId The ID of the liquidity receipt to retrieve.
+   */
   getLpReceipt(
     receiptId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
@@ -1165,9 +1207,9 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<LpReceiptStructOutput>;
 
     /**
-     * Calculates the amount of CLB tokens to mint for the given parameters.
-     * @param amount The amount of liquidity.
-     * @param tradingFeeRate The trading fee rate.
+     * Calculates the amount of CLB tokens to be minted for a given amount of liquidity and trading fee rate.      The CLB token minting amount represents the number of CLB tokens that will be minted when providing liquidity.
+     * @param amount The amount of liquidity for which to calculate the CLB token minting.
+     * @param tradingFeeRate The trading fee rate for which to calculate the CLB token minting.
      */
     calculateCLBTokenMinting(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
@@ -1265,21 +1307,38 @@ export interface ChromaticMarket extends BaseContract {
 
     factory(overrides?: CallOverrides): Promise<string>;
 
+    /**
+     * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
+     */
     getBinFreeLiquidity(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves the total liquidity amount for a specific trading fee rate in the liquidity pool.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
+     */
     getBinLiquidity(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves the value of a specific trading fee rate's bin in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the bin value.
+     */
     getBinValue(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves the claim burning details for a given liquidity receipt.
+     * @param oracleVersion The oracle version for which to retrieve the claim burning details.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the claim burning details.
+     */
     getClaimBurning(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       oracleVersion: PromiseOrValue<BigNumberish>,
@@ -1292,6 +1351,10 @@ export interface ChromaticMarket extends BaseContract {
       }
     >;
 
+    /**
+     * Retrieves the liquidity receipt with the given receipt ID.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
+     * @param receiptId The ID of the liquidity receipt to retrieve.
+     */
     getLpReceipt(
       receiptId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -1536,9 +1599,9 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Calculates the amount of CLB tokens to mint for the given parameters.
-     * @param amount The amount of liquidity.
-     * @param tradingFeeRate The trading fee rate.
+     * Calculates the amount of CLB tokens to be minted for a given amount of liquidity and trading fee rate.      The CLB token minting amount represents the number of CLB tokens that will be minted when providing liquidity.
+     * @param amount The amount of liquidity for which to calculate the CLB token minting.
+     * @param tradingFeeRate The trading fee rate for which to calculate the CLB token minting.
      */
     calculateCLBTokenMinting(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
@@ -1636,27 +1699,48 @@ export interface ChromaticMarket extends BaseContract {
 
     factory(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
+     */
     getBinFreeLiquidity(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves the total liquidity amount for a specific trading fee rate in the liquidity pool.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
+     */
     getBinLiquidity(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves the value of a specific trading fee rate's bin in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the bin value.
+     */
     getBinValue(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves the claim burning details for a given liquidity receipt.
+     * @param oracleVersion The oracle version for which to retrieve the claim burning details.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the claim burning details.
+     */
     getClaimBurning(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       oracleVersion: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves the liquidity receipt with the given receipt ID.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
+     * @param receiptId The ID of the liquidity receipt to retrieve.
+     */
     getLpReceipt(
       receiptId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -1808,9 +1892,9 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Calculates the amount of CLB tokens to mint for the given parameters.
-     * @param amount The amount of liquidity.
-     * @param tradingFeeRate The trading fee rate.
+     * Calculates the amount of CLB tokens to be minted for a given amount of liquidity and trading fee rate.      The CLB token minting amount represents the number of CLB tokens that will be minted when providing liquidity.
+     * @param amount The amount of liquidity for which to calculate the CLB token minting.
+     * @param tradingFeeRate The trading fee rate for which to calculate the CLB token minting.
      */
     calculateCLBTokenMinting(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
@@ -1908,27 +1992,48 @@ export interface ChromaticMarket extends BaseContract {
 
     factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
+     */
     getBinFreeLiquidity(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the total liquidity amount for a specific trading fee rate in the liquidity pool.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
+     */
     getBinLiquidity(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the value of a specific trading fee rate's bin in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the bin value.
+     */
     getBinValue(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the claim burning details for a given liquidity receipt.
+     * @param oracleVersion The oracle version for which to retrieve the claim burning details.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the claim burning details.
+     */
     getClaimBurning(
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       oracleVersion: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the liquidity receipt with the given receipt ID.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
+     * @param receiptId The ID of the liquidity receipt to retrieve.
+     */
     getLpReceipt(
       receiptId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides

@@ -222,6 +222,12 @@ export interface ChromaticLens extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    /**
+     * Calculates the amount of CLB tokens to be minted for each trading fee rate and specified amount in the given Chromatic market.
+     * @param amounts An array of specified amounts.
+     * @param market The address of the Chromatic market contract.
+     * @param tradingFeeRates An array of trading fee rates.
+     */
     calculateCLBTokenMintingBatch(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -229,6 +235,12 @@ export interface ChromaticLens extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber[]] & { results: BigNumber[] }>;
 
+    /**
+     * Calculates the value of CLB tokens for each trading fee rate and CLB token amount in the given Chromatic market.
+     * @param clbTokenAmounts An array of CLB token amounts.
+     * @param market The address of the Chromatic market contract.
+     * @param tradingFeeRates An array of trading fee rates.
+     */
     calculateCLBTokenValueBatch(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -236,6 +248,11 @@ export interface ChromaticLens extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber[]] & { results: BigNumber[] }>;
 
+    /**
+     * Retrieves the liquidity bin values for the specified trading fee rates in the given Chromatic market.
+     * @param market The address of the Chromatic market contract.
+     * @param tradingFeeRates An array of trading fee rates.
+     */
     liquidityBinValue(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -256,12 +273,22 @@ export interface ChromaticLens extends BaseContract {
       }
     >;
 
+    /**
+     * Retrieves the LP receipts for the specified receipt IDs in the given Chromatic market.
+     * @param market The address of the Chromatic market contract.
+     * @param receiptIds An array of receipt IDs.
+     */
     lpReceipts(
       market: PromiseOrValue<string>,
       receiptIds: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<[LpReceiptStructOutput[]] & { result: LpReceiptStructOutput[] }>;
 
+    /**
+     * Retrieves the Oracle versions for the specified oracle versions in the given Chromatic market.
+     * @param market The address of the Chromatic market contract.
+     * @param oracleVersions An array of Oracle versions.
+     */
     oracleAtVersions(
       market: PromiseOrValue<string>,
       oracleVersions: PromiseOrValue<BigNumberish>[],
@@ -272,6 +299,11 @@ export interface ChromaticLens extends BaseContract {
       }
     >;
 
+    /**
+     * Retrieves the total supply of CLB tokens for each trading fee rate in the given Chromatic market.
+     * @param market The address of the Chromatic market contract.
+     * @param tradingFeeRates An array of trading fee rates.
+     */
     totalSupplies(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -279,6 +311,12 @@ export interface ChromaticLens extends BaseContract {
     ): Promise<[BigNumber[]] & { supplies: BigNumber[] }>;
   };
 
+  /**
+   * Calculates the amount of CLB tokens to be minted for each trading fee rate and specified amount in the given Chromatic market.
+   * @param amounts An array of specified amounts.
+   * @param market The address of the Chromatic market contract.
+   * @param tradingFeeRates An array of trading fee rates.
+   */
   calculateCLBTokenMintingBatch(
     market: PromiseOrValue<string>,
     tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -286,6 +324,12 @@ export interface ChromaticLens extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
+  /**
+   * Calculates the value of CLB tokens for each trading fee rate and CLB token amount in the given Chromatic market.
+   * @param clbTokenAmounts An array of CLB token amounts.
+   * @param market The address of the Chromatic market contract.
+   * @param tradingFeeRates An array of trading fee rates.
+   */
   calculateCLBTokenValueBatch(
     market: PromiseOrValue<string>,
     tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -293,6 +337,11 @@ export interface ChromaticLens extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
+  /**
+   * Retrieves the liquidity bin values for the specified trading fee rates in the given Chromatic market.
+   * @param market The address of the Chromatic market contract.
+   * @param tradingFeeRates An array of trading fee rates.
+   */
   liquidityBinValue(
     market: PromiseOrValue<string>,
     tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -305,18 +354,33 @@ export interface ChromaticLens extends BaseContract {
     overrides?: CallOverrides
   ): Promise<ChromaticLens.LiquidityBinStructOutput[]>;
 
+  /**
+   * Retrieves the LP receipts for the specified receipt IDs in the given Chromatic market.
+   * @param market The address of the Chromatic market contract.
+   * @param receiptIds An array of receipt IDs.
+   */
   lpReceipts(
     market: PromiseOrValue<string>,
     receiptIds: PromiseOrValue<BigNumberish>[],
     overrides?: CallOverrides
   ): Promise<LpReceiptStructOutput[]>;
 
+  /**
+   * Retrieves the Oracle versions for the specified oracle versions in the given Chromatic market.
+   * @param market The address of the Chromatic market contract.
+   * @param oracleVersions An array of Oracle versions.
+   */
   oracleAtVersions(
     market: PromiseOrValue<string>,
     oracleVersions: PromiseOrValue<BigNumberish>[],
     overrides?: CallOverrides
   ): Promise<IOracleProvider.OracleVersionStructOutput[]>;
 
+  /**
+   * Retrieves the total supply of CLB tokens for each trading fee rate in the given Chromatic market.
+   * @param market The address of the Chromatic market contract.
+   * @param tradingFeeRates An array of trading fee rates.
+   */
   totalSupplies(
     market: PromiseOrValue<string>,
     tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -324,6 +388,12 @@ export interface ChromaticLens extends BaseContract {
   ): Promise<BigNumber[]>;
 
   callStatic: {
+    /**
+     * Calculates the amount of CLB tokens to be minted for each trading fee rate and specified amount in the given Chromatic market.
+     * @param amounts An array of specified amounts.
+     * @param market The address of the Chromatic market contract.
+     * @param tradingFeeRates An array of trading fee rates.
+     */
     calculateCLBTokenMintingBatch(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -331,6 +401,12 @@ export interface ChromaticLens extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
+    /**
+     * Calculates the value of CLB tokens for each trading fee rate and CLB token amount in the given Chromatic market.
+     * @param clbTokenAmounts An array of CLB token amounts.
+     * @param market The address of the Chromatic market contract.
+     * @param tradingFeeRates An array of trading fee rates.
+     */
     calculateCLBTokenValueBatch(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -338,6 +414,11 @@ export interface ChromaticLens extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
+    /**
+     * Retrieves the liquidity bin values for the specified trading fee rates in the given Chromatic market.
+     * @param market The address of the Chromatic market contract.
+     * @param tradingFeeRates An array of trading fee rates.
+     */
     liquidityBinValue(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -350,18 +431,33 @@ export interface ChromaticLens extends BaseContract {
       overrides?: CallOverrides
     ): Promise<ChromaticLens.LiquidityBinStructOutput[]>;
 
+    /**
+     * Retrieves the LP receipts for the specified receipt IDs in the given Chromatic market.
+     * @param market The address of the Chromatic market contract.
+     * @param receiptIds An array of receipt IDs.
+     */
     lpReceipts(
       market: PromiseOrValue<string>,
       receiptIds: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput[]>;
 
+    /**
+     * Retrieves the Oracle versions for the specified oracle versions in the given Chromatic market.
+     * @param market The address of the Chromatic market contract.
+     * @param oracleVersions An array of Oracle versions.
+     */
     oracleAtVersions(
       market: PromiseOrValue<string>,
       oracleVersions: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<IOracleProvider.OracleVersionStructOutput[]>;
 
+    /**
+     * Retrieves the total supply of CLB tokens for each trading fee rate in the given Chromatic market.
+     * @param market The address of the Chromatic market contract.
+     * @param tradingFeeRates An array of trading fee rates.
+     */
     totalSupplies(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -372,6 +468,12 @@ export interface ChromaticLens extends BaseContract {
   filters: {};
 
   estimateGas: {
+    /**
+     * Calculates the amount of CLB tokens to be minted for each trading fee rate and specified amount in the given Chromatic market.
+     * @param amounts An array of specified amounts.
+     * @param market The address of the Chromatic market contract.
+     * @param tradingFeeRates An array of trading fee rates.
+     */
     calculateCLBTokenMintingBatch(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -379,6 +481,12 @@ export interface ChromaticLens extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Calculates the value of CLB tokens for each trading fee rate and CLB token amount in the given Chromatic market.
+     * @param clbTokenAmounts An array of CLB token amounts.
+     * @param market The address of the Chromatic market contract.
+     * @param tradingFeeRates An array of trading fee rates.
+     */
     calculateCLBTokenValueBatch(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -386,6 +494,11 @@ export interface ChromaticLens extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves the liquidity bin values for the specified trading fee rates in the given Chromatic market.
+     * @param market The address of the Chromatic market contract.
+     * @param tradingFeeRates An array of trading fee rates.
+     */
     liquidityBinValue(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -398,18 +511,33 @@ export interface ChromaticLens extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves the LP receipts for the specified receipt IDs in the given Chromatic market.
+     * @param market The address of the Chromatic market contract.
+     * @param receiptIds An array of receipt IDs.
+     */
     lpReceipts(
       market: PromiseOrValue<string>,
       receiptIds: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves the Oracle versions for the specified oracle versions in the given Chromatic market.
+     * @param market The address of the Chromatic market contract.
+     * @param oracleVersions An array of Oracle versions.
+     */
     oracleAtVersions(
       market: PromiseOrValue<string>,
       oracleVersions: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves the total supply of CLB tokens for each trading fee rate in the given Chromatic market.
+     * @param market The address of the Chromatic market contract.
+     * @param tradingFeeRates An array of trading fee rates.
+     */
     totalSupplies(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -418,6 +546,12 @@ export interface ChromaticLens extends BaseContract {
   };
 
   populateTransaction: {
+    /**
+     * Calculates the amount of CLB tokens to be minted for each trading fee rate and specified amount in the given Chromatic market.
+     * @param amounts An array of specified amounts.
+     * @param market The address of the Chromatic market contract.
+     * @param tradingFeeRates An array of trading fee rates.
+     */
     calculateCLBTokenMintingBatch(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -425,6 +559,12 @@ export interface ChromaticLens extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Calculates the value of CLB tokens for each trading fee rate and CLB token amount in the given Chromatic market.
+     * @param clbTokenAmounts An array of CLB token amounts.
+     * @param market The address of the Chromatic market contract.
+     * @param tradingFeeRates An array of trading fee rates.
+     */
     calculateCLBTokenValueBatch(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -432,6 +572,11 @@ export interface ChromaticLens extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the liquidity bin values for the specified trading fee rates in the given Chromatic market.
+     * @param market The address of the Chromatic market contract.
+     * @param tradingFeeRates An array of trading fee rates.
+     */
     liquidityBinValue(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
@@ -444,18 +589,33 @@ export interface ChromaticLens extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the LP receipts for the specified receipt IDs in the given Chromatic market.
+     * @param market The address of the Chromatic market contract.
+     * @param receiptIds An array of receipt IDs.
+     */
     lpReceipts(
       market: PromiseOrValue<string>,
       receiptIds: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the Oracle versions for the specified oracle versions in the given Chromatic market.
+     * @param market The address of the Chromatic market contract.
+     * @param oracleVersions An array of Oracle versions.
+     */
     oracleAtVersions(
       market: PromiseOrValue<string>,
       oracleVersions: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the total supply of CLB tokens for each trading fee rate in the given Chromatic market.
+     * @param market The address of the Chromatic market contract.
+     * @param tradingFeeRates An array of trading fee rates.
+     */
     totalSupplies(
       market: PromiseOrValue<string>,
       tradingFeeRates: PromiseOrValue<BigNumberish>[],

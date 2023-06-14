@@ -11,6 +11,17 @@ import type {
 
 const _abi = [
   {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_marketFactory",
+        type: "address",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
     inputs: [],
     name: "NotExistLpReceipt",
     type: "error",
@@ -19,6 +30,25 @@ const _abi = [
     inputs: [],
     name: "NotMarket",
     type: "error",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+    ],
+    name: "AccountCreated",
+    type: "event",
   },
   {
     anonymous: false,
@@ -286,6 +316,13 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "createAccount",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "getAccount",
     outputs: [
       {
@@ -314,24 +351,6 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "contract AccountFactory",
-        name: "_accountFactory",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "_marketFactory",
-        type: "address",
-      },
-    ],
-    name: "initialize",
-    outputs: [],
-    stateMutability: "nonpayable",
     type: "function",
   },
   {

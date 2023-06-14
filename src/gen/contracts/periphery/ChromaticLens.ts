@@ -70,7 +70,7 @@ export declare namespace ChromaticLens {
   export type LiquidityBinStruct = {
     tradingFeeRate: PromiseOrValue<BigNumberish>;
     liquidity: PromiseOrValue<BigNumberish>;
-    freeVolume: PromiseOrValue<BigNumberish>;
+    freeLiquidity: PromiseOrValue<BigNumberish>;
     clbTokenAmount: PromiseOrValue<BigNumberish>;
     burningAmount: PromiseOrValue<BigNumberish>;
     tokenAmount: PromiseOrValue<BigNumberish>;
@@ -86,7 +86,7 @@ export declare namespace ChromaticLens {
   ] & {
     tradingFeeRate: number;
     liquidity: BigNumber;
-    freeVolume: BigNumber;
+    freeLiquidity: BigNumber;
     clbTokenAmount: BigNumber;
     burningAmount: BigNumber;
     tokenAmount: BigNumber;

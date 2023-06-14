@@ -145,7 +145,7 @@ const _abi = [
           },
           {
             internalType: "uint256",
-            name: "freeVolume",
+            name: "freeLiquidity",
             type: "uint256",
           },
           {

@@ -109,9 +109,9 @@ export interface ChromaticRouterInterface extends utils.Interface {
     "claimLiquidityCallback(uint256,bytes)": FunctionFragment;
     "claimPosition(address,uint256)": FunctionFragment;
     "closePosition(address,uint256)": FunctionFragment;
+    "createAccount()": FunctionFragment;
     "getAccount()": FunctionFragment;
     "getLpReceiptIds(address)": FunctionFragment;
-    "initialize(address,address)": FunctionFragment;
     "openPosition(address,int224,uint32,uint256,uint256,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "removeLiquidity(address,int16,uint256,address)": FunctionFragment;
@@ -134,9 +134,9 @@ export interface ChromaticRouterInterface extends utils.Interface {
       | "claimLiquidityCallback"
       | "claimPosition"
       | "closePosition"
+      | "createAccount"
       | "getAccount"
       | "getLpReceiptIds"
-      | "initialize"
       | "openPosition"
       | "owner"
       | "removeLiquidity"
@@ -196,16 +196,16 @@ export interface ChromaticRouterInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
+    functionFragment: "createAccount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getAccount",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getLpReceiptIds",
     values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "initialize",
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "openPosition",
@@ -298,12 +298,15 @@ export interface ChromaticRouterInterface extends utils.Interface {
     functionFragment: "closePosition",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "createAccount",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getAccount", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getLpReceiptIds",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "openPosition",
     data: BytesLike
@@ -343,11 +346,24 @@ export interface ChromaticRouterInterface extends utils.Interface {
   ): Result;
 
   events: {
+    "AccountCreated(address,address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "AccountCreated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
+
+export interface AccountCreatedEventObject {
+  account: string;
+  owner: string;
+}
+export type AccountCreatedEvent = TypedEvent<
+  [string, string],
+  AccountCreatedEventObject
+>;
+
+export type AccountCreatedEventFilter = TypedEventFilter<AccountCreatedEvent>;
 
 export interface OwnershipTransferredEventObject {
   previousOwner: string;
@@ -487,6 +503,14 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
+     * Only one account can be created per user.      Emits an `AccountCreated` event upon successful creation.
+     * Creates a new user account.
+     */
+    createAccount(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    /**
      * Retrieves the account of the caller.
      */
     getAccount(overrides?: CallOverrides): Promise<[string]>;
@@ -499,17 +523,6 @@ export interface ChromaticRouter extends BaseContract {
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
-
-    /**
-     * Initializes the ChromaticRouter contract.
-     * @param _accountFactory The address of the AccountFactory contract.
-     * @param _marketFactory The address of the ChromaticMarketFactory contract.
-     */
-    initialize(
-      _accountFactory: PromiseOrValue<string>,
-      _marketFactory: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
 
     /**
      * Opens a new position in a ChromaticMarket contract.
@@ -726,6 +739,14 @@ export interface ChromaticRouter extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
+   * Only one account can be created per user.      Emits an `AccountCreated` event upon successful creation.
+   * Creates a new user account.
+   */
+  createAccount(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  /**
    * Retrieves the account of the caller.
    */
   getAccount(overrides?: CallOverrides): Promise<string>;
@@ -738,17 +759,6 @@ export interface ChromaticRouter extends BaseContract {
     market: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
-
-  /**
-   * Initializes the ChromaticRouter contract.
-   * @param _accountFactory The address of the AccountFactory contract.
-   * @param _marketFactory The address of the ChromaticMarketFactory contract.
-   */
-  initialize(
-    _accountFactory: PromiseOrValue<string>,
-    _marketFactory: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
 
   /**
    * Opens a new position in a ChromaticMarket contract.
@@ -965,6 +975,12 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<void>;
 
     /**
+     * Only one account can be created per user.      Emits an `AccountCreated` event upon successful creation.
+     * Creates a new user account.
+     */
+    createAccount(overrides?: CallOverrides): Promise<void>;
+
+    /**
      * Retrieves the account of the caller.
      */
     getAccount(overrides?: CallOverrides): Promise<string>;
@@ -977,17 +993,6 @@ export interface ChromaticRouter extends BaseContract {
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
-
-    /**
-     * Initializes the ChromaticRouter contract.
-     * @param _accountFactory The address of the AccountFactory contract.
-     * @param _marketFactory The address of the ChromaticMarketFactory contract.
-     */
-    initialize(
-      _accountFactory: PromiseOrValue<string>,
-      _marketFactory: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     /**
      * Opens a new position in a ChromaticMarket contract.
@@ -1104,6 +1109,15 @@ export interface ChromaticRouter extends BaseContract {
   };
 
   filters: {
+    "AccountCreated(address,address)"(
+      account?: PromiseOrValue<string> | null,
+      owner?: PromiseOrValue<string> | null
+    ): AccountCreatedEventFilter;
+    AccountCreated(
+      account?: PromiseOrValue<string> | null,
+      owner?: PromiseOrValue<string> | null
+    ): AccountCreatedEventFilter;
+
     "OwnershipTransferred(address,address)"(
       previousOwner?: PromiseOrValue<string> | null,
       newOwner?: PromiseOrValue<string> | null
@@ -1214,6 +1228,14 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * Only one account can be created per user.      Emits an `AccountCreated` event upon successful creation.
+     * Creates a new user account.
+     */
+    createAccount(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    /**
      * Retrieves the account of the caller.
      */
     getAccount(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1225,17 +1247,6 @@ export interface ChromaticRouter extends BaseContract {
     getLpReceiptIds(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
-     * Initializes the ChromaticRouter contract.
-     * @param _accountFactory The address of the AccountFactory contract.
-     * @param _marketFactory The address of the ChromaticMarketFactory contract.
-     */
-    initialize(
-      _accountFactory: PromiseOrValue<string>,
-      _marketFactory: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     /**
@@ -1454,6 +1465,14 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * Only one account can be created per user.      Emits an `AccountCreated` event upon successful creation.
+     * Creates a new user account.
+     */
+    createAccount(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    /**
      * Retrieves the account of the caller.
      */
     getAccount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1465,17 +1484,6 @@ export interface ChromaticRouter extends BaseContract {
     getLpReceiptIds(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Initializes the ChromaticRouter contract.
-     * @param _accountFactory The address of the AccountFactory contract.
-     * @param _marketFactory The address of the ChromaticMarketFactory contract.
-     */
-    initialize(
-      _accountFactory: PromiseOrValue<string>,
-      _marketFactory: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     /**

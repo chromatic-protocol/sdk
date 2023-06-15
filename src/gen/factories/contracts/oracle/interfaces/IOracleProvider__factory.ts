@@ -5,44 +5,15 @@
 import { Contract, Signer, utils } from "ethers";
 import type { Provider } from "@ethersproject/providers";
 import type {
-  OracleProvider,
-  OracleProviderInterface,
-} from "../../../contracts/core/OracleProvider";
+  IOracleProvider,
+  IOracleProviderInterface,
+} from "../../../../contracts/oracle/interfaces/IOracleProvider";
 
 const _abi = [
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "aggregator",
-        type: "address",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "constructor",
-  },
   {
     inputs: [],
     name: "InvalidOracleRound",
     type: "error",
-  },
-  {
-    inputs: [],
-    name: "UnableToSyncError",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "aggregator",
-    outputs: [
-      {
-        internalType: "ChainlinkAggregator",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
   },
   {
     inputs: [
@@ -73,7 +44,7 @@ const _abi = [
           },
         ],
         internalType: "struct IOracleProvider.OracleVersion",
-        name: "oracleVersion",
+        name: "",
         type: "tuple",
       },
     ],
@@ -109,7 +80,7 @@ const _abi = [
           },
         ],
         internalType: "struct IOracleProvider.OracleVersion[]",
-        name: "oracleVersions",
+        name: "",
         type: "tuple[]",
       },
     ],
@@ -139,7 +110,7 @@ const _abi = [
           },
         ],
         internalType: "struct IOracleProvider.OracleVersion",
-        name: "oracleVersion",
+        name: "",
         type: "tuple",
       },
     ],
@@ -191,15 +162,15 @@ const _abi = [
   },
 ] as const;
 
-export class OracleProvider__factory {
+export class IOracleProvider__factory {
   static readonly abi = _abi;
-  static createInterface(): OracleProviderInterface {
-    return new utils.Interface(_abi) as OracleProviderInterface;
+  static createInterface(): IOracleProviderInterface {
+    return new utils.Interface(_abi) as IOracleProviderInterface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): OracleProvider {
-    return new Contract(address, _abi, signerOrProvider) as OracleProvider;
+  ): IOracleProvider {
+    return new Contract(address, _abi, signerOrProvider) as IOracleProvider;
   }
 }

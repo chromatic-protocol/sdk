@@ -2,4 +2,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as core from "./core";
+export * as oracle from "./oracle";
 export * as periphery from "./periphery";

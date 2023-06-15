@@ -21,7 +21,7 @@ import type {
   TypedListener,
   OnEvent,
   PromiseOrValue,
-} from "../../common";
+} from "../../../common";
 
 export declare namespace IOracleProvider {
   export type OracleVersionStruct = {
@@ -37,9 +37,8 @@ export declare namespace IOracleProvider {
   };
 }
 
-export interface OracleProviderInterface extends utils.Interface {
+export interface IOracleProviderInterface extends utils.Interface {
   functions: {
-    "aggregator()": FunctionFragment;
     "atVersion(uint256)": FunctionFragment;
     "atVersions(uint256[])": FunctionFragment;
     "currentVersion()": FunctionFragment;
@@ -49,7 +48,6 @@ export interface OracleProviderInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "aggregator"
       | "atVersion"
       | "atVersions"
       | "currentVersion"
@@ -57,10 +55,6 @@ export interface OracleProviderInterface extends utils.Interface {
       | "sync"
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: "aggregator",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "atVersion",
     values: [PromiseOrValue<BigNumberish>]
@@ -79,7 +73,6 @@ export interface OracleProviderInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "sync", values?: undefined): string;
 
-  decodeFunctionResult(functionFragment: "aggregator", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "atVersion", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "atVersions", data: BytesLike): Result;
   decodeFunctionResult(
@@ -95,12 +88,12 @@ export interface OracleProviderInterface extends utils.Interface {
   events: {};
 }
 
-export interface OracleProvider extends BaseContract {
+export interface IOracleProvider extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: OracleProviderInterface;
+  interface: IOracleProviderInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -122,8 +115,6 @@ export interface OracleProvider extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    aggregator(overrides?: CallOverrides): Promise<[string]>;
-
     /**
      * Returns the current oracle version
      * @param version The version of which to lookup
@@ -131,11 +122,7 @@ export interface OracleProvider extends BaseContract {
     atVersion(
       version: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<
-      [IOracleProvider.OracleVersionStructOutput] & {
-        oracleVersion: IOracleProvider.OracleVersionStructOutput;
-      }
-    >;
+    ): Promise<[IOracleProvider.OracleVersionStructOutput]>;
 
     /**
      * Retrieves the Oracle Version instances at the specified versions.
@@ -144,22 +131,14 @@ export interface OracleProvider extends BaseContract {
     atVersions(
       versions: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
-    ): Promise<
-      [IOracleProvider.OracleVersionStructOutput[]] & {
-        oracleVersions: IOracleProvider.OracleVersionStructOutput[];
-      }
-    >;
+    ): Promise<[IOracleProvider.OracleVersionStructOutput[]]>;
 
     /**
      * Returns the current oracle version
      */
     currentVersion(
       overrides?: CallOverrides
-    ): Promise<
-      [IOracleProvider.OracleVersionStructOutput] & {
-        oracleVersion: IOracleProvider.OracleVersionStructOutput;
-      }
-    >;
+    ): Promise<[IOracleProvider.OracleVersionStructOutput]>;
 
     /**
      * Retrieves the description of the Oracle Provider.
@@ -174,8 +153,6 @@ export interface OracleProvider extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
-
-  aggregator(overrides?: CallOverrides): Promise<string>;
 
   /**
    * Returns the current oracle version
@@ -216,8 +193,6 @@ export interface OracleProvider extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    aggregator(overrides?: CallOverrides): Promise<string>;
-
     /**
      * Returns the current oracle version
      * @param version The version of which to lookup
@@ -260,8 +235,6 @@ export interface OracleProvider extends BaseContract {
   filters: {};
 
   estimateGas: {
-    aggregator(overrides?: CallOverrides): Promise<BigNumber>;
-
     /**
      * Returns the current oracle version
      * @param version The version of which to lookup
@@ -300,8 +273,6 @@ export interface OracleProvider extends BaseContract {
   };
 
   populateTransaction: {
-    aggregator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     /**
      * Returns the current oracle version
      * @param version The version of which to lookup

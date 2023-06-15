@@ -3,5 +3,7 @@
 /* eslint-disable */
 import type * as core from "./core";
 export type { core };
+import type * as oracle from "./oracle";
+export type { oracle };
 import type * as periphery from "./periphery";
 export type { periphery };

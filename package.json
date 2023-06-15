@@ -45,5 +45,5 @@
     "docs": "typedoc --out docs src/index.ts",
     "docs:markdown": "typedoc --plugin typedoc-plugin-markdown --out docs src/index.ts"
   },
-  "version": "0.1.0-rc.24"
+  "version": "0.1.0-rc.25"
 }

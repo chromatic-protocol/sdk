@@ -314,6 +314,9 @@ export interface CLBToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Retrieves the number of decimals used for token amounts.
+     */
     decimals(overrides?: CallOverrides): Promise<[number]>;
 
     /**
@@ -467,6 +470,9 @@ export interface CLBToken extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Retrieves the number of decimals used for token amounts.
+   */
   decimals(overrides?: CallOverrides): Promise<number>;
 
   /**
@@ -620,6 +626,9 @@ export interface CLBToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Retrieves the number of decimals used for token amounts.
+     */
     decimals(overrides?: CallOverrides): Promise<number>;
 
     /**
@@ -823,6 +832,9 @@ export interface CLBToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves the number of decimals used for token amounts.
+     */
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
@@ -977,6 +989,9 @@ export interface CLBToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the number of decimals used for token amounts.
+     */
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**

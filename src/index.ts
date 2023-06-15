@@ -5,7 +5,7 @@ export type * from "./gen/contracts/core/ChromaticMarket";
 export type * from "./gen/contracts/core/ChromaticMarketFactory";
 // @ts-expect-error
 export type * from "./gen/contracts/core/ChromaticVault";
-export type * from "./gen/contracts/core/OracleProvider";
+export type * from "./gen/contracts/oracle/interfaces/IOracleProvider";
 // export types of periphery
 // @ts-expect-error
 export type * from "./gen/contracts/periphery/Account";

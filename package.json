@@ -42,8 +42,10 @@
     "build:cjs": "rm -rf cjs && tsc --build --force tsconfig.cjs.json",
     "build:esm": "rm -rf esm && tsc --build --force tsconfig.json",
     "build": "yarn build:cjs && yarn build:esm",
-    "docs": "typedoc --out docs src/index.ts",
-    "docs:markdown": "typedoc --plugin typedoc-plugin-markdown --out docs src/index.ts"
+    "clean": "rm -rf docs cjs esm",
+    "docs": "typedoc",
+    "docs:markdown": "typedoc --plugin typedoc-plugin-markdown --out docs src/index.ts",
+    "docs:sdk": "cd site && yarn install && yarn clear && yarn build"
   },
   "version": "0.1.0-rc.27"
 }

@@ -131,4 +131,4 @@ dist
 
 cjs/
 esm/
-docs/
+/docs

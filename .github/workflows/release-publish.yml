@@ -73,6 +73,7 @@ jobs:
     - name: export docs:sdk and cp
       run: |
         yarn docs:sdk
+        cp docs-repo/docs/sdk/reference/_category_.yml site/docs/sdk/ 
         rm -rf docs-repo/docs/sdk/reference/*
         cp -r site/docs/sdk/* docs-repo/docs/sdk/reference/
     - name: pull-request

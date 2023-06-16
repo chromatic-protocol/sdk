@@ -70,10 +70,11 @@ jobs:
         ref: main
         path: docs-repo
         token: ${{ steps.generate-token.outputs.token }}
-    - name: export docs:markdown and cp
+    - name: export docs:sdk and cp
       run: |
-        yarn docs:markdown
-        cp -r docs/* docs-repo/docs/sdk/reference/
+        yarn docs:sdk
+        rm -rf docs-repo/docs/sdk/reference/*
+        cp -r site/docs/sdk/* docs-repo/docs/sdk/reference/
     - name: pull-request
       uses: peter-evans/create-pull-request@v5
       with:

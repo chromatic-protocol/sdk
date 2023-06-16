@@ -7,8 +7,6 @@ import type {
   BigNumberish,
   BytesLike,
   CallOverrides,
-  ContractTransaction,
-  Overrides,
   PopulatedTransaction,
   Signer,
   utils,
@@ -268,13 +266,10 @@ export interface ChromaticLens extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[LpReceiptStructOutput[]] & { result: LpReceiptStructOutput[] }>;
 
-    /**
-     * Receives and executes a batch of function calls on this contract.
-     */
     multicall(
       data: PromiseOrValue<BytesLike>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+      overrides?: CallOverrides
+    ): Promise<[string[]] & { results: string[] }>;
 
     /**
      * Retrieves the OracleVersion for the specified oracle version in the given Chromatic market.
@@ -332,13 +327,10 @@ export interface ChromaticLens extends BaseContract {
     overrides?: CallOverrides
   ): Promise<LpReceiptStructOutput[]>;
 
-  /**
-   * Receives and executes a batch of function calls on this contract.
-   */
   multicall(
     data: PromiseOrValue<BytesLike>[],
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+    overrides?: CallOverrides
+  ): Promise<string[]>;
 
   /**
    * Retrieves the OracleVersion for the specified oracle version in the given Chromatic market.
@@ -396,9 +388,6 @@ export interface ChromaticLens extends BaseContract {
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput[]>;
 
-    /**
-     * Receives and executes a batch of function calls on this contract.
-     */
     multicall(
       data: PromiseOrValue<BytesLike>[],
       overrides?: CallOverrides
@@ -463,12 +452,9 @@ export interface ChromaticLens extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    /**
-     * Receives and executes a batch of function calls on this contract.
-     */
     multicall(
       data: PromiseOrValue<BytesLike>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     /**
@@ -528,12 +514,9 @@ export interface ChromaticLens extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    /**
-     * Receives and executes a batch of function calls on this contract.
-     */
     multicall(
       data: PromiseOrValue<BytesLike>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     /**

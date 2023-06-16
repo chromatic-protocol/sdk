@@ -40,7 +40,6 @@ export declare namespace IOracleProvider {
 export interface IOracleProviderInterface extends utils.Interface {
   functions: {
     "atVersion(uint256)": FunctionFragment;
-    "atVersions(uint256[])": FunctionFragment;
     "currentVersion()": FunctionFragment;
     "description()": FunctionFragment;
     "sync()": FunctionFragment;
@@ -49,7 +48,6 @@ export interface IOracleProviderInterface extends utils.Interface {
   getFunction(
     nameOrSignatureOrTopic:
       | "atVersion"
-      | "atVersions"
       | "currentVersion"
       | "description"
       | "sync"
@@ -58,10 +56,6 @@ export interface IOracleProviderInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "atVersion",
     values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "atVersions",
-    values: [PromiseOrValue<BigNumberish>[]]
   ): string;
   encodeFunctionData(
     functionFragment: "currentVersion",
@@ -74,7 +68,6 @@ export interface IOracleProviderInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "sync", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "atVersion", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "atVersions", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "currentVersion",
     data: BytesLike
@@ -125,15 +118,6 @@ export interface IOracleProvider extends BaseContract {
     ): Promise<[IOracleProvider.OracleVersionStructOutput]>;
 
     /**
-     * Retrieves the Oracle Version instances at the specified versions.
-     * @param versions An array of versions for which to retrieve the Oracle Versions.
-     */
-    atVersions(
-      versions: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<[IOracleProvider.OracleVersionStructOutput[]]>;
-
-    /**
      * Returns the current oracle version
      */
     currentVersion(
@@ -164,15 +148,6 @@ export interface IOracleProvider extends BaseContract {
   ): Promise<IOracleProvider.OracleVersionStructOutput>;
 
   /**
-   * Retrieves the Oracle Version instances at the specified versions.
-   * @param versions An array of versions for which to retrieve the Oracle Versions.
-   */
-  atVersions(
-    versions: PromiseOrValue<BigNumberish>[],
-    overrides?: CallOverrides
-  ): Promise<IOracleProvider.OracleVersionStructOutput[]>;
-
-  /**
    * Returns the current oracle version
    */
   currentVersion(
@@ -201,15 +176,6 @@ export interface IOracleProvider extends BaseContract {
       version: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<IOracleProvider.OracleVersionStructOutput>;
-
-    /**
-     * Retrieves the Oracle Version instances at the specified versions.
-     * @param versions An array of versions for which to retrieve the Oracle Versions.
-     */
-    atVersions(
-      versions: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<IOracleProvider.OracleVersionStructOutput[]>;
 
     /**
      * Returns the current oracle version
@@ -245,15 +211,6 @@ export interface IOracleProvider extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Retrieves the Oracle Version instances at the specified versions.
-     * @param versions An array of versions for which to retrieve the Oracle Versions.
-     */
-    atVersions(
-      versions: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
      * Returns the current oracle version
      */
     currentVersion(overrides?: CallOverrides): Promise<BigNumber>;
@@ -279,15 +236,6 @@ export interface IOracleProvider extends BaseContract {
      */
     atVersion(
       version: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Retrieves the Oracle Version instances at the specified versions.
-     * @param versions An array of versions for which to retrieve the Oracle Versions.
-     */
-    atVersions(
-      versions: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

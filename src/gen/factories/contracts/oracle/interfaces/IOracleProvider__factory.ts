@@ -52,42 +52,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "uint256[]",
-        name: "versions",
-        type: "uint256[]",
-      },
-    ],
-    name: "atVersions",
-    outputs: [
-      {
-        components: [
-          {
-            internalType: "uint256",
-            name: "version",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "timestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "Fixed18",
-            name: "price",
-            type: "int256",
-          },
-        ],
-        internalType: "struct IOracleProvider.OracleVersion[]",
-        name: "",
-        type: "tuple[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [],
     name: "currentVersion",
     outputs: [

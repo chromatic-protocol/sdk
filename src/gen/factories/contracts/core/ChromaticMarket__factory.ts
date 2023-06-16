@@ -741,54 +741,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "int16",
-        name: "tradingFeeRate",
-        type: "int16",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-    ],
-    name: "calculateCLBTokenMinting",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "int16",
-        name: "tradingFeeRate",
-        type: "int16",
-      },
-      {
-        internalType: "uint256",
-        name: "clbTokenAmount",
-        type: "uint256",
-      },
-    ],
-    name: "calculateCLBTokenValue",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "uint256",
         name: "positionId",
         type: "uint256",
@@ -889,6 +841,57 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "int16",
+        name: "tradingFeeRate",
+        type: "int16",
+      },
+      {
+        internalType: "uint256",
+        name: "oracleVersion",
+        type: "uint256",
+      },
+    ],
+    name: "claimableLiquidity",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "mintingTokenAmountRequested",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "mintingCLBTokenAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "burningCLBTokenAmountRequested",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "burningCLBTokenAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "burningTokenAmount",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct ILiquidity.ClaimableLiquidity",
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "clbToken",
     outputs: [
@@ -986,51 +989,17 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "int16",
-        name: "tradingFeeRate",
-        type: "int16",
+        internalType: "int16[]",
+        name: "tradingFeeRates",
+        type: "int16[]",
       },
     ],
-    name: "getBinValue",
+    name: "getBinValues",
     outputs: [
       {
-        internalType: "uint256",
-        name: "value",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "int16",
-        name: "tradingFeeRate",
-        type: "int16",
-      },
-      {
-        internalType: "uint256",
-        name: "oracleVersion",
-        type: "uint256",
-      },
-    ],
-    name: "getClaimBurning",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "clbTokenAmount",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "burningAmount",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "tokenAmount",
-        type: "uint256",
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
       },
     ],
     stateMutability: "view",
@@ -1233,6 +1202,41 @@ const _abi = [
         internalType: "contract IChromaticLiquidator",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "liquidityBinStatuses",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "liquidity",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "freeLiquidity",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "binValue",
+            type: "uint256",
+          },
+          {
+            internalType: "int16",
+            name: "tradingFeeRate",
+            type: "int16",
+          },
+        ],
+        internalType: "struct ILiquidity.LiquidityBinStatus[]",
+        name: "",
+        type: "tuple[]",
       },
     ],
     stateMutability: "view",

@@ -13,56 +13,65 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "market",
+        internalType: "contract IChromaticRouter",
+        name: "_router",
         type: "address",
       },
-      {
-        internalType: "int16[]",
-        name: "tradingFeeRates",
-        type: "int16[]",
-      },
-      {
-        internalType: "uint256[]",
-        name: "amounts",
-        type: "uint256[]",
-      },
     ],
-    name: "calculateCLBTokenMintingBatch",
-    outputs: [
-      {
-        internalType: "uint256[]",
-        name: "results",
-        type: "uint256[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
+    stateMutability: "nonpayable",
+    type: "constructor",
   },
   {
     inputs: [
       {
-        internalType: "address",
+        internalType: "contract IChromaticMarket",
         name: "market",
         type: "address",
       },
       {
-        internalType: "int16[]",
-        name: "tradingFeeRates",
-        type: "int16[]",
+        internalType: "int16",
+        name: "tradingFeeRate",
+        type: "int16",
       },
       {
-        internalType: "uint256[]",
-        name: "clbTokenAmounts",
-        type: "uint256[]",
+        internalType: "uint256",
+        name: "_oracleVersion",
+        type: "uint256",
       },
     ],
-    name: "calculateCLBTokenValueBatch",
+    name: "claimableLiquidity",
     outputs: [
       {
-        internalType: "uint256[]",
-        name: "results",
-        type: "uint256[]",
+        components: [
+          {
+            internalType: "uint256",
+            name: "mintingTokenAmountRequested",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "mintingCLBTokenAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "burningCLBTokenAmountRequested",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "burningCLBTokenAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "burningTokenAmount",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct ILiquidity.ClaimableLiquidity",
+        name: "",
+        type: "tuple",
       },
     ],
     stateMutability: "view",
@@ -76,28 +85,38 @@ const _abi = [
         type: "address",
       },
       {
-        internalType: "int16[]",
-        name: "tradingFeeRates",
-        type: "int16[]",
+        internalType: "address",
+        name: "owner",
+        type: "address",
       },
     ],
-    name: "liquidityBinValue",
+    name: "clbBalanceOf",
     outputs: [
       {
         components: [
           {
-            internalType: "int16",
-            name: "tradingFeeRate",
-            type: "int16",
+            internalType: "uint256",
+            name: "tokenId",
+            type: "uint256",
           },
           {
             internalType: "uint256",
-            name: "value",
+            name: "balance",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "totalSupply",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "binValue",
             type: "uint256",
           },
         ],
-        internalType: "struct ChromaticLens.LiquidityBinValue[]",
-        name: "results",
+        internalType: "struct ChromaticLens.CLBBalance[]",
+        name: "",
         type: "tuple[]",
       },
     ],
@@ -111,33 +130,11 @@ const _abi = [
         name: "market",
         type: "address",
       },
-      {
-        components: [
-          {
-            internalType: "int16",
-            name: "tradingFeeRate",
-            type: "int16",
-          },
-          {
-            internalType: "uint256",
-            name: "oracleVersion",
-            type: "uint256",
-          },
-        ],
-        internalType: "struct ChromaticLens.LiquidityBinsParam[]",
-        name: "params",
-        type: "tuple[]",
-      },
     ],
-    name: "liquidityBins",
+    name: "liquidityBinStatuses",
     outputs: [
       {
         components: [
-          {
-            internalType: "int16",
-            name: "tradingFeeRate",
-            type: "int16",
-          },
           {
             internalType: "uint256",
             name: "liquidity",
@@ -150,22 +147,17 @@ const _abi = [
           },
           {
             internalType: "uint256",
-            name: "clbTokenAmount",
+            name: "binValue",
             type: "uint256",
           },
           {
-            internalType: "uint256",
-            name: "burningAmount",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "tokenAmount",
-            type: "uint256",
+            internalType: "int16",
+            name: "tradingFeeRate",
+            type: "int16",
           },
         ],
-        internalType: "struct ChromaticLens.LiquidityBin[]",
-        name: "results",
+        internalType: "struct ILiquidity.LiquidityBinStatus[]",
+        name: "",
         type: "tuple[]",
       },
     ],
@@ -180,9 +172,9 @@ const _abi = [
         type: "address",
       },
       {
-        internalType: "uint256[]",
-        name: "receiptIds",
-        type: "uint256[]",
+        internalType: "address",
+        name: "owner",
+        type: "address",
       },
     ],
     name: "lpReceipts",
@@ -231,17 +223,36 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "bytes[]",
+        name: "data",
+        type: "bytes[]",
+      },
+    ],
+    name: "multicall",
+    outputs: [
+      {
+        internalType: "bytes[]",
+        name: "results",
+        type: "bytes[]",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "contract IChromaticMarket",
         name: "market",
         type: "address",
       },
       {
-        internalType: "uint256[]",
-        name: "oracleVersions",
-        type: "uint256[]",
+        internalType: "uint256",
+        name: "version",
+        type: "uint256",
       },
     ],
-    name: "oracleAtVersions",
+    name: "oracleVersion",
     outputs: [
       {
         components: [
@@ -261,33 +272,9 @@ const _abi = [
             type: "int256",
           },
         ],
-        internalType: "struct IOracleProvider.OracleVersion[]",
-        name: "results",
-        type: "tuple[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "market",
-        type: "address",
-      },
-      {
-        internalType: "int16[]",
-        name: "tradingFeeRates",
-        type: "int16[]",
-      },
-    ],
-    name: "totalSupplies",
-    outputs: [
-      {
-        internalType: "uint256[]",
-        name: "supplies",
-        type: "uint256[]",
+        internalType: "struct IOracleProvider.OracleVersion",
+        name: "",
+        type: "tuple",
       },
     ],
     stateMutability: "view",

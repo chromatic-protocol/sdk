@@ -99,30 +99,72 @@ export type PositionStructOutput = [
   _binMargins: BinMarginStructOutput[];
 };
 
+export declare namespace ILiquidity {
+  export type ClaimableLiquidityStruct = {
+    mintingTokenAmountRequested: PromiseOrValue<BigNumberish>;
+    mintingCLBTokenAmount: PromiseOrValue<BigNumberish>;
+    burningCLBTokenAmountRequested: PromiseOrValue<BigNumberish>;
+    burningCLBTokenAmount: PromiseOrValue<BigNumberish>;
+    burningTokenAmount: PromiseOrValue<BigNumberish>;
+  };
+
+  export type ClaimableLiquidityStructOutput = [
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ] & {
+    mintingTokenAmountRequested: BigNumber;
+    mintingCLBTokenAmount: BigNumber;
+    burningCLBTokenAmountRequested: BigNumber;
+    burningCLBTokenAmount: BigNumber;
+    burningTokenAmount: BigNumber;
+  };
+
+  export type LiquidityBinStatusStruct = {
+    liquidity: PromiseOrValue<BigNumberish>;
+    freeLiquidity: PromiseOrValue<BigNumberish>;
+    binValue: PromiseOrValue<BigNumberish>;
+    tradingFeeRate: PromiseOrValue<BigNumberish>;
+  };
+
+  export type LiquidityBinStatusStructOutput = [
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    number
+  ] & {
+    liquidity: BigNumber;
+    freeLiquidity: BigNumber;
+    binValue: BigNumber;
+    tradingFeeRate: number;
+  };
+}
+
 export interface ChromaticMarketInterface extends utils.Interface {
   functions: {
     "addLiquidity(address,int16,bytes)": FunctionFragment;
-    "calculateCLBTokenMinting(int16,uint256)": FunctionFragment;
-    "calculateCLBTokenValue(int16,uint256)": FunctionFragment;
     "checkClaimPosition(uint256)": FunctionFragment;
     "checkLiquidation(uint256)": FunctionFragment;
     "claimLiquidity(uint256,bytes)": FunctionFragment;
     "claimPosition(uint256,address,bytes)": FunctionFragment;
     "claimPosition(uint256,address,uint256)": FunctionFragment;
+    "claimableLiquidity(int16,uint256)": FunctionFragment;
     "clbToken()": FunctionFragment;
     "closePosition(uint256)": FunctionFragment;
     "distributeEarningToBins(uint256,uint256)": FunctionFragment;
     "factory()": FunctionFragment;
     "getBinFreeLiquidity(int16)": FunctionFragment;
     "getBinLiquidity(int16)": FunctionFragment;
-    "getBinValue(int16)": FunctionFragment;
-    "getClaimBurning(int16,uint256)": FunctionFragment;
+    "getBinValues(int16[])": FunctionFragment;
     "getLpReceipt(uint256)": FunctionFragment;
     "getPositions(uint256[])": FunctionFragment;
     "getProtocolFee(uint256)": FunctionFragment;
     "keeperFeePayer()": FunctionFragment;
     "liquidate(uint256,address,uint256)": FunctionFragment;
     "liquidator()": FunctionFragment;
+    "liquidityBinStatuses()": FunctionFragment;
     "onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "onERC1155Received(address,address,uint256,uint256,bytes)": FunctionFragment;
     "openPosition(int224,uint32,uint256,uint256,uint256,bytes)": FunctionFragment;
@@ -138,27 +180,26 @@ export interface ChromaticMarketInterface extends utils.Interface {
   getFunction(
     nameOrSignatureOrTopic:
       | "addLiquidity"
-      | "calculateCLBTokenMinting"
-      | "calculateCLBTokenValue"
       | "checkClaimPosition"
       | "checkLiquidation"
       | "claimLiquidity"
       | "claimPosition(uint256,address,bytes)"
       | "claimPosition(uint256,address,uint256)"
+      | "claimableLiquidity"
       | "clbToken"
       | "closePosition"
       | "distributeEarningToBins"
       | "factory"
       | "getBinFreeLiquidity"
       | "getBinLiquidity"
-      | "getBinValue"
-      | "getClaimBurning"
+      | "getBinValues"
       | "getLpReceipt"
       | "getPositions"
       | "getProtocolFee"
       | "keeperFeePayer"
       | "liquidate"
       | "liquidator"
+      | "liquidityBinStatuses"
       | "onERC1155BatchReceived"
       | "onERC1155Received"
       | "openPosition"
@@ -178,14 +219,6 @@ export interface ChromaticMarketInterface extends utils.Interface {
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BytesLike>
     ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "calculateCLBTokenMinting",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "calculateCLBTokenValue",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "checkClaimPosition",
@@ -215,6 +248,10 @@ export interface ChromaticMarketInterface extends utils.Interface {
       PromiseOrValue<BigNumberish>
     ]
   ): string;
+  encodeFunctionData(
+    functionFragment: "claimableLiquidity",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+  ): string;
   encodeFunctionData(functionFragment: "clbToken", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "closePosition",
@@ -234,12 +271,8 @@ export interface ChromaticMarketInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "getBinValue",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getClaimBurning",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    functionFragment: "getBinValues",
+    values: [PromiseOrValue<BigNumberish>[]]
   ): string;
   encodeFunctionData(
     functionFragment: "getLpReceipt",
@@ -267,6 +300,10 @@ export interface ChromaticMarketInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "liquidator",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "liquidityBinStatuses",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -332,14 +369,6 @@ export interface ChromaticMarketInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "calculateCLBTokenMinting",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "calculateCLBTokenValue",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "checkClaimPosition",
     data: BytesLike
   ): Result;
@@ -357,6 +386,10 @@ export interface ChromaticMarketInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "claimPosition(uint256,address,uint256)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "claimableLiquidity",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "clbToken", data: BytesLike): Result;
@@ -378,11 +411,7 @@ export interface ChromaticMarketInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getBinValue",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getClaimBurning",
+    functionFragment: "getBinValues",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -403,6 +432,10 @@ export interface ChromaticMarketInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "liquidate", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "liquidator", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "liquidityBinStatuses",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "onERC1155BatchReceived",
     data: BytesLike
@@ -609,28 +642,6 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * Calculates the amount of CLB tokens to be minted for a given amount of liquidity and trading fee rate.      The CLB token minting amount represents the number of CLB tokens that will be minted when providing liquidity.
-     * @param amount The amount of liquidity for which to calculate the CLB token minting.
-     * @param tradingFeeRate The trading fee rate for which to calculate the CLB token minting.
-     */
-    calculateCLBTokenMinting(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    /**
-     * Calculates the value of CLB tokens for the given parameters.
-     * @param clbTokenAmount The amount of CLB tokens.
-     * @param tradingFeeRate The trading fee rate.
-     */
-    calculateCLBTokenValue(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      clbTokenAmount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    /**
      * Checks if a position is eligible for claim.
      * @param positionId The ID of the position to check.
      */
@@ -685,6 +696,17 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Retrieves the claimable liquidity information for a specific trading fee rate and oracle version from the associated LiquidityPool.
+     * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
+     */
+    claimableLiquidity(
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      oracleVersion: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[ILiquidity.ClaimableLiquidityStructOutput]>;
+
     clbToken(overrides?: CallOverrides): Promise<[string]>;
 
     /**
@@ -728,30 +750,13 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<[BigNumber] & { amount: BigNumber }>;
 
     /**
-     * Retrieves the value of a specific trading fee rate's bin in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
-     * @param tradingFeeRate The trading fee rate for which to retrieve the bin value.
+     * Retrieves the values of a specific trading fee rate's bins in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
+     * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
      */
-    getBinValue(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
+    getBinValues(
+      tradingFeeRates: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { value: BigNumber }>;
-
-    /**
-     * Retrieves the claim burning details for a given liquidity receipt.
-     * @param oracleVersion The oracle version for which to retrieve the claim burning details.
-     * @param tradingFeeRate The trading fee rate for which to retrieve the claim burning details.
-     */
-    getClaimBurning(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      oracleVersion: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber, BigNumber] & {
-        clbTokenAmount: BigNumber;
-        burningAmount: BigNumber;
-        tokenAmount: BigNumber;
-      }
-    >;
+    ): Promise<[BigNumber[]]>;
 
     /**
      * Retrieves the liquidity receipt with the given receipt ID.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
@@ -794,6 +799,13 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<ContractTransaction>;
 
     liquidator(overrides?: CallOverrides): Promise<[string]>;
+
+    /**
+     * Retrieves the liquidity bin statuses for the caller's liquidity pool.
+     */
+    liquidityBinStatuses(
+      overrides?: CallOverrides
+    ): Promise<[ILiquidity.LiquidityBinStatusStructOutput[]]>;
 
     /**
      * Handles the receipt of a multiple ERC1155 token types. This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated. NOTE: To accept the transfer(s), this must return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81, or its own function selector).
@@ -909,28 +921,6 @@ export interface ChromaticMarket extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * Calculates the amount of CLB tokens to be minted for a given amount of liquidity and trading fee rate.      The CLB token minting amount represents the number of CLB tokens that will be minted when providing liquidity.
-   * @param amount The amount of liquidity for which to calculate the CLB token minting.
-   * @param tradingFeeRate The trading fee rate for which to calculate the CLB token minting.
-   */
-  calculateCLBTokenMinting(
-    tradingFeeRate: PromiseOrValue<BigNumberish>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  /**
-   * Calculates the value of CLB tokens for the given parameters.
-   * @param clbTokenAmount The amount of CLB tokens.
-   * @param tradingFeeRate The trading fee rate.
-   */
-  calculateCLBTokenValue(
-    tradingFeeRate: PromiseOrValue<BigNumberish>,
-    clbTokenAmount: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  /**
    * Checks if a position is eligible for claim.
    * @param positionId The ID of the position to check.
    */
@@ -985,6 +975,17 @@ export interface ChromaticMarket extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Retrieves the claimable liquidity information for a specific trading fee rate and oracle version from the associated LiquidityPool.
+   * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
+   * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
+   */
+  claimableLiquidity(
+    tradingFeeRate: PromiseOrValue<BigNumberish>,
+    oracleVersion: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<ILiquidity.ClaimableLiquidityStructOutput>;
+
   clbToken(overrides?: CallOverrides): Promise<string>;
 
   /**
@@ -1028,30 +1029,13 @@ export interface ChromaticMarket extends BaseContract {
   ): Promise<BigNumber>;
 
   /**
-   * Retrieves the value of a specific trading fee rate's bin in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
-   * @param tradingFeeRate The trading fee rate for which to retrieve the bin value.
+   * Retrieves the values of a specific trading fee rate's bins in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
+   * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
    */
-  getBinValue(
-    tradingFeeRate: PromiseOrValue<BigNumberish>,
+  getBinValues(
+    tradingFeeRates: PromiseOrValue<BigNumberish>[],
     overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  /**
-   * Retrieves the claim burning details for a given liquidity receipt.
-   * @param oracleVersion The oracle version for which to retrieve the claim burning details.
-   * @param tradingFeeRate The trading fee rate for which to retrieve the claim burning details.
-   */
-  getClaimBurning(
-    tradingFeeRate: PromiseOrValue<BigNumberish>,
-    oracleVersion: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, BigNumber, BigNumber] & {
-      clbTokenAmount: BigNumber;
-      burningAmount: BigNumber;
-      tokenAmount: BigNumber;
-    }
-  >;
+  ): Promise<BigNumber[]>;
 
   /**
    * Retrieves the liquidity receipt with the given receipt ID.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
@@ -1092,6 +1076,13 @@ export interface ChromaticMarket extends BaseContract {
   ): Promise<ContractTransaction>;
 
   liquidator(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Retrieves the liquidity bin statuses for the caller's liquidity pool.
+   */
+  liquidityBinStatuses(
+    overrides?: CallOverrides
+  ): Promise<ILiquidity.LiquidityBinStatusStructOutput[]>;
 
   /**
    * Handles the receipt of a multiple ERC1155 token types. This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated. NOTE: To accept the transfer(s), this must return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81, or its own function selector).
@@ -1207,28 +1198,6 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<LpReceiptStructOutput>;
 
     /**
-     * Calculates the amount of CLB tokens to be minted for a given amount of liquidity and trading fee rate.      The CLB token minting amount represents the number of CLB tokens that will be minted when providing liquidity.
-     * @param amount The amount of liquidity for which to calculate the CLB token minting.
-     * @param tradingFeeRate The trading fee rate for which to calculate the CLB token minting.
-     */
-    calculateCLBTokenMinting(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
-     * Calculates the value of CLB tokens for the given parameters.
-     * @param clbTokenAmount The amount of CLB tokens.
-     * @param tradingFeeRate The trading fee rate.
-     */
-    calculateCLBTokenValue(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      clbTokenAmount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
      * Checks if a position is eligible for claim.
      * @param positionId The ID of the position to check.
      */
@@ -1283,6 +1252,17 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Retrieves the claimable liquidity information for a specific trading fee rate and oracle version from the associated LiquidityPool.
+     * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
+     */
+    claimableLiquidity(
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      oracleVersion: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<ILiquidity.ClaimableLiquidityStructOutput>;
+
     clbToken(overrides?: CallOverrides): Promise<string>;
 
     /**
@@ -1326,30 +1306,13 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Retrieves the value of a specific trading fee rate's bin in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
-     * @param tradingFeeRate The trading fee rate for which to retrieve the bin value.
+     * Retrieves the values of a specific trading fee rate's bins in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
+     * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
      */
-    getBinValue(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
+    getBinValues(
+      tradingFeeRates: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
-     * Retrieves the claim burning details for a given liquidity receipt.
-     * @param oracleVersion The oracle version for which to retrieve the claim burning details.
-     * @param tradingFeeRate The trading fee rate for which to retrieve the claim burning details.
-     */
-    getClaimBurning(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      oracleVersion: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber, BigNumber] & {
-        clbTokenAmount: BigNumber;
-        burningAmount: BigNumber;
-        tokenAmount: BigNumber;
-      }
-    >;
+    ): Promise<BigNumber[]>;
 
     /**
      * Retrieves the liquidity receipt with the given receipt ID.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
@@ -1390,6 +1353,13 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<void>;
 
     liquidator(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Retrieves the liquidity bin statuses for the caller's liquidity pool.
+     */
+    liquidityBinStatuses(
+      overrides?: CallOverrides
+    ): Promise<ILiquidity.LiquidityBinStatusStructOutput[]>;
 
     /**
      * Handles the receipt of a multiple ERC1155 token types. This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated. NOTE: To accept the transfer(s), this must return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81, or its own function selector).
@@ -1599,28 +1569,6 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Calculates the amount of CLB tokens to be minted for a given amount of liquidity and trading fee rate.      The CLB token minting amount represents the number of CLB tokens that will be minted when providing liquidity.
-     * @param amount The amount of liquidity for which to calculate the CLB token minting.
-     * @param tradingFeeRate The trading fee rate for which to calculate the CLB token minting.
-     */
-    calculateCLBTokenMinting(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
-     * Calculates the value of CLB tokens for the given parameters.
-     * @param clbTokenAmount The amount of CLB tokens.
-     * @param tradingFeeRate The trading fee rate.
-     */
-    calculateCLBTokenValue(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      clbTokenAmount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
      * Checks if a position is eligible for claim.
      * @param positionId The ID of the position to check.
      */
@@ -1675,6 +1623,17 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Retrieves the claimable liquidity information for a specific trading fee rate and oracle version from the associated LiquidityPool.
+     * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
+     */
+    claimableLiquidity(
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      oracleVersion: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     clbToken(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
@@ -1718,22 +1677,11 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Retrieves the value of a specific trading fee rate's bin in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
-     * @param tradingFeeRate The trading fee rate for which to retrieve the bin value.
+     * Retrieves the values of a specific trading fee rate's bins in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
+     * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
      */
-    getBinValue(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
-     * Retrieves the claim burning details for a given liquidity receipt.
-     * @param oracleVersion The oracle version for which to retrieve the claim burning details.
-     * @param tradingFeeRate The trading fee rate for which to retrieve the claim burning details.
-     */
-    getClaimBurning(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      oracleVersion: PromiseOrValue<BigNumberish>,
+    getBinValues(
+      tradingFeeRates: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1776,6 +1724,11 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<BigNumber>;
 
     liquidator(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Retrieves the liquidity bin statuses for the caller's liquidity pool.
+     */
+    liquidityBinStatuses(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * Handles the receipt of a multiple ERC1155 token types. This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated. NOTE: To accept the transfer(s), this must return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81, or its own function selector).
@@ -1892,28 +1845,6 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Calculates the amount of CLB tokens to be minted for a given amount of liquidity and trading fee rate.      The CLB token minting amount represents the number of CLB tokens that will be minted when providing liquidity.
-     * @param amount The amount of liquidity for which to calculate the CLB token minting.
-     * @param tradingFeeRate The trading fee rate for which to calculate the CLB token minting.
-     */
-    calculateCLBTokenMinting(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Calculates the value of CLB tokens for the given parameters.
-     * @param clbTokenAmount The amount of CLB tokens.
-     * @param tradingFeeRate The trading fee rate.
-     */
-    calculateCLBTokenValue(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      clbTokenAmount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    /**
      * Checks if a position is eligible for claim.
      * @param positionId The ID of the position to check.
      */
@@ -1968,6 +1899,17 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Retrieves the claimable liquidity information for a specific trading fee rate and oracle version from the associated LiquidityPool.
+     * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
+     */
+    claimableLiquidity(
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      oracleVersion: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     clbToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
@@ -2011,22 +1953,11 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Retrieves the value of a specific trading fee rate's bin in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
-     * @param tradingFeeRate The trading fee rate for which to retrieve the bin value.
+     * Retrieves the values of a specific trading fee rate's bins in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
+     * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
      */
-    getBinValue(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Retrieves the claim burning details for a given liquidity receipt.
-     * @param oracleVersion The oracle version for which to retrieve the claim burning details.
-     * @param tradingFeeRate The trading fee rate for which to retrieve the claim burning details.
-     */
-    getClaimBurning(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      oracleVersion: PromiseOrValue<BigNumberish>,
+    getBinValues(
+      tradingFeeRates: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2069,6 +2000,13 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     liquidator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Retrieves the liquidity bin statuses for the caller's liquidity pool.
+     */
+    liquidityBinStatuses(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     /**
      * Handles the receipt of a multiple ERC1155 token types. This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated. NOTE: To accept the transfer(s), this must return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81, or its own function selector).

@@ -111,6 +111,7 @@ export interface ChromaticRouterInterface extends utils.Interface {
     "closePosition(address,uint256)": FunctionFragment;
     "createAccount()": FunctionFragment;
     "getAccount()": FunctionFragment;
+    "getLpReceiptIds(address,address)": FunctionFragment;
     "getLpReceiptIds(address)": FunctionFragment;
     "openPosition(address,int224,uint32,uint256,uint256,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -136,7 +137,8 @@ export interface ChromaticRouterInterface extends utils.Interface {
       | "closePosition"
       | "createAccount"
       | "getAccount"
-      | "getLpReceiptIds"
+      | "getLpReceiptIds(address,address)"
+      | "getLpReceiptIds(address)"
       | "openPosition"
       | "owner"
       | "removeLiquidity"
@@ -204,7 +206,11 @@ export interface ChromaticRouterInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getLpReceiptIds",
+    functionFragment: "getLpReceiptIds(address,address)",
+    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getLpReceiptIds(address)",
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
@@ -304,7 +310,11 @@ export interface ChromaticRouterInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "getAccount", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getLpReceiptIds",
+    functionFragment: "getLpReceiptIds(address,address)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getLpReceiptIds(address)",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -515,11 +525,17 @@ export interface ChromaticRouter extends BaseContract {
      */
     getAccount(overrides?: CallOverrides): Promise<[string]>;
 
+    "getLpReceiptIds(address,address)"(
+      market: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[]]>;
+
     /**
      * Retrieves the LP receipt IDs of the caller for the specified market.
      * @param market The address of the ChromaticMarket contract.
      */
-    getLpReceiptIds(
+    "getLpReceiptIds(address)"(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
@@ -751,11 +767,17 @@ export interface ChromaticRouter extends BaseContract {
    */
   getAccount(overrides?: CallOverrides): Promise<string>;
 
+  "getLpReceiptIds(address,address)"(
+    market: PromiseOrValue<string>,
+    owner: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber[]>;
+
   /**
    * Retrieves the LP receipt IDs of the caller for the specified market.
    * @param market The address of the ChromaticMarket contract.
    */
-  getLpReceiptIds(
+  "getLpReceiptIds(address)"(
     market: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
@@ -985,11 +1007,17 @@ export interface ChromaticRouter extends BaseContract {
      */
     getAccount(overrides?: CallOverrides): Promise<string>;
 
+    "getLpReceiptIds(address,address)"(
+      market: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
+
     /**
      * Retrieves the LP receipt IDs of the caller for the specified market.
      * @param market The address of the ChromaticMarket contract.
      */
-    getLpReceiptIds(
+    "getLpReceiptIds(address)"(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
@@ -1240,11 +1268,17 @@ export interface ChromaticRouter extends BaseContract {
      */
     getAccount(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "getLpReceiptIds(address,address)"(
+      market: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     /**
      * Retrieves the LP receipt IDs of the caller for the specified market.
      * @param market The address of the ChromaticMarket contract.
      */
-    getLpReceiptIds(
+    "getLpReceiptIds(address)"(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1477,11 +1511,17 @@ export interface ChromaticRouter extends BaseContract {
      */
     getAccount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    "getLpReceiptIds(address,address)"(
+      market: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     /**
      * Retrieves the LP receipt IDs of the caller for the specified market.
      * @param market The address of the ChromaticMarket contract.
      */
-    getLpReceiptIds(
+    "getLpReceiptIds(address)"(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

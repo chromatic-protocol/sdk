@@ -341,6 +341,30 @@ const _abi = [
         name: "market",
         type: "address",
       },
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+    ],
+    name: "getLpReceiptIds",
+    outputs: [
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "market",
+        type: "address",
+      },
     ],
     name: "getLpReceiptIds",
     outputs: [

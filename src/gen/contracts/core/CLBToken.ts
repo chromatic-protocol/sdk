@@ -45,6 +45,7 @@ export interface CLBTokenInterface extends utils.Interface {
     "setApprovalForAll(address,bool)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "totalSupply(uint256)": FunctionFragment;
+    "totalSupplyBatch(uint256[])": FunctionFragment;
     "uri(uint256)": FunctionFragment;
   };
 
@@ -66,6 +67,7 @@ export interface CLBTokenInterface extends utils.Interface {
       | "setApprovalForAll"
       | "supportsInterface"
       | "totalSupply"
+      | "totalSupplyBatch"
       | "uri"
   ): FunctionFragment;
 
@@ -149,6 +151,10 @@ export interface CLBTokenInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
+    functionFragment: "totalSupplyBatch",
+    values: [PromiseOrValue<BigNumberish>[]]
+  ): string;
+  encodeFunctionData(
     functionFragment: "uri",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
@@ -191,6 +197,10 @@ export interface CLBTokenInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "totalSupplyBatch",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "uri", data: BytesLike): Result;
@@ -422,13 +432,22 @@ export interface CLBToken extends BaseContract {
     ): Promise<[boolean]>;
 
     /**
-     * Retrieves the total supply of tokens for a given token ID.
+     * Total amount of tokens in with a given id.
      * @param id The token ID for which to retrieve the total supply.
      */
     totalSupply(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    /**
+     * Total amounts of tokens in with the given ids.
+     * @param ids The token IDs for which to retrieve the total supply.
+     */
+    totalSupplyBatch(
+      ids: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[]]>;
 
     /**
      * Returns the URI for token type `id`. If the `\{id\}` substring is present in the URI, it must be replaced by clients with the actual token type ID.
@@ -578,13 +597,22 @@ export interface CLBToken extends BaseContract {
   ): Promise<boolean>;
 
   /**
-   * Retrieves the total supply of tokens for a given token ID.
+   * Total amount of tokens in with a given id.
    * @param id The token ID for which to retrieve the total supply.
    */
   totalSupply(
     id: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  /**
+   * Total amounts of tokens in with the given ids.
+   * @param ids The token IDs for which to retrieve the total supply.
+   */
+  totalSupplyBatch(
+    ids: PromiseOrValue<BigNumberish>[],
+    overrides?: CallOverrides
+  ): Promise<BigNumber[]>;
 
   /**
    * Returns the URI for token type `id`. If the `\{id\}` substring is present in the URI, it must be replaced by clients with the actual token type ID.
@@ -734,13 +762,22 @@ export interface CLBToken extends BaseContract {
     ): Promise<boolean>;
 
     /**
-     * Retrieves the total supply of tokens for a given token ID.
+     * Total amount of tokens in with a given id.
      * @param id The token ID for which to retrieve the total supply.
      */
     totalSupply(
       id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    /**
+     * Total amounts of tokens in with the given ids.
+     * @param ids The token IDs for which to retrieve the total supply.
+     */
+    totalSupplyBatch(
+      ids: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
 
     /**
      * Returns the URI for token type `id`. If the `\{id\}` substring is present in the URI, it must be replaced by clients with the actual token type ID.
@@ -940,11 +977,20 @@ export interface CLBToken extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Retrieves the total supply of tokens for a given token ID.
+     * Total amount of tokens in with a given id.
      * @param id The token ID for which to retrieve the total supply.
      */
     totalSupply(
       id: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Total amounts of tokens in with the given ids.
+     * @param ids The token IDs for which to retrieve the total supply.
+     */
+    totalSupplyBatch(
+      ids: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1097,11 +1143,20 @@ export interface CLBToken extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Retrieves the total supply of tokens for a given token ID.
+     * Total amount of tokens in with a given id.
      * @param id The token ID for which to retrieve the total supply.
      */
     totalSupply(
       id: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Total amounts of tokens in with the given ids.
+     * @param ids The token IDs for which to retrieve the total supply.
+     */
+    totalSupplyBatch(
+      ids: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

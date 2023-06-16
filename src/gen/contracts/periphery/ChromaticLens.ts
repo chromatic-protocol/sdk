@@ -7,6 +7,8 @@ import type {
   BigNumberish,
   BytesLike,
   CallOverrides,
+  ContractTransaction,
+  Overrides,
   PopulatedTransaction,
   Signer,
   utils,
@@ -46,50 +48,67 @@ export type LpReceiptStructOutput = [
   tradingFeeRate: number;
 };
 
-export declare namespace ChromaticLens {
-  export type LiquidityBinValueStruct = {
-    tradingFeeRate: PromiseOrValue<BigNumberish>;
-    value: PromiseOrValue<BigNumberish>;
+export declare namespace ILiquidity {
+  export type ClaimableLiquidityStruct = {
+    mintingTokenAmountRequested: PromiseOrValue<BigNumberish>;
+    mintingCLBTokenAmount: PromiseOrValue<BigNumberish>;
+    burningCLBTokenAmountRequested: PromiseOrValue<BigNumberish>;
+    burningCLBTokenAmount: PromiseOrValue<BigNumberish>;
+    burningTokenAmount: PromiseOrValue<BigNumberish>;
   };
 
-  export type LiquidityBinValueStructOutput = [number, BigNumber] & {
-    tradingFeeRate: number;
-    value: BigNumber;
-  };
-
-  export type LiquidityBinsParamStruct = {
-    tradingFeeRate: PromiseOrValue<BigNumberish>;
-    oracleVersion: PromiseOrValue<BigNumberish>;
-  };
-
-  export type LiquidityBinsParamStructOutput = [number, BigNumber] & {
-    tradingFeeRate: number;
-    oracleVersion: BigNumber;
-  };
-
-  export type LiquidityBinStruct = {
-    tradingFeeRate: PromiseOrValue<BigNumberish>;
-    liquidity: PromiseOrValue<BigNumberish>;
-    freeLiquidity: PromiseOrValue<BigNumberish>;
-    clbTokenAmount: PromiseOrValue<BigNumberish>;
-    burningAmount: PromiseOrValue<BigNumberish>;
-    tokenAmount: PromiseOrValue<BigNumberish>;
-  };
-
-  export type LiquidityBinStructOutput = [
-    number,
+  export type ClaimableLiquidityStructOutput = [
     BigNumber,
     BigNumber,
     BigNumber,
     BigNumber,
     BigNumber
   ] & {
-    tradingFeeRate: number;
+    mintingTokenAmountRequested: BigNumber;
+    mintingCLBTokenAmount: BigNumber;
+    burningCLBTokenAmountRequested: BigNumber;
+    burningCLBTokenAmount: BigNumber;
+    burningTokenAmount: BigNumber;
+  };
+
+  export type LiquidityBinStatusStruct = {
+    liquidity: PromiseOrValue<BigNumberish>;
+    freeLiquidity: PromiseOrValue<BigNumberish>;
+    binValue: PromiseOrValue<BigNumberish>;
+    tradingFeeRate: PromiseOrValue<BigNumberish>;
+  };
+
+  export type LiquidityBinStatusStructOutput = [
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    number
+  ] & {
     liquidity: BigNumber;
     freeLiquidity: BigNumber;
-    clbTokenAmount: BigNumber;
-    burningAmount: BigNumber;
-    tokenAmount: BigNumber;
+    binValue: BigNumber;
+    tradingFeeRate: number;
+  };
+}
+
+export declare namespace ChromaticLens {
+  export type CLBBalanceStruct = {
+    tokenId: PromiseOrValue<BigNumberish>;
+    balance: PromiseOrValue<BigNumberish>;
+    totalSupply: PromiseOrValue<BigNumberish>;
+    binValue: PromiseOrValue<BigNumberish>;
+  };
+
+  export type CLBBalanceStructOutput = [
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ] & {
+    tokenId: BigNumber;
+    balance: BigNumber;
+    totalSupply: BigNumber;
+    binValue: BigNumber;
   };
 }
 
@@ -109,86 +128,69 @@ export declare namespace IOracleProvider {
 
 export interface ChromaticLensInterface extends utils.Interface {
   functions: {
-    "calculateCLBTokenMintingBatch(address,int16[],uint256[])": FunctionFragment;
-    "calculateCLBTokenValueBatch(address,int16[],uint256[])": FunctionFragment;
-    "liquidityBinValue(address,int16[])": FunctionFragment;
-    "liquidityBins(address,(int16,uint256)[])": FunctionFragment;
-    "lpReceipts(address,uint256[])": FunctionFragment;
-    "oracleAtVersions(address,uint256[])": FunctionFragment;
-    "totalSupplies(address,int16[])": FunctionFragment;
+    "claimableLiquidity(address,int16,uint256)": FunctionFragment;
+    "clbBalanceOf(address,address)": FunctionFragment;
+    "liquidityBinStatuses(address)": FunctionFragment;
+    "lpReceipts(address,address)": FunctionFragment;
+    "multicall(bytes[])": FunctionFragment;
+    "oracleVersion(address,uint256)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "calculateCLBTokenMintingBatch"
-      | "calculateCLBTokenValueBatch"
-      | "liquidityBinValue"
-      | "liquidityBins"
+      | "claimableLiquidity"
+      | "clbBalanceOf"
+      | "liquidityBinStatuses"
       | "lpReceipts"
-      | "oracleAtVersions"
-      | "totalSupplies"
+      | "multicall"
+      | "oracleVersion"
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "calculateCLBTokenMintingBatch",
+    functionFragment: "claimableLiquidity",
     values: [
       PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[]
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "calculateCLBTokenValueBatch",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[]
-    ]
+    functionFragment: "clbBalanceOf",
+    values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
-    functionFragment: "liquidityBinValue",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "liquidityBins",
-    values: [PromiseOrValue<string>, ChromaticLens.LiquidityBinsParamStruct[]]
+    functionFragment: "liquidityBinStatuses",
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "lpReceipts",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>[]]
+    values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
-    functionFragment: "oracleAtVersions",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>[]]
+    functionFragment: "multicall",
+    values: [PromiseOrValue<BytesLike>[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "totalSupplies",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>[]]
+    functionFragment: "oracleVersion",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "calculateCLBTokenMintingBatch",
+    functionFragment: "claimableLiquidity",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "calculateCLBTokenValueBatch",
+    functionFragment: "clbBalanceOf",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "liquidityBinValue",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "liquidityBins",
+    functionFragment: "liquidityBinStatuses",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "lpReceipts", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "multicall", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "oracleAtVersions",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "totalSupplies",
+    functionFragment: "oracleVersion",
     data: BytesLike
   ): Result;
 
@@ -223,402 +225,325 @@ export interface ChromaticLens extends BaseContract {
 
   functions: {
     /**
-     * Calculates the amount of CLB tokens to be minted for each trading fee rate and specified amount in the given Chromatic market.
-     * @param amounts An array of specified amounts.
-     * @param market The address of the Chromatic market contract.
-     * @param tradingFeeRates An array of trading fee rates.
+     * Retrieves the claimable liquidity information for a specific trading fee rate and oracle version from the given Chromatic Market.
+     * @param _oracleVersion The oracle version for which to retrieve the claimable liquidity.
+     * @param market The Chromatic Market from which to retrieve the claimable liquidity information.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
      */
-    calculateCLBTokenMintingBatch(
+    claimableLiquidity(
       market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      _oracleVersion: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[BigNumber[]] & { results: BigNumber[] }>;
+    ): Promise<[ILiquidity.ClaimableLiquidityStructOutput]>;
 
     /**
-     * Calculates the value of CLB tokens for each trading fee rate and CLB token amount in the given Chromatic market.
-     * @param clbTokenAmounts An array of CLB token amounts.
+     * Retrieves the CLB token balances for the specified owner in the given Chromatic market.
      * @param market The address of the Chromatic market contract.
-     * @param tradingFeeRates An array of trading fee rates.
+     * @param owner The address of the CLB token owner.
      */
-    calculateCLBTokenValueBatch(
+    clbBalanceOf(
       market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
+      owner: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<[BigNumber[]] & { results: BigNumber[] }>;
+    ): Promise<[ChromaticLens.CLBBalanceStructOutput[]]>;
 
     /**
-     * Retrieves the liquidity bin values for the specified trading fee rates in the given Chromatic market.
-     * @param market The address of the Chromatic market contract.
-     * @param tradingFeeRates An array of trading fee rates.
+     * Retrieves the liquidity bin statuses for the specified Chromatic Market.
+     * @param market The Chromatic Market contract for which liquidity bin statuses are retrieved.
      */
-    liquidityBinValue(
+    liquidityBinStatuses(
       market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
-    ): Promise<
-      [ChromaticLens.LiquidityBinValueStructOutput[]] & {
-        results: ChromaticLens.LiquidityBinValueStructOutput[];
-      }
-    >;
-
-    liquidityBins(
-      market: PromiseOrValue<string>,
-      params: ChromaticLens.LiquidityBinsParamStruct[],
-      overrides?: CallOverrides
-    ): Promise<
-      [ChromaticLens.LiquidityBinStructOutput[]] & {
-        results: ChromaticLens.LiquidityBinStructOutput[];
-      }
-    >;
+    ): Promise<[ILiquidity.LiquidityBinStatusStructOutput[]]>;
 
     /**
-     * Retrieves the LP receipts for the specified receipt IDs in the given Chromatic market.
+     * Retrieves the LP receipts for the specified owner in the given Chromatic market.
      * @param market The address of the Chromatic market contract.
-     * @param receiptIds An array of receipt IDs.
+     * @param owner The address of the LP token owner.
      */
     lpReceipts(
       market: PromiseOrValue<string>,
-      receiptIds: PromiseOrValue<BigNumberish>[],
+      owner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[LpReceiptStructOutput[]] & { result: LpReceiptStructOutput[] }>;
 
     /**
-     * Retrieves the Oracle versions for the specified oracle versions in the given Chromatic market.
-     * @param market The address of the Chromatic market contract.
-     * @param oracleVersions An array of Oracle versions.
+     * Receives and executes a batch of function calls on this contract.
      */
-    oracleAtVersions(
-      market: PromiseOrValue<string>,
-      oracleVersions: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<
-      [IOracleProvider.OracleVersionStructOutput[]] & {
-        results: IOracleProvider.OracleVersionStructOutput[];
-      }
-    >;
+    multicall(
+      data: PromiseOrValue<BytesLike>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
     /**
-     * Retrieves the total supply of CLB tokens for each trading fee rate in the given Chromatic market.
+     * Retrieves the OracleVersion for the specified oracle version in the given Chromatic market.
      * @param market The address of the Chromatic market contract.
-     * @param tradingFeeRates An array of trading fee rates.
+     * @param version An oracle versions.
      */
-    totalSupplies(
+    oracleVersion(
       market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      version: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[BigNumber[]] & { supplies: BigNumber[] }>;
+    ): Promise<[IOracleProvider.OracleVersionStructOutput]>;
   };
 
   /**
-   * Calculates the amount of CLB tokens to be minted for each trading fee rate and specified amount in the given Chromatic market.
-   * @param amounts An array of specified amounts.
-   * @param market The address of the Chromatic market contract.
-   * @param tradingFeeRates An array of trading fee rates.
+   * Retrieves the claimable liquidity information for a specific trading fee rate and oracle version from the given Chromatic Market.
+   * @param _oracleVersion The oracle version for which to retrieve the claimable liquidity.
+   * @param market The Chromatic Market from which to retrieve the claimable liquidity information.
+   * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
    */
-  calculateCLBTokenMintingBatch(
+  claimableLiquidity(
     market: PromiseOrValue<string>,
-    tradingFeeRates: PromiseOrValue<BigNumberish>[],
-    amounts: PromiseOrValue<BigNumberish>[],
+    tradingFeeRate: PromiseOrValue<BigNumberish>,
+    _oracleVersion: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
-  ): Promise<BigNumber[]>;
+  ): Promise<ILiquidity.ClaimableLiquidityStructOutput>;
 
   /**
-   * Calculates the value of CLB tokens for each trading fee rate and CLB token amount in the given Chromatic market.
-   * @param clbTokenAmounts An array of CLB token amounts.
+   * Retrieves the CLB token balances for the specified owner in the given Chromatic market.
    * @param market The address of the Chromatic market contract.
-   * @param tradingFeeRates An array of trading fee rates.
+   * @param owner The address of the CLB token owner.
    */
-  calculateCLBTokenValueBatch(
+  clbBalanceOf(
     market: PromiseOrValue<string>,
-    tradingFeeRates: PromiseOrValue<BigNumberish>[],
-    clbTokenAmounts: PromiseOrValue<BigNumberish>[],
+    owner: PromiseOrValue<string>,
     overrides?: CallOverrides
-  ): Promise<BigNumber[]>;
+  ): Promise<ChromaticLens.CLBBalanceStructOutput[]>;
 
   /**
-   * Retrieves the liquidity bin values for the specified trading fee rates in the given Chromatic market.
-   * @param market The address of the Chromatic market contract.
-   * @param tradingFeeRates An array of trading fee rates.
+   * Retrieves the liquidity bin statuses for the specified Chromatic Market.
+   * @param market The Chromatic Market contract for which liquidity bin statuses are retrieved.
    */
-  liquidityBinValue(
+  liquidityBinStatuses(
     market: PromiseOrValue<string>,
-    tradingFeeRates: PromiseOrValue<BigNumberish>[],
     overrides?: CallOverrides
-  ): Promise<ChromaticLens.LiquidityBinValueStructOutput[]>;
-
-  liquidityBins(
-    market: PromiseOrValue<string>,
-    params: ChromaticLens.LiquidityBinsParamStruct[],
-    overrides?: CallOverrides
-  ): Promise<ChromaticLens.LiquidityBinStructOutput[]>;
+  ): Promise<ILiquidity.LiquidityBinStatusStructOutput[]>;
 
   /**
-   * Retrieves the LP receipts for the specified receipt IDs in the given Chromatic market.
+   * Retrieves the LP receipts for the specified owner in the given Chromatic market.
    * @param market The address of the Chromatic market contract.
-   * @param receiptIds An array of receipt IDs.
+   * @param owner The address of the LP token owner.
    */
   lpReceipts(
     market: PromiseOrValue<string>,
-    receiptIds: PromiseOrValue<BigNumberish>[],
+    owner: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<LpReceiptStructOutput[]>;
 
   /**
-   * Retrieves the Oracle versions for the specified oracle versions in the given Chromatic market.
-   * @param market The address of the Chromatic market contract.
-   * @param oracleVersions An array of Oracle versions.
+   * Receives and executes a batch of function calls on this contract.
    */
-  oracleAtVersions(
-    market: PromiseOrValue<string>,
-    oracleVersions: PromiseOrValue<BigNumberish>[],
-    overrides?: CallOverrides
-  ): Promise<IOracleProvider.OracleVersionStructOutput[]>;
+  multicall(
+    data: PromiseOrValue<BytesLike>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   /**
-   * Retrieves the total supply of CLB tokens for each trading fee rate in the given Chromatic market.
+   * Retrieves the OracleVersion for the specified oracle version in the given Chromatic market.
    * @param market The address of the Chromatic market contract.
-   * @param tradingFeeRates An array of trading fee rates.
+   * @param version An oracle versions.
    */
-  totalSupplies(
+  oracleVersion(
     market: PromiseOrValue<string>,
-    tradingFeeRates: PromiseOrValue<BigNumberish>[],
+    version: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
-  ): Promise<BigNumber[]>;
+  ): Promise<IOracleProvider.OracleVersionStructOutput>;
 
   callStatic: {
     /**
-     * Calculates the amount of CLB tokens to be minted for each trading fee rate and specified amount in the given Chromatic market.
-     * @param amounts An array of specified amounts.
-     * @param market The address of the Chromatic market contract.
-     * @param tradingFeeRates An array of trading fee rates.
+     * Retrieves the claimable liquidity information for a specific trading fee rate and oracle version from the given Chromatic Market.
+     * @param _oracleVersion The oracle version for which to retrieve the claimable liquidity.
+     * @param market The Chromatic Market from which to retrieve the claimable liquidity information.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
      */
-    calculateCLBTokenMintingBatch(
+    claimableLiquidity(
       market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      _oracleVersion: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<BigNumber[]>;
+    ): Promise<ILiquidity.ClaimableLiquidityStructOutput>;
 
     /**
-     * Calculates the value of CLB tokens for each trading fee rate and CLB token amount in the given Chromatic market.
-     * @param clbTokenAmounts An array of CLB token amounts.
+     * Retrieves the CLB token balances for the specified owner in the given Chromatic market.
      * @param market The address of the Chromatic market contract.
-     * @param tradingFeeRates An array of trading fee rates.
+     * @param owner The address of the CLB token owner.
      */
-    calculateCLBTokenValueBatch(
+    clbBalanceOf(
       market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
+      owner: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<BigNumber[]>;
+    ): Promise<ChromaticLens.CLBBalanceStructOutput[]>;
 
     /**
-     * Retrieves the liquidity bin values for the specified trading fee rates in the given Chromatic market.
-     * @param market The address of the Chromatic market contract.
-     * @param tradingFeeRates An array of trading fee rates.
+     * Retrieves the liquidity bin statuses for the specified Chromatic Market.
+     * @param market The Chromatic Market contract for which liquidity bin statuses are retrieved.
      */
-    liquidityBinValue(
+    liquidityBinStatuses(
       market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
-    ): Promise<ChromaticLens.LiquidityBinValueStructOutput[]>;
-
-    liquidityBins(
-      market: PromiseOrValue<string>,
-      params: ChromaticLens.LiquidityBinsParamStruct[],
-      overrides?: CallOverrides
-    ): Promise<ChromaticLens.LiquidityBinStructOutput[]>;
+    ): Promise<ILiquidity.LiquidityBinStatusStructOutput[]>;
 
     /**
-     * Retrieves the LP receipts for the specified receipt IDs in the given Chromatic market.
+     * Retrieves the LP receipts for the specified owner in the given Chromatic market.
      * @param market The address of the Chromatic market contract.
-     * @param receiptIds An array of receipt IDs.
+     * @param owner The address of the LP token owner.
      */
     lpReceipts(
       market: PromiseOrValue<string>,
-      receiptIds: PromiseOrValue<BigNumberish>[],
+      owner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput[]>;
 
     /**
-     * Retrieves the Oracle versions for the specified oracle versions in the given Chromatic market.
-     * @param market The address of the Chromatic market contract.
-     * @param oracleVersions An array of Oracle versions.
+     * Receives and executes a batch of function calls on this contract.
      */
-    oracleAtVersions(
-      market: PromiseOrValue<string>,
-      oracleVersions: PromiseOrValue<BigNumberish>[],
+    multicall(
+      data: PromiseOrValue<BytesLike>[],
       overrides?: CallOverrides
-    ): Promise<IOracleProvider.OracleVersionStructOutput[]>;
+    ): Promise<string[]>;
 
     /**
-     * Retrieves the total supply of CLB tokens for each trading fee rate in the given Chromatic market.
+     * Retrieves the OracleVersion for the specified oracle version in the given Chromatic market.
      * @param market The address of the Chromatic market contract.
-     * @param tradingFeeRates An array of trading fee rates.
+     * @param version An oracle versions.
      */
-    totalSupplies(
+    oracleVersion(
       market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      version: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<BigNumber[]>;
+    ): Promise<IOracleProvider.OracleVersionStructOutput>;
   };
 
   filters: {};
 
   estimateGas: {
     /**
-     * Calculates the amount of CLB tokens to be minted for each trading fee rate and specified amount in the given Chromatic market.
-     * @param amounts An array of specified amounts.
-     * @param market The address of the Chromatic market contract.
-     * @param tradingFeeRates An array of trading fee rates.
+     * Retrieves the claimable liquidity information for a specific trading fee rate and oracle version from the given Chromatic Market.
+     * @param _oracleVersion The oracle version for which to retrieve the claimable liquidity.
+     * @param market The Chromatic Market from which to retrieve the claimable liquidity information.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
      */
-    calculateCLBTokenMintingBatch(
+    claimableLiquidity(
       market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      _oracleVersion: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     /**
-     * Calculates the value of CLB tokens for each trading fee rate and CLB token amount in the given Chromatic market.
-     * @param clbTokenAmounts An array of CLB token amounts.
+     * Retrieves the CLB token balances for the specified owner in the given Chromatic market.
      * @param market The address of the Chromatic market contract.
-     * @param tradingFeeRates An array of trading fee rates.
+     * @param owner The address of the CLB token owner.
      */
-    calculateCLBTokenValueBatch(
+    clbBalanceOf(
       market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
+      owner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     /**
-     * Retrieves the liquidity bin values for the specified trading fee rates in the given Chromatic market.
-     * @param market The address of the Chromatic market contract.
-     * @param tradingFeeRates An array of trading fee rates.
+     * Retrieves the liquidity bin statuses for the specified Chromatic Market.
+     * @param market The Chromatic Market contract for which liquidity bin statuses are retrieved.
      */
-    liquidityBinValue(
+    liquidityBinStatuses(
       market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    liquidityBins(
-      market: PromiseOrValue<string>,
-      params: ChromaticLens.LiquidityBinsParamStruct[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     /**
-     * Retrieves the LP receipts for the specified receipt IDs in the given Chromatic market.
+     * Retrieves the LP receipts for the specified owner in the given Chromatic market.
      * @param market The address of the Chromatic market contract.
-     * @param receiptIds An array of receipt IDs.
+     * @param owner The address of the LP token owner.
      */
     lpReceipts(
       market: PromiseOrValue<string>,
-      receiptIds: PromiseOrValue<BigNumberish>[],
+      owner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     /**
-     * Retrieves the Oracle versions for the specified oracle versions in the given Chromatic market.
-     * @param market The address of the Chromatic market contract.
-     * @param oracleVersions An array of Oracle versions.
+     * Receives and executes a batch of function calls on this contract.
      */
-    oracleAtVersions(
-      market: PromiseOrValue<string>,
-      oracleVersions: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
+    multicall(
+      data: PromiseOrValue<BytesLike>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     /**
-     * Retrieves the total supply of CLB tokens for each trading fee rate in the given Chromatic market.
+     * Retrieves the OracleVersion for the specified oracle version in the given Chromatic market.
      * @param market The address of the Chromatic market contract.
-     * @param tradingFeeRates An array of trading fee rates.
+     * @param version An oracle versions.
      */
-    totalSupplies(
+    oracleVersion(
       market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      version: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     /**
-     * Calculates the amount of CLB tokens to be minted for each trading fee rate and specified amount in the given Chromatic market.
-     * @param amounts An array of specified amounts.
-     * @param market The address of the Chromatic market contract.
-     * @param tradingFeeRates An array of trading fee rates.
+     * Retrieves the claimable liquidity information for a specific trading fee rate and oracle version from the given Chromatic Market.
+     * @param _oracleVersion The oracle version for which to retrieve the claimable liquidity.
+     * @param market The Chromatic Market from which to retrieve the claimable liquidity information.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
      */
-    calculateCLBTokenMintingBatch(
+    claimableLiquidity(
       market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
+      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      _oracleVersion: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Calculates the value of CLB tokens for each trading fee rate and CLB token amount in the given Chromatic market.
-     * @param clbTokenAmounts An array of CLB token amounts.
+     * Retrieves the CLB token balances for the specified owner in the given Chromatic market.
      * @param market The address of the Chromatic market contract.
-     * @param tradingFeeRates An array of trading fee rates.
+     * @param owner The address of the CLB token owner.
      */
-    calculateCLBTokenValueBatch(
+    clbBalanceOf(
       market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
+      owner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Retrieves the liquidity bin values for the specified trading fee rates in the given Chromatic market.
-     * @param market The address of the Chromatic market contract.
-     * @param tradingFeeRates An array of trading fee rates.
+     * Retrieves the liquidity bin statuses for the specified Chromatic Market.
+     * @param market The Chromatic Market contract for which liquidity bin statuses are retrieved.
      */
-    liquidityBinValue(
+    liquidityBinStatuses(
       market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    liquidityBins(
-      market: PromiseOrValue<string>,
-      params: ChromaticLens.LiquidityBinsParamStruct[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Retrieves the LP receipts for the specified receipt IDs in the given Chromatic market.
+     * Retrieves the LP receipts for the specified owner in the given Chromatic market.
      * @param market The address of the Chromatic market contract.
-     * @param receiptIds An array of receipt IDs.
+     * @param owner The address of the LP token owner.
      */
     lpReceipts(
       market: PromiseOrValue<string>,
-      receiptIds: PromiseOrValue<BigNumberish>[],
+      owner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Retrieves the Oracle versions for the specified oracle versions in the given Chromatic market.
-     * @param market The address of the Chromatic market contract.
-     * @param oracleVersions An array of Oracle versions.
+     * Receives and executes a batch of function calls on this contract.
      */
-    oracleAtVersions(
-      market: PromiseOrValue<string>,
-      oracleVersions: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
+    multicall(
+      data: PromiseOrValue<BytesLike>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Retrieves the total supply of CLB tokens for each trading fee rate in the given Chromatic market.
+     * Retrieves the OracleVersion for the specified oracle version in the given Chromatic market.
      * @param market The address of the Chromatic market contract.
-     * @param tradingFeeRates An array of trading fee rates.
+     * @param version An oracle versions.
      */
-    totalSupplies(
+    oracleVersion(
       market: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      version: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

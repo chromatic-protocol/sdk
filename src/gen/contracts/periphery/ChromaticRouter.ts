@@ -73,6 +73,7 @@ export type PositionStruct = {
   takerMargin: PromiseOrValue<BigNumberish>;
   owner: PromiseOrValue<string>;
   _binMargins: BinMarginStruct[];
+  _feeProtocol: PromiseOrValue<BigNumberish>;
 };
 
 export type PositionStructOutput = [
@@ -85,7 +86,8 @@ export type PositionStructOutput = [
   BigNumber,
   BigNumber,
   string,
-  BinMarginStructOutput[]
+  BinMarginStructOutput[],
+  number
 ] & {
   id: BigNumber;
   openVersion: BigNumber;
@@ -97,6 +99,7 @@ export type PositionStructOutput = [
   takerMargin: BigNumber;
   owner: string;
   _binMargins: BinMarginStructOutput[];
+  _feeProtocol: number;
 };
 
 export interface ChromaticRouterInterface extends utils.Interface {

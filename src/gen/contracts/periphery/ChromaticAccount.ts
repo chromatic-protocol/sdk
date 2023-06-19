@@ -44,6 +44,7 @@ export type PositionStruct = {
   takerMargin: PromiseOrValue<BigNumberish>;
   owner: PromiseOrValue<string>;
   _binMargins: BinMarginStruct[];
+  _feeProtocol: PromiseOrValue<BigNumberish>;
 };
 
 export type PositionStructOutput = [
@@ -56,7 +57,8 @@ export type PositionStructOutput = [
   BigNumber,
   BigNumber,
   string,
-  BinMarginStructOutput[]
+  BinMarginStructOutput[],
+  number
 ] & {
   id: BigNumber;
   openVersion: BigNumber;
@@ -68,6 +70,7 @@ export type PositionStructOutput = [
   takerMargin: BigNumber;
   owner: string;
   _binMargins: BinMarginStructOutput[];
+  _feeProtocol: number;
 };
 
 export interface ChromaticAccountInterface extends utils.Interface {
@@ -244,7 +247,7 @@ export interface ChromaticAccount extends BaseContract {
      */
     claimPositionCallback(
       positionId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      arg1: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -322,7 +325,7 @@ export interface ChromaticAccount extends BaseContract {
       settlementToken: PromiseOrValue<string>,
       vault: PromiseOrValue<string>,
       marginRequired: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      arg3: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -365,7 +368,7 @@ export interface ChromaticAccount extends BaseContract {
    */
   claimPositionCallback(
     positionId: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
+    arg1: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -443,7 +446,7 @@ export interface ChromaticAccount extends BaseContract {
     settlementToken: PromiseOrValue<string>,
     vault: PromiseOrValue<string>,
     marginRequired: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
+    arg3: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -486,7 +489,7 @@ export interface ChromaticAccount extends BaseContract {
      */
     claimPositionCallback(
       positionId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      arg1: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -564,7 +567,7 @@ export interface ChromaticAccount extends BaseContract {
       settlementToken: PromiseOrValue<string>,
       vault: PromiseOrValue<string>,
       marginRequired: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      arg3: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -610,7 +613,7 @@ export interface ChromaticAccount extends BaseContract {
      */
     claimPositionCallback(
       positionId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      arg1: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -688,7 +691,7 @@ export interface ChromaticAccount extends BaseContract {
       settlementToken: PromiseOrValue<string>,
       vault: PromiseOrValue<string>,
       marginRequired: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      arg3: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -732,7 +735,7 @@ export interface ChromaticAccount extends BaseContract {
      */
     claimPositionCallback(
       positionId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      arg1: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -810,7 +813,7 @@ export interface ChromaticAccount extends BaseContract {
       settlementToken: PromiseOrValue<string>,
       vault: PromiseOrValue<string>,
       marginRequired: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      arg3: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

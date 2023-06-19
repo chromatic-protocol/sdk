@@ -4,6 +4,7 @@
 import type {
   BaseContract,
   BigNumber,
+  BigNumberish,
   BytesLike,
   CallOverrides,
   ContractTransaction,
@@ -28,20 +29,28 @@ import type {
 
 export interface IOracleProviderRegistryInterface extends utils.Interface {
   functions: {
+    "getOracleProviderLevel(address)": FunctionFragment;
     "isRegisteredOracleProvider(address)": FunctionFragment;
     "registerOracleProvider(address)": FunctionFragment;
     "registeredOracleProviders()": FunctionFragment;
+    "setOracleProviderLevel(address,uint8)": FunctionFragment;
     "unregisterOracleProvider(address)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "getOracleProviderLevel"
       | "isRegisteredOracleProvider"
       | "registerOracleProvider"
       | "registeredOracleProviders"
+      | "setOracleProviderLevel"
       | "unregisterOracleProvider"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "getOracleProviderLevel",
+    values: [PromiseOrValue<string>]
+  ): string;
   encodeFunctionData(
     functionFragment: "isRegisteredOracleProvider",
     values: [PromiseOrValue<string>]
@@ -55,10 +64,18 @@ export interface IOracleProviderRegistryInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "setOracleProviderLevel",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "unregisterOracleProvider",
     values: [PromiseOrValue<string>]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "getOracleProviderLevel",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "isRegisteredOracleProvider",
     data: BytesLike
@@ -72,6 +89,10 @@ export interface IOracleProviderRegistryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setOracleProviderLevel",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "unregisterOracleProvider",
     data: BytesLike
   ): Result;
@@ -79,10 +100,12 @@ export interface IOracleProviderRegistryInterface extends utils.Interface {
   events: {
     "OracleProviderRegistered(address)": EventFragment;
     "OracleProviderUnregistered(address)": EventFragment;
+    "SetOracleProviderLevel(address,uint8)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "OracleProviderRegistered"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OracleProviderUnregistered"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetOracleProviderLevel"): EventFragment;
 }
 
 export interface OracleProviderRegisteredEventObject {
@@ -106,6 +129,18 @@ export type OracleProviderUnregisteredEvent = TypedEvent<
 
 export type OracleProviderUnregisteredEventFilter =
   TypedEventFilter<OracleProviderUnregisteredEvent>;
+
+export interface SetOracleProviderLevelEventObject {
+  oracleProvider: string;
+  level: number;
+}
+export type SetOracleProviderLevelEvent = TypedEvent<
+  [string, number],
+  SetOracleProviderLevelEventObject
+>;
+
+export type SetOracleProviderLevelEventFilter =
+  TypedEventFilter<SetOracleProviderLevelEvent>;
 
 export interface IOracleProviderRegistry extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -135,6 +170,15 @@ export interface IOracleProviderRegistry extends BaseContract {
 
   functions: {
     /**
+     * Retrieves the level of an oracle provider in the registry.
+     * @param oracleProvider The address of the oracle provider.
+     */
+    getOracleProviderLevel(
+      oracleProvider: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[number]>;
+
+    /**
      * Checks if an oracle provider is registered.
      * @param oracleProvider The address of the oracle provider to check.
      */
@@ -158,6 +202,18 @@ export interface IOracleProviderRegistry extends BaseContract {
     registeredOracleProviders(overrides?: CallOverrides): Promise<[string[]]>;
 
     /**
+     * The level must be either 0 or 1, and the max leverage must be x10 for level 0 or x20 for level 1.
+     * Sets the level of an oracle provider in the registry.
+     * @param level The new level to be set for the oracle provider.
+     * @param oracleProvider The address of the oracle provider.
+     */
+    setOracleProviderLevel(
+      oracleProvider: PromiseOrValue<string>,
+      level: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    /**
      * Unregisters an oracle provider.
      * @param oracleProvider The address of the oracle provider to unregister.
      */
@@ -166,6 +222,15 @@ export interface IOracleProviderRegistry extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
+
+  /**
+   * Retrieves the level of an oracle provider in the registry.
+   * @param oracleProvider The address of the oracle provider.
+   */
+  getOracleProviderLevel(
+    oracleProvider: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<number>;
 
   /**
    * Checks if an oracle provider is registered.
@@ -191,6 +256,18 @@ export interface IOracleProviderRegistry extends BaseContract {
   registeredOracleProviders(overrides?: CallOverrides): Promise<string[]>;
 
   /**
+   * The level must be either 0 or 1, and the max leverage must be x10 for level 0 or x20 for level 1.
+   * Sets the level of an oracle provider in the registry.
+   * @param level The new level to be set for the oracle provider.
+   * @param oracleProvider The address of the oracle provider.
+   */
+  setOracleProviderLevel(
+    oracleProvider: PromiseOrValue<string>,
+    level: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  /**
    * Unregisters an oracle provider.
    * @param oracleProvider The address of the oracle provider to unregister.
    */
@@ -200,6 +277,15 @@ export interface IOracleProviderRegistry extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    /**
+     * Retrieves the level of an oracle provider in the registry.
+     * @param oracleProvider The address of the oracle provider.
+     */
+    getOracleProviderLevel(
+      oracleProvider: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<number>;
+
     /**
      * Checks if an oracle provider is registered.
      * @param oracleProvider The address of the oracle provider to check.
@@ -222,6 +308,18 @@ export interface IOracleProviderRegistry extends BaseContract {
      * Gets the registered oracle providers.
      */
     registeredOracleProviders(overrides?: CallOverrides): Promise<string[]>;
+
+    /**
+     * The level must be either 0 or 1, and the max leverage must be x10 for level 0 or x20 for level 1.
+     * Sets the level of an oracle provider in the registry.
+     * @param level The new level to be set for the oracle provider.
+     * @param oracleProvider The address of the oracle provider.
+     */
+    setOracleProviderLevel(
+      oracleProvider: PromiseOrValue<string>,
+      level: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     /**
      * Unregisters an oracle provider.
@@ -247,9 +345,27 @@ export interface IOracleProviderRegistry extends BaseContract {
     OracleProviderUnregistered(
       oracleProvider?: PromiseOrValue<string> | null
     ): OracleProviderUnregisteredEventFilter;
+
+    "SetOracleProviderLevel(address,uint8)"(
+      oracleProvider?: PromiseOrValue<string> | null,
+      level?: PromiseOrValue<BigNumberish> | null
+    ): SetOracleProviderLevelEventFilter;
+    SetOracleProviderLevel(
+      oracleProvider?: PromiseOrValue<string> | null,
+      level?: PromiseOrValue<BigNumberish> | null
+    ): SetOracleProviderLevelEventFilter;
   };
 
   estimateGas: {
+    /**
+     * Retrieves the level of an oracle provider in the registry.
+     * @param oracleProvider The address of the oracle provider.
+     */
+    getOracleProviderLevel(
+      oracleProvider: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     /**
      * Checks if an oracle provider is registered.
      * @param oracleProvider The address of the oracle provider to check.
@@ -274,6 +390,18 @@ export interface IOracleProviderRegistry extends BaseContract {
     registeredOracleProviders(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
+     * The level must be either 0 or 1, and the max leverage must be x10 for level 0 or x20 for level 1.
+     * Sets the level of an oracle provider in the registry.
+     * @param level The new level to be set for the oracle provider.
+     * @param oracleProvider The address of the oracle provider.
+     */
+    setOracleProviderLevel(
+      oracleProvider: PromiseOrValue<string>,
+      level: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    /**
      * Unregisters an oracle provider.
      * @param oracleProvider The address of the oracle provider to unregister.
      */
@@ -284,6 +412,15 @@ export interface IOracleProviderRegistry extends BaseContract {
   };
 
   populateTransaction: {
+    /**
+     * Retrieves the level of an oracle provider in the registry.
+     * @param oracleProvider The address of the oracle provider.
+     */
+    getOracleProviderLevel(
+      oracleProvider: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     /**
      * Checks if an oracle provider is registered.
      * @param oracleProvider The address of the oracle provider to check.
@@ -307,6 +444,18 @@ export interface IOracleProviderRegistry extends BaseContract {
      */
     registeredOracleProviders(
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * The level must be either 0 or 1, and the max leverage must be x10 for level 0 or x20 for level 1.
+     * Sets the level of an oracle provider in the registry.
+     * @param level The new level to be set for the oracle provider.
+     * @param oracleProvider The address of the oracle provider.
+     */
+    setOracleProviderLevel(
+      oracleProvider: PromiseOrValue<string>,
+      level: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     /**

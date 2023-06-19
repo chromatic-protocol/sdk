@@ -22,6 +22,11 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "ExceedMaxAllowableLeverage",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "ExceedMaxAllowableTradingFee",
     type: "error",
   },
@@ -279,6 +284,11 @@ const _abi = [
             name: "_binMargins",
             type: "tuple[]",
           },
+          {
+            internalType: "uint8",
+            name: "_feeProtocol",
+            type: "uint8",
+          },
         ],
         indexed: false,
         internalType: "struct Position",
@@ -361,6 +371,11 @@ const _abi = [
             internalType: "struct BinMargin[]",
             name: "_binMargins",
             type: "tuple[]",
+          },
+          {
+            internalType: "uint8",
+            name: "_feeProtocol",
+            type: "uint8",
           },
         ],
         indexed: false,
@@ -451,6 +466,11 @@ const _abi = [
             name: "_binMargins",
             type: "tuple[]",
           },
+          {
+            internalType: "uint8",
+            name: "_feeProtocol",
+            type: "uint8",
+          },
         ],
         indexed: false,
         internalType: "struct Position",
@@ -533,6 +553,11 @@ const _abi = [
             internalType: "struct BinMargin[]",
             name: "_binMargins",
             type: "tuple[]",
+          },
+          {
+            internalType: "uint8",
+            name: "_feeProtocol",
+            type: "uint8",
           },
         ],
         indexed: false,
@@ -1149,6 +1174,11 @@ const _abi = [
             name: "_binMargins",
             type: "tuple[]",
           },
+          {
+            internalType: "uint8",
+            name: "_feeProtocol",
+            type: "uint8",
+          },
         ],
         internalType: "struct Position[]",
         name: "_positions",
@@ -1246,27 +1276,27 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "operator",
+        name: "",
         type: "address",
       },
       {
         internalType: "address",
-        name: "from",
+        name: "",
         type: "address",
       },
       {
         internalType: "uint256[]",
-        name: "ids",
+        name: "",
         type: "uint256[]",
       },
       {
         internalType: "uint256[]",
-        name: "values",
+        name: "",
         type: "uint256[]",
       },
       {
         internalType: "bytes",
-        name: "data",
+        name: "",
         type: "bytes",
       },
     ],
@@ -1285,27 +1315,27 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "operator",
+        name: "",
         type: "address",
       },
       {
         internalType: "address",
-        name: "from",
+        name: "",
         type: "address",
       },
       {
         internalType: "uint256",
-        name: "id",
+        name: "",
         type: "uint256",
       },
       {
         internalType: "uint256",
-        name: "value",
+        name: "",
         type: "uint256",
       },
       {
         internalType: "bytes",
-        name: "data",
+        name: "",
         type: "bytes",
       },
     ],
@@ -1418,6 +1448,11 @@ const _abi = [
             internalType: "struct BinMargin[]",
             name: "_binMargins",
             type: "tuple[]",
+          },
+          {
+            internalType: "uint8",
+            name: "_feeProtocol",
+            type: "uint8",
           },
         ],
         internalType: "struct Position",
@@ -1551,7 +1586,7 @@ const _abi = [
         type: "bool",
       },
     ],
-    stateMutability: "view",
+    stateMutability: "pure",
     type: "function",
   },
   {

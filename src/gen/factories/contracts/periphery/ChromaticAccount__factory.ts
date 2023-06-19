@@ -86,7 +86,7 @@ const _abi = [
       },
       {
         internalType: "bytes",
-        name: "data",
+        name: "",
         type: "bytes",
       },
     ],
@@ -278,6 +278,11 @@ const _abi = [
             name: "_binMargins",
             type: "tuple[]",
           },
+          {
+            internalType: "uint8",
+            name: "_feeProtocol",
+            type: "uint8",
+          },
         ],
         internalType: "struct Position",
         name: "position",
@@ -306,7 +311,7 @@ const _abi = [
       },
       {
         internalType: "bytes",
-        name: "data",
+        name: "",
         type: "bytes",
       },
     ],

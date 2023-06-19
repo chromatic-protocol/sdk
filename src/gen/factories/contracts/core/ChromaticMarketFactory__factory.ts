@@ -240,6 +240,25 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
+        name: "oracleProvider",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "uint8",
+        name: "level",
+        type: "uint8",
+      },
+    ],
+    name: "SetOracleProviderLevel",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
         name: "token",
         type: "address",
       },
@@ -642,6 +661,25 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
+        name: "oracleProvider",
+        type: "address",
+      },
+    ],
+    name: "getOracleProviderLevel",
+    outputs: [
+      {
+        internalType: "uint8",
+        name: "",
+        type: "uint8",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "token",
         type: "address",
       },
@@ -924,6 +962,24 @@ const _abi = [
       },
     ],
     name: "setMinimumMargin",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "oracleProvider",
+        type: "address",
+      },
+      {
+        internalType: "uint8",
+        name: "level",
+        type: "uint8",
+      },
+    ],
+    name: "setOracleProviderLevel",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

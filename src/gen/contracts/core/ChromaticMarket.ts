@@ -73,6 +73,7 @@ export type PositionStruct = {
   takerMargin: PromiseOrValue<BigNumberish>;
   owner: PromiseOrValue<string>;
   _binMargins: BinMarginStruct[];
+  _feeProtocol: PromiseOrValue<BigNumberish>;
 };
 
 export type PositionStructOutput = [
@@ -85,7 +86,8 @@ export type PositionStructOutput = [
   BigNumber,
   BigNumber,
   string,
-  BinMarginStructOutput[]
+  BinMarginStructOutput[],
+  number
 ] & {
   id: BigNumber;
   openVersion: BigNumber;
@@ -97,6 +99,7 @@ export type PositionStructOutput = [
   takerMargin: BigNumber;
   owner: string;
   _binMargins: BinMarginStructOutput[];
+  _feeProtocol: number;
 };
 
 export declare namespace ILiquidity {
@@ -824,11 +827,11 @@ export interface ChromaticMarket extends BaseContract {
      * @param values An array containing amounts of each token being transferred (order and length must match ids array)
      */
     onERC1155BatchReceived(
-      operator: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      ids: PromiseOrValue<BigNumberish>[],
-      values: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      arg2: PromiseOrValue<BigNumberish>[],
+      arg3: PromiseOrValue<BigNumberish>[],
+      arg4: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
@@ -841,11 +844,11 @@ export interface ChromaticMarket extends BaseContract {
      * @param value The amount of tokens being transferred
      */
     onERC1155Received(
-      operator: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
-      value: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      arg2: PromiseOrValue<BigNumberish>,
+      arg3: PromiseOrValue<BigNumberish>,
+      arg4: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
@@ -1105,11 +1108,11 @@ export interface ChromaticMarket extends BaseContract {
    * @param values An array containing amounts of each token being transferred (order and length must match ids array)
    */
   onERC1155BatchReceived(
-    operator: PromiseOrValue<string>,
-    from: PromiseOrValue<string>,
-    ids: PromiseOrValue<BigNumberish>[],
-    values: PromiseOrValue<BigNumberish>[],
-    data: PromiseOrValue<BytesLike>,
+    arg0: PromiseOrValue<string>,
+    arg1: PromiseOrValue<string>,
+    arg2: PromiseOrValue<BigNumberish>[],
+    arg3: PromiseOrValue<BigNumberish>[],
+    arg4: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<string>;
 
@@ -1122,11 +1125,11 @@ export interface ChromaticMarket extends BaseContract {
    * @param value The amount of tokens being transferred
    */
   onERC1155Received(
-    operator: PromiseOrValue<string>,
-    from: PromiseOrValue<string>,
-    id: PromiseOrValue<BigNumberish>,
-    value: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
+    arg0: PromiseOrValue<string>,
+    arg1: PromiseOrValue<string>,
+    arg2: PromiseOrValue<BigNumberish>,
+    arg3: PromiseOrValue<BigNumberish>,
+    arg4: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<string>;
 
@@ -1386,11 +1389,11 @@ export interface ChromaticMarket extends BaseContract {
      * @param values An array containing amounts of each token being transferred (order and length must match ids array)
      */
     onERC1155BatchReceived(
-      operator: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      ids: PromiseOrValue<BigNumberish>[],
-      values: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      arg2: PromiseOrValue<BigNumberish>[],
+      arg3: PromiseOrValue<BigNumberish>[],
+      arg4: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -1403,11 +1406,11 @@ export interface ChromaticMarket extends BaseContract {
      * @param value The amount of tokens being transferred
      */
     onERC1155Received(
-      operator: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
-      value: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      arg2: PromiseOrValue<BigNumberish>,
+      arg3: PromiseOrValue<BigNumberish>,
+      arg4: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -1768,11 +1771,11 @@ export interface ChromaticMarket extends BaseContract {
      * @param values An array containing amounts of each token being transferred (order and length must match ids array)
      */
     onERC1155BatchReceived(
-      operator: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      ids: PromiseOrValue<BigNumberish>[],
-      values: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      arg2: PromiseOrValue<BigNumberish>[],
+      arg3: PromiseOrValue<BigNumberish>[],
+      arg4: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1785,11 +1788,11 @@ export interface ChromaticMarket extends BaseContract {
      * @param value The amount of tokens being transferred
      */
     onERC1155Received(
-      operator: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
-      value: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      arg2: PromiseOrValue<BigNumberish>,
+      arg3: PromiseOrValue<BigNumberish>,
+      arg4: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2050,11 +2053,11 @@ export interface ChromaticMarket extends BaseContract {
      * @param values An array containing amounts of each token being transferred (order and length must match ids array)
      */
     onERC1155BatchReceived(
-      operator: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      ids: PromiseOrValue<BigNumberish>[],
-      values: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      arg2: PromiseOrValue<BigNumberish>[],
+      arg3: PromiseOrValue<BigNumberish>[],
+      arg4: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2067,11 +2070,11 @@ export interface ChromaticMarket extends BaseContract {
      * @param value The amount of tokens being transferred
      */
     onERC1155Received(
-      operator: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
-      value: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      arg2: PromiseOrValue<BigNumberish>,
+      arg3: PromiseOrValue<BigNumberish>,
+      arg4: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

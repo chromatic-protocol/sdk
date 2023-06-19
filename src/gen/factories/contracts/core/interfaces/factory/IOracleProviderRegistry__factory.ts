@@ -37,6 +37,44 @@ const _abi = [
     type: "event",
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "oracleProvider",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "uint8",
+        name: "level",
+        type: "uint8",
+      },
+    ],
+    name: "SetOracleProviderLevel",
+    type: "event",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "oracleProvider",
+        type: "address",
+      },
+    ],
+    name: "getOracleProviderLevel",
+    outputs: [
+      {
+        internalType: "uint8",
+        name: "",
+        type: "uint8",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -79,6 +117,24 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "oracleProvider",
+        type: "address",
+      },
+      {
+        internalType: "uint8",
+        name: "level",
+        type: "uint8",
+      },
+    ],
+    name: "setOracleProviderLevel",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {

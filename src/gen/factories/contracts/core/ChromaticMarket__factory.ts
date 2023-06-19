@@ -599,6 +599,25 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "uint8",
+        name: "feeProtocolOld",
+        type: "uint8",
+      },
+      {
+        indexed: false,
+        internalType: "uint8",
+        name: "feeProtocolNew",
+        type: "uint8",
+      },
+    ],
+    name: "SetFeeProtocol",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: "uint256",
         name: "positionId",
@@ -1140,25 +1159,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "margin",
-        type: "uint256",
-      },
-    ],
-    name: "getProtocolFee",
-    outputs: [
-      {
-        internalType: "uint16",
-        name: "",
-        type: "uint16",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [],
     name: "keeperFeePayer",
     outputs: [
@@ -1499,6 +1499,19 @@ const _abi = [
         type: "tuple",
       },
     ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint8",
+        name: "feeProtocol",
+        type: "uint8",
+      },
+    ],
+    name: "setFeeProtocol",
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },

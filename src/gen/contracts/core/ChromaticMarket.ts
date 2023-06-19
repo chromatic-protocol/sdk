@@ -160,7 +160,6 @@ export interface ChromaticMarketInterface extends utils.Interface {
     "getBinValues(int16[])": FunctionFragment;
     "getLpReceipt(uint256)": FunctionFragment;
     "getPositions(uint256[])": FunctionFragment;
-    "getProtocolFee(uint256)": FunctionFragment;
     "keeperFeePayer()": FunctionFragment;
     "liquidate(uint256,address,uint256)": FunctionFragment;
     "liquidator()": FunctionFragment;
@@ -170,6 +169,7 @@ export interface ChromaticMarketInterface extends utils.Interface {
     "openPosition(int224,uint32,uint256,uint256,uint256,bytes)": FunctionFragment;
     "oracleProvider()": FunctionFragment;
     "removeLiquidity(address,int16,bytes)": FunctionFragment;
+    "setFeeProtocol(uint8)": FunctionFragment;
     "settle()": FunctionFragment;
     "settlementToken()": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
@@ -195,7 +195,6 @@ export interface ChromaticMarketInterface extends utils.Interface {
       | "getBinValues"
       | "getLpReceipt"
       | "getPositions"
-      | "getProtocolFee"
       | "keeperFeePayer"
       | "liquidate"
       | "liquidator"
@@ -205,6 +204,7 @@ export interface ChromaticMarketInterface extends utils.Interface {
       | "openPosition"
       | "oracleProvider"
       | "removeLiquidity"
+      | "setFeeProtocol"
       | "settle"
       | "settlementToken"
       | "supportsInterface"
@@ -283,10 +283,6 @@ export interface ChromaticMarketInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "getProtocolFee",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
     functionFragment: "keeperFeePayer",
     values?: undefined
   ): string;
@@ -348,6 +344,10 @@ export interface ChromaticMarketInterface extends utils.Interface {
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BytesLike>
     ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setFeeProtocol",
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(functionFragment: "settle", values?: undefined): string;
   encodeFunctionData(
@@ -423,10 +423,6 @@ export interface ChromaticMarketInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getProtocolFee",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "keeperFeePayer",
     data: BytesLike
   ): Result;
@@ -456,6 +452,10 @@ export interface ChromaticMarketInterface extends utils.Interface {
     functionFragment: "removeLiquidity",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "setFeeProtocol",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "settle", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "settlementToken",
@@ -479,6 +479,7 @@ export interface ChromaticMarketInterface extends utils.Interface {
     "Liquidate(address,uint256,tuple)": EventFragment;
     "OpenPosition(address,tuple)": EventFragment;
     "RemoveLiquidity(address,tuple)": EventFragment;
+    "SetFeeProtocol(uint8,uint8)": EventFragment;
     "TransferProtocolFee(uint256,uint256)": EventFragment;
     "WithdrawLiquidity(address,uint256,uint256,tuple)": EventFragment;
   };
@@ -490,6 +491,7 @@ export interface ChromaticMarketInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Liquidate"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OpenPosition"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveLiquidity"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetFeeProtocol"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferProtocolFee"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "WithdrawLiquidity"): EventFragment;
 }
@@ -574,6 +576,17 @@ export type RemoveLiquidityEvent = TypedEvent<
 >;
 
 export type RemoveLiquidityEventFilter = TypedEventFilter<RemoveLiquidityEvent>;
+
+export interface SetFeeProtocolEventObject {
+  feeProtocolOld: number;
+  feeProtocolNew: number;
+}
+export type SetFeeProtocolEvent = TypedEvent<
+  [number, number],
+  SetFeeProtocolEventObject
+>;
+
+export type SetFeeProtocolEventFilter = TypedEventFilter<SetFeeProtocolEvent>;
 
 export interface TransferProtocolFeeEventObject {
   positionId: BigNumber;
@@ -778,11 +791,6 @@ export interface ChromaticMarket extends BaseContract {
       [PositionStructOutput[]] & { _positions: PositionStructOutput[] }
     >;
 
-    getProtocolFee(
-      margin: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[number]>;
-
     keeperFeePayer(overrides?: CallOverrides): Promise<[string]>;
 
     /**
@@ -872,6 +880,15 @@ export interface ChromaticMarket extends BaseContract {
       recipient: PromiseOrValue<string>,
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Set the denominator of the protocol's % share of the fees
+     * @param feeProtocol new protocol fee for the market
+     */
+    setFeeProtocol(
+      feeProtocol: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -1055,11 +1072,6 @@ export interface ChromaticMarket extends BaseContract {
     overrides?: CallOverrides
   ): Promise<PositionStructOutput[]>;
 
-  getProtocolFee(
-    margin: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<number>;
-
   keeperFeePayer(overrides?: CallOverrides): Promise<string>;
 
   /**
@@ -1149,6 +1161,15 @@ export interface ChromaticMarket extends BaseContract {
     recipient: PromiseOrValue<string>,
     tradingFeeRate: PromiseOrValue<BigNumberish>,
     data: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Set the denominator of the protocol's % share of the fees
+   * @param feeProtocol new protocol fee for the market
+   */
+  setFeeProtocol(
+    feeProtocol: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1332,11 +1353,6 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PositionStructOutput[]>;
 
-    getProtocolFee(
-      margin: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<number>;
-
     keeperFeePayer(overrides?: CallOverrides): Promise<string>;
 
     /**
@@ -1428,6 +1444,15 @@ export interface ChromaticMarket extends BaseContract {
       data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput>;
+
+    /**
+     * Set the denominator of the protocol's % share of the fees
+     * @param feeProtocol new protocol fee for the market
+     */
+    setFeeProtocol(
+      feeProtocol: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     /**
      * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
@@ -1530,6 +1555,15 @@ export interface ChromaticMarket extends BaseContract {
       recipient?: PromiseOrValue<string> | null,
       receipt?: null
     ): RemoveLiquidityEventFilter;
+
+    "SetFeeProtocol(uint8,uint8)"(
+      feeProtocolOld?: null,
+      feeProtocolNew?: null
+    ): SetFeeProtocolEventFilter;
+    SetFeeProtocol(
+      feeProtocolOld?: null,
+      feeProtocolNew?: null
+    ): SetFeeProtocolEventFilter;
 
     "TransferProtocolFee(uint256,uint256)"(
       positionId?: PromiseOrValue<BigNumberish> | null,
@@ -1703,11 +1737,6 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getProtocolFee(
-      margin: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     keeperFeePayer(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
@@ -1795,6 +1824,15 @@ export interface ChromaticMarket extends BaseContract {
       recipient: PromiseOrValue<string>,
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    /**
+     * Set the denominator of the protocol's % share of the fees
+     * @param feeProtocol new protocol fee for the market
+     */
+    setFeeProtocol(
+      feeProtocol: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1979,11 +2017,6 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getProtocolFee(
-      margin: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     keeperFeePayer(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
@@ -2073,6 +2106,15 @@ export interface ChromaticMarket extends BaseContract {
       recipient: PromiseOrValue<string>,
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Set the denominator of the protocol's % share of the fees
+     * @param feeProtocol new protocol fee for the market
+     */
+    setFeeProtocol(
+      feeProtocol: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

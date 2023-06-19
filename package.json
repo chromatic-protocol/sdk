@@ -47,5 +47,5 @@
     "docs:markdown": "typedoc --plugin typedoc-plugin-markdown --out docs src/index.ts",
     "docs:sdk": "cd site && yarn install && yarn clear && yarn build"
   },
-  "version": "0.1.0-rc.31"
+  "version": "0.1.0-rc.32"
 }

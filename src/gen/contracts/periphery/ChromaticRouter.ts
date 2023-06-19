@@ -105,7 +105,7 @@ export type PositionStructOutput = [
 export interface ChromaticRouterInterface extends utils.Interface {
   functions: {
     "addLiquidity(address,int16,uint256,address)": FunctionFragment;
-    "addLiquidityBatch(address,int16[],uint256[],address[])": FunctionFragment;
+    "addLiquidityBatch(address,address,int16[],uint256[])": FunctionFragment;
     "addLiquidityCallback(address,address,bytes)": FunctionFragment;
     "claimLiquidity(address,uint256)": FunctionFragment;
     "claimLiquidityBatch(address,uint256[])": FunctionFragment;
@@ -119,7 +119,7 @@ export interface ChromaticRouterInterface extends utils.Interface {
     "openPosition(address,int224,uint32,uint256,uint256,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "removeLiquidity(address,int16,uint256,address)": FunctionFragment;
-    "removeLiquidityBatch(address,int16[],uint256[],address[])": FunctionFragment;
+    "removeLiquidityBatch(address,address,int16[],uint256[])": FunctionFragment;
     "removeLiquidityCallback(address,uint256,bytes)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
@@ -167,9 +167,9 @@ export interface ChromaticRouterInterface extends utils.Interface {
     functionFragment: "addLiquidityBatch",
     values: [
       PromiseOrValue<string>,
+      PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<string>[]
+      PromiseOrValue<BigNumberish>[]
     ]
   ): string;
   encodeFunctionData(
@@ -241,9 +241,9 @@ export interface ChromaticRouterInterface extends utils.Interface {
     functionFragment: "removeLiquidityBatch",
     values: [
       PromiseOrValue<string>,
+      PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<string>[]
+      PromiseOrValue<BigNumberish>[]
     ]
   ): string;
   encodeFunctionData(
@@ -437,13 +437,13 @@ export interface ChromaticRouter extends BaseContract {
      * @param amounts An array of amounts to add as liquidity for each bin.
      * @param feeRates An array of fee rates for each liquidity bin.
      * @param market The address of the ChromaticMarket contract.
-     * @param recipients An array of recipient addresses.
+     * @param recipient The address of the recipient for each liquidity bin.
      */
     addLiquidityBatch(
       market: PromiseOrValue<string>,
+      recipient: PromiseOrValue<string>,
       feeRates: PromiseOrValue<BigNumberish>[],
       amounts: PromiseOrValue<BigNumberish>[],
-      recipients: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -528,6 +528,11 @@ export interface ChromaticRouter extends BaseContract {
      */
     getAccount(overrides?: CallOverrides): Promise<[string]>;
 
+    /**
+     * Get the LP receipt IDs associated with a specific market and owner.
+     * @param market The address of the ChromaticMarket contract.
+     * @param owner The address of the owner.
+     */
     "getLpReceiptIds(address,address)"(
       market: PromiseOrValue<string>,
       owner: PromiseOrValue<string>,
@@ -587,13 +592,13 @@ export interface ChromaticRouter extends BaseContract {
      * @param clbTokenAmounts An array of CLB token amounts to remove as liquidity for each bin.
      * @param feeRates An array of fee rates for each liquidity bin.
      * @param market The address of the ChromaticMarket contract.
-     * @param recipients An array of recipient addresses.
+     * @param recipient The address of the recipient for each liquidity bin.
      */
     removeLiquidityBatch(
       market: PromiseOrValue<string>,
+      recipient: PromiseOrValue<string>,
       feeRates: PromiseOrValue<BigNumberish>[],
       clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-      recipients: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -679,13 +684,13 @@ export interface ChromaticRouter extends BaseContract {
    * @param amounts An array of amounts to add as liquidity for each bin.
    * @param feeRates An array of fee rates for each liquidity bin.
    * @param market The address of the ChromaticMarket contract.
-   * @param recipients An array of recipient addresses.
+   * @param recipient The address of the recipient for each liquidity bin.
    */
   addLiquidityBatch(
     market: PromiseOrValue<string>,
+    recipient: PromiseOrValue<string>,
     feeRates: PromiseOrValue<BigNumberish>[],
     amounts: PromiseOrValue<BigNumberish>[],
-    recipients: PromiseOrValue<string>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -770,6 +775,11 @@ export interface ChromaticRouter extends BaseContract {
    */
   getAccount(overrides?: CallOverrides): Promise<string>;
 
+  /**
+   * Get the LP receipt IDs associated with a specific market and owner.
+   * @param market The address of the ChromaticMarket contract.
+   * @param owner The address of the owner.
+   */
   "getLpReceiptIds(address,address)"(
     market: PromiseOrValue<string>,
     owner: PromiseOrValue<string>,
@@ -829,13 +839,13 @@ export interface ChromaticRouter extends BaseContract {
    * @param clbTokenAmounts An array of CLB token amounts to remove as liquidity for each bin.
    * @param feeRates An array of fee rates for each liquidity bin.
    * @param market The address of the ChromaticMarket contract.
-   * @param recipients An array of recipient addresses.
+   * @param recipient The address of the recipient for each liquidity bin.
    */
   removeLiquidityBatch(
     market: PromiseOrValue<string>,
+    recipient: PromiseOrValue<string>,
     feeRates: PromiseOrValue<BigNumberish>[],
     clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-    recipients: PromiseOrValue<string>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -921,13 +931,13 @@ export interface ChromaticRouter extends BaseContract {
      * @param amounts An array of amounts to add as liquidity for each bin.
      * @param feeRates An array of fee rates for each liquidity bin.
      * @param market The address of the ChromaticMarket contract.
-     * @param recipients An array of recipient addresses.
+     * @param recipient The address of the recipient for each liquidity bin.
      */
     addLiquidityBatch(
       market: PromiseOrValue<string>,
+      recipient: PromiseOrValue<string>,
       feeRates: PromiseOrValue<BigNumberish>[],
       amounts: PromiseOrValue<BigNumberish>[],
-      recipients: PromiseOrValue<string>[],
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput[]>;
 
@@ -1010,6 +1020,11 @@ export interface ChromaticRouter extends BaseContract {
      */
     getAccount(overrides?: CallOverrides): Promise<string>;
 
+    /**
+     * Get the LP receipt IDs associated with a specific market and owner.
+     * @param market The address of the ChromaticMarket contract.
+     * @param owner The address of the owner.
+     */
     "getLpReceiptIds(address,address)"(
       market: PromiseOrValue<string>,
       owner: PromiseOrValue<string>,
@@ -1069,13 +1084,13 @@ export interface ChromaticRouter extends BaseContract {
      * @param clbTokenAmounts An array of CLB token amounts to remove as liquidity for each bin.
      * @param feeRates An array of fee rates for each liquidity bin.
      * @param market The address of the ChromaticMarket contract.
-     * @param recipients An array of recipient addresses.
+     * @param recipient The address of the recipient for each liquidity bin.
      */
     removeLiquidityBatch(
       market: PromiseOrValue<string>,
+      recipient: PromiseOrValue<string>,
       feeRates: PromiseOrValue<BigNumberish>[],
       clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-      recipients: PromiseOrValue<string>[],
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput[]>;
 
@@ -1180,13 +1195,13 @@ export interface ChromaticRouter extends BaseContract {
      * @param amounts An array of amounts to add as liquidity for each bin.
      * @param feeRates An array of fee rates for each liquidity bin.
      * @param market The address of the ChromaticMarket contract.
-     * @param recipients An array of recipient addresses.
+     * @param recipient The address of the recipient for each liquidity bin.
      */
     addLiquidityBatch(
       market: PromiseOrValue<string>,
+      recipient: PromiseOrValue<string>,
       feeRates: PromiseOrValue<BigNumberish>[],
       amounts: PromiseOrValue<BigNumberish>[],
-      recipients: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1271,6 +1286,11 @@ export interface ChromaticRouter extends BaseContract {
      */
     getAccount(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Get the LP receipt IDs associated with a specific market and owner.
+     * @param market The address of the ChromaticMarket contract.
+     * @param owner The address of the owner.
+     */
     "getLpReceiptIds(address,address)"(
       market: PromiseOrValue<string>,
       owner: PromiseOrValue<string>,
@@ -1330,13 +1350,13 @@ export interface ChromaticRouter extends BaseContract {
      * @param clbTokenAmounts An array of CLB token amounts to remove as liquidity for each bin.
      * @param feeRates An array of fee rates for each liquidity bin.
      * @param market The address of the ChromaticMarket contract.
-     * @param recipients An array of recipient addresses.
+     * @param recipient The address of the recipient for each liquidity bin.
      */
     removeLiquidityBatch(
       market: PromiseOrValue<string>,
+      recipient: PromiseOrValue<string>,
       feeRates: PromiseOrValue<BigNumberish>[],
       clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-      recipients: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1423,13 +1443,13 @@ export interface ChromaticRouter extends BaseContract {
      * @param amounts An array of amounts to add as liquidity for each bin.
      * @param feeRates An array of fee rates for each liquidity bin.
      * @param market The address of the ChromaticMarket contract.
-     * @param recipients An array of recipient addresses.
+     * @param recipient The address of the recipient for each liquidity bin.
      */
     addLiquidityBatch(
       market: PromiseOrValue<string>,
+      recipient: PromiseOrValue<string>,
       feeRates: PromiseOrValue<BigNumberish>[],
       amounts: PromiseOrValue<BigNumberish>[],
-      recipients: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1514,6 +1534,11 @@ export interface ChromaticRouter extends BaseContract {
      */
     getAccount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * Get the LP receipt IDs associated with a specific market and owner.
+     * @param market The address of the ChromaticMarket contract.
+     * @param owner The address of the owner.
+     */
     "getLpReceiptIds(address,address)"(
       market: PromiseOrValue<string>,
       owner: PromiseOrValue<string>,
@@ -1573,13 +1598,13 @@ export interface ChromaticRouter extends BaseContract {
      * @param clbTokenAmounts An array of CLB token amounts to remove as liquidity for each bin.
      * @param feeRates An array of fee rates for each liquidity bin.
      * @param market The address of the ChromaticMarket contract.
-     * @param recipients An array of recipient addresses.
+     * @param recipient The address of the recipient for each liquidity bin.
      */
     removeLiquidityBatch(
       market: PromiseOrValue<string>,
+      recipient: PromiseOrValue<string>,
       feeRates: PromiseOrValue<BigNumberish>[],
       clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-      recipients: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -143,6 +143,11 @@ const _abi = [
         type: "address",
       },
       {
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
         internalType: "int16[]",
         name: "feeRates",
         type: "int16[]",
@@ -151,11 +156,6 @@ const _abi = [
         internalType: "uint256[]",
         name: "amounts",
         type: "uint256[]",
-      },
-      {
-        internalType: "address[]",
-        name: "recipients",
-        type: "address[]",
       },
     ],
     name: "addLiquidityBatch",
@@ -577,6 +577,11 @@ const _abi = [
         type: "address",
       },
       {
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
         internalType: "int16[]",
         name: "feeRates",
         type: "int16[]",
@@ -585,11 +590,6 @@ const _abi = [
         internalType: "uint256[]",
         name: "clbTokenAmounts",
         type: "uint256[]",
-      },
-      {
-        internalType: "address[]",
-        name: "recipients",
-        type: "address[]",
       },
     ],
     name: "removeLiquidityBatch",

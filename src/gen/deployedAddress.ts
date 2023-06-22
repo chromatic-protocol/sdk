@@ -28,7 +28,6 @@ export const deployedAddress: DeployedAddress = {
     "ChromaticVault": "0xCd9BC6cE45194398d12e27e1333D5e1d783104dD"
   },
   "arbitrum_goerli": {
-    "ChainlinkFeedOracle": "0xB1d1D373EEe31377d2e97ac2420CD0671E43874C",
     "ChromaticLens": "0x486df3B97eF4439CdB274B7C9d075B4d5fA70b1A",
     "ChromaticLiquidator": "0x84789AD8a8992AA3d65e5f609658BbED4abAac17",
     "ChromaticMarketFactory": "0x20F98C4dDf4c04928eb2302F341dc7eE08d358be",

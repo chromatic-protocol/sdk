@@ -37,6 +37,11 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "NotClaimableLpReceipt",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "NotClaimablePosition",
     type: "error",
   },
@@ -58,6 +63,11 @@ const _abi = [
   {
     inputs: [],
     name: "NotPermitted",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotWithdrawableLpReceipt",
     type: "error",
   },
   {

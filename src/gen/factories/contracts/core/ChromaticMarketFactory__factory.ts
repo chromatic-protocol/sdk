@@ -47,6 +47,11 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "OnlyAccessableByDao",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "WrongTokenAddress",
     type: "error",
   },
@@ -415,45 +420,6 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "token",
-        type: "address",
-      },
-    ],
-    name: "cancelMakerEarningDistributionTask",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "market",
-        type: "address",
-      },
-    ],
-    name: "cancelMarketEarningDistributionTask",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "token",
-        type: "address",
-      },
-    ],
-    name: "createMakerEarningDistributionTask",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
         name: "oracleProvider",
         type: "address",
       },
@@ -464,19 +430,6 @@ const _abi = [
       },
     ],
     name: "createMarket",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "market",
-        type: "address",
-      },
-    ],
-    name: "createMarketEarningDistributionTask",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

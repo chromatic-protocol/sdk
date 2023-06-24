@@ -72,6 +72,16 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "OnlyAccessableByDao",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OnlyAccessableByLiquidator",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "OnlyAccessableByVault",
     type: "error",
   },

@@ -43,11 +43,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   functions: {
     "appendInterestRateRecord(address,uint256,uint256)": FunctionFragment;
     "calculateInterest(address,uint256,uint256,uint256)": FunctionFragment;
-    "cancelMakerEarningDistributionTask(address)": FunctionFragment;
-    "cancelMarketEarningDistributionTask(address)": FunctionFragment;
-    "createMakerEarningDistributionTask(address)": FunctionFragment;
     "createMarket(address,address)": FunctionFragment;
-    "createMarketEarningDistributionTask(address)": FunctionFragment;
     "currentInterestRate(address)": FunctionFragment;
     "dao()": FunctionFragment;
     "getEarningDistributionThreshold(address)": FunctionFragment;
@@ -89,11 +85,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     nameOrSignatureOrTopic:
       | "appendInterestRateRecord"
       | "calculateInterest"
-      | "cancelMakerEarningDistributionTask"
-      | "cancelMarketEarningDistributionTask"
-      | "createMakerEarningDistributionTask"
       | "createMarket"
-      | "createMarketEarningDistributionTask"
       | "currentInterestRate"
       | "dao"
       | "getEarningDistributionThreshold"
@@ -149,24 +141,8 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "cancelMakerEarningDistributionTask",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "cancelMarketEarningDistributionTask",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "createMakerEarningDistributionTask",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
     functionFragment: "createMarket",
     values: [PromiseOrValue<string>, PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "createMarketEarningDistributionTask",
-    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "currentInterestRate",
@@ -316,23 +292,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "cancelMakerEarningDistributionTask",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "cancelMarketEarningDistributionTask",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "createMakerEarningDistributionTask",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "createMarket",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "createMarketEarningDistributionTask",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -725,36 +685,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<[BigNumber]>;
 
     /**
-     * This function can only be called by the DAO address.
-     * Cancels a Maker earning distribution task for a token.
-     * @param token The address of the token.
-     */
-    cancelMakerEarningDistributionTask(
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    /**
-     * This function can only be called by the DAO address.
-     * Cancels a market earning distribution task for a market.
-     * @param market The address of the market.
-     */
-    cancelMarketEarningDistributionTask(
-      market: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    /**
-     * This function can only be called by the DAO address.
-     * Creates a Maker earning distribution task for a token.
-     * @param token The address of the token.
-     */
-    createMakerEarningDistributionTask(
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    /**
      * Creates a new market associated with an oracle provider and settlement token.
      * @param oracleProvider The address of the oracle provider.
      * @param settlementToken The address of the settlement token.
@@ -762,16 +692,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     createMarket(
       oracleProvider: PromiseOrValue<string>,
       settlementToken: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    /**
-     * This function can only be called by the DAO address.
-     * Creates a market earning distribution task for a market.
-     * @param market The address of the market.
-     */
-    createMarketEarningDistributionTask(
-      market: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -1127,36 +1047,6 @@ export interface ChromaticMarketFactory extends BaseContract {
   ): Promise<BigNumber>;
 
   /**
-   * This function can only be called by the DAO address.
-   * Cancels a Maker earning distribution task for a token.
-   * @param token The address of the token.
-   */
-  cancelMakerEarningDistributionTask(
-    token: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  /**
-   * This function can only be called by the DAO address.
-   * Cancels a market earning distribution task for a market.
-   * @param market The address of the market.
-   */
-  cancelMarketEarningDistributionTask(
-    market: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  /**
-   * This function can only be called by the DAO address.
-   * Creates a Maker earning distribution task for a token.
-   * @param token The address of the token.
-   */
-  createMakerEarningDistributionTask(
-    token: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  /**
    * Creates a new market associated with an oracle provider and settlement token.
    * @param oracleProvider The address of the oracle provider.
    * @param settlementToken The address of the settlement token.
@@ -1164,16 +1054,6 @@ export interface ChromaticMarketFactory extends BaseContract {
   createMarket(
     oracleProvider: PromiseOrValue<string>,
     settlementToken: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  /**
-   * This function can only be called by the DAO address.
-   * Creates a market earning distribution task for a market.
-   * @param market The address of the market.
-   */
-  createMarketEarningDistributionTask(
-    market: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1529,36 +1409,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * This function can only be called by the DAO address.
-     * Cancels a Maker earning distribution task for a token.
-     * @param token The address of the token.
-     */
-    cancelMakerEarningDistributionTask(
-      token: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    /**
-     * This function can only be called by the DAO address.
-     * Cancels a market earning distribution task for a market.
-     * @param market The address of the market.
-     */
-    cancelMarketEarningDistributionTask(
-      market: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    /**
-     * This function can only be called by the DAO address.
-     * Creates a Maker earning distribution task for a token.
-     * @param token The address of the token.
-     */
-    createMakerEarningDistributionTask(
-      token: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    /**
      * Creates a new market associated with an oracle provider and settlement token.
      * @param oracleProvider The address of the oracle provider.
      * @param settlementToken The address of the settlement token.
@@ -1566,16 +1416,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     createMarket(
       oracleProvider: PromiseOrValue<string>,
       settlementToken: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    /**
-     * This function can only be called by the DAO address.
-     * Creates a market earning distribution task for a market.
-     * @param market The address of the market.
-     */
-    createMarketEarningDistributionTask(
-      market: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2074,36 +1914,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * This function can only be called by the DAO address.
-     * Cancels a Maker earning distribution task for a token.
-     * @param token The address of the token.
-     */
-    cancelMakerEarningDistributionTask(
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    /**
-     * This function can only be called by the DAO address.
-     * Cancels a market earning distribution task for a market.
-     * @param market The address of the market.
-     */
-    cancelMarketEarningDistributionTask(
-      market: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    /**
-     * This function can only be called by the DAO address.
-     * Creates a Maker earning distribution task for a token.
-     * @param token The address of the token.
-     */
-    createMakerEarningDistributionTask(
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    /**
      * Creates a new market associated with an oracle provider and settlement token.
      * @param oracleProvider The address of the oracle provider.
      * @param settlementToken The address of the settlement token.
@@ -2111,16 +1921,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     createMarket(
       oracleProvider: PromiseOrValue<string>,
       settlementToken: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    /**
-     * This function can only be called by the DAO address.
-     * Creates a market earning distribution task for a market.
-     * @param market The address of the market.
-     */
-    createMarketEarningDistributionTask(
-      market: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -2473,36 +2273,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * This function can only be called by the DAO address.
-     * Cancels a Maker earning distribution task for a token.
-     * @param token The address of the token.
-     */
-    cancelMakerEarningDistributionTask(
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * This function can only be called by the DAO address.
-     * Cancels a market earning distribution task for a market.
-     * @param market The address of the market.
-     */
-    cancelMarketEarningDistributionTask(
-      market: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * This function can only be called by the DAO address.
-     * Creates a Maker earning distribution task for a token.
-     * @param token The address of the token.
-     */
-    createMakerEarningDistributionTask(
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    /**
      * Creates a new market associated with an oracle provider and settlement token.
      * @param oracleProvider The address of the oracle provider.
      * @param settlementToken The address of the settlement token.
@@ -2510,16 +2280,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     createMarket(
       oracleProvider: PromiseOrValue<string>,
       settlementToken: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * This function can only be called by the DAO address.
-     * Creates a market earning distribution task for a market.
-     * @param market The address of the market.
-     */
-    createMarketEarningDistributionTask(
-      market: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

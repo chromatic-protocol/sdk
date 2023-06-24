@@ -33,6 +33,11 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "EtherTransferFailure",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "ExistMarketEarningDistributionTask",
     type: "error",
   },
@@ -48,7 +53,12 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "OnlyAccessableByFactory",
+    name: "OnlyAccessableByDedicatedMsgSenderOrDao",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OnlyAccessableByFactoryOrDao",
     type: "error",
   },
   {

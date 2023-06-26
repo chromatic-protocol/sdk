@@ -4,7 +4,6 @@ import { Client } from "../Client";
 export interface RouterAddLiquidityParam {
   feeRate: BigNumberish;
   amount: BigNumberish;
-  recipient?: string;
 }
 
 export interface RouterOpenPositionParam {
@@ -52,30 +51,33 @@ export class ChromaticRouter {
     return transaction.wait();
   }
 
-  async addLiquidity(marketAddress: string, param: RouterAddLiquidityParam) {
+  async addLiquidity(marketAddress: string, param: RouterAddLiquidityParam, receipient?: string) {
     return this.routerContract.addLiquidity(
       marketAddress,
       param.feeRate,
       param.amount,
-      param.recipient
+      receipient || this._client.signer.getAddress()
     );
   }
 
-  async addLiquidities(marketAddress: string, params: RouterAddLiquidityParam[]) {
-    const feeRates = [];
-    const amounts = [];
-    const recipients = [];
+  async addLiquidities(
+    marketAddress: string,
+    params: RouterAddLiquidityParam[],
+    recipient?: string
+  ) {
+    const feeRates: BigNumberish[] = [];
+    const amounts: BigNumberish[] = [];
+    recipient = recipient || (await this._client.signer.getAddress());
+
     params.forEach((param) => {
       feeRates.push(param.feeRate);
       amounts.push(param.amount);
-      recipients.push(param.recipient);
     });
-
     const tx = await this.routerContract.addLiquidityBatch(
       marketAddress,
+      recipient,
       feeRates,
-      amounts,
-      recipients
+      amounts
     );
     return tx.wait();
   }
@@ -90,25 +92,28 @@ export class ChromaticRouter {
     return tx.wait();
   }
 
-  async removeLiquidities(marketAdddress: string, params: RouterRemoveLiquidityParam[]) {
+  async removeLiquidities(
+    marketAdddress: string,
+    params: RouterRemoveLiquidityParam[],
+    receipient?: string
+  ) {
+    receipient = receipient || (await this._client.signer.getAddress());
     const contractParam = params.reduce(
       (contractParam, param) => {
         contractParam["clbTokenAmount"].push(param.clbTokenAmount);
         contractParam["feeRate"].push(param.feeRate);
-        contractParam["recipient"].push(param.receipient || this._client.signer.getAddress());
         return contractParam;
       },
       {
         clbTokenAmount: [],
         feeRate: [],
-        receipient: [],
-      }
+      } as { clbTokenAmount: BigNumberish[]; feeRate: BigNumberish[] }
     );
     const tx = await this.routerContract.removeLiquidityBatch(
       marketAdddress,
+      receipient,
       contractParam.feeRate,
-      contractParam.clbTokenAmount,
-      contractParam.receipient
+      contractParam.clbTokenAmount
     );
     return tx.wait();
   }

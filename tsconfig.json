@@ -3,7 +3,7 @@
     "module": "esnext",
     "outDir": "./esm",
     "target": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "NodeNext",
     "declaration": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,

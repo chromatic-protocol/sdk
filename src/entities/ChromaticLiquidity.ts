@@ -25,23 +25,24 @@ export class ChromaticLiquidity {
   }
 
   // FIXME use core contract without router
-  async addLiquidities(params) {
-    //TODO change to use multicall
-    const feeRates = [];
-    const amounts = [];
-    const recipients = [];
-    params.forEach((param) => {
-      feeRates.push(param.feeRate);
-      amounts.push(param.amount);
-      recipients.push(param.recipient);
-    });
-    return this.routerContract.addLiquidityBatch(
-      this.marketContractAddress,
-      feeRates,
-      amounts,
-      recipients
-    );
-  }
+  // async addLiquidities(params) {
+  //   //TODO change to use multicall
+  //   const feeRates = [];
+  //   const amounts = [];
+  //   const recipients = [];
+  //   params.forEach((param) => {
+  //     feeRates.push(param.feeRate);
+  //     amounts.push(param.amount);
+  //     recipients.push(param.recipient);
+  //   });
+  //   return this.routerContract.addLiquidityBatch(
+  //     this.marketContractAddress,
+  //     recipients
+  //     feeRates,
+  //     amounts,
+      
+  //   );
+  // }
 
   // FIXME use core contract without router
   async removeLiquidity(feeRate: BigNumberish, clbTokenAmount: BigNumberish) {

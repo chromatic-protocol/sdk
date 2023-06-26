@@ -1,4 +1,7 @@
 {
   "extends": "./tsconfig",
+  "compilerOptions": {
+    "outDir": "./dist/esm"
+  },
   "include": ["**/*.d.ts", "**/*.ts", "**/*.js"],
 }

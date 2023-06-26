@@ -26,6 +26,7 @@ export class ChromaticMarket {
         this._client.signer || this._client.provider
       );
     }
+
     return this.oracleProvider;
   }
 
@@ -33,8 +34,6 @@ export class ChromaticMarket {
     const contract = await this.getOracleProviderContract();
     return contract.currentVersion();
   }
-
- 
 
   async getOraclePrice(): Promise<IOracleProvider.OracleVersionStructOutput> {
     return (await this.getOracleProviderContract()).currentVersion();

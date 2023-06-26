@@ -33,9 +33,11 @@ export class ChromaticPosition {
     const oracleVersions = new Set(
       positions.map((position) => [position.openVersion, position.closeVersion]).flat()
     );
+    //TODO change to use multicall
     const oraclePrices = await (
       await this.market.getOracleProviderContract()
     ).atVersions([...oracleVersions]);
+
     return positions.map((position) => {
       return {
         ...position,

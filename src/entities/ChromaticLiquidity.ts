@@ -1,10 +1,6 @@
 import { BigNumber, BigNumberish, Signer } from "ethers";
 import type { Client } from "../Client";
-export interface AddLiquidityParam {
-  feeRate: BigNumberish;
-  amount: BigNumberish;
-  recipient?: string;
-}
+
 export class ChromaticLiquidity {
   _client: Client;
 
@@ -18,16 +14,19 @@ export class ChromaticLiquidity {
     return this._client.currentMarket().contract.address;
   }
 
-  async addLiquidity(param: AddLiquidityParam) {
-    return this.routerContract.addLiquidity(
-      this.marketContractAddress,
-      param.feeRate,
-      param.amount,
-      param.recipient
-    );
+  // FIXME use core contract without router
+  async addLiquidity(param) {
+    // return this.routerContract.addLiquidity(
+    //   this.marketContractAddress,
+    //   param.feeRate,
+    //   param.amount,
+    //   param.recipient
+    // );
   }
 
-  async addLiquidities(params: AddLiquidityParam[]) {
+  // FIXME use core contract without router
+  async addLiquidities(params) {
+    //TODO change to use multicall
     const feeRates = [];
     const amounts = [];
     const recipients = [];
@@ -43,6 +42,8 @@ export class ChromaticLiquidity {
       recipients
     );
   }
+
+  // FIXME use core contract without router
   async removeLiquidity(feeRate: BigNumberish, clbTokenAmount: BigNumberish) {
     return this.routerContract.removeLiquidity(
       this.marketContractAddress,
@@ -52,13 +53,19 @@ export class ChromaticLiquidity {
     );
   }
 
-  async claimLiquidity(receiptId: BigNumberish) {
-    return this.routerContract.claimLiquidity(
+  // FIXME use core contract without router
+  async claimLiquidity(receiptId: BigNumberish, waitForTransaction = true) {
+    const receipt = this.routerContract.claimLiquidity(
       this.marketContractAddress,
       BigNumber.from(receiptId)
     );
+    if (waitForTransaction) {
+      return (await receipt).wait();
+    }
+    return receipt;
   }
 
+  // FIXME use core contract without router
   async withdrawLiquidity(receiptId) {
     return this.routerContract.withdrawLiquidity(
       this.marketContractAddress,

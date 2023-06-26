@@ -1,20 +1,24 @@
 import { Provider } from "@ethersproject/providers";
 import { Contract, Signer } from "ethers";
-import { ChromaticMarketFactory } from "./contracts/ChromaticMarketFactory";
+import { ChromaticMarketFactory } from "./entities/ChromaticMarketFactory";
 import {
   ChromaticRouter as ChromaticRouterContract,
   ChromaticRouter__factory,
   getDeployedAddress,
 } from "./gen";
-import { ChromaticPosition } from "./contracts/ChromaticPosition";
-import { ChromaticMarket } from "./contracts/ChromaticMarket";
-import { ChromaticLiquidity } from "./contracts/ChromaticLiquidity";
+import { ChromaticPosition } from "./entities/ChromaticPosition";
+import { ChromaticMarket } from "./entities/ChromaticMarket";
+import { ChromaticLiquidity } from "./entities/ChromaticLiquidity";
 export class Client {
   private _marketFactory: ChromaticMarketFactory;
   private _market: ChromaticMarket;
   private _position: ChromaticPosition;
   private _contracts: Record<string, Contract> = {};
   private _liquidity: ChromaticLiquidity;
+
+  setSignerOrProvider(signerOrProvider: Signer | Provider){
+
+  }
   set signer(signer: Signer) {
     //TODO reinitialize contract if signer changeed
     console.log("signer changed");

@@ -1,16 +1,15 @@
-import { PositionStructOutput } from "../gen/contracts/core/ChromaticMarket";
+import { BinMarginStructOutput, PositionStructOutput } from "../gen/contracts/core/ChromaticMarket";
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 
 import { LIQUIDATION_PRICE_PRECISION, QTY_LEVERAGE_PRECISION } from "../constants";
 import { Client } from "../Client";
 import { ethers } from "ethers";
 import { IOracleProvider } from "../gen";
-import debug from 'debug'
-const log = debug('[ChromaticSdk]')
+import debug from "debug";
+const log = debug("[ChromaticSdk]");
 export interface PositionParam {
   id?: PositionStructOutput["id"];
   takerMargin: PositionStructOutput["takerMargin"];
-  // binMargins: PositionStructOutput["_binMargins"];
   makerMargin: BigNumber;
   openTimestamp: PositionStructOutput["openTimestamp"];
   claimTimestamp?: BigNumber;
@@ -18,7 +17,23 @@ export interface PositionParam {
   leverage: PositionStructOutput["leverage"];
 }
 type InterestFeeParam = Pick<PositionParam, "makerMargin" | "claimTimestamp" | "openTimestamp">;
-
+export interface IPosition {
+  id: BigNumber;
+  openVersion: BigNumber;
+  closeVersion: BigNumber;
+  qty: BigNumber;
+  leverage: number;
+  openTimestamp: BigNumber;
+  closeTimestamp: BigNumber;
+  takerMargin: BigNumber;
+  owner: string;
+  _binMargins: BinMarginStructOutput[];
+  _feeProtocol: number;
+  makerMargin: BigNumber;
+  closePrice: BigNumber | undefined;
+  openPrice: BigNumber | undefined;
+  claimTimestamp?: BigNumber;
+}
 export class ChromaticPosition {
   private settlementTokenAddress: string;
   private interestRateRecords;
@@ -46,14 +61,12 @@ export class ChromaticPosition {
     );
 
     const encodedResponses = (await this.lensContract.multicall(multicallParam)) as string[];
-    const oracleVersionData = encodedResponses.map(
-      (response) =>
-        this.lensContract.interface.decodeFunctionResult(
-          "oracleVersion",
-          response
-        ) as IOracleProvider.OracleVersionStructOutput
-    );
-    log('oracleVersionData', oracleVersionData)
+    const oracleVersionData = encodedResponses
+      .map((response) =>
+        this.lensContract.interface.decodeFunctionResult("oracleVersion", response)
+      )
+      .flat() as IOracleProvider.OracleVersionStructOutput[];
+    log("oracleVersionData", oracleVersionData);
 
     return positions.map((position) => {
       return {
@@ -62,9 +75,11 @@ export class ChromaticPosition {
           (acc, bin) => acc.add(bin.amount),
           BigNumber.from(0)
         ),
-        openPrice: oracleVersionData.find((oracle) => oracle.version?.eq(position.openVersion)),
-        closePrice: oracleVersionData.find((oracle) => oracle.version?.eq(position.closeVersion)),
-      };
+        openPrice: oracleVersionData.find((oracle) => oracle.version?.eq(position.openVersion))
+          ?.price,
+        closePrice: oracleVersionData.find((oracle) => oracle.version?.eq(position.closeVersion))
+          ?.price,
+      } as IPosition;
     });
   }
 
@@ -137,7 +152,11 @@ export class ChromaticPosition {
     return pnl;
   }
 
-  async getLiquidationPrice(marketAddress: string, entryPrice: BigNumber, position: PositionParam) {
+  async getLiquidationPrice(
+    marketAddress: string,
+    entryPrice: BigNumber | undefined,
+    position: PositionParam
+  ) {
     return {
       profitStopPrice: await this.profitStopPrice(marketAddress, entryPrice, position),
       lossCutPrice: await this.lossCutPrice(marketAddress, entryPrice, position),
@@ -161,12 +180,22 @@ export class ChromaticPosition {
     return delta;
   }
 
-  async profitStopPrice(marketAddress: string, entryPrice: BigNumber, position: PositionParam) {
+  async profitStopPrice(
+    marketAddress: string,
+    entryPrice: BigNumber | undefined,
+    position: PositionParam
+  ) {
+    if (!entryPrice) return;
     const delta = await this.getDeltaForLiquidation(marketAddress, entryPrice, position, true);
     return entryPrice.add(delta);
   }
 
-  async lossCutPrice(marketAddress: string, entryPrice: BigNumber, position: PositionParam) {
+  async lossCutPrice(
+    marketAddress: string,
+    entryPrice: BigNumber | undefined,
+    position: PositionParam
+  ) {
+    if (!entryPrice) return;
     const delta = await this.getDeltaForLiquidation(marketAddress, entryPrice, position, false);
     return entryPrice.sub(delta);
   }

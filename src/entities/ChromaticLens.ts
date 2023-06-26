@@ -85,7 +85,7 @@ export class ChromaticLens {
       const tradingFeeRate = decodeTokenId(ownedBin.tokenId);
       const targetTotalLiqBin = totalLiquidityBins.find(
         (bin) => bin.tradingFeeRate === tradingFeeRate
-      );
+      )!;
 
       // totalSupplyBatch
 

@@ -1,6 +1,8 @@
-import { BigNumber, BigNumberish } from "ethers";
+import { BigNumber, BigNumberish, ethers } from "ethers";
 import { Client } from "../Client";
-import {ChromaticMarket__factory} from "../gen";
+import {ChromaticMarket__factory, IERC20__factory} from "../gen";
+import { CLBToken__factory } from "../../dist/cjs";
+import { erc20 } from "../../dist/cjs/gen/factories/@openzeppelin/contracts/token";
 
 export interface RouterAddLiquidityParam {
   feeRate: BigNumberish;
@@ -52,16 +54,41 @@ export class ChromaticRouter {
     return transaction.wait();
   }
 
-  // async approvalForAllToRouter(marketAddress: string){
-  //   const clbTokenAddress = await ChromaticMarket__factory.connect(marketAddress,this._client.signer).clbToken()
-  //   CLBToken__factory.connect(clbToken,marketAddress,this._client.signer)
-  // }
+  async approvalClbTokenToRouter(marketAddress: string) : Promise<boolean>{
+    const signer = this._client.signer
+    const clbTokenAddress = await ChromaticMarket__factory.connect(marketAddress,signer).clbToken()
+    const clbToken = CLBToken__factory.connect(clbTokenAddress,signer);
+    const routerAddress = this.routerContract.address
+    const signerAddress = await signer.getAddress()
+    if(!(await clbToken.isApprovedForAll(signerAddress,routerAddress))){
+      const tx = await clbToken.setApprovalForAll(routerAddress,true)
+      // TODO verify tx
+      return tx.blockHash !== undefined
+    }
+    return true;
+  }
 
-  // async approvalToRouter(marketAddress: string){
-  //   await ChromaticMarket__factory.connect(marketAddress,this._client.signer).settlementToken()
-  // }
+  async approvalSettlementTokenToRouter(marketAddress: string) : Promise<boolean>{
+    const signer = this._client.signer
+    const settlementTokenAddress =  await ChromaticMarket__factory.connect(marketAddress,this._client.signer).settlementToken()
+    const settlementToken = IERC20__factory.connect(settlementTokenAddress,signer);
+    const routerAddress = this.routerContract.address
+    const signerAddress = await signer.getAddress()
+    const allowance =await  settlementToken.allowance(signerAddress, routerAddress)
+    if(!allowance.eq(ethers.constants.MaxUint256)){
+      const tx = await settlementToken.approve(routerAddress,ethers.constants.MaxUint256)
+      // TODO verify tx
+      return tx.blockHash !== undefined
+    }
+    return true;
+    
+  }
 
   async addLiquidity(marketAddress: string, param: RouterAddLiquidityParam, receipient?: string) {
+    // TODO check option flag
+    if(!await this.approvalSettlementTokenToRouter(marketAddress)){
+      return;
+    }
     return this.routerContract.addLiquidity(
       marketAddress,
       param.feeRate,
@@ -75,6 +102,10 @@ export class ChromaticRouter {
     params: RouterAddLiquidityParam[],
     recipient?: string
   ) {
+    // TODO check option flag
+    if(!await this.approvalSettlementTokenToRouter(marketAddress)){
+      return;
+    }
     const feeRates: BigNumberish[] = [];
     const amounts: BigNumberish[] = [];
     recipient = recipient || (await this._client.signer.getAddress());
@@ -93,6 +124,10 @@ export class ChromaticRouter {
   }
 
   async removeLiquidity(marketAddress: string, param: RouterRemoveLiquidityParam) {
+    // TODO check option flag
+    if(!await this.approvalClbTokenToRouter(marketAddress)){
+      return;
+    }
     const tx = await this.routerContract.removeLiquidity(
       marketAddress,
       BigNumber.from(param.feeRate),
@@ -103,10 +138,14 @@ export class ChromaticRouter {
   }
 
   async removeLiquidities(
-    marketAdddress: string,
+    marketAddress: string,
     params: RouterRemoveLiquidityParam[],
     receipient?: string
   ) {
+    // TODO check option flag
+    if(!await this.approvalClbTokenToRouter(marketAddress)){
+      return;
+    }
     receipient = receipient || (await this._client.signer.getAddress());
     const contractParam = params.reduce(
       (contractParam, param) => {
@@ -120,7 +159,7 @@ export class ChromaticRouter {
       } as { clbTokenAmount: BigNumberish[]; feeRate: BigNumberish[] }
     );
     const tx = await this.routerContract.removeLiquidityBatch(
-      marketAdddress,
+      marketAddress,
       receipient,
       contractParam.feeRate,
       contractParam.clbTokenAmount

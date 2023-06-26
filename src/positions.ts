@@ -19,7 +19,7 @@ export interface PositionParam {
   qty: PositionStructOutput["qty"];
   leverage: PositionStructOutput["leverage"];
 }
-
+type InterestFeeParam = Pick<PositionParam, "makerMargin" | "claimTimestamp" | "openTimestamp">;
 export class Positions {
   private marketFactoryContract: ChromaticMarketFactory;
   private settlementTokenAddress: string;
@@ -55,7 +55,7 @@ export class Positions {
     return this.interestRateRecords;
   }
 
-  async getInterestFee(position: PositionParam & { makerMargin?: BigNumber }) {
+  async getInterestFee(position: InterestFeeParam) {
     const yearSecond = 3600 * 24 * 365;
     const denominator = BigNumber.from(yearSecond * 10000);
     let to = position.claimTimestamp?.toNumber() || Math.floor(Date.now() / 1000);
@@ -88,15 +88,15 @@ export class Positions {
   }
 
   async getPnl(
-    entryPirce: BigNumber,
+    entryPrice: BigNumber,
     exitPrice: BigNumber,
     position: PositionParam,
     options: { includeInterestFee: boolean } = { includeInterestFee: true }
   ): Promise<BigNumber> {
     const leveragedQty = position.qty.mul(position.leverage);
-    let delta = exitPrice.sub(entryPirce).abs();
+    let delta = exitPrice.sub(entryPrice).abs();
     if (leveragedQty.lt(0)) delta = delta.mul(-1);
-    let pnl = leveragedQty.abs().mul(delta).div(entryPirce);
+    let pnl = leveragedQty.abs().mul(delta).div(entryPrice);
     if (options.includeInterestFee) {
       const interestFee = await this.getInterestFee(position);
       pnl = pnl.sub(interestFee);
@@ -111,30 +111,29 @@ export class Positions {
     };
   }
 
-  async profitStopPrice(entryPrice: BigNumber, position: PositionParam) {
+  private async getDeltaForLiquidation(
+    entryPrice: BigNumber,
+    position: PositionParam,
+    isProfitStop: boolean
+  ) {
     const interestFee = await this.getInterestFee(position);
-    const margin = position.makerMargin;
+    const margin = isProfitStop ? position.makerMargin : position.takerMargin;
     const leveragedQty = position.qty.mul(position.leverage);
-
     const pricePrecision = this.QTY_LEVERAGE_PRECISION.mul(this.LIQUIDATION_PRICE_PRECISION);
+    const marginWithInterest = isProfitStop ? margin.add(interestFee) : margin.sub(interestFee);
     let delta = entryPrice
-      .mul(margin.add(interestFee).mul(pricePrecision).div(leveragedQty))
+      .mul(marginWithInterest.mul(pricePrecision).div(leveragedQty))
       .div(this.LIQUIDATION_PRICE_PRECISION);
-
-    console.log("ps delta", delta.toString());
+    return delta;
+  }
+  
+  async profitStopPrice(entryPrice: BigNumber, position: PositionParam) {
+    const delta = await this.getDeltaForLiquidation(entryPrice, position, true);
     return entryPrice.add(delta);
   }
 
   async lossCutPrice(entryPrice: BigNumber, position: PositionParam) {
-    const interestFee = await this.getInterestFee(position);
-    const margin = position.takerMargin;
-    const leveragedQty = position.qty.mul(position.leverage);
-
-    const pricePrecision = this.QTY_LEVERAGE_PRECISION.mul(this.LIQUIDATION_PRICE_PRECISION);
-    let delta = entryPrice
-      .mul(margin.sub(interestFee).mul(pricePrecision).div(leveragedQty))
-      .div(this.LIQUIDATION_PRICE_PRECISION);
-
+    const delta = await this.getDeltaForLiquidation(entryPrice, position, false);
     return entryPrice.sub(delta);
   }
   removableRate() {}

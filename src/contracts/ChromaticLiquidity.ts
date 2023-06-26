@@ -6,16 +6,16 @@ export interface AddLiquidityParam {
   recipient?: string;
 }
 export class ChromaticLiquidity {
-  client: Client;
+  _client: Client;
 
   constructor(client: Client) {
-    this.client = client;
+    this._client = client;
   }
   get routerContract() {
-    return this.client.routerContract();
+    return this._client.routerContract();
   }
   get marketContractAddress() {
-    return this.client.currentMarket().contract.address;
+    return this._client.currentMarket().contract.address;
   }
 
   async addLiquidity(param: AddLiquidityParam) {
@@ -48,7 +48,7 @@ export class ChromaticLiquidity {
       this.marketContractAddress,
       BigNumber.from(feeRate),
       BigNumber.from(clbTokenAmount),
-      this.client.signer.getAddress()
+      this._client.signer.getAddress()
     );
   }
 

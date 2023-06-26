@@ -11,7 +11,7 @@ import { IOracleProvider } from "../gen/contracts/core/OracleProvider";
 export class ChromaticMarket {
   contract: ChromaticMarketContract;
   private oracleProvider: OracleProvider;
-  client: Client;
+  _client: Client;
   constructor(addressOrName: string, client: Client) {
     this.contract = ChromaticMarket__factory.connect(
       addressOrName,
@@ -23,7 +23,7 @@ export class ChromaticMarket {
     if (!this.oracleProvider) {
       this.oracleProvider = OracleProvider__factory.connect(
         await this.contract.oracleProvider(),
-        this.client.signer || this.client.provider
+        this._client.signer || this._client.provider
       );
     }
     return this.oracleProvider;
@@ -34,22 +34,7 @@ export class ChromaticMarket {
     return contract.currentVersion();
   }
 
-  async getPositions(positionIds: BigNumberish[]) {
-    const positions = await this.contract.getPositions(positionIds);
-    const oracleVersions = new Set(
-      positions.map((position) => [position.openVersion, position.closeVersion]).flat()
-    );
-    const oraclePrices = await (
-      await this.getOracleProviderContract()
-    ).atVersions([...oracleVersions]);
-    return positions.map((position) => {
-      return {
-        ...position,
-        openPrice: oraclePrices.find((price) => price.version.eq(position.openVersion)),
-        closePrice: oraclePrices.find((price) => price.version.eq(position.closeVersion)),
-      };
-    });
-  }
+ 
 
   async getOraclePrice(): Promise<IOracleProvider.OracleVersionStructOutput> {
     return (await this.getOracleProviderContract()).currentVersion();

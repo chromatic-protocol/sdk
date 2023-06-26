@@ -16,9 +16,11 @@ export class Client {
   private _contracts: Record<string, Contract> = {};
   private _liquidity: ChromaticLiquidity;
   set signer(signer: Signer) {
+    //TODO reinitialize contract if signer changeed
     console.log("signer changed");
   }
   set provider(provider: Provider) {
+    // reinitialize contract if signer changeed
     console.log("change provider");
   }
   constructor(public chainName: string, signerOrProvider: Signer | Provider) {

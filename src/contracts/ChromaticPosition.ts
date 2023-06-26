@@ -1,5 +1,5 @@
 import { PositionStructOutput } from "../gen/contracts/core/ChromaticMarket";
-import { BigNumber } from "@ethersproject/bignumber";
+import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 
 import { LIQUIDATION_PRICE_PRECISION, QTY_LEVERAGE_PRECISION } from "../constants";
 import { Client } from "../Client";
@@ -19,13 +19,34 @@ type InterestFeeParam = Pick<PositionParam, "makerMargin" | "claimTimestamp" | "
 export class ChromaticPosition {
   private settlementTokenAddress: string;
   private interestRateRecords;
-  client: Client;
+  _client: Client;
   constructor(client: Client) {
-    this.client = client;
+    this._client = client;
+  }
+
+  get market() {
+    return this._client.currentMarket();
+  }
+
+  async getPositions(positionIds: BigNumberish[]) {
+    const positions = await this.market.contract.getPositions(positionIds);
+    const oracleVersions = new Set(
+      positions.map((position) => [position.openVersion, position.closeVersion]).flat()
+    );
+    const oraclePrices = await (
+      await this.market.getOracleProviderContract()
+    ).atVersions([...oracleVersions]);
+    return positions.map((position) => {
+      return {
+        ...position,
+        openPrice: oraclePrices.find((price) => price.version.eq(position.openVersion)),
+        closePrice: oraclePrices.find((price) => price.version.eq(position.closeVersion)),
+      };
+    });
   }
 
   async getBpsRecords() {
-    if (!this.client.currentMarket()) {
+    if (!this._client.currentMarket()) {
       throw new Error(
         "need to select market before call this method. using `clinet.market(marketAddress)`"
       );
@@ -34,10 +55,10 @@ export class ChromaticPosition {
       return this.interestRateRecords;
     }
     if (!this.settlementTokenAddress) {
-      this.settlementTokenAddress = await this.client.currentMarket().contract.settlementToken();
+      this.settlementTokenAddress = await this._client.currentMarket().contract.settlementToken();
     }
 
-    this.interestRateRecords = await this.client
+    this.interestRateRecords = await this._client
       .marketFactory()
       .contract.getInterestRateRecords(this.settlementTokenAddress);
     return this.interestRateRecords;

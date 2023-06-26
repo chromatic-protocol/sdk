@@ -1,8 +1,6 @@
 import { BigNumber, BigNumberish, ethers } from "ethers";
 import { Client } from "../Client";
-import {ChromaticMarket__factory, IERC20__factory} from "../gen";
-import { CLBToken__factory } from "../../dist/cjs";
-import { erc20 } from "../../dist/cjs/gen/factories/@openzeppelin/contracts/token";
+import { CLBToken__factory, ChromaticMarket__factory, IERC20__factory } from "../gen";
 
 export interface RouterAddLiquidityParam {
   feeRate: BigNumberish;
@@ -54,39 +52,44 @@ export class ChromaticRouter {
     return transaction.wait();
   }
 
-  async approvalClbTokenToRouter(marketAddress: string) : Promise<boolean>{
-    const signer = this._client.signer
-    const clbTokenAddress = await ChromaticMarket__factory.connect(marketAddress,signer).clbToken()
-    const clbToken = CLBToken__factory.connect(clbTokenAddress,signer);
-    const routerAddress = this.routerContract.address
-    const signerAddress = await signer.getAddress()
-    if(!(await clbToken.isApprovedForAll(signerAddress,routerAddress))){
-      const tx = await clbToken.setApprovalForAll(routerAddress,true)
+  async approvalClbTokenToRouter(marketAddress: string): Promise<boolean> {
+    const signer = this._client.signer;
+    const clbTokenAddress = await ChromaticMarket__factory.connect(
+      marketAddress,
+      signer
+    ).clbToken();
+    const clbToken = CLBToken__factory.connect(clbTokenAddress, signer);
+    const routerAddress = this.routerContract.address;
+    const signerAddress = await signer.getAddress();
+    if (!(await clbToken.isApprovedForAll(signerAddress, routerAddress))) {
+      const tx = await clbToken.setApprovalForAll(routerAddress, true);
       // TODO verify tx
-      return tx.blockHash !== undefined
+      return tx.blockHash !== undefined;
     }
     return true;
   }
 
-  async approvalSettlementTokenToRouter(marketAddress: string) : Promise<boolean>{
-    const signer = this._client.signer
-    const settlementTokenAddress =  await ChromaticMarket__factory.connect(marketAddress,this._client.signer).settlementToken()
-    const settlementToken = IERC20__factory.connect(settlementTokenAddress,signer);
-    const routerAddress = this.routerContract.address
-    const signerAddress = await signer.getAddress()
-    const allowance =await  settlementToken.allowance(signerAddress, routerAddress)
-    if(!allowance.eq(ethers.constants.MaxUint256)){
-      const tx = await settlementToken.approve(routerAddress,ethers.constants.MaxUint256)
+  async approvalSettlementTokenToRouter(marketAddress: string): Promise<boolean> {
+    const signer = this._client.signer;
+    const settlementTokenAddress = await ChromaticMarket__factory.connect(
+      marketAddress,
+      this._client.signer
+    ).settlementToken();
+    const settlementToken = IERC20__factory.connect(settlementTokenAddress, signer);
+    const routerAddress = this.routerContract.address;
+    const signerAddress = await signer.getAddress();
+    const allowance = await settlementToken.allowance(signerAddress, routerAddress);
+    if (!allowance.eq(ethers.constants.MaxUint256)) {
+      const tx = await settlementToken.approve(routerAddress, ethers.constants.MaxUint256);
       // TODO verify tx
-      return tx.blockHash !== undefined
+      return tx.blockHash !== undefined;
     }
     return true;
-    
   }
 
   async addLiquidity(marketAddress: string, param: RouterAddLiquidityParam, receipient?: string) {
     // TODO check option flag
-    if(!await this.approvalSettlementTokenToRouter(marketAddress)){
+    if (!(await this.approvalSettlementTokenToRouter(marketAddress))) {
       return;
     }
     return this.routerContract.addLiquidity(
@@ -103,7 +106,7 @@ export class ChromaticRouter {
     recipient?: string
   ) {
     // TODO check option flag
-    if(!await this.approvalSettlementTokenToRouter(marketAddress)){
+    if (!(await this.approvalSettlementTokenToRouter(marketAddress))) {
       return;
     }
     const feeRates: BigNumberish[] = [];
@@ -125,7 +128,7 @@ export class ChromaticRouter {
 
   async removeLiquidity(marketAddress: string, param: RouterRemoveLiquidityParam) {
     // TODO check option flag
-    if(!await this.approvalClbTokenToRouter(marketAddress)){
+    if (!(await this.approvalClbTokenToRouter(marketAddress))) {
       return;
     }
     const tx = await this.routerContract.removeLiquidity(
@@ -143,7 +146,7 @@ export class ChromaticRouter {
     receipient?: string
   ) {
     // TODO check option flag
-    if(!await this.approvalClbTokenToRouter(marketAddress)){
+    if (!(await this.approvalClbTokenToRouter(marketAddress))) {
       return;
     }
     receipient = receipient || (await this._client.signer.getAddress());
@@ -173,7 +176,7 @@ export class ChromaticRouter {
       const result = await tx.wait();
       return result;
     } catch (e) {
-      console.log('parsed error', this.routerContract.interface.parseError(e.data.data))
+      console.log("parsed error", this.routerContract.interface.parseError(e.data.data));
       throw this.routerContract.interface.parseError(e.data.data);
     }
   }

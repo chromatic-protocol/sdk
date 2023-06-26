@@ -30,10 +30,11 @@ export class Positions {
   private QTY_LEVERAGE_PRECISION = BigNumber.from(10).pow(this.QTY_LEVERAGE_DECIMALS);
   private LIQUIDATION_PRICE_DECIMALS = 4;
   private LIQUIDATION_PRICE_PRECISION = BigNumber.from(10).pow(this.LIQUIDATION_PRICE_DECIMALS);
+
   constructor(private readonly marketAddress: string, private readonly provider?: Provider) {
     this.marketFactoryContract = ChromaticMarketFactory__factory.connect(
       DEPLOYED_ADDRESSES.ChromaticMarketFactory,
-      this.provider,
+      this.provider
     );
   }
 
@@ -44,12 +45,12 @@ export class Positions {
     if (!this.settlementTokenAddress) {
       this.settlementTokenAddress = await ChromaticMarket__factory.connect(
         this.marketAddress,
-        this.provider,
+        this.provider
       ).settlementToken();
     }
 
     this.interestRateRecords = await this.marketFactoryContract.getInterestRateRecords(
-      this.settlementTokenAddress,
+      this.settlementTokenAddress
     );
     return this.interestRateRecords;
   }
@@ -90,16 +91,41 @@ export class Positions {
     entryPirce: BigNumber,
     exitPrice: BigNumber,
     position: PositionParam,
+    options: { includeInterestFee: boolean } = { includeInterestFee: true }
   ): Promise<BigNumber> {
-    // const interestFee = await this.getInterestFee(position);
     const leveragedQty = position.qty.mul(position.leverage);
     let delta = exitPrice.sub(entryPirce).abs();
     if (leveragedQty.lt(0)) delta = delta.mul(-1);
-    return leveragedQty.abs().mul(delta).div(entryPirce);
-    // .sub(interestFee)
+    let pnl = leveragedQty.abs().mul(delta).div(entryPirce);
+    if (options.includeInterestFee) {
+      const interestFee = await this.getInterestFee(position);
+      pnl = pnl.sub(interestFee);
+    }
+    return pnl;
   }
 
   async getLiquidationPrice(entryPrice: BigNumber, position: PositionParam) {
+    return {
+      profitStopPrice: await this.profitStopPrice(entryPrice, position),
+      lossCutPrice: await this.lossCutPrice(entryPrice, position),
+    };
+  }
+
+  async profitStopPrice(entryPrice: BigNumber, position: PositionParam) {
+    const interestFee = await this.getInterestFee(position);
+    const margin = position.makerMargin;
+    const leveragedQty = position.qty.mul(position.leverage);
+
+    const pricePrecision = this.QTY_LEVERAGE_PRECISION.mul(this.LIQUIDATION_PRICE_PRECISION);
+    let delta = entryPrice
+      .mul(margin.add(interestFee).mul(pricePrecision).div(leveragedQty))
+      .div(this.LIQUIDATION_PRICE_PRECISION);
+
+    console.log("ps delta", delta.toString());
+    return entryPrice.add(delta);
+  }
+
+  async lossCutPrice(entryPrice: BigNumber, position: PositionParam) {
     const interestFee = await this.getInterestFee(position);
     const margin = position.takerMargin;
     const leveragedQty = position.qty.mul(position.leverage);
@@ -109,15 +135,7 @@ export class Positions {
       .mul(margin.sub(interestFee).mul(pricePrecision).div(leveragedQty))
       .div(this.LIQUIDATION_PRICE_PRECISION);
 
-    if (position.qty.lt(0)) {
-      delta = delta.mul(-1);
-    }
-
-    return {
-      profitStopPrice: leveragedQty.gt(0) ? entryPrice.add(delta) : entryPrice.sub(delta),
-      lossCutPrice: leveragedQty.gt(0) ? entryPrice.sub(delta) : entryPrice.add(delta),
-    };
+    return entryPrice.sub(delta);
   }
-
   removableRate() {}
 }

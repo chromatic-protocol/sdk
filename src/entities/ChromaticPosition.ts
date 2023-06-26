@@ -5,13 +5,15 @@ import { LIQUIDATION_PRICE_PRECISION, QTY_LEVERAGE_PRECISION } from "../constant
 import { Client } from "../Client";
 import { ethers } from "ethers";
 import { IOracleProvider } from "../gen";
+import debug from 'debug'
+const log = debug('[ChromaticSdk]')
 export interface PositionParam {
   id?: PositionStructOutput["id"];
   takerMargin: PositionStructOutput["takerMargin"];
   // binMargins: PositionStructOutput["_binMargins"];
   makerMargin: BigNumber;
   openTimestamp: PositionStructOutput["openTimestamp"];
-  claimTimestamp: BigNumber;
+  claimTimestamp?: BigNumber;
   qty: PositionStructOutput["qty"];
   leverage: PositionStructOutput["leverage"];
 }
@@ -44,15 +46,24 @@ export class ChromaticPosition {
     );
 
     const encodedResponses = (await this.lensContract.multicall(multicallParam)) as string[];
-    const oracleVersionData = encodedResponses.map((response) =>
-      this.lensContract.interface.decodeFunctionResult("oracleVersion", response)
+    const oracleVersionData = encodedResponses.map(
+      (response) =>
+        this.lensContract.interface.decodeFunctionResult(
+          "oracleVersion",
+          response
+        ) as IOracleProvider.OracleVersionStructOutput
     );
+    log('oracleVersionData', oracleVersionData)
 
     return positions.map((position) => {
       return {
         ...position,
-        openPrice: oracleVersionData.find((price) => price.version.eq(position.openVersion)),
-        closePrice: oracleVersionData.find((price) => price.version.eq(position.closeVersion)),
+        makerMargin: position._binMargins.reduce(
+          (acc, bin) => acc.add(bin.amount),
+          BigNumber.from(0)
+        ),
+        openPrice: oracleVersionData.find((oracle) => oracle.version?.eq(position.openVersion)),
+        closePrice: oracleVersionData.find((oracle) => oracle.version?.eq(position.closeVersion)),
       };
     });
   }

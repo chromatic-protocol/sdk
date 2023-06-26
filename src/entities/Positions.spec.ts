@@ -2,15 +2,18 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { PositionParam, ChromaticPosition } from "./ChromaticPosition";
 import { ethers } from "ethers";
 import { Client } from "../Client";
-jest.spyOn(ChromaticPosition.prototype, "getBpsRecords").mockImplementation(async () => {
-  return [{ annualRateBPS: BigNumber.from(1000), beginTimestamp: BigNumber.from(0) }];
-});
+import { getSigner } from "../utils/testHelpers";
+
 const { formatEther } = ethers.utils;
 function parseEther(value: string | number) {
   return ethers.utils.parseEther(value.toString());
 }
 
 describe("postion sdk test", () => {
+  jest.spyOn(ChromaticPosition.prototype, "getBpsRecords").mockImplementation(async () => {
+    return [{ annualRateBPS: BigNumber.from(1000), beginTimestamp: BigNumber.from(0) }];
+  });
+
   const position = new Client("anvil", ethers.getDefaultProvider()).position();
 
   test("losscut stop price - long", async () => {
@@ -126,4 +129,14 @@ describe("postion sdk test", () => {
       1000 * (1 + (makerMarginEther * 1.01) /* 1% interest for margin*/ / (qty * leverage))
     );
   });
+
+
+  test('get positions', async()=>{
+    const client = new Client('anvil', getSigner())
+    const tokens = await client.marketFactory().registeredSettlementTokens();
+    const markets = await client.marketFactory().getMarkets(tokens[0].address);
+    const positions = await client.position().getPositions(markets[0].address, [1])
+    console.log(positions)
+
+  })
 });

@@ -221,8 +221,8 @@ export interface IERC20 extends BaseContract {
   /**
    * Returns the amount of tokens owned by `account`.
    */
+  account: PromiseOrValue<string>,
   balanceOf(
-    account: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 

@@ -1,10 +1,11 @@
 import { getDeployedAddress, ChromaticLens__factory } from "../gen";
-import { decodeTokenId } from "../utils/helpers";
+import { decodeTokenId, encodeTokenId } from "../utils/helpers";
 import type { Client } from "../Client";
 import { BigNumber, ethers } from "ethers";
 
 export interface LiquidityBinResult {
   tradingFeeRate: number;
+  clbValue: number;
   liquidity: BigNumber;
   freeLiquidity: BigNumber;
 }
@@ -45,23 +46,21 @@ export class ChromaticLens {
    */
   async liquidityBins(marketAddress: string): Promise<LiquidityBinResult[]> {
     const totalLiquidityBins = await this.getContract().liquidityBinStatuses(marketAddress);
-    const ownedLiquidities = await this.getContract().clbBalanceOf(
-      marketAddress,
-      ethers.constants.AddressZero
-    );
+    const clbToken = await this._client.market().clbToken(marketAddress)
+    const tokenIds = totalLiquidityBins.map((bin) => encodeTokenId(bin.tradingFeeRate));
+
+    const totalSupplies = await clbToken.totalSupplyBatch(tokenIds);
 
     return totalLiquidityBins.map((bin, index) => {
       return {
         tradingFeeRate: bin.tradingFeeRate,
         clbValue:
-          parseFloat(bin.liquidity.toString()) /
-          parseFloat(ownedLiquidities[index].totalSupply.toString()),
+          parseFloat(bin.liquidity.toString()) / parseFloat(totalSupplies[index].toString()),
         liquidity: bin.liquidity,
         freeLiquidity: bin.freeLiquidity,
       };
     });
   }
-
 
   async ownedLiquidityBins(
     marketAddress: string,
@@ -71,6 +70,8 @@ export class ChromaticLens {
       throw new Error("signer is required");
     }
 
+    //
+    console.log(marketAddress);
     const totalLiquidityBins = await this.getContract().liquidityBinStatuses(marketAddress);
     const ownedLiquidities = await this.getContract().clbBalanceOf(
       marketAddress,

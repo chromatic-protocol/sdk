@@ -3,8 +3,11 @@ import {
   ChromaticMarket__factory,
   ChromaticMarket as ChromaticMarketContract,
   CLBToken__factory,
+  CLBToken,
   IOracleProvider,
   IOracleProvider__factory,
+  IERC20__factory,
+  IERC20
 } from "../gen";
 import type { Client } from "../Client";
 import { token } from "../gen/@openzeppelin/contracts";
@@ -20,12 +23,22 @@ export class ChromaticMarket {
     return ChromaticMarket__factory.connect(address, this._client.signer || this._client.provider);
   }
 
-  async clbTokenMeta(marketAddress: string, tokenId: BigNumberish) {
-    const clbTokenAddress = await this.getContract(marketAddress).clbToken();
-    const clbTokenContract = CLBToken__factory.connect(
-      clbTokenAddress,
+  async settlementToken(marketAddress: string) : Promise<IERC20> {
+    return IERC20__factory.connect(
+      await this.getContract(marketAddress).settlementToken(),
       this._client.signer || this._client.provider
     );
+  }
+
+  async clbToken(marketAddress: string) : Promise<CLBToken> {
+    return CLBToken__factory.connect(
+      await this.getContract(marketAddress).clbToken(),
+      this._client.signer || this._client.provider
+    );
+  }
+
+  async clbTokenMeta(marketAddress: string, tokenId: BigNumberish) {
+    const clbTokenContract = await this.clbToken(marketAddress)
     const [name, image, description, decimals] = await Promise.all([
       clbTokenContract.name(tokenId),
       clbTokenContract.image(tokenId),

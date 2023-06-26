@@ -1,6 +1,5 @@
 import { BigNumber, BigNumberish, ethers } from "ethers";
 import { Client } from "../Client";
-import { CLBToken__factory, ChromaticMarket__factory, IERC20__factory } from "../gen";
 
 export interface RouterAddLiquidityParam {
   feeRate: BigNumberish;
@@ -53,16 +52,13 @@ export class ChromaticRouter {
   }
 
   async approvalClbTokenToRouter(marketAddress: string): Promise<boolean> {
-    const signer = this._client.signer;
-    const clbTokenAddress = await ChromaticMarket__factory.connect(
-      marketAddress,
-      signer
-    ).clbToken();
-    const clbToken = CLBToken__factory.connect(clbTokenAddress, signer);
+    
+    const clbToken = await this._client.market().clbToken(marketAddress)
     const routerAddress = this.routerContract.address;
-    const signerAddress = await signer.getAddress();
+    const signerAddress = await this._client.signer.getAddress();
     if (!(await clbToken.isApprovedForAll(signerAddress, routerAddress))) {
       const tx = await clbToken.setApprovalForAll(routerAddress, true);
+      await tx.wait()
       // TODO verify tx
       return tx.blockHash !== undefined;
     }
@@ -70,17 +66,13 @@ export class ChromaticRouter {
   }
 
   async approvalSettlementTokenToRouter(marketAddress: string): Promise<boolean> {
-    const signer = this._client.signer;
-    const settlementTokenAddress = await ChromaticMarket__factory.connect(
-      marketAddress,
-      this._client.signer
-    ).settlementToken();
-    const settlementToken = IERC20__factory.connect(settlementTokenAddress, signer);
+    const settlementToken = await this._client.market().settlementToken(marketAddress);
     const routerAddress = this.routerContract.address;
-    const signerAddress = await signer.getAddress();
+    const signerAddress = await this._client.signer.getAddress();
     const allowance = await settlementToken.allowance(signerAddress, routerAddress);
     if (!allowance.eq(ethers.constants.MaxUint256)) {
       const tx = await settlementToken.approve(routerAddress, ethers.constants.MaxUint256);
+      await tx.wait()
       // TODO verify tx
       return tx.blockHash !== undefined;
     }

@@ -12,6 +12,6 @@ export function decodeTokenId(encodedId: BigNumber) {
 
 export function encodeTokenId(tradingFeeRate: number, long: boolean = true) {
   return long
-    ? BigNumber.from(tradingFeeRate)
-    : BigNumber.from(tradingFeeRate).add(DIRECTION_PRECISION);
+    ? BigNumber.from(Math.abs(tradingFeeRate))
+    : BigNumber.from(Math.abs(tradingFeeRate)).add(DIRECTION_PRECISION);
 }

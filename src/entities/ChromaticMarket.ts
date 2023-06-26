@@ -2,10 +2,12 @@ import { BigNumber, BigNumberish, Contract, Signer } from "ethers";
 import {
   ChromaticMarket__factory,
   ChromaticMarket as ChromaticMarketContract,
+  CLBToken__factory,
   IOracleProvider,
   IOracleProvider__factory,
 } from "../gen";
 import type { Client } from "../Client";
+import { token } from "../gen/@openzeppelin/contracts";
 
 export class ChromaticMarket {
   private oracleProvider: IOracleProvider;
@@ -16,6 +18,26 @@ export class ChromaticMarket {
 
   getContract(address: string) {
     return ChromaticMarket__factory.connect(address, this._client.signer || this._client.provider);
+  }
+
+  async clbTokenMeta(marketAddress: string, tokenId: BigNumberish) {
+    const clbTokenAddress = await this.getContract(marketAddress).clbToken();
+    const clbTokenContract = CLBToken__factory.connect(
+      clbTokenAddress,
+      this._client.signer || this._client.provider
+    );
+    const [name, image, description, decimals] = await Promise.all([
+      clbTokenContract.name(tokenId),
+      clbTokenContract.image(tokenId),
+      clbTokenContract.description(tokenId),
+      clbTokenContract.decimals(),
+    ]);
+    return {
+      name,
+      image,
+      description,
+      decimals,
+    };
   }
 
   async getOracleProviderContract(marketAddress: string): Promise<IOracleProvider> {

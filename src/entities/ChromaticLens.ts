@@ -1,7 +1,7 @@
 import { getDeployedAddress, ChromaticLens__factory } from "../gen";
 import { decodeTokenId } from "../utils/helpers";
 import type { Client } from "../Client";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 
 export interface LiquidityBinResult {
   tradingFeeRate: number;
@@ -45,15 +45,24 @@ export class ChromaticLens {
    */
   async liquidityBins(marketAddress: string): Promise<LiquidityBinResult[]> {
     const totalLiquidityBins = await this.getContract().liquidityBinStatuses(marketAddress);
+    const ownedLiquidities = await this.getContract().clbBalanceOf(
+      marketAddress,
+      ethers.constants.AddressZero
+    );
 
-    return totalLiquidityBins.map((bin) => ({
-      tradingFeeRate: bin.tradingFeeRate,
-      liquidity: bin.liquidity,
-      freeLiquidity: bin.freeLiquidity,
-    }));
+    return totalLiquidityBins.map((bin, index) => {
+      return {
+        tradingFeeRate: bin.tradingFeeRate,
+        clbValue:
+          parseFloat(bin.liquidity.toString()) /
+          parseFloat(ownedLiquidities[index].totalSupply.toString()),
+        liquidity: bin.liquidity,
+        freeLiquidity: bin.freeLiquidity,
+      };
+    });
   }
 
-  //TODO refactoring naming and params?
+
   async ownedLiquidityBins(
     marketAddress: string,
     ownerAddress?: string
@@ -77,6 +86,8 @@ export class ChromaticLens {
         (bin) => bin.tradingFeeRate === tradingFeeRate
       );
 
+      // totalSupplyBatch
+
       return {
         tradingFeeRate,
         liquidity: ownedBin.binValue,
@@ -91,7 +102,7 @@ export class ChromaticLens {
       };
     });
 
-    return results;
+    return results.filter((bin) => bin.clbBalance.gt(0));
   }
 
   async claimableLiquidities(

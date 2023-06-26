@@ -12,6 +12,7 @@ function parseEther(value: string | number) {
 
 describe("postion sdk test", () => {
   const position = new Client("anvil", ethers.getDefaultProvider()).position();
+
   test("losscut stop price - long", async () => {
     const openTimestamp = BigNumber.from(1000000000);
     const takerMarginEther = 2;

@@ -4,6 +4,7 @@ import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import { LIQUIDATION_PRICE_PRECISION, QTY_LEVERAGE_PRECISION } from "../constants";
 import { Client } from "../Client";
 import { ethers } from "ethers";
+import { IOracleProvider } from "../gen";
 export interface PositionParam {
   id?: PositionStructOutput["id"];
   takerMargin: PositionStructOutput["takerMargin"];
@@ -28,21 +29,30 @@ export class ChromaticPosition {
     return this._client.currentMarket();
   }
 
+  get lens() {
+    return this._client.lens();
+  }
+
   async getPositions(positionIds: BigNumberish[]) {
     const positions = await this.market.contract.getPositions(positionIds);
     const oracleVersions = new Set(
       positions.map((position) => [position.openVersion, position.closeVersion]).flat()
     );
-    //TODO change to use multicall
-    const oraclePrices = await (
-      await this.market.getOracleProviderContract()
-    ).atVersions([...oracleVersions]);
+    const marketAddress = await this.market.contract.address;
+    const multicallParam = [...oracleVersions].map((version) =>
+      this.lens.interface.encodeFunctionData("oracleVersion", [marketAddress, version])
+    );
+
+    const encodedResponses = (await this.lens.multicall(multicallParam)) as string[];
+    const oracleVersionData = encodedResponses.map((response) =>
+      this.lens.interface.decodeFunctionResult("oracleVersion", response)
+    );
 
     return positions.map((position) => {
       return {
         ...position,
-        openPrice: oraclePrices.find((price) => price.version.eq(position.openVersion)),
-        closePrice: oraclePrices.find((price) => price.version.eq(position.closeVersion)),
+        openPrice: oracleVersionData.find((price) => price.version.eq(position.openVersion)),
+        closePrice: oracleVersionData.find((price) => price.version.eq(position.closeVersion)),
       };
     });
   }

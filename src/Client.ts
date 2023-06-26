@@ -1,14 +1,19 @@
 import { Provider } from "@ethersproject/providers";
 import { Contract, Signer } from "ethers";
-import { ChromaticMarketFactory } from "./entities/ChromaticMarketFactory";
 import {
+  ChromaticMarketFactory,
+  ChromaticPosition,
+  ChromaticMarket,
+  ChromaticLiquidity,
+} from "./entities";
+import {
+  ChromaticLens as ChromaticLensContract,
+  ChromaticLens__factory,
   ChromaticRouter as ChromaticRouterContract,
   ChromaticRouter__factory,
   getDeployedAddress,
 } from "./gen";
-import { ChromaticPosition } from "./entities/ChromaticPosition";
-import { ChromaticMarket } from "./entities/ChromaticMarket";
-import { ChromaticLiquidity } from "./entities/ChromaticLiquidity";
+import {} from "./entities/ChromaticPosition";
 export class Client {
   private _marketFactory: ChromaticMarketFactory;
   private _market: ChromaticMarket;
@@ -16,9 +21,7 @@ export class Client {
   private _contracts: Record<string, Contract> = {};
   private _liquidity: ChromaticLiquidity;
 
-  setSignerOrProvider(signerOrProvider: Signer | Provider){
-
-  }
+  setSignerOrProvider(signerOrProvider: Signer | Provider) {}
   set signer(signer: Signer) {
     //TODO reinitialize contract if signer changeed
     console.log("signer changed");
@@ -36,6 +39,16 @@ export class Client {
     }
   }
 
+  public lens(): ChromaticLensContract {
+    if (!this._contracts["ChromaticLens"]) {
+      this._contracts["ChromaticLens"] = ChromaticLens__factory.connect(
+        getDeployedAddress("ChromaticLens", this.chainName),
+        this.signer || this.provider
+      );
+    }
+    return this._contracts["ChromaticLens"] as ChromaticLensContract;
+  }
+  
   public marketFactory(): ChromaticMarketFactory {
     if (!this._marketFactory) {
       this._marketFactory = new ChromaticMarketFactory(

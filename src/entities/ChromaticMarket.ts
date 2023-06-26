@@ -74,12 +74,12 @@ export class ChromaticMarket {
 
   async getCurrentPrices(
     marketAddresses: string[]
-  ): Promise<{ market: string; price: IOracleProvider.OracleVersionStructOutput }[]> {
+  ): Promise<{ market: string; value: IOracleProvider.OracleVersionStructOutput }[]> {
     return await Promise.all(
       marketAddresses.map(async (address) => {
         return {
           market: address,
-          price: await this.getCurrentPrice(address),
+          value: await this.getCurrentPrice(address),
         };
       })
     );

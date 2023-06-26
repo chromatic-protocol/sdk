@@ -59,10 +59,10 @@ export class ChromaticMarketFactory implements IChromaticMarketFactory {
 
     return Promise.all(
       orcales.map(async (orcale) => {
-        const { market: address, price: value } = orcale;
+        const { market: address, value } = orcale;
         return {
           address,
-          value,
+          oracleValue : value,
           description: await market.getMarketName(address),
         };
       })

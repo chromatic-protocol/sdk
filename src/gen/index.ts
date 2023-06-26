@@ -36,15 +36,8 @@ export function getDeployedContract(contractName: string, chainName: string, sig
   const factoryName = `${contractName}__factory`
   let factory: ContractFactoryConnect | undefined = undefined;
   try {
-    
-    factory = factoryModule?.factories?.deployed?.[chainName]?.[factoryName]
 
-    if (!factory) {
-      factory = factoryModule?.[chainName]?.[factoryName]
-    }
-    if (!factory) {
-      factory = factoryModule?.[factoryName]
-    }
+    factory = factoryModule?.[factoryName]
     
     if (factory) {
       return factory.connect(address, signerOrProvider as any);

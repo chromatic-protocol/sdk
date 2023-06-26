@@ -1,5 +1,6 @@
 import { BigNumber, BigNumberish } from "ethers";
 import { Client } from "../Client";
+import {ChromaticMarket__factory} from "../gen";
 
 export interface RouterAddLiquidityParam {
   feeRate: BigNumberish;
@@ -50,6 +51,15 @@ export class ChromaticRouter {
     const transaction = await this.routerContract.closePosition(marketAddress, param.positionId);
     return transaction.wait();
   }
+
+  // async approvalForAllToRouter(marketAddress: string){
+  //   const clbTokenAddress = await ChromaticMarket__factory.connect(marketAddress,this._client.signer).clbToken()
+  //   CLBToken__factory.connect(clbToken,marketAddress,this._client.signer)
+  // }
+
+  // async approvalToRouter(marketAddress: string){
+  //   await ChromaticMarket__factory.connect(marketAddress,this._client.signer).settlementToken()
+  // }
 
   async addLiquidity(marketAddress: string, param: RouterAddLiquidityParam, receipient?: string) {
     return this.routerContract.addLiquidity(
@@ -119,8 +129,14 @@ export class ChromaticRouter {
   }
 
   async claimLiquidity(marketAddress: string, receiptId: BigNumberish) {
-    const tx = await this.routerContract.claimLiquidity(marketAddress, BigNumber.from(receiptId));
-    return tx.wait();
+    try {
+      const tx = await this.routerContract.claimLiquidity(marketAddress, BigNumber.from(receiptId));
+      const result = await tx.wait();
+      return result;
+    } catch (e) {
+      console.log('parsed error', this.routerContract.interface.parseError(e.data.data))
+      throw this.routerContract.interface.parseError(e.data.data);
+    }
   }
 
   async claimLiquidites(marketAddress: string, receiptIds: BigNumberish[]) {

@@ -4,8 +4,8 @@ import {
   ChromaticMarketFactory,
   ChromaticPosition,
   ChromaticMarket,
-  ChromaticLiquidity,
   ChromaticRouter,
+  ChromaticLens,
 } from "./entities";
 import {
   ChromaticLens as ChromaticLensContract,
@@ -19,7 +19,7 @@ export class Client {
   private _market: ChromaticMarket;
   private _position: ChromaticPosition;
   private _contracts: Record<string, Contract> = {};
-  private _liquidity: ChromaticLiquidity;
+  // private _liquidity: ChromaticLiquidity;
   private _router: ChromaticRouter;
   private _signer: Signer;
   private _provider: Provider;
@@ -53,31 +53,28 @@ export class Client {
     }
   }
 
-  public lens(): ChromaticLensContract {
+  public lens(): ChromaticLens {
     // if (!this._contracts["ChromaticLens"]) {
-    this._contracts["ChromaticLens"] = ChromaticLens__factory.connect(
-      getDeployedAddress("ChromaticLens", this.chainName),
-      this.signer || this.provider
-    );
-    // }
-    return this._contracts["ChromaticLens"] as ChromaticLensContract;
+    return new ChromaticLens(this);
+    // this._contracts["ChromaticLens"] = ChromaticLens__factory.connect(
+    //   getDeployedAddress("ChromaticLens", this.chainName),
+    //   this.signer || this.provider
+    // );
+    // // }
+    // return this._contracts["ChromaticLens"] as ChromaticLensContract;
   }
 
   public marketFactory(): ChromaticMarketFactory {
-    // if (!this._marketFactory) {
     this._marketFactory = new ChromaticMarketFactory(
       getDeployedAddress("ChromaticMarketFactory", this.chainName),
       this
     );
     return this._marketFactory;
-    // }
-    // return this._marketFactory;
   }
 
   market(): ChromaticMarket {
-    // if (!this._market) {
     this._market = new ChromaticMarket(this);
-    // }
+
     return this._market;
   }
 
@@ -91,11 +88,11 @@ export class Client {
     return this._position;
   }
 
-  liquidity() {
-    // if (!this._liquidity)
-    this._liquidity = new ChromaticLiquidity(this);
-    return this._liquidity;
-  }
+  // liquidity() {
+  //   // if (!this._liquidity)
+  //   // this._liquidity = new ChromaticLiquidity(this);
+  //   return this._liquidity;
+  // }
 
   router(): ChromaticRouter {
     // if (!this._router)

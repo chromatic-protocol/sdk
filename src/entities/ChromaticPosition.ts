@@ -29,23 +29,23 @@ export class ChromaticPosition {
     return this._client.currentMarket();
   }
 
-  get lens() {
-    return this._client.lens();
+  get lensContract() {
+    return this._client.lens().getContract();
   }
 
-  async getPositions(positionIds: BigNumberish[]) {
-    const positions = await this.market.contract.getPositions(positionIds);
+  async getPositions(marketAddress: string, positionIds: BigNumberish[]) {
+    const positions = await this.market.getContract(marketAddress).getPositions(positionIds);
     const oracleVersions = new Set(
       positions.map((position) => [position.openVersion, position.closeVersion]).flat()
     );
-    const marketAddress = await this.market.contract.address;
+
     const multicallParam = [...oracleVersions].map((version) =>
-      this.lens.interface.encodeFunctionData("oracleVersion", [marketAddress, version])
+      this.lensContract.interface.encodeFunctionData("oracleVersion", [marketAddress, version])
     );
 
-    const encodedResponses = (await this.lens.multicall(multicallParam)) as string[];
+    const encodedResponses = (await this.lensContract.multicall(multicallParam)) as string[];
     const oracleVersionData = encodedResponses.map((response) =>
-      this.lens.interface.decodeFunctionResult("oracleVersion", response)
+      this.lensContract.interface.decodeFunctionResult("oracleVersion", response)
     );
 
     return positions.map((position) => {
@@ -57,7 +57,7 @@ export class ChromaticPosition {
     });
   }
 
-  async getBpsRecords() {
+  async getBpsRecords(marketAddress: string) {
     if (!this._client.currentMarket()) {
       throw new Error(
         "need to select market before call this method. using `clinet.market(marketAddress)`"
@@ -67,7 +67,10 @@ export class ChromaticPosition {
       return this.interestRateRecords;
     }
     if (!this.settlementTokenAddress) {
-      this.settlementTokenAddress = await this._client.currentMarket().contract.settlementToken();
+      this.settlementTokenAddress = await this._client
+        .market()
+        .getContract(marketAddress)
+        .settlementToken();
     }
 
     this.interestRateRecords = await this._client
@@ -76,11 +79,11 @@ export class ChromaticPosition {
     return this.interestRateRecords;
   }
 
-  async getInterestFee(position: InterestFeeParam) {
+  async getInterestFee(marketAddress: string, position: InterestFeeParam) {
     const yearSecond = 3600 * 24 * 365;
     const denominator = BigNumber.from(yearSecond * 10000);
     let to = position.claimTimestamp?.toNumber() || Math.floor(Date.now() / 1000);
-    const filteredInterestFees = (await this.getBpsRecords())
+    const filteredInterestFees = (await this.getBpsRecords(marketAddress))
       .filter((fee) => fee.beginTimestamp.lte(BigNumber.from(to)))
       .sort((a, b) => b.beginTimestamp.sub(a.beginTimestamp).toNumber());
 
@@ -106,6 +109,7 @@ export class ChromaticPosition {
   }
 
   async getPnl(
+    marketAddress: string,
     entryPrice: BigNumber,
     exitPrice: BigNumber,
     position: PositionParam,
@@ -116,25 +120,26 @@ export class ChromaticPosition {
     if (leveragedQty.lt(0)) delta = delta.mul(-1);
     let pnl = leveragedQty.abs().mul(delta).div(entryPrice);
     if (options.includeInterestFee) {
-      const interestFee = await this.getInterestFee(position);
+      const interestFee = await this.getInterestFee(marketAddress, position);
       pnl = pnl.sub(interestFee);
     }
     return pnl;
   }
 
-  async getLiquidationPrice(entryPrice: BigNumber, position: PositionParam) {
+  async getLiquidationPrice(marketAddress: string, entryPrice: BigNumber, position: PositionParam) {
     return {
-      profitStopPrice: await this.profitStopPrice(entryPrice, position),
-      lossCutPrice: await this.lossCutPrice(entryPrice, position),
+      profitStopPrice: await this.profitStopPrice(marketAddress, entryPrice, position),
+      lossCutPrice: await this.lossCutPrice(marketAddress, entryPrice, position),
     };
   }
 
   private async getDeltaForLiquidation(
+    marketAddress: string,
     entryPrice: BigNumber,
     position: PositionParam,
     isProfitStop: boolean
   ) {
-    const interestFee = await this.getInterestFee(position);
+    const interestFee = await this.getInterestFee(marketAddress, position);
     const margin = isProfitStop ? position.makerMargin : position.takerMargin;
     const leveragedQty = position.qty.mul(position.leverage);
     const pricePrecision = BigNumber.from(QTY_LEVERAGE_PRECISION).mul(LIQUIDATION_PRICE_PRECISION);
@@ -145,13 +150,13 @@ export class ChromaticPosition {
     return delta;
   }
 
-  async profitStopPrice(entryPrice: BigNumber, position: PositionParam) {
-    const delta = await this.getDeltaForLiquidation(entryPrice, position, true);
+  async profitStopPrice(marketAddress: string, entryPrice: BigNumber, position: PositionParam) {
+    const delta = await this.getDeltaForLiquidation(marketAddress, entryPrice, position, true);
     return entryPrice.add(delta);
   }
 
-  async lossCutPrice(entryPrice: BigNumber, position: PositionParam) {
-    const delta = await this.getDeltaForLiquidation(entryPrice, position, false);
+  async lossCutPrice(marketAddress: string, entryPrice: BigNumber, position: PositionParam) {
+    const delta = await this.getDeltaForLiquidation(marketAddress, entryPrice, position, false);
     return entryPrice.sub(delta);
   }
 }

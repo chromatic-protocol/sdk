@@ -28,7 +28,11 @@ describe("postion sdk test", () => {
       claimTimestamp: BigNumber.from(openTimestamp.toNumber() + 3600 * 24 * 36.5),
     };
 
-    const { lossCutPrice } = await position.getLiquidationPrice(parseEther(1000), positionParam);
+    const { lossCutPrice } = await position.getLiquidationPrice(
+      "",
+      parseEther(1000),
+      positionParam
+    );
 
     console.log("Losscut price - long", ethers.utils.formatEther(lossCutPrice));
     expect(Number(formatEther(lossCutPrice))).toEqual(
@@ -54,7 +58,11 @@ describe("postion sdk test", () => {
       claimTimestamp: BigNumber.from(openTimestamp.toNumber() + 3600 * 24 * 36.5),
     };
 
-    const { lossCutPrice } = await position.getLiquidationPrice(parseEther(1000), positionParam);
+    const { lossCutPrice } = await position.getLiquidationPrice(
+      "",
+      parseEther(1000),
+      positionParam
+    );
 
     console.log("Losscut price - short", ethers.utils.formatEther(lossCutPrice));
     expect(Number(formatEther(lossCutPrice))).toEqual(
@@ -80,7 +88,11 @@ describe("postion sdk test", () => {
       claimTimestamp: BigNumber.from(openTimestamp.toNumber() + 3600 * 24 * 36.5),
     };
 
-    const { profitStopPrice } = await position.getLiquidationPrice(parseEther(1000), positionParam);
+    const { profitStopPrice } = await position.getLiquidationPrice(
+      "",
+      parseEther(1000),
+      positionParam
+    );
 
     console.log("Profit Stop price", ethers.utils.formatEther(profitStopPrice));
     expect(Number(formatEther(profitStopPrice))).toEqual(
@@ -103,7 +115,11 @@ describe("postion sdk test", () => {
       claimTimestamp: BigNumber.from(openTimestamp.toNumber() + 3600 * 24 * 36.5),
     };
 
-    const { profitStopPrice } = await position.getLiquidationPrice(parseEther(1000), positionParam);
+    const { profitStopPrice } = await position.getLiquidationPrice(
+      "",
+      parseEther(1000),
+      positionParam
+    );
 
     console.log("Profit Stop price (short)", ethers.utils.formatEther(profitStopPrice));
     expect(Number(formatEther(profitStopPrice))).toEqual(

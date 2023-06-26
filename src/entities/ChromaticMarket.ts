@@ -2,15 +2,15 @@ import { BigNumber, BigNumberish, Contract, Signer } from "ethers";
 import {
   ChromaticMarket__factory,
   ChromaticMarket as ChromaticMarketContract,
-  OracleProvider,
-  OracleProvider__factory,
+  IOracleProvider,
+  IOracleProvider__factory,
 } from "../gen";
 import type { Client } from "../Client";
-import { IOracleProvider } from "../gen/contracts/core/OracleProvider";
+
 
 export class ChromaticMarket {
   contract: ChromaticMarketContract;
-  private oracleProvider: OracleProvider;
+  private oracleProvider: IOracleProvider;
   _client: Client;
   constructor(addressOrName: string, client: Client) {
     this.contract = ChromaticMarket__factory.connect(
@@ -19,9 +19,9 @@ export class ChromaticMarket {
     );
   }
 
-  async getOracleProviderContract(): Promise<OracleProvider> {
+  async getOracleProviderContract(): Promise<IOracleProvider> {
     if (!this.oracleProvider) {
-      this.oracleProvider = OracleProvider__factory.connect(
+      this.oracleProvider = IOracleProvider__factory.connect(
         await this.contract.oracleProvider(),
         this._client.signer || this._client.provider
       );

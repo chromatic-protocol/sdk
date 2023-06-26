@@ -1,14 +1,9 @@
-import { Provider } from "@ethersproject/providers";
-import { PositionStructOutput } from "./gen/contracts/core/ChromaticMarket";
+import { PositionStructOutput } from "../gen/contracts/core/ChromaticMarket";
 import { BigNumber } from "@ethersproject/bignumber";
-import {
-  ChromaticMarketFactory,
-  ChromaticMarketFactory__factory,
-  ChromaticMarket__factory,
-} from "./gen";
-import { DEPLOYED_ADDRESSES } from "./constants";
-import { ethers } from "ethers";
 
+import { LIQUIDATION_PRICE_PRECISION, QTY_LEVERAGE_PRECISION } from "../constants";
+import { Client } from "../Client";
+import { ethers } from "ethers";
 export interface PositionParam {
   id?: PositionStructOutput["id"];
   takerMargin: PositionStructOutput["takerMargin"];
@@ -20,38 +15,31 @@ export interface PositionParam {
   leverage: PositionStructOutput["leverage"];
 }
 type InterestFeeParam = Pick<PositionParam, "makerMargin" | "claimTimestamp" | "openTimestamp">;
-export class Positions {
-  private marketFactoryContract: ChromaticMarketFactory;
+
+export class ChromaticPosition {
   private settlementTokenAddress: string;
   private interestRateRecords;
-  private QTY_DECIMALS = 4;
-  private LEVERAGE_DECIMALS = 2;
-  private QTY_LEVERAGE_DECIMALS = this.QTY_DECIMALS + this.LEVERAGE_DECIMALS;
-  private QTY_LEVERAGE_PRECISION = BigNumber.from(10).pow(this.QTY_LEVERAGE_DECIMALS);
-  private LIQUIDATION_PRICE_DECIMALS = 4;
-  private LIQUIDATION_PRICE_PRECISION = BigNumber.from(10).pow(this.LIQUIDATION_PRICE_DECIMALS);
-
-  constructor(private readonly marketAddress: string, private readonly provider?: Provider) {
-    this.marketFactoryContract = ChromaticMarketFactory__factory.connect(
-      DEPLOYED_ADDRESSES.ChromaticMarketFactory,
-      this.provider
-    );
+  client: Client;
+  constructor(client: Client) {
+    this.client = client;
   }
 
   async getBpsRecords() {
+    if (!this.client.currentMarket()) {
+      throw new Error(
+        "need to select market before call this method. using `clinet.market(marketAddress)`"
+      );
+    }
     if (this.interestRateRecords != null) {
       return this.interestRateRecords;
     }
     if (!this.settlementTokenAddress) {
-      this.settlementTokenAddress = await ChromaticMarket__factory.connect(
-        this.marketAddress,
-        this.provider
-      ).settlementToken();
+      this.settlementTokenAddress = await this.client.currentMarket().contract.settlementToken();
     }
 
-    this.interestRateRecords = await this.marketFactoryContract.getInterestRateRecords(
-      this.settlementTokenAddress
-    );
+    this.interestRateRecords = await this.client
+      .marketFactory()
+      .contract.getInterestRateRecords(this.settlementTokenAddress);
     return this.interestRateRecords;
   }
 
@@ -65,15 +53,12 @@ export class Positions {
 
     let totalInterestFee = BigNumber.from(0);
 
-    // calculate total interestFee
     for (let fee of filteredInterestFees) {
       const from = Math.max(fee.beginTimestamp.toNumber(), position.openTimestamp.toNumber());
       const period = to - from;
       to = fee.beginTimestamp.toNumber();
 
       const x = position.makerMargin;
-      // ||
-      // position.binMargins.reduce((acc, bin) => acc.add(bin.amount), BigNumber.from(0));
       const y = fee.annualRateBPS.mul(period);
       let calculatedInterestFee = x.mul(y).div(denominator);
 
@@ -119,14 +104,14 @@ export class Positions {
     const interestFee = await this.getInterestFee(position);
     const margin = isProfitStop ? position.makerMargin : position.takerMargin;
     const leveragedQty = position.qty.mul(position.leverage);
-    const pricePrecision = this.QTY_LEVERAGE_PRECISION.mul(this.LIQUIDATION_PRICE_PRECISION);
+    const pricePrecision = BigNumber.from(QTY_LEVERAGE_PRECISION).mul(LIQUIDATION_PRICE_PRECISION);
     const marginWithInterest = isProfitStop ? margin.add(interestFee) : margin.sub(interestFee);
     let delta = entryPrice
       .mul(marginWithInterest.mul(pricePrecision).div(leveragedQty))
-      .div(this.LIQUIDATION_PRICE_PRECISION);
+      .div(LIQUIDATION_PRICE_PRECISION);
     return delta;
   }
-  
+
   async profitStopPrice(entryPrice: BigNumber, position: PositionParam) {
     const delta = await this.getDeltaForLiquidation(entryPrice, position, true);
     return entryPrice.add(delta);
@@ -136,5 +121,4 @@ export class Positions {
     const delta = await this.getDeltaForLiquidation(entryPrice, position, false);
     return entryPrice.sub(delta);
   }
-  removableRate() {}
 }

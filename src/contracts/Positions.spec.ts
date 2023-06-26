@@ -1,8 +1,8 @@
 import { BigNumber } from "@ethersproject/bignumber";
-import { PositionParam, Positions } from "./positions";
+import { PositionParam, ChromaticPosition } from "./ChromaticPosition";
 import { ethers } from "ethers";
-
-jest.spyOn(Positions.prototype, "getBpsRecords").mockImplementation(async () => {
+import { Client } from "../Client";
+jest.spyOn(ChromaticPosition.prototype, "getBpsRecords").mockImplementation(async () => {
   return [{ annualRateBPS: BigNumber.from(1000), beginTimestamp: BigNumber.from(0) }];
 });
 const { formatEther } = ethers.utils;
@@ -11,7 +11,7 @@ function parseEther(value: string | number) {
 }
 
 describe("postion sdk test", () => {
-  const position = new Positions("dummy market address");
+  const position = new Client("anvil", ethers.getDefaultProvider()).position();
   test("losscut stop price - long", async () => {
     const openTimestamp = BigNumber.from(1000000000);
     const takerMarginEther = 2;

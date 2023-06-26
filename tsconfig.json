@@ -11,5 +11,4 @@
     "sourceRoot": "",
     "declarationMap": true
   },
-  "include": ["**/*.d.ts", "**/*.ts", "**/*.js"]
 }

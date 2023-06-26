@@ -43,8 +43,8 @@
     "typescript": "^5.1.3"
   },
   "scripts": {
-    "build:cjs": "rm -rf cjs && tsc --build --force tsconfig.cjs.json",
-    "build:esm": "rm -rf esm && tsc --build --force tsconfig.json",
+    "build:cjs": "rm -rf cjs && tsc --build --force tsconfig.cjs.build.json",
+    "build:esm": "rm -rf esm && tsc --build --force tsconfig.build.json",
     "build": "yarn build:cjs && yarn build:esm",
     "clean": "rm -rf docs cjs esm",
     "docs": "typedoc",

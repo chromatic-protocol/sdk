@@ -1,39 +1,57 @@
-import { Provider } from "@ethersproject/providers";
-import { BigNumber, Contract, Signer } from "ethers";
+import { BigNumber, BigNumberish, Contract, Signer } from "ethers";
 import {
   ChromaticMarket__factory,
-  ChromaticMarket as IChromaticMarket,
+  ChromaticMarket as ChromaticMarketContract,
   OracleProvider,
   OracleProvider__factory,
 } from "../gen";
+import type { Client } from "../Client";
+import { IOracleProvider } from "../gen/contracts/core/OracleProvider";
 
-interface ChromaticMarketEx {
-  getOracleProviderContract(): Promise<OracleProvider>;
-  getCurrentPrice(): Promise<BigNumber>;
-}
-
-export class ChromaticMarketImpl extends Contract implements ChromaticMarketEx {
-  private contract: IChromaticMarket;
+export class ChromaticMarket {
+  contract: ChromaticMarketContract;
   private oracleProvider: OracleProvider;
-
-  constructor(addressOrName: string, private signerOrProvider: Signer | Provider) {
-    super(addressOrName, ChromaticMarket__factory.abi, signerOrProvider);
-    this.contract = this as unknown as IChromaticMarket;
+  client: Client;
+  constructor(addressOrName: string, client: Client) {
+    this.contract = ChromaticMarket__factory.connect(
+      addressOrName,
+      client.signer || client.provider
+    );
   }
 
   async getOracleProviderContract(): Promise<OracleProvider> {
     if (!this.oracleProvider) {
       this.oracleProvider = OracleProvider__factory.connect(
         await this.contract.oracleProvider(),
-        this.signerOrProvider,
+        this.client.signer || this.client.provider
       );
     }
     return this.oracleProvider;
   }
 
-  async getCurrentPrice(): Promise<BigNumber> {
-    return (await (await this.getOracleProviderContract()).currentVersion()).price;
+  async getCurrentPrice(): Promise<IOracleProvider.OracleVersionStruct> {
+    const contract = await this.getOracleProviderContract();
+    return contract.currentVersion();
+  }
+
+  async getPositions(positionIds: BigNumberish[]) {
+    const positions = await this.contract.getPositions(positionIds);
+    const oracleVersions = new Set(
+      positions.map((position) => [position.openVersion, position.closeVersion]).flat()
+    );
+    const oraclePrices = await (
+      await this.getOracleProviderContract()
+    ).atVersions([...oracleVersions]);
+    return positions.map((position) => {
+      return {
+        ...position,
+        openPrice: oraclePrices.find((price) => price.version.eq(position.openVersion)),
+        closePrice: oraclePrices.find((price) => price.version.eq(position.closeVersion)),
+      };
+    });
+  }
+
+  async getOraclePrice(): Promise<IOracleProvider.OracleVersionStructOutput> {
+    return (await this.getOracleProviderContract()).currentVersion();
   }
 }
-
-export interface ChromaticMarket extends IChromaticMarket, ChromaticMarketEx {}

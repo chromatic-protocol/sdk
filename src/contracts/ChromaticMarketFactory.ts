@@ -2,25 +2,20 @@ import { Provider } from "@ethersproject/providers";
 import { Contract, Signer } from "ethers";
 import {
   ChromaticMarketFactory__factory,
-  ChromaticMarketFactory as IChromaticMarketFactory,
+  ChromaticMarketFactory as ChromaticMarketFactoryContract,
+  ChromaticMarket as ChromaticMarketContract,
 } from "../gen";
-import { ChromaticMarket, ChromaticMarketImpl } from "./ChromaticMarket";
+import { ChromaticMarket } from "./ChromaticMarket";
+import type { Client } from "../Client";
 
-interface ChromaticMarketFactoryEx {
-  getMarketContract(address: string): ChromaticMarket;
+interface IChromaticMarketFactory {
+  // getMarketContract(address: string): ChromaticMarket;
 }
 
-export class ChromaticMarketFactoryImpl extends Contract implements ChromaticMarketFactoryEx {
-  private contract: IChromaticMarketFactory;
+export class ChromaticMarketFactory implements IChromaticMarketFactory {
+  contract: ChromaticMarketFactoryContract;
 
-  constructor(addressOrName: string, private signerOrProvider: Signer | Provider) {
-    super(addressOrName, ChromaticMarketFactory__factory.abi, signerOrProvider);
-    this.contract = this as unknown as IChromaticMarketFactory;
-  }
-
-  getMarketContract(address: string): ChromaticMarket {
-    return new ChromaticMarketImpl(address, this.signerOrProvider) as unknown as ChromaticMarket;
+  constructor(addressOrName: string, private client: Client) {
+    this.contract = ChromaticMarketFactory__factory.connect(addressOrName, client.provider);
   }
 }
-
-export interface ChromaticMarketFactory extends IChromaticMarketFactory, ChromaticMarketFactoryEx {}

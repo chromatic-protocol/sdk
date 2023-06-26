@@ -27,11 +27,15 @@ export class ChromaticMarket {
       this._client.signer || this._client.provider
     );
     return this.oracleProvider;
-  }
+}
 
   async getCurrentPrice(marketAddress: string): Promise<IOracleProvider.OracleVersionStructOutput> {
     const contract = await this.getOracleProviderContract(marketAddress);
     return contract.currentVersion();
+  }
+
+  async getMarketName(marketAddress:string){
+    return (await this.getOracleProviderContract(marketAddress)).description()
   }
 
   async getCurrentPrices(

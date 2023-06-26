@@ -74,9 +74,9 @@ export class Client {
     // return this._marketFactory;
   }
 
-  market(marketAddress: string): ChromaticMarket {
+  market(): ChromaticMarket {
     // if (!this._market) {
-    this._market = new ChromaticMarket(marketAddress, this);
+    this._market = new ChromaticMarket(this);
     // }
     return this._market;
   }

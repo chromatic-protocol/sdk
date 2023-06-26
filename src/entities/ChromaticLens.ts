@@ -2,7 +2,8 @@ import { getDeployedAddress, ChromaticLens__factory } from "../gen";
 import { decodeTokenId, encodeTokenId } from "../utils/helpers";
 import type { Client } from "../Client";
 import { BigNumber, ethers } from "ethers";
-
+import { logger } from "../utils/helpers";
+import { token } from "../gen/@openzeppelin/contracts";
 export interface LiquidityBinResult {
   tradingFeeRate: number;
   clbValue: number;
@@ -46,7 +47,7 @@ export class ChromaticLens {
    */
   async liquidityBins(marketAddress: string): Promise<LiquidityBinResult[]> {
     const totalLiquidityBins = await this.getContract().liquidityBinStatuses(marketAddress);
-    const clbToken = await this._client.market().clbToken(marketAddress)
+    const clbToken = await this._client.market().clbToken(marketAddress);
     const tokenIds = totalLiquidityBins.map((bin) => encodeTokenId(bin.tradingFeeRate));
 
     const totalSupplies = await clbToken.totalSupplyBatch(tokenIds);
@@ -54,9 +55,11 @@ export class ChromaticLens {
     return totalLiquidityBins.map((bin, index) => {
       return {
         tradingFeeRate: bin.tradingFeeRate,
-        clbValue:
-          parseFloat(bin.liquidity.toString()) / parseFloat(totalSupplies[index].toString()),
+        clbValue: totalSupplies[index].isZero()
+          ? 0
+          : Number(bin.liquidity.toString()) / Number(totalSupplies[index].toString()),
         liquidity: bin.liquidity,
+        clbTokenTotalSupply: totalSupplies[index],
         freeLiquidity: bin.freeLiquidity,
       };
     });
@@ -71,7 +74,7 @@ export class ChromaticLens {
     }
 
     //
-    
+
     const totalLiquidityBins = await this.getContract().liquidityBinStatuses(marketAddress);
     const ownedLiquidities = await this.getContract().clbBalanceOf(
       marketAddress,
@@ -95,11 +98,13 @@ export class ChromaticLens {
         freeLiquidity: targetTotalLiqBin.freeLiquidity,
         clbBalance: ownedBin.balance,
         clbTotalSupply: ownedBin.totalSupply,
-        clbValue:
-          parseFloat(ownedBin.binValue.toString()) / parseFloat(ownedBin.totalSupply.toString()),
-        removableRate:
-          parseFloat(targetTotalLiqBin.freeLiquidity.toString()) /
-          parseFloat(targetTotalLiqBin.liquidity.toString()),
+        clbValue: ownedBin.totalSupply.isZero()
+          ? 0
+          : Number(ownedBin.binValue.toString() || 0) / Number(ownedBin.totalSupply.toString()),
+        removableRate: targetTotalLiqBin.liquidity.isZero()
+          ? 0
+          : Number(targetTotalLiqBin.freeLiquidity.toString() || 0) /
+            Number(targetTotalLiqBin.liquidity.toString()),
       };
     });
 

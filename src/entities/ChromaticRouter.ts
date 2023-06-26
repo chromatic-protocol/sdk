@@ -1,5 +1,6 @@
 import { BigNumber, BigNumberish, ethers } from "ethers";
 import { Client } from "../Client";
+import { logger } from "../utils/helpers";
 
 export interface RouterAddLiquidityParam {
   feeRate: BigNumberish;
@@ -52,13 +53,12 @@ export class ChromaticRouter {
   }
 
   async approvalClbTokenToRouter(marketAddress: string): Promise<boolean> {
-    
-    const clbToken = await this._client.market().clbToken(marketAddress)
+    const clbToken = await this._client.market().clbToken(marketAddress);
     const routerAddress = this.routerContract.address;
     const signerAddress = await this._client.signer.getAddress();
     if (!(await clbToken.isApprovedForAll(signerAddress, routerAddress))) {
       const tx = await clbToken.setApprovalForAll(routerAddress, true);
-      await tx.wait()
+      await tx.wait();
       // TODO verify tx
       return tx.blockHash !== undefined;
     }
@@ -72,7 +72,7 @@ export class ChromaticRouter {
     const allowance = await settlementToken.allowance(signerAddress, routerAddress);
     if (!allowance.eq(ethers.constants.MaxUint256)) {
       const tx = await settlementToken.approve(routerAddress, ethers.constants.MaxUint256);
-      await tx.wait()
+      await tx.wait();
       // TODO verify tx
       return tx.blockHash !== undefined;
     }
@@ -168,7 +168,7 @@ export class ChromaticRouter {
       const result = await tx.wait();
       return result;
     } catch (e) {
-      console.log("parsed error", this.routerContract.interface.parseError(e.data.data));
+      logger("parsed error", this.routerContract.interface.parseError(e.data.data));
       throw this.routerContract.interface.parseError(e.data.data);
     }
   }

@@ -5,8 +5,8 @@ import { LIQUIDATION_PRICE_PRECISION, QTY_LEVERAGE_PRECISION } from "../constant
 import { Client } from "../Client";
 import { ethers } from "ethers";
 import { IOracleProvider } from "../gen";
-import debug from "debug";
-const log = debug("[ChromaticSdk]");
+import { logger } from "../utils/helpers";
+
 export interface PositionParam {
   id?: PositionStructOutput["id"];
   takerMargin: PositionStructOutput["takerMargin"];
@@ -66,7 +66,7 @@ export class ChromaticPosition {
         this.lensContract.interface.decodeFunctionResult("oracleVersion", response)
       )
       .flat() as IOracleProvider.OracleVersionStructOutput[];
-    log("oracleVersionData", oracleVersionData);
+    logger("oracleVersionData", oracleVersionData);
 
     return positions.map((position) => {
       return {

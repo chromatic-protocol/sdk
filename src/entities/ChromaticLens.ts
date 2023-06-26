@@ -71,7 +71,7 @@ export class ChromaticLens {
     }
 
     //
-    console.log(marketAddress);
+    
     const totalLiquidityBins = await this.getContract().liquidityBinStatuses(marketAddress);
     const ownedLiquidities = await this.getContract().clbBalanceOf(
       marketAddress,

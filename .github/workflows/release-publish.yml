@@ -77,6 +77,7 @@ jobs:
         cp docs-repo/docs/sdk/reference/_category_.yml site/docs/sdk/ 
         rm -rf docs-repo/docs/sdk/reference/*
         cp -r site/docs/sdk/* docs-repo/docs/sdk/reference/
+        cp src/gen/deployedAddress.ts docs-repo/docs/contracts/reference/
     - name: pull-request
       uses: peter-evans/create-pull-request@v5
       with:

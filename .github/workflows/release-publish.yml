@@ -6,6 +6,7 @@ on:
       - closed
     paths:
       - src/**
+      - site/**
       - package.json
       - .github/workflows/release-publish.yml
 permissions:

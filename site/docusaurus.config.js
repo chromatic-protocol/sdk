@@ -65,7 +65,7 @@ const config = {
       {
         ...typedocConfig,
         entryPoints: ["../src/index.ts"],
-        tsconfig: "../tsconfig.json",
+        tsconfig: "tsconfig.json",
         out: "sdk",
 
         // override typedoc configuration

@@ -1,7 +1,7 @@
 import { BigNumber, BigNumberish, Signer, ethers } from "ethers";
 import { Client } from "../Client";
 import { PromiseOrValue } from "../gen/common";
-import { getSigner, swapToUSDC, updatePrice } from "../utils/testHelpers";
+import { getSigner, swapToUSDC, updatePrice, waitTxMining } from "../utils/testHelpers";
 import { Interface } from "@ethersproject/abi";
 import { IERC20__factory } from "../gen";
 
@@ -36,13 +36,16 @@ describe("lens sdk test", () => {
     const balance = await IERC20__factory.connect(token, signer).balanceOf(
       await signer.getAddress()
     );
-    console.log(balance);
+    console.log("USDC balance", balance);
 
-    const receipt = await client.router().addLiquidities(market, [{ feeRate: 100, amount: balance.div(2) }]);
+    const addLiqfn = () =>
+      client.router().addLiquidities(market, [{ feeRate: 100, amount: balance.div(2) }]);
+    await waitTxMining(addLiqfn);
 
     const lpReceiptIds = await client
       .routerContract()
       ["getLpReceiptIds(address,address)"](market, await signer.getAddress());
+    console.log("lpReceiptIds", lpReceiptIds);
 
     await updatePrice({ market, signer, price: 1000 });
     await client.router().claimLiquidites(market, lpReceiptIds);
@@ -59,8 +62,7 @@ describe("lens sdk test", () => {
         targetBeforeBin === undefined ? BigNumber.from(0) : targetBeforeBin.clbBalance;
       expect(beforeClbBalance.lt(targetAbterBin.clbBalance)).toEqual(true);
     }
-    
-  }, 15000);
+  }, 30000);
 
   test("liquidityBins", async () => {
     const { market } = await getContracts();

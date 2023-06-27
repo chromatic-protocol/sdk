@@ -1,4 +1,4 @@
-import { BigNumber, Signer, ethers } from "ethers";
+import { BigNumber, ContractReceipt, Signer, ethers } from "ethers";
 import { ChromaticMarket__factory, IERC20__factory } from "../gen";
 
 export const MNEMONIC_JUNK = "test test test test test test test test test test test junk";
@@ -28,6 +28,11 @@ export interface UpdatePriceParam {
   signer: Signer;
   market: string;
   price: number;
+}
+
+export interface WaitMiningTxOptions {
+  intervalMillSeconds?: number;
+  timeoutMillSeconds?: number;
 }
 
 export function getSigner(param?: GetSignerParam): ethers.Signer {
@@ -197,3 +202,21 @@ export async function updatePrice(param: UpdatePriceParam) {
   await tx.wait();
 }
 
+export async function waitTxMining(
+  waitTxFn: () => Promise<ContractReceipt>,
+  options?: WaitMiningTxOptions
+) {
+  const startTime = Date.now();
+  while ((await waitTxFn()) === undefined) {
+    await wait(options?.intervalMillSeconds === undefined ? 2000 : options!.intervalMillSeconds!);
+    const timeoutMs =
+      options?.timeoutMillSeconds === undefined ? 10000 : options!.timeoutMillSeconds!;
+    if (Date.now() - startTime >= timeoutMs) {
+      throw Error("Transaction was not mined");
+    }
+  }
+}
+
+export async function wait(millseconds: number) {
+  return new Promise((resolve) => setTimeout(resolve, millseconds));
+}

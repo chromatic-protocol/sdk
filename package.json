@@ -65,7 +65,8 @@
     "clean": "rm -rf docs dist",
     "docs": "typedoc",
     "docs:markdown": "typedoc --plugin typedoc-plugin-markdown --out docs src/index.ts",
-    "docs:sdk": "cd site && yarn install && yarn clear && yarn build"
+    "docs:sdk": "cd site && yarn install && yarn clear && yarn build",
+    "test": "jest --runInBand"
   },
   "version": "0.1.0-rc.50"
 }

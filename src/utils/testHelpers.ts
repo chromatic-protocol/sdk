@@ -1,6 +1,7 @@
 import { BigNumber, ContractReceipt, Signer, ethers } from "ethers";
 import { ChromaticMarket__factory, IERC20__factory } from "../gen";
 import { LpReceiptStructOutput } from "../gen/contracts/core/ChromaticMarket";
+import { Provider } from "@ethersproject/providers";
 
 export const MNEMONIC_JUNK = "test test test test test test test test test test test junk";
 
@@ -207,7 +208,6 @@ export async function updatePrice(param: UpdatePriceParam) {
   await tx.wait();
 }
 
-// TODO return receipt
 // send tx until mining
 export async function waitTxMining(
   waitTxFn: () => Promise<ContractReceipt>,
@@ -260,4 +260,21 @@ export function parseLpReceipt(
     action: parsedValue[4] as number,
     tradingFeeRate: parsedValue[5] as number,
   } as LpReceiptStructOutput;
+}
+
+export async function tryTx(
+  waitTxFn: Promise<ContractReceipt>,
+  provider: Provider
+): Promise<ContractReceipt | undefined> {
+  try {
+    return await waitTxFn;
+  } catch (e) {
+    const match = (e as Error).message.match(/transactionHash="([^"]+)"/);
+    if (match) {
+      const txHash = match[0].replaceAll('"', "").replaceAll("transactionHash=", "");
+      const tx = await provider.getTransaction(txHash);
+      const code = await provider.call(tx, tx.blockNumber);
+      throw Error(`call reverted: ${ethers.utils.toUtf8String("0x" + code.substring(138))}`);
+    }
+  }
 }

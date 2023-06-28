@@ -1,6 +1,5 @@
-import { BigNumber, BigNumberish, Signer, ethers } from "ethers";
+import { ethers } from "ethers";
 import { Client } from "../Client";
-import { PromiseOrValue } from "../gen/common";
 import {
   getSigner,
   parseLpReceipt,
@@ -8,10 +7,8 @@ import {
   updatePrice,
   waitTxMining,
 } from "../utils/testHelpers";
-import { Interface } from "@ethersproject/abi";
 import { CLBToken__factory, ChromaticMarket__factory } from "../gen";
 import { encodeTokenId } from "../utils/helpers";
-import { LpReceiptStructOutput } from "../gen/contracts/core/ChromaticMarket";
 
 describe("router sdk test", () => {
   const signer = getSigner();
@@ -73,9 +70,9 @@ describe("router sdk test", () => {
         { feeRate: tradingFeeRate, amount: usdcBalance.div(2) },
       ])
     );
- 
-    const addLpReceipt  = parseLpReceipt(marketAddress, addTxReceipt);
-    expect(addLpReceipt.id !== undefined).toEqual(true)
+
+    const addLpReceipt = parseLpReceipt(marketAddress, addTxReceipt);
+    expect(addLpReceipt.id !== undefined).toEqual(true);
 
     // claimLiquidity - router
     await updatePrice({ market: marketAddress, signer, price: 1000 });
@@ -91,8 +88,8 @@ describe("router sdk test", () => {
         { feeRate: tradingFeeRate, clbTokenAmount: clbBalanceAfterAdd },
       ])
     );
-    const removeLpReceipt  = parseLpReceipt(marketAddress, removeTxReceipt);
-    expect(removeLpReceipt.id !== undefined).toEqual(true)
+    const removeLpReceipt = parseLpReceipt(marketAddress, removeTxReceipt);
+    expect(removeLpReceipt.id !== undefined).toEqual(true);
 
     // withdrawLiquidity - router
     await updatePrice({ market: marketAddress, signer, price: 1000 });

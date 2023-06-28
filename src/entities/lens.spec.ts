@@ -1,6 +1,5 @@
-import { BigNumber, BigNumberish, Signer, ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { Client } from "../Client";
-import { PromiseOrValue } from "../gen/common";
 import {
   getSigner,
   parseLpReceipt,
@@ -8,8 +7,6 @@ import {
   updatePrice,
   waitTxMining,
 } from "../utils/testHelpers";
-import { Interface } from "@ethersproject/abi";
-import { IERC20__factory } from "../gen";
 
 describe("lens sdk test", () => {
   const signer = getSigner();

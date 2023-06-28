@@ -101,14 +101,13 @@ export class ChromaticRouter {
     if (!(await this.approvalSettlementTokenToRouter(marketAddress))) {
       return;
     }
-    return this.contracts()
-      .router()
-      .addLiquidity(
-        marketAddress,
-        param.feeRate,
-        param.amount,
-        receipient || this._client.signer.getAddress()
-      );
+    const tx = await this.contracts().router().addLiquidity(
+      marketAddress,
+      param.feeRate,
+      param.amount,
+      receipient || this._client.signer.getAddress()
+    );
+    return tx.wait();
   }
 
   async addLiquidities(
@@ -204,6 +203,14 @@ export class ChromaticRouter {
     const tx = await this.contracts()
       .router()
       .withdrawLiquidity(marketAddress, BigNumber.from(receiptId));
+    return tx.wait();
+  }
+
+  async withdrawLiquidities(marketAddress: string, receiptIds: BigNumberish[]) {
+    const tx = await this.contracts().router().withdrawLiquidityBatch(
+      marketAddress,
+      receiptIds
+    );
     return tx.wait();
   }
 }

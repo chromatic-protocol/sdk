@@ -84,6 +84,8 @@ jobs:
         base: main
         branch: docs/sdk
         path: docs-repo
-        add-paths: docs/sdk/reference/**
+        add-paths: |
+          docs/sdk/reference/**
+          docs/contracts/reference/deployedAddress.ts
         token: ${{ steps.generate-token.outputs.token }}
         commit-message: ${{ github.event.pull_request.title }}

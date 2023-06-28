@@ -13,7 +13,7 @@ export interface RouterOpenPositionParam {
   leverage: BigNumberish;
   takerMargin: BigNumberish;
   makerMargin: BigNumberish;
-  tradingFee: BigNumberish;
+  maxAllowableTradingFee: BigNumberish;
 }
 
 export interface RouterClosePositionParam {
@@ -44,16 +44,14 @@ export class ChromaticRouter {
   }
 
   async openPosition(marketAddress: string, param: RouterOpenPositionParam) {
-    const transaction = await this.contracts()
-      .router()
-      .openPosition(
-        marketAddress,
-        BigNumber.from(param.quantity),
-        BigNumber.from(param.leverage),
-        BigNumber.from(param.takerMargin),
-        BigNumber.from(param.makerMargin),
-        BigNumber.from(param.tradingFee)
-      );
+    const transaction = await this.contracts().router().openPosition(
+      marketAddress,
+      BigNumber.from(param.quantity),
+      BigNumber.from(param.leverage),
+      BigNumber.from(param.takerMargin),
+      BigNumber.from(param.makerMargin),
+      BigNumber.from(param.maxAllowableTradingFee),
+    );
     return transaction.wait();
   }
 

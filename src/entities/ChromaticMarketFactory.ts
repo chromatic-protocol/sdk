@@ -10,24 +10,33 @@ import {
 import { ChromaticMarket } from "./ChromaticMarket";
 import type { Client } from "../Client";
 
-interface IChromaticMarketFactory {
-  // getMarketContract(address: string): ChromaticMarket;
-}
-
 export interface SettlementToken {
   name: string;
   address: string;
   decimals: number;
 }
-export class ChromaticMarketFactory implements IChromaticMarketFactory {
-  contract: ChromaticMarketFactoryContract;
+export class ChromaticMarketFactory {
+  // contract: ChromaticMarketFactoryContract;
 
   constructor(addressOrName: string, private _client: Client) {
-    this.contract = ChromaticMarketFactory__factory.connect(addressOrName, this._client.provider);
+    // this.contract = ChromaticMarketFactory__factory.connect(addressOrName, this._client.provider);
+  }
+
+  private factoryContract(addressOrName?: string) {
+    return ChromaticMarketFactory__factory.connect(
+      addressOrName || getDeployedAddress("ChromaticMarketFactory", this._client.chainName),
+      this._client.provider
+    );
+  }
+  get contracts() {
+    return {
+      marketFactory: this.factoryContract(),
+    };
   }
 
   async registeredSettlementTokens() {
-    const totalRegisteredTokenAddrs = await this.contract.registeredSettlementTokens();
+    const totalRegisteredTokenAddrs =
+      await this.contracts.marketFactory.registeredSettlementTokens();
     const promise = totalRegisteredTokenAddrs.map(async (address) => {
       const { symbol, decimals } = IERC20Metadata__factory.connect(address, this._client.provider);
 
@@ -49,11 +58,13 @@ export class ChromaticMarketFactory implements IChromaticMarketFactory {
   }
 
   async currentInterestRate(settlementToken: string) {
-    return this.contract.currentInterestRate(settlementToken);
+    return this.contracts.marketFactory.currentInterestRate(settlementToken);
   }
 
   async getMarkets(settlementToken: string) {
-    const marketAddresses = await this.contract.getMarketsBySettlmentToken(settlementToken);
+    const marketAddresses = await this.contracts.marketFactory.getMarketsBySettlmentToken(
+      settlementToken
+    );
     const market = this._client.market();
     const orcales = await market.getCurrentPrices(marketAddresses);
 
@@ -62,7 +73,7 @@ export class ChromaticMarketFactory implements IChromaticMarketFactory {
         const { market: address, value } = orcale;
         return {
           address,
-          oracleValue : value,
+          oracleValue: value,
           description: await market.getMarketName(address),
         };
       })

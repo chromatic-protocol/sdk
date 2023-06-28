@@ -13,7 +13,11 @@ import type {
   Signer,
   utils,
 } from "ethers";
-import type { FunctionFragment, Result } from "@ethersproject/abi";
+import type {
+  FunctionFragment,
+  Result,
+  EventFragment,
+} from "@ethersproject/abi";
 import type { Listener, Provider } from "@ethersproject/providers";
 import type {
   TypedEventFilter,
@@ -28,13 +32,17 @@ export interface ChromaticLiquidatorInterface extends utils.Interface {
     "automate()": FunctionFragment;
     "cancelClaimPositionTask(uint256)": FunctionFragment;
     "cancelLiquidationTask(uint256)": FunctionFragment;
+    "claimInterval()": FunctionFragment;
     "claimPosition(address,uint256)": FunctionFragment;
     "createClaimPositionTask(uint256)": FunctionFragment;
     "createLiquidationTask(uint256)": FunctionFragment;
     "dedicatedMsgSender()": FunctionFragment;
     "liquidate(address,uint256)": FunctionFragment;
+    "liquidationInterval()": FunctionFragment;
     "resolveClaimPosition(address,uint256)": FunctionFragment;
     "resolveLiquidation(address,uint256)": FunctionFragment;
+    "updateClaimInterval(uint256)": FunctionFragment;
+    "updateLiquidationInterval(uint256)": FunctionFragment;
   };
 
   getFunction(
@@ -42,13 +50,17 @@ export interface ChromaticLiquidatorInterface extends utils.Interface {
       | "automate"
       | "cancelClaimPositionTask"
       | "cancelLiquidationTask"
+      | "claimInterval"
       | "claimPosition"
       | "createClaimPositionTask"
       | "createLiquidationTask"
       | "dedicatedMsgSender"
       | "liquidate"
+      | "liquidationInterval"
       | "resolveClaimPosition"
       | "resolveLiquidation"
+      | "updateClaimInterval"
+      | "updateLiquidationInterval"
   ): FunctionFragment;
 
   encodeFunctionData(functionFragment: "automate", values?: undefined): string;
@@ -59,6 +71,10 @@ export interface ChromaticLiquidatorInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "cancelLiquidationTask",
     values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "claimInterval",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "claimPosition",
@@ -81,12 +97,24 @@ export interface ChromaticLiquidatorInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
+    functionFragment: "liquidationInterval",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "resolveClaimPosition",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "resolveLiquidation",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateClaimInterval",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateLiquidationInterval",
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
 
   decodeFunctionResult(functionFragment: "automate", data: BytesLike): Result;
@@ -96,6 +124,10 @@ export interface ChromaticLiquidatorInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "cancelLiquidationTask",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "claimInterval",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -116,6 +148,10 @@ export interface ChromaticLiquidatorInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "liquidate", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "liquidationInterval",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "resolveClaimPosition",
     data: BytesLike
   ): Result;
@@ -123,9 +159,45 @@ export interface ChromaticLiquidatorInterface extends utils.Interface {
     functionFragment: "resolveLiquidation",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateClaimInterval",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateLiquidationInterval",
+    data: BytesLike
+  ): Result;
 
-  events: {};
+  events: {
+    "UpdateClaimInterval(uint256)": EventFragment;
+    "UpdateLiquidationInterval(uint256)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "UpdateClaimInterval"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "UpdateLiquidationInterval"): EventFragment;
 }
+
+export interface UpdateClaimIntervalEventObject {
+  interval: BigNumber;
+}
+export type UpdateClaimIntervalEvent = TypedEvent<
+  [BigNumber],
+  UpdateClaimIntervalEventObject
+>;
+
+export type UpdateClaimIntervalEventFilter =
+  TypedEventFilter<UpdateClaimIntervalEvent>;
+
+export interface UpdateLiquidationIntervalEventObject {
+  interval: BigNumber;
+}
+export type UpdateLiquidationIntervalEvent = TypedEvent<
+  [BigNumber],
+  UpdateLiquidationIntervalEventObject
+>;
+
+export type UpdateLiquidationIntervalEventFilter =
+  TypedEventFilter<UpdateLiquidationIntervalEvent>;
 
 export interface ChromaticLiquidator extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -176,6 +248,8 @@ export interface ChromaticLiquidator extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    claimInterval(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     /**
      * Claims a position in a market.
      * @param market The address of the market contract.
@@ -220,6 +294,8 @@ export interface ChromaticLiquidator extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    liquidationInterval(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     /**
      * This function is called by the Gelato automation system.
      * Resolves the claim of a position.
@@ -243,6 +319,26 @@ export interface ChromaticLiquidator extends BaseContract {
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
+
+    /**
+     * Can only be called by the DAO
+     * Updates the claim task interval.
+     * @param interval The new claim task interval.
+     */
+    updateClaimInterval(
+      interval: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Can only be called by the DAO
+     * Updates the liquidation task interval.
+     * @param interval The new liquidation task interval.
+     */
+    updateLiquidationInterval(
+      interval: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
   };
 
   automate(overrides?: CallOverrides): Promise<string>;
@@ -266,6 +362,8 @@ export interface ChromaticLiquidator extends BaseContract {
     positionId: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  claimInterval(overrides?: CallOverrides): Promise<BigNumber>;
 
   /**
    * Claims a position in a market.
@@ -311,6 +409,8 @@ export interface ChromaticLiquidator extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  liquidationInterval(overrides?: CallOverrides): Promise<BigNumber>;
+
   /**
    * This function is called by the Gelato automation system.
    * Resolves the claim of a position.
@@ -335,6 +435,26 @@ export interface ChromaticLiquidator extends BaseContract {
     overrides?: CallOverrides
   ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
 
+  /**
+   * Can only be called by the DAO
+   * Updates the claim task interval.
+   * @param interval The new claim task interval.
+   */
+  updateClaimInterval(
+    interval: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Can only be called by the DAO
+   * Updates the liquidation task interval.
+   * @param interval The new liquidation task interval.
+   */
+  updateLiquidationInterval(
+    interval: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     automate(overrides?: CallOverrides): Promise<string>;
 
@@ -357,6 +477,8 @@ export interface ChromaticLiquidator extends BaseContract {
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    claimInterval(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * Claims a position in a market.
@@ -402,6 +524,8 @@ export interface ChromaticLiquidator extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    liquidationInterval(overrides?: CallOverrides): Promise<BigNumber>;
+
     /**
      * This function is called by the Gelato automation system.
      * Resolves the claim of a position.
@@ -425,9 +549,43 @@ export interface ChromaticLiquidator extends BaseContract {
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
+
+    /**
+     * Can only be called by the DAO
+     * Updates the claim task interval.
+     * @param interval The new claim task interval.
+     */
+    updateClaimInterval(
+      interval: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * Can only be called by the DAO
+     * Updates the liquidation task interval.
+     * @param interval The new liquidation task interval.
+     */
+    updateLiquidationInterval(
+      interval: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
-  filters: {};
+  filters: {
+    "UpdateClaimInterval(uint256)"(
+      interval?: PromiseOrValue<BigNumberish> | null
+    ): UpdateClaimIntervalEventFilter;
+    UpdateClaimInterval(
+      interval?: PromiseOrValue<BigNumberish> | null
+    ): UpdateClaimIntervalEventFilter;
+
+    "UpdateLiquidationInterval(uint256)"(
+      interval?: PromiseOrValue<BigNumberish> | null
+    ): UpdateLiquidationIntervalEventFilter;
+    UpdateLiquidationInterval(
+      interval?: PromiseOrValue<BigNumberish> | null
+    ): UpdateLiquidationIntervalEventFilter;
+  };
 
   estimateGas: {
     automate(overrides?: CallOverrides): Promise<BigNumber>;
@@ -451,6 +609,8 @@ export interface ChromaticLiquidator extends BaseContract {
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    claimInterval(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * Claims a position in a market.
@@ -496,6 +656,8 @@ export interface ChromaticLiquidator extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    liquidationInterval(overrides?: CallOverrides): Promise<BigNumber>;
+
     /**
      * This function is called by the Gelato automation system.
      * Resolves the claim of a position.
@@ -518,6 +680,26 @@ export interface ChromaticLiquidator extends BaseContract {
       _market: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Can only be called by the DAO
+     * Updates the claim task interval.
+     * @param interval The new claim task interval.
+     */
+    updateClaimInterval(
+      interval: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    /**
+     * Can only be called by the DAO
+     * Updates the liquidation task interval.
+     * @param interval The new liquidation task interval.
+     */
+    updateLiquidationInterval(
+      interval: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
@@ -543,6 +725,8 @@ export interface ChromaticLiquidator extends BaseContract {
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    claimInterval(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
      * Claims a position in a market.
@@ -590,6 +774,10 @@ export interface ChromaticLiquidator extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    liquidationInterval(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     /**
      * This function is called by the Gelato automation system.
      * Resolves the claim of a position.
@@ -612,6 +800,26 @@ export interface ChromaticLiquidator extends BaseContract {
       _market: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Can only be called by the DAO
+     * Updates the claim task interval.
+     * @param interval The new claim task interval.
+     */
+    updateClaimInterval(
+      interval: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Can only be called by the DAO
+     * Updates the liquidation task interval.
+     * @param interval The new liquidation task interval.
+     */
+    updateLiquidationInterval(
+      interval: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

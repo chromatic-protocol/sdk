@@ -40,7 +40,7 @@ export class ChromaticLens {
     );
   }
 
-  get contracts() {
+  contracts() {
     return {
       lens: this.getContract(),
     };

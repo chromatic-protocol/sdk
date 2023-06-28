@@ -7,23 +7,15 @@ import {
   ChromaticPosition,
   ChromaticRouter,
 } from "./entities";
-import {
-  ChromaticRouter as ChromaticRouterContract,
-  ChromaticRouter__factory,
-  getDeployedAddress,
-} from "./gen";
+import { getDeployedAddress } from "./gen";
 
 import { ChromaticAccount } from "./entities/ChromaticAccount";
+
+
 export class Client {
-  private _marketFactory: ChromaticMarketFactory;
-  private _market: ChromaticMarket;
-  private _position: ChromaticPosition;
   private _contracts: Record<string, Contract> = {};
-  // private _liquidity: ChromaticLiquidity;
-  private _router: ChromaticRouter;
   private _signer: Signer;
   private _provider: Provider;
-  private _account: ChromaticAccount;
 
   get signer(): Signer {
     return this._signer;
@@ -59,48 +51,28 @@ export class Client {
   }
 
   public marketFactory(): ChromaticMarketFactory {
-    this._marketFactory = new ChromaticMarketFactory(
+    return new ChromaticMarketFactory(
       getDeployedAddress("ChromaticMarketFactory", this.chainName),
       this
     );
-    return this._marketFactory;
   }
 
   market(): ChromaticMarket {
-    this._market = new ChromaticMarket(this);
-    return this._market;
+    return new ChromaticMarket(this);
   }
 
   position() {
-    // if (!this._position)
-    this._position = new ChromaticPosition(this);
-    return this._position;
+    return new ChromaticPosition(this);
   }
-
-  // liquidity() {
-  //   // if (!this._liquidity)
-  //   // this._liquidity = new ChromaticLiquidity(this);
-  //   return this._liquidity;
-  // }
 
   router(): ChromaticRouter {
-    this._router = new ChromaticRouter(this);
-    return this._router;
-  }
-
-  routerContract(): ChromaticRouterContract {
-    this._contracts["ChromaticRouter"] = ChromaticRouter__factory.connect(
-      getDeployedAddress("ChromaticRouter", this.chainName),
-      this.signer || this.provider
-    );
-    return this._contracts["ChromaticRouter"] as ChromaticRouterContract;
+    return new ChromaticRouter(this);
   }
 
   account(): ChromaticAccount {
-    this._account = new ChromaticAccount(this);
-    return this._account;
+    return new ChromaticAccount(this);
   }
-  
+
   contracts() {
     return this._contracts;
   }

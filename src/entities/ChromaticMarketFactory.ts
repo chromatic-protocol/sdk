@@ -28,7 +28,7 @@ export class ChromaticMarketFactory {
       this._client.provider
     );
   }
-  get contracts() {
+  contracts() {
     return {
       marketFactory: this.factoryContract(),
     };
@@ -36,7 +36,7 @@ export class ChromaticMarketFactory {
 
   async registeredSettlementTokens() {
     const totalRegisteredTokenAddrs =
-      await this.contracts.marketFactory.registeredSettlementTokens();
+      await this.contracts().marketFactory.registeredSettlementTokens();
     const promise = totalRegisteredTokenAddrs.map(async (address) => {
       const { symbol, decimals } = IERC20Metadata__factory.connect(address, this._client.provider);
 
@@ -58,11 +58,11 @@ export class ChromaticMarketFactory {
   }
 
   async currentInterestRate(settlementToken: string) {
-    return this.contracts.marketFactory.currentInterestRate(settlementToken);
+    return this.contracts().marketFactory.currentInterestRate(settlementToken);
   }
 
   async getMarkets(settlementToken: string) {
-    const marketAddresses = await this.contracts.marketFactory.getMarketsBySettlmentToken(
+    const marketAddresses = await this.contracts().marketFactory.getMarketsBySettlmentToken(
       settlementToken
     );
     const market = this._client.market();

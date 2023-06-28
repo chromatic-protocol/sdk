@@ -43,28 +43,27 @@ export class ChromaticPosition {
     this._client = client;
   }
 
-  get contracts() {
+  contracts() {
     return {
-      lens: this._client.lens().contracts.lens,
-      market: this._client.market().contracts.market,
-      marketFactory: this._client.marketFactory().contracts.marketFactory,
+      lens: this._client.lens().contracts().lens,
+      market: this._client.market().contracts().market,
+      marketFactory: this._client.marketFactory().contracts().marketFactory,
     };
   }
   async getPositions(marketAddress: string, positionIds: BigNumberish[]) {
-    const positions = await this.contracts.market(marketAddress).getPositions(positionIds);
+    const positions = await this.contracts().market(marketAddress).getPositions(positionIds);
+    const lensContract = this.contracts().lens;
     const oracleVersions = new Set(
       positions.map((position) => [position.openVersion, position.closeVersion]).flat()
     );
 
     const multicallParam = [...oracleVersions].map((version) =>
-      this.contracts.lens.interface.encodeFunctionData("oracleVersion", [marketAddress, version])
+      lensContract.interface.encodeFunctionData("oracleVersion", [marketAddress, version])
     );
 
-    const encodedResponses = (await this.contracts.lens.multicall(multicallParam)) as string[];
+    const encodedResponses = (await lensContract.multicall(multicallParam)) as string[];
     const oracleVersionData = encodedResponses
-      .map((response) =>
-        this.contracts.lens.interface.decodeFunctionResult("oracleVersion", response)
-      )
+      .map((response) => lensContract.interface.decodeFunctionResult("oracleVersion", response))
       .flat() as IOracleProvider.OracleVersionStructOutput[];
     logger("oracleVersionData", oracleVersionData);
 
@@ -88,10 +87,10 @@ export class ChromaticPosition {
       return this.interestRateRecords;
     }
     if (!this.settlementTokenAddress) {
-      this.settlementTokenAddress = await this.contracts.market(marketAddress).settlementToken();
+      this.settlementTokenAddress = await this.contracts().market(marketAddress).settlementToken();
     }
 
-    this.interestRateRecords = await this.contracts.marketFactory.getInterestRateRecords(
+    this.interestRateRecords = await this.contracts().marketFactory.getInterestRateRecords(
       this.settlementTokenAddress
     );
     return this.interestRateRecords;

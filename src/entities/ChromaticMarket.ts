@@ -23,7 +23,7 @@ export class ChromaticMarket {
   //   return ChromaticMarket__factory.connect(address, this._client.signer || this._client.provider);
   // }
 
-  get contracts() {
+  contracts() {
     return {
       market: (marketAddress: string) =>
         ChromaticMarket__factory.connect(
@@ -35,14 +35,14 @@ export class ChromaticMarket {
 
   async settlementToken(marketAddress: string): Promise<IERC20> {
     return IERC20__factory.connect(
-      await this.contracts.market(marketAddress).settlementToken(),
+      await this.contracts().market(marketAddress).settlementToken(),
       this._client.signer || this._client.provider
     );
   }
 
   async clbToken(marketAddress: string): Promise<CLBToken> {
     return CLBToken__factory.connect(
-      await this.contracts.market(marketAddress).clbToken(),
+      await this.contracts().market(marketAddress).clbToken(),
       this._client.signer || this._client.provider
     );
   }
@@ -64,7 +64,7 @@ export class ChromaticMarket {
   }
 
   async getOracleProviderContract(marketAddress: string): Promise<IOracleProvider> {
-    const marketContract = this.contracts.market(marketAddress);
+    const marketContract = this.contracts().market(marketAddress);
 
     this.oracleProvider = IOracleProvider__factory.connect(
       await marketContract.oracleProvider(),

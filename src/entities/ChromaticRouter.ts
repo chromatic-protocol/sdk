@@ -1,7 +1,8 @@
-import { BigNumber, BigNumberish, ethers } from "ethers";
+import { Provider } from "@ethersproject/providers";
+import { BigNumber, BigNumberish, Signer, ethers } from "ethers";
 import { Client } from "../Client";
+import { ChromaticRouter__factory, getDeployedAddress } from "../gen";
 import { logger } from "../utils/helpers";
-
 export interface RouterAddLiquidityParam {
   feeRate: BigNumberish;
   amount: BigNumberish;
@@ -31,32 +32,41 @@ export class ChromaticRouter {
     this._client = client;
   }
 
-  get contracts() {
+  contracts() {
     return {
-      router: this._client.routerContract(),
+      router: (signerOrProvider?: Signer | Provider) => {
+        return ChromaticRouter__factory.connect(
+          getDeployedAddress("ChromaticRouter", this._client.chainName),
+          signerOrProvider || this._client.signer || this._client.provider
+        );
+      },
     };
   }
 
   async openPosition(marketAddress: string, param: RouterOpenPositionParam) {
-    const transaction = await this.contracts.router.openPosition(
-      marketAddress,
-      BigNumber.from(param.quantity),
-      BigNumber.from(param.leverage),
-      BigNumber.from(param.takerMargin),
-      BigNumber.from(param.makerMargin),
-      BigNumber.from(param.tradingFee)
-    );
+    const transaction = await this.contracts()
+      .router()
+      .openPosition(
+        marketAddress,
+        BigNumber.from(param.quantity),
+        BigNumber.from(param.leverage),
+        BigNumber.from(param.takerMargin),
+        BigNumber.from(param.makerMargin),
+        BigNumber.from(param.tradingFee)
+      );
     return transaction.wait();
   }
 
   async closePosition(marketAddress: string, param: RouterClosePositionParam) {
-    const transaction = await this.contracts.router.closePosition(marketAddress, param.positionId);
+    const transaction = await this.contracts()
+      .router()
+      .closePosition(marketAddress, param.positionId);
     return transaction.wait();
   }
 
   async approvalClbTokenToRouter(marketAddress: string): Promise<boolean> {
     const clbToken = await this._client.market().clbToken(marketAddress);
-    const routerAddress = this.contracts.router.address;
+    const routerAddress = this.contracts().router().address;
     const signerAddress = await this._client.signer.getAddress();
     if (!(await clbToken.isApprovedForAll(signerAddress, routerAddress))) {
       const tx = await clbToken.setApprovalForAll(routerAddress, true);
@@ -69,7 +79,7 @@ export class ChromaticRouter {
 
   async approvalSettlementTokenToRouter(marketAddress: string): Promise<boolean> {
     const settlementToken = await this._client.market().settlementToken(marketAddress);
-    const routerAddress = this.contracts.router.address;
+    const routerAddress = this.contracts().router().address;
     const signerAddress = await this._client.signer.getAddress();
     const allowance = await settlementToken.allowance(signerAddress, routerAddress);
     if (!allowance.eq(ethers.constants.MaxUint256)) {
@@ -86,12 +96,14 @@ export class ChromaticRouter {
     if (!(await this.approvalSettlementTokenToRouter(marketAddress))) {
       return;
     }
-    return this.contracts.router.addLiquidity(
-      marketAddress,
-      param.feeRate,
-      param.amount,
-      receipient || this._client.signer.getAddress()
-    );
+    return this.contracts()
+      .router()
+      .addLiquidity(
+        marketAddress,
+        param.feeRate,
+        param.amount,
+        receipient || this._client.signer.getAddress()
+      );
   }
 
   async addLiquidities(
@@ -111,7 +123,9 @@ export class ChromaticRouter {
       feeRates.push(param.feeRate);
       amounts.push(param.amount);
     });
-    const tx = await this.contracts.router.addLiquidityBatch(marketAddress, recipient, feeRates, amounts);
+    const tx = await this.contracts()
+      .router()
+      .addLiquidityBatch(marketAddress, recipient, feeRates, amounts);
     return tx.wait();
   }
 
@@ -120,12 +134,14 @@ export class ChromaticRouter {
     if (!(await this.approvalClbTokenToRouter(marketAddress))) {
       return;
     }
-    const tx = await this.contracts.router.removeLiquidity(
-      marketAddress,
-      BigNumber.from(param.feeRate),
-      BigNumber.from(param.clbTokenAmount),
-      param.receipient || this._client.signer.getAddress()
-    );
+    const tx = await this.contracts()
+      .router()
+      .removeLiquidity(
+        marketAddress,
+        BigNumber.from(param.feeRate),
+        BigNumber.from(param.clbTokenAmount),
+        param.receipient || this._client.signer.getAddress()
+      );
     return tx.wait();
   }
 
@@ -150,33 +166,39 @@ export class ChromaticRouter {
         feeRate: [],
       } as { clbTokenAmount: BigNumberish[]; feeRate: BigNumberish[] }
     );
-    const tx = await this.contracts.router.removeLiquidityBatch(
-      marketAddress,
-      receipient,
-      contractParam.feeRate,
-      contractParam.clbTokenAmount
-    );
+    const tx = await this.contracts()
+      .router()
+      .removeLiquidityBatch(
+        marketAddress,
+        receipient,
+        contractParam.feeRate,
+        contractParam.clbTokenAmount
+      );
     return tx.wait();
   }
 
   async claimLiquidity(marketAddress: string, receiptId: BigNumberish) {
     try {
-      const tx = await this.contracts.router.claimLiquidity(marketAddress, BigNumber.from(receiptId));
+      const tx = await this.contracts()
+        .router()
+        .claimLiquidity(marketAddress, BigNumber.from(receiptId));
       const result = await tx.wait();
       return result;
     } catch (e) {
-      logger("parsed error", this.contracts.router.interface.parseError(e.data.data));
-      throw this.contracts.router.interface.parseError(e.data.data);
+      logger("parsed error", this.contracts().router().interface.parseError(e.data.data));
+      throw this.contracts().router().interface.parseError(e.data.data);
     }
   }
 
   async claimLiquidites(marketAddress: string, receiptIds: BigNumberish[]) {
-    const tx = await this.contracts.router.claimLiquidityBatch(marketAddress, receiptIds);
+    const tx = await this.contracts().router().claimLiquidityBatch(marketAddress, receiptIds);
     return tx.wait();
   }
 
   async withdrawLiquidity(marketAddress: string, receiptId) {
-    const tx = await this.contracts.router.withdrawLiquidity(marketAddress, BigNumber.from(receiptId));
+    const tx = await this.contracts()
+      .router()
+      .withdrawLiquidity(marketAddress, BigNumber.from(receiptId));
     return tx.wait();
   }
 }

@@ -1,5 +1,6 @@
 import { BigNumber, ContractReceipt, Signer, ethers } from "ethers";
 import { ChromaticMarket__factory, IERC20__factory } from "../gen";
+import { LpReceiptStructOutput } from "../gen/contracts/core/ChromaticMarket";
 
 export const MNEMONIC_JUNK = "test test test test test test test test test test test junk";
 
@@ -19,7 +20,6 @@ export interface SwapToUSDCParam {
   signer: Signer;
   weth9: string;
   usdc: string;
-  swapRouter: string;
   fee: number;
   amount: BigNumber;
 }
@@ -64,24 +64,25 @@ export async function wrapEth(param: WrapEthParam) {
   await warpTx.wait();
 }
 
-export async function swapToUSDC(param: SwapToUSDCParam): Promise<BigNumber> {
+export async function swapToUSDC(param: SwapToUSDCParam) {
   const recipient = await param.signer.getAddress();
+  const ARBITRUM_GOERLI_SWAP_ROUTER = "0xF1596041557707B1bC0b3ffB34346c1D9Ce94E86";
 
   const WETH9 = IERC20__factory.connect(param.weth9, param.signer);
   if ((await WETH9.balanceOf(recipient)).lt(param.amount)) {
     await wrapEth({ signer: param.signer, amount: param.amount, weth9: param.weth9 });
   }
 
-  if ((await WETH9.allowance(recipient, param.swapRouter)).lt(param.amount)) {
+  if ((await WETH9.allowance(recipient, ARBITRUM_GOERLI_SWAP_ROUTER)).lt(param.amount)) {
     const approveTx = await IERC20__factory.connect(param.weth9, param.signer).approve(
-      param.swapRouter,
+      ARBITRUM_GOERLI_SWAP_ROUTER,
       ethers.constants.MaxUint256
     );
     await approveTx.wait();
   }
 
   const routerContract = new ethers.Contract(
-    param.swapRouter,
+    ARBITRUM_GOERLI_SWAP_ROUTER,
     [
       {
         inputs: [
@@ -149,7 +150,7 @@ export async function swapToUSDC(param: SwapToUSDCParam): Promise<BigNumber> {
   );
 
   const swapTx = await param.signer.sendTransaction({
-    to: param.swapRouter,
+    to: ARBITRUM_GOERLI_SWAP_ROUTER,
     data: routerContract.interface.encodeFunctionData("exactInputSingle", [
       {
         tokenIn: param.weth9,
@@ -166,7 +167,11 @@ export async function swapToUSDC(param: SwapToUSDCParam): Promise<BigNumber> {
 
   const receipt = await swapTx.wait();
   const usdcEvent = receipt.logs.find((log) => log.address == param.usdc);
-  return BigNumber.from(usdcEvent.data);
+
+  return {
+    outputAmount: BigNumber.from(usdcEvent.data),
+    usdcBalance: await IERC20__factory.connect(param.usdc, param.signer).balanceOf(recipient),
+  };
 }
 
 export async function updatePrice(param: UpdatePriceParam) {
@@ -202,12 +207,18 @@ export async function updatePrice(param: UpdatePriceParam) {
   await tx.wait();
 }
 
+// TODO return receipt
+// send tx until mining
 export async function waitTxMining(
   waitTxFn: () => Promise<ContractReceipt>,
   options?: WaitMiningTxOptions
-) {
+): Promise<ContractReceipt | undefined> {
   const startTime = Date.now();
-  while ((await waitTxFn()) === undefined) {
+  while (true) {
+    const receipt = await waitTxFn();
+    if (receipt !== undefined) {
+      return receipt;
+    }
     await wait(options?.intervalMillSeconds === undefined ? 2000 : options!.intervalMillSeconds!);
     const timeoutMs =
       options?.timeoutMillSeconds === undefined ? 10000 : options!.timeoutMillSeconds!;
@@ -219,4 +230,34 @@ export async function waitTxMining(
 
 export async function wait(millseconds: number) {
   return new Promise((resolve) => setTimeout(resolve, millseconds));
+}
+
+export function parseLpReceipt(
+  marketAddress: string,
+  txReceipt: ContractReceipt
+): LpReceiptStructOutput {
+  const addLiquidityEvent = txReceipt.events.filter((r) => r.address == marketAddress);
+  if (addLiquidityEvent.length < 1) {
+    throw Error("invaild receipt");
+  }
+
+  const parsedValue = ethers.utils.defaultAbiCoder.decode(
+    ["uint256", "uint256", "uint256", "address", "uint8", "int16"],
+    addLiquidityEvent[0].data
+  );
+
+  return {
+    0: parsedValue[0] as BigNumber,
+    1: parsedValue[1] as BigNumber,
+    2: parsedValue[2] as BigNumber,
+    3: parsedValue[3] as string,
+    4: parsedValue[4] as number,
+    5: parsedValue[5] as number,
+    id: parsedValue[0] as BigNumber,
+    oracleVersion: parsedValue[1] as BigNumber,
+    amount: parsedValue[2] as BigNumber,
+    recipient: parsedValue[3] as string,
+    action: parsedValue[4] as number,
+    tradingFeeRate: parsedValue[5] as number,
+  } as LpReceiptStructOutput;
 }

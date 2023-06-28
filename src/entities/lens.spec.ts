@@ -1,7 +1,13 @@
 import { BigNumber, BigNumberish, Signer, ethers } from "ethers";
 import { Client } from "../Client";
 import { PromiseOrValue } from "../gen/common";
-import { getSigner, swapToUSDC, updatePrice, waitTxMining } from "../utils/testHelpers";
+import {
+  getSigner,
+  parseLpReceipt,
+  swapToUSDC,
+  updatePrice,
+  waitTxMining,
+} from "../utils/testHelpers";
 import { Interface } from "@ethersproject/abi";
 import { IERC20__factory } from "../gen";
 
@@ -21,34 +27,29 @@ describe("lens sdk test", () => {
 
   test("ownedLiquidityBins", async () => {
     const { market, token } = await getContracts();
+    await updatePrice({ market, signer, price: 1000 });
     const beforeBins = await client.lens().ownedLiquidityBins(market, await signer.getAddress());
 
-    const amount = await swapToUSDC({
+    const { outputAmount, usdcBalance } = await swapToUSDC({
       amount: ethers.utils.parseEther("10"),
       signer: signer,
       weth9: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
-      swapRouter: "0xF1596041557707B1bC0b3ffB34346c1D9Ce94E86",
       usdc: token,
       // usdc: "0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892",
       fee: 3000,
     });
 
-    const balance = await IERC20__factory.connect(token, signer).balanceOf(
-      await signer.getAddress()
-    );
-    console.log("USDC balance", balance);
+    console.log("USDC balance", usdcBalance);
 
     const addLiqfn = () =>
-      client.router().addLiquidities(market, [{ feeRate: 100, amount: balance.div(2) }]);
-    await waitTxMining(addLiqfn);
+      client.router().addLiquidities(market, [{ feeRate: 100, amount: usdcBalance.div(2) }]);
+    const txReceipt = await waitTxMining(addLiqfn);
+    const lpReceipt = parseLpReceipt(market, txReceipt);
 
-    const lpReceiptIds = await client
-      .routerContract()
-      ["getLpReceiptIds(address,address)"](market, await signer.getAddress());
-    console.log("lpReceiptIds", lpReceiptIds);
+    console.log("lpReceipt", lpReceipt);
 
     await updatePrice({ market, signer, price: 1000 });
-    await client.router().claimLiquidites(market, lpReceiptIds);
+    await client.router().claimLiquidites(market, [lpReceipt.id]);
 
     const afterBins = await client.lens().ownedLiquidityBins(market, await signer.getAddress());
     console.log("beforeBins", beforeBins);
@@ -75,6 +76,6 @@ describe("lens sdk test", () => {
     const { market } = await getContracts();
     const bins = await client.lens().liquidityBins(market);
     expect(bins.length).toEqual(72);
-    // console.log("liquidityBins", bins);
+    // console.log("claimableLiquidities", bins);
   }, 10000);
 });

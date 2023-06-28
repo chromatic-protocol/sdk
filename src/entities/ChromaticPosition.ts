@@ -38,32 +38,32 @@ export class ChromaticPosition {
   private settlementTokenAddress: string;
   private interestRateRecords;
   _client: Client;
+  private _contracts;
   constructor(client: Client) {
     this._client = client;
   }
 
-  get market() {
-    return this._client.currentMarket();
+  get contracts() {
+    return {
+      lens: this._client.lens().contracts.lens,
+      market: this._client.market().contracts.market,
+      marketFactory: this._client.marketFactory().contracts.marketFactory,
+    };
   }
-
-  get lensContract() {
-    return this._client.lens().getContract();
-  }
-
   async getPositions(marketAddress: string, positionIds: BigNumberish[]) {
-    const positions = await this.market.getContract(marketAddress).getPositions(positionIds);
+    const positions = await this.contracts.market(marketAddress).getPositions(positionIds);
     const oracleVersions = new Set(
       positions.map((position) => [position.openVersion, position.closeVersion]).flat()
     );
 
     const multicallParam = [...oracleVersions].map((version) =>
-      this.lensContract.interface.encodeFunctionData("oracleVersion", [marketAddress, version])
+      this.contracts.lens.interface.encodeFunctionData("oracleVersion", [marketAddress, version])
     );
 
-    const encodedResponses = (await this.lensContract.multicall(multicallParam)) as string[];
+    const encodedResponses = (await this.contracts.lens.multicall(multicallParam)) as string[];
     const oracleVersionData = encodedResponses
       .map((response) =>
-        this.lensContract.interface.decodeFunctionResult("oracleVersion", response)
+        this.contracts.lens.interface.decodeFunctionResult("oracleVersion", response)
       )
       .flat() as IOracleProvider.OracleVersionStructOutput[];
     logger("oracleVersionData", oracleVersionData);
@@ -84,24 +84,16 @@ export class ChromaticPosition {
   }
 
   async getBpsRecords(marketAddress: string) {
-    if (!this._client.currentMarket()) {
-      throw new Error(
-        "need to select market before call this method. using `clinet.market(marketAddress)`"
-      );
-    }
     if (this.interestRateRecords != null) {
       return this.interestRateRecords;
     }
     if (!this.settlementTokenAddress) {
-      this.settlementTokenAddress = await this._client
-        .market()
-        .getContract(marketAddress)
-        .settlementToken();
+      this.settlementTokenAddress = await this.contracts.market(marketAddress).settlementToken();
     }
 
-    this.interestRateRecords = await this._client
-      .marketFactory()
-      .contract.getInterestRateRecords(this.settlementTokenAddress);
+    this.interestRateRecords = await this.contracts.marketFactory.getInterestRateRecords(
+      this.settlementTokenAddress
+    );
     return this.interestRateRecords;
   }
 

@@ -1,19 +1,19 @@
 import { Provider } from "@ethersproject/providers";
 import { Contract, Signer, ethers } from "ethers";
 import {
+  ChromaticLens,
+  ChromaticMarket,
   ChromaticMarketFactory,
   ChromaticPosition,
-  ChromaticMarket,
   ChromaticRouter,
-  ChromaticLens,
 } from "./entities";
 import {
-  ChromaticLens as ChromaticLensContract,
-  ChromaticLens__factory,
   ChromaticRouter as ChromaticRouterContract,
   ChromaticRouter__factory,
   getDeployedAddress,
 } from "./gen";
+
+import { ChromaticAccount } from "./entities/ChromaticAccount";
 export class Client {
   private _marketFactory: ChromaticMarketFactory;
   private _market: ChromaticMarket;
@@ -23,6 +23,7 @@ export class Client {
   private _router: ChromaticRouter;
   private _signer: Signer;
   private _provider: Provider;
+  private _account: ChromaticAccount;
 
   get signer(): Signer {
     return this._signer;
@@ -54,14 +55,7 @@ export class Client {
   }
 
   public lens(): ChromaticLens {
-    // if (!this._contracts["ChromaticLens"]) {
     return new ChromaticLens(this);
-    // this._contracts["ChromaticLens"] = ChromaticLens__factory.connect(
-    //   getDeployedAddress("ChromaticLens", this.chainName),
-    //   this.signer || this.provider
-    // );
-    // // }
-    // return this._contracts["ChromaticLens"] as ChromaticLensContract;
   }
 
   public marketFactory(): ChromaticMarketFactory {
@@ -74,11 +68,6 @@ export class Client {
 
   market(): ChromaticMarket {
     this._market = new ChromaticMarket(this);
-
-    return this._market;
-  }
-
-  currentMarket() {
     return this._market;
   }
 
@@ -95,13 +84,11 @@ export class Client {
   // }
 
   router(): ChromaticRouter {
-    // if (!this._router)
     this._router = new ChromaticRouter(this);
     return this._router;
   }
 
   routerContract(): ChromaticRouterContract {
-    // if (!this._contracts["ChromaticRouter"])
     this._contracts["ChromaticRouter"] = ChromaticRouter__factory.connect(
       getDeployedAddress("ChromaticRouter", this.chainName),
       this.signer || this.provider
@@ -109,6 +96,11 @@ export class Client {
     return this._contracts["ChromaticRouter"] as ChromaticRouterContract;
   }
 
+  account(): ChromaticAccount {
+    this._account = new ChromaticAccount(this);
+    return this._account;
+  }
+  
   contracts() {
     return this._contracts;
   }

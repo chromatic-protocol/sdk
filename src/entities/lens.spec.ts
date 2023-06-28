@@ -22,6 +22,6 @@ describe("lens sdk test", () => {
   test("liquidityBins", async () => {
     const bins = await client.lens().liquidityBins(await getDefaultMarket());
     console.log(bins);
-    expect(bins.length).toEqual(72)
+    expect(bins.length).toEqual(72);
   }, 10000);
 });

@@ -33,11 +33,17 @@ export interface ClaimableLiquidityResult {
 export class ChromaticLens {
   constructor(private _client: Client) {}
 
-  getContract(lensAddress?: string) {
+  private getContract(lensAddress?: string) {
     return ChromaticLens__factory.connect(
       lensAddress || getDeployedAddress("ChromaticLens", this._client.chainName),
       this._client.signer || this._client.provider
     );
+  }
+
+  get contracts() {
+    return {
+      lens: this.getContract(),
+    };
   }
 
   /**

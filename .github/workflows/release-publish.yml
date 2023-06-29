@@ -10,14 +10,19 @@ on:
       - package.json
       - .github/workflows/release-publish.yml
   workflow_dispatch:
-  
+    inputs:
+      run_by_workflow_dispatcher: 
+        description: manually trigger
+        default: true
+        required: false
+
 permissions:
   contents: write
   packages: write
 
 jobs:
   Release-publish:
-    if: github.event.pull_request.merged == true
+    if: ${{ github.event.pull_request.merged == true || github.event.inputs.run_by_workflow_dispatcher == true }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3 # Checkout our working repository

@@ -40,21 +40,21 @@ export class ChromaticRouter {
   }
 
   async openPosition(marketAddress: string, param: RouterOpenPositionParam) {
-    const transaction = await this.contracts().router().openPosition(
-      marketAddress,
-      BigNumber.from(param.quantity),
-      BigNumber.from(param.leverage),
-      BigNumber.from(param.takerMargin),
-      BigNumber.from(param.makerMargin),
-      BigNumber.from(param.maxAllowableTradingFee),
-    );
+    const transaction = await this.contracts()
+      .router()
+      .openPosition(
+        marketAddress,
+        BigNumber.from(param.quantity),
+        BigNumber.from(param.leverage),
+        BigNumber.from(param.takerMargin),
+        BigNumber.from(param.makerMargin),
+        BigNumber.from(param.maxAllowableTradingFee)
+      );
     return transaction.wait();
   }
 
   async closePosition(marketAddress: string, positionId: BigNumberish) {
-    const transaction = await this.contracts()
-      .router()
-      .closePosition(marketAddress, positionId);
+    const transaction = await this.contracts().router().closePosition(marketAddress, positionId);
     return transaction.wait();
   }
 
@@ -95,12 +95,14 @@ export class ChromaticRouter {
     if (!(await this.approvalSettlementTokenToRouter(marketAddress))) {
       return;
     }
-    const tx = await this.contracts().router().addLiquidity(
-      marketAddress,
-      param.feeRate,
-      param.amount,
-      receipient || this._client.signer.getAddress()
-    );
+    const tx = await this.contracts()
+      .router()
+      .addLiquidity(
+        marketAddress,
+        param.feeRate,
+        param.amount,
+        receipient || this._client.signer.getAddress()
+      );
     return tx.wait();
   }
 
@@ -201,10 +203,11 @@ export class ChromaticRouter {
   }
 
   async withdrawLiquidities(marketAddress: string, receiptIds: BigNumberish[]) {
-    const tx = await this.contracts().router().withdrawLiquidityBatch(
-      marketAddress,
-      receiptIds
-    );
+    const tx = await this.contracts().router().withdrawLiquidityBatch(marketAddress, receiptIds);
     return tx.wait();
+  }
+
+  async getLpReceiptIds(marketAddress: string) {
+    await this.contracts().router()["getLpReceiptIds(address)"](marketAddress);
   }
 }

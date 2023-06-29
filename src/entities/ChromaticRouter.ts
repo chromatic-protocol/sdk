@@ -64,6 +64,11 @@ export class ChromaticRouter {
     return transaction.wait();
   }
 
+  async claimPosition(marketAdress: string, positionId: BigNumberish) {
+    const tx = await this.contracts().router().claimPosition(marketAdress, positionId);
+    return tx.wait();
+  }
+
   async approvalClbTokenToRouter(marketAddress: string): Promise<boolean> {
     const clbToken = await this._client.market().clbToken(marketAddress);
     const routerAddress = this.contracts().router().address;

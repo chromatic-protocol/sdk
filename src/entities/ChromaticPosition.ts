@@ -6,6 +6,7 @@ import { Client } from "../Client";
 import { ethers } from "ethers";
 import { IOracleProvider } from "../gen";
 import { logger } from "../utils/helpers";
+import { ConstructorFragment } from "@ethersproject/abi";
 
 export interface PositionParam {
   id?: PositionStructOutput["id"];
@@ -146,48 +147,77 @@ export class ChromaticPosition {
   async getLiquidationPrice(
     marketAddress: string,
     entryPrice: BigNumber | undefined,
-    position: PositionParam
+    position: PositionParam,
+    oraclePriceDecimals: number
   ) {
     return {
-      profitStopPrice: await this.profitStopPrice(marketAddress, entryPrice, position),
-      lossCutPrice: await this.lossCutPrice(marketAddress, entryPrice, position),
+      profitStopPrice: await this.profitStopPrice(
+        marketAddress,
+        entryPrice,
+        position,
+        oraclePriceDecimals
+      ),
+      lossCutPrice: await this.lossCutPrice(
+        marketAddress,
+        entryPrice,
+        position,
+        oraclePriceDecimals
+      ),
     };
   }
+
 
   private async getDeltaForLiquidation(
     marketAddress: string,
     entryPrice: BigNumber,
     position: PositionParam,
-    isProfitStop: boolean
+    isProfitStop: boolean,
+    oraclePriceDecimals: number
   ) {
     const interestFee = await this.getInterestFee(marketAddress, position);
     const margin = isProfitStop ? position.makerMargin : position.takerMargin;
-    const leveragedQty = position.qty.mul(position.leverage);
+    const leveragedQty = position.qty.mul(position.leverage); 
     const pricePrecision = BigNumber.from(QTY_LEVERAGE_PRECISION).mul(LIQUIDATION_PRICE_PRECISION);
     const marginWithInterest = isProfitStop ? margin.add(interestFee) : margin.sub(interestFee);
-    let delta = entryPrice
-      .mul(marginWithInterest.mul(pricePrecision).div(leveragedQty))
-      .div(LIQUIDATION_PRICE_PRECISION);
+    let delta = entryPrice //18 + 18 + 10 - 10  36 
+                          // 6 + 6 + 10 - 10  12
+      .mul(marginWithInterest.mul(pricePrecision)).div(leveragedQty)
+      .div(LIQUIDATION_PRICE_PRECISION)
+      .div(BigNumber.from(10).pow(oraclePriceDecimals))
     return delta;
   }
 
   async profitStopPrice(
     marketAddress: string,
     entryPrice: BigNumber | undefined,
-    position: PositionParam
+    position: PositionParam,
+    oraclePriceDecimals: number
   ) {
     if (!entryPrice) return;
-    const delta = await this.getDeltaForLiquidation(marketAddress, entryPrice, position, true);
+    const delta = await this.getDeltaForLiquidation(
+      marketAddress,
+      entryPrice,
+      position,
+      true,
+      oraclePriceDecimals
+    );
     return entryPrice.add(delta);
   }
 
   async lossCutPrice(
     marketAddress: string,
     entryPrice: BigNumber | undefined,
-    position: PositionParam
+    position: PositionParam,
+    oraclePriceDecimals: number
   ) {
     if (!entryPrice) return;
-    const delta = await this.getDeltaForLiquidation(marketAddress, entryPrice, position, false);
+    const delta = await this.getDeltaForLiquidation(
+      marketAddress,
+      entryPrice,
+      position,
+      false,
+      oraclePriceDecimals
+    );
     return entryPrice.sub(delta);
   }
 }

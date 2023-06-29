@@ -150,4 +150,11 @@ export class ChromaticLens {
 
     return results;
   }
+
+  async lpReceipts(marketAddress: string, owner?: string) {
+    return await this.getContract().lpReceipts(
+      marketAddress,
+      owner === undefined ? this._client.signer.getAddress() : owner!
+    );
+  }
 }

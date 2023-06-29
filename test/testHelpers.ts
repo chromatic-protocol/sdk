@@ -9,8 +9,8 @@ import {
   ChromaticVault__factory,
   IERC20__factory,
   IOracleProvider__factory,
-} from "../gen";
-import { LpReceiptStructOutput } from "../gen/contracts/core/ChromaticMarket";
+} from "../src/gen";
+import { LpReceiptStructOutput } from "../src/gen/contracts/core/ChromaticMarket";
 import { Provider } from "@ethersproject/providers";
 
 export const MNEMONIC_JUNK = "test test test test test test test test test test test junk";

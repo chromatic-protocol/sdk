@@ -7,7 +7,7 @@ import {
   tryTx,
   updatePrice,
   waitTxMining,
-} from "../utils/testHelpers";
+} from "../../test/testHelpers";
 import { CLBToken__factory, ChromaticMarket__factory, IERC20__factory } from "../gen";
 import { encodeTokenId } from "../utils/helpers";
 

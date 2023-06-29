@@ -6,7 +6,7 @@ import {
   swapToUSDC,
   updatePrice,
   waitTxMining,
-} from "../utils/testHelpers";
+} from "../../test/testHelpers";
 
 describe("lens sdk test", () => {
   const signer = getSigner();

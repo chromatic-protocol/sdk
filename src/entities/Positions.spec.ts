@@ -2,7 +2,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { PositionParam, ChromaticPosition } from "./ChromaticPosition";
 import { ethers } from "ethers";
 import { Client } from "../Client";
-import { getSigner } from "../utils/testHelpers";
+import { getSigner } from "../../test/testHelpers";
 
 const { formatEther } = ethers.utils;
 function parseEther(value: string | number) {

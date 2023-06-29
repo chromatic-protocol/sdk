@@ -16,10 +16,6 @@ export interface RouterOpenPositionParam {
   maxAllowableTradingFee: BigNumberish;
 }
 
-export interface RouterClosePositionParam {
-  marketAdddress?: string;
-  positionId: BigNumberish;
-}
 export interface RouterRemoveLiquidityParam {
   feeRate: BigNumberish;
   receipient?: string;
@@ -55,10 +51,10 @@ export class ChromaticRouter {
     return transaction.wait();
   }
 
-  async closePosition(marketAddress: string, param: RouterClosePositionParam) {
+  async closePosition(marketAddress: string, positionId: BigNumberish) {
     const transaction = await this.contracts()
       .router()
-      .closePosition(marketAddress, param.positionId);
+      .closePosition(marketAddress, positionId);
     return transaction.wait();
   }
 

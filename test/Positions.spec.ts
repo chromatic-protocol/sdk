@@ -1,8 +1,8 @@
 import { BigNumber } from "@ethersproject/bignumber";
-import { PositionParam, ChromaticPosition } from "./ChromaticPosition";
+import { PositionParam, ChromaticPosition } from "../src/entities/ChromaticPosition";
 import { ethers } from "ethers";
-import { Client } from "../Client";
-import { getSigner } from "../utils/testHelpers";
+import { Client } from "../src/Client";
+import { getSigner } from "./testHelpers";
 
 const { formatEther } = ethers.utils;
 function parseEther(value: string | number) {

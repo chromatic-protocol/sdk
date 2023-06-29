@@ -13,13 +13,9 @@ export interface RouterOpenPositionParam {
   leverage: BigNumberish;
   takerMargin: BigNumberish;
   makerMargin: BigNumberish;
-  tradingFee: BigNumberish;
+  maxAllowableTradingFee: BigNumberish;
 }
 
-export interface RouterClosePositionParam {
-  marketAdddress?: string;
-  positionId: BigNumberish;
-}
 export interface RouterRemoveLiquidityParam {
   feeRate: BigNumberish;
   receipient?: string;
@@ -52,15 +48,13 @@ export class ChromaticRouter {
         BigNumber.from(param.leverage),
         BigNumber.from(param.takerMargin),
         BigNumber.from(param.makerMargin),
-        BigNumber.from(param.tradingFee)
+        BigNumber.from(param.maxAllowableTradingFee)
       );
     return transaction.wait();
   }
 
-  async closePosition(marketAddress: string, param: RouterClosePositionParam) {
-    const transaction = await this.contracts()
-      .router()
-      .closePosition(marketAddress, param.positionId);
+  async closePosition(marketAddress: string, positionId: BigNumberish) {
+    const transaction = await this.contracts().router().closePosition(marketAddress, positionId);
     return transaction.wait();
   }
 
@@ -101,7 +95,7 @@ export class ChromaticRouter {
     if (!(await this.approvalSettlementTokenToRouter(marketAddress))) {
       return;
     }
-    return this.contracts()
+    const tx = await this.contracts()
       .router()
       .addLiquidity(
         marketAddress,
@@ -109,6 +103,7 @@ export class ChromaticRouter {
         param.amount,
         receipient || this._client.signer.getAddress()
       );
+    return tx.wait();
   }
 
   async addLiquidities(
@@ -205,5 +200,14 @@ export class ChromaticRouter {
       .router()
       .withdrawLiquidity(marketAddress, BigNumber.from(receiptId));
     return tx.wait();
+  }
+
+  async withdrawLiquidities(marketAddress: string, receiptIds: BigNumberish[]) {
+    const tx = await this.contracts().router().withdrawLiquidityBatch(marketAddress, receiptIds);
+    return tx.wait();
+  }
+
+  async getLpReceiptIds(marketAddress: string) {
+    await this.contracts().router()["getLpReceiptIds(address)"](marketAddress);
   }
 }

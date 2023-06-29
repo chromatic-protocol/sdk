@@ -91,30 +91,30 @@ describe("router sdk test", () => {
     };
   }
 
-  // test("add/remove Liquidity", async () => {
-  //   const { marketAddress, router, token, clbBalance, addAndClaimLiquidity } = await getFixture();
+  test("add/remove Liquidity", async () => {
+    const { marketAddress, router, token, clbBalance, addAndClaimLiquidity } = await getFixture();
 
-  //   await updatePrice({ market: marketAddress, signer, price: 1000 });
-  //   const tradingFeeRate = 100;
+    await updatePrice({ market: marketAddress, signer, price: 1000 });
+    const tradingFeeRate = 100;
 
-  //   const { clbBalanceAfterAdd } = await addAndClaimLiquidity(tradingFeeRate);
+    const { clbBalanceAfterAdd } = await addAndClaimLiquidity(tradingFeeRate);
 
-  //   // removeLiquidity - router
-  //   const removeTxReceipt = await waitTxMining(async () =>
-  //     router.removeLiquidities(marketAddress, [
-  //       { feeRate: tradingFeeRate, clbTokenAmount: clbBalanceAfterAdd },
-  //     ])
-  //   );
-  //   const removeLpReceipt = parseLpReceipt(marketAddress, removeTxReceipt);
-  //   expect(removeLpReceipt.id !== undefined).toEqual(true);
+    // removeLiquidity - router
+    const removeTxReceipt = await waitTxMining(async () =>
+      router.removeLiquidities(marketAddress, [
+        { feeRate: tradingFeeRate, clbTokenAmount: clbBalanceAfterAdd },
+      ])
+    );
+    const removeLpReceipt = parseLpReceipt(marketAddress, removeTxReceipt);
+    expect(removeLpReceipt.id !== undefined).toEqual(true);
 
-  //   // withdrawLiquidity - router
-  //   await updatePrice({ market: marketAddress, signer, price: 1000 });
-  //   await waitTxMining(() => router.withdrawLiquidities(marketAddress, [removeLpReceipt.id]));
+    // withdrawLiquidity - router
+    await updatePrice({ market: marketAddress, signer, price: 1000 });
+    await waitTxMining(() => router.withdrawLiquidities(marketAddress, [removeLpReceipt.id]));
 
-  //   // balance check - ClbToken
-  //   expect((await clbBalance(tradingFeeRate)).lt(clbBalanceAfterAdd)).toEqual(true);
-  // }, 10000);
+    // balance check - ClbToken
+    expect((await clbBalance(tradingFeeRate)).lt(clbBalanceAfterAdd)).toEqual(true);
+  }, 60000);
 
   // after
   test("open/close Position", async () => {
@@ -169,25 +169,32 @@ describe("router sdk test", () => {
     const afterOpenPositions = await getPositions();
     expect(beforeOpenPositions.length).toBeLessThan(afterOpenPositions.length);
 
-    const positionBeforeClose = afterOpenPositions[afterOpenPositions.length-1]
-    expect(positionBeforeClose.closeVersion.isZero()).toEqual(true)
-    
+    const positionBeforeClose = afterOpenPositions[afterOpenPositions.length - 1];
+    expect(positionBeforeClose.closeVersion.isZero()).toEqual(true);
+
     await updatePrice({ market: marketAddress, signer, price: 1100 });
 
-    const closeTxReceipt = waitTxMining(() =>
-      router.closePosition(marketAddress, {
-        positionId: afterOpenPositions[afterOpenPositions.length - 1].id,
-      })
+    await tryTx(
+      waitTxMining(() =>
+        router.closePosition(marketAddress, afterOpenPositions[afterOpenPositions.length - 1].id)
+      ),
+      signer.provider
     );
-    await tryTx(closeTxReceipt, signer.provider);
 
     const positions = await getPositions();
-    const position = positions[positions.length-1]
-    expect(position.closeVersion.isZero()).toEqual(false)
+    const position = positions[positions.length - 1];
+    expect(position.closeVersion.isZero()).toEqual(false);
 
     await updatePrice({ market: marketAddress, signer, price: 1200 });
-    // TODO claim
-    
+
+    await tryTx(
+      waitTxMining(() => router.claimPosition(marketAddress, position.id)),
+      signer.provider
+    );
+
+    expect((await getPositions()).filter(pos => pos.id === position.id).length).toEqual(0);
+
+
   }, 60000);
   // after yarn chain
   // Time:        37.582 s, estimated 45 s

@@ -68,5 +68,5 @@
     "docs:sdk": "cd site && yarn install && yarn clear && yarn build",
     "test": "jest --runInBand"
   },
-  "version": "0.1.0-rc.50"
+  "version": "0.1.0-rc.51"
 }

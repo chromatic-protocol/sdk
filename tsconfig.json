@@ -12,6 +12,7 @@
     "declarationMap": true,
     "lib": [
       "ES2021.String"
-    ]
+    ],
+    "rootDir": "src"
   },
 }

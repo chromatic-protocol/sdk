@@ -10,8 +10,8 @@
     "sourceMap": true,
     "sourceRoot": "",
     "declarationMap": true,
-    // "lib": [
-    //   "ES2021.String"
-    // ]
+    "lib": [
+      "ES2021.String"
+    ]
   },
 }

@@ -134,7 +134,7 @@ export class ChromaticPosition {
     options: { includeInterestFee: boolean } = { includeInterestFee: true }
   ): Promise<BigNumber> {
     const leveragedQty = position.qty.mul(position.leverage);
-    let delta = exitPrice.sub(entryPrice).abs();
+    let delta = exitPrice.sub(entryPrice);
     if (leveragedQty.lt(0)) delta = delta.mul(-1);
     let pnl = leveragedQty.abs().mul(delta).div(entryPrice);
     if (options.includeInterestFee) {

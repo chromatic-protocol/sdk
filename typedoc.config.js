@@ -3,7 +3,7 @@ module.exports = {
   tsconfig: "./tsconfig.json",
   out: "./docs",
   // plugin: ["typedoc-plugin-markdown"],
-  exclude: ["**/*+(test|spec).ts"],
+  exclude: ["test","**/*+(test|spec).ts"],
 
   externalPattern: ["**/@**/**/*.ts"],
   excludeExternals: true,

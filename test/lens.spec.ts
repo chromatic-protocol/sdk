@@ -1,12 +1,12 @@
 import { BigNumber, ethers } from "ethers";
-import { Client } from "../Client";
+import { Client } from "../src/Client";
 import {
   getSigner,
   parseLpReceipt,
   swapToUSDC,
   updatePrice,
   waitTxMining,
-} from "../../test/testHelpers";
+} from "./testHelpers";
 
 describe("lens sdk test", () => {
   const signer = getSigner();

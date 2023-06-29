@@ -8,8 +8,10 @@ on:
       - src/**
       - site/**
       - package.json
+      - tsconfig.json
+      - tsconfig.*.json
       - .github/workflows/release-publish.yml
-  workflow_dispatch:
+  
 
 permissions:
   contents: write
@@ -17,7 +19,7 @@ permissions:
 
 jobs:
   Release-publish:
-    if: ${{ github.event.pull_request.merged == true || github.event.workflow_dispatch.organization.login == 'chromatic-protocol' }}
+    if: ${{ github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3 # Checkout our working repository

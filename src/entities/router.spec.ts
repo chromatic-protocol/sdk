@@ -28,6 +28,12 @@ describe("router sdk test", () => {
     ).clbToken();
     const signerAddress = await signer.getAddress();
 
+    async function getPositions() {
+      return await ChromaticMarket__factory.connect(marketAddress, signer).getPositions(
+        await client.account().getPositionIds(marketAddress)
+      );
+    }
+
     async function clbBalance(feeRate: number) {
       return CLBToken__factory.connect(clbTokenAddress, signer).balanceOf(
         signerAddress,
@@ -81,6 +87,7 @@ describe("router sdk test", () => {
       clbTotalSupply,
       addAndClaimLiquidity,
       clbTokenAddress,
+      getPositions,
     };
   }
 
@@ -111,14 +118,19 @@ describe("router sdk test", () => {
 
   // after
   test("open/close Position", async () => {
-    const { marketAddress, router, token, clbBalance, addAndClaimLiquidity, clbTokenAddress } =
-      await getFixture();
+    const {
+      marketAddress,
+      router,
+      token,
+      clbBalance,
+      addAndClaimLiquidity,
+      clbTokenAddress,
+      getPositions,
+    } = await getFixture();
 
     await updatePrice({ market: marketAddress, signer, price: 1000 });
     const tradingFeeRate = 100;
     const { clbBalanceAfterAdd, addAmount } = await addAndClaimLiquidity(tradingFeeRate);
-
-    // TODO account 만들기 전 에러 내보고 파싱해보기
 
     let account = await client.account().getAccount();
     if (account === ethers.constants.AddressZero) {
@@ -142,11 +154,7 @@ describe("router sdk test", () => {
       (b) => b.tradingFeeRate == 100
     );
 
-    console.log(bin100);
-    console.log(BigNumber.from(10 * 8));
-
-    // 0x1b20069f
-
+    const beforeOpenPositions = await getPositions();
     const openTxReceipt = waitTxMining(() =>
       router.openPosition(marketAddress, {
         quantity: BigNumber.from(10 ** 4),
@@ -156,15 +164,31 @@ describe("router sdk test", () => {
         maxAllowableTradingFee: bin100[0].freeLiquidity.div(2).div(10),
       })
     );
-
     await tryTx(openTxReceipt, signer.provider);
 
-    // export interface RouterOpenPositionParam {
-    //   quantity: BigNumberish;
-    //   leverage: BigNumberish;
-    //   takerMargin: BigNumberish;
-    //   makerMargin: BigNumberish;
-    //   tradingFee: BigNumberish;
-    // }
-  }, 10000);
+    const afterOpenPositions = await getPositions();
+    expect(beforeOpenPositions.length).toBeLessThan(afterOpenPositions.length);
+
+    const positionBeforeClose = afterOpenPositions[afterOpenPositions.length-1]
+    expect(positionBeforeClose.closeVersion.isZero()).toEqual(true)
+    
+    await updatePrice({ market: marketAddress, signer, price: 1100 });
+
+    const closeTxReceipt = waitTxMining(() =>
+      router.closePosition(marketAddress, {
+        positionId: afterOpenPositions[afterOpenPositions.length - 1].id,
+      })
+    );
+    await tryTx(closeTxReceipt, signer.provider);
+
+    const positions = await getPositions();
+    const position = positions[positions.length-1]
+    expect(position.closeVersion.isZero()).toEqual(false)
+
+    await updatePrice({ market: marketAddress, signer, price: 1200 });
+    // TODO claim
+    
+  }, 60000);
+  // after yarn chain
+  // Time:        37.582 s, estimated 45 s
 });

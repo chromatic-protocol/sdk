@@ -177,10 +177,11 @@ export class ChromaticPosition {
     const interestFee = await this.getInterestFee(marketAddress, position);
     const margin = isProfitStop ? position.makerMargin : position.takerMargin;
     const leveragedQty = position.qty.mul(position.leverage); 
-    const pricePrecision = BigNumber.from(QTY_LEVERAGE_PRECISION).mul(LIQUIDATION_PRICE_PRECISION);
+    const pricePrecision = BigNumber.from(QTY_LEVERAGE_PRECISION).mul(LIQUIDATION_PRICE_PRECISION)
     const marginWithInterest = isProfitStop ? margin.add(interestFee) : margin.sub(interestFee);
-    let delta = entryPrice //18 + 18 + 10 - 10  36 
-                          // 6 + 6 + 10 - 10  12
+    //18 + 18 + 10 - 10  36 
+    // 6 + 6 + 10 - 10  12
+    let delta = entryPrice 
       .mul(marginWithInterest.mul(pricePrecision)).div(leveragedQty)
       .div(LIQUIDATION_PRICE_PRECISION)
       .div(BigNumber.from(10).pow(oraclePriceDecimals))

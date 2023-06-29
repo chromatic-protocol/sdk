@@ -20,12 +20,12 @@ describe("postion sdk test", () => {
     const openTimestamp = BigNumber.from(1000000000);
     const takerMarginEther = 2;
     const makerMarginEther = 4;
-    const qty = -10;
+    const qty = 10;
     const leverage = 2;
     const positionParam: PositionParam = {
       takerMargin: parseEther(takerMarginEther), // 10% losscut ( 2 % ( 10 (qty) x 2 ) )
       makerMargin: parseEther(makerMarginEther), // 20% profitstop
-      qty: parseEther(qty).mul(10 ** 4 /* qty decimal*/),
+      qty: BigNumber.from(qty).mul(10 ** 4 /* qty decimal*/),
       leverage: leverage * 10 ** 2,
       openTimestamp,
       claimTimestamp: BigNumber.from(openTimestamp.toNumber() + 3600 * 24 * 36.5),
@@ -48,100 +48,33 @@ describe("postion sdk test", () => {
   });
 
   test("losscut stop price - short", async () => {
-    const p = {
-      id: {
-        type: "BigNumber",
-        hex: "0x01",
-      },
-      openVersion: {
-        type: "BigNumber",
-        hex: "0x03",
-      },
-      closeVersion: {
-        type: "BigNumber",
-        hex: "0x00",
-      },
-      qty: {
-        type: "BigNumber",
-        hex: "-0x4c4b40",
-      },
-      leverage: 100,
-      openTimestamp: {
-        type: "BigNumber",
-        hex: "0x645db4e5",
-      },
-      closeTimestamp: {
-        type: "BigNumber",
-        hex: "0x00",
-      },
-      takerMargin: {
-        type: "BigNumber",
-        hex: "0x1dcd6500",
-      },
-      _binMargins: [
-        [
-          1,
-          {
-            type: "BigNumber",
-            hex: "0x02faf080",
-          },
-        ],
-      ],
-      _feeProtocol: 0,
-      makerMargin: {
-        type: "BigNumber",
-        hex: "0x02faf080",
-      },
-      openPrice: {
-        type: "BigNumber",
-        hex: "0x59682f00",
-      },
-      closePrice: {
-        type: "BigNumber",
-        hex: "0x00",
-      },
-    };
     const openTimestamp = BigNumber.from(1000000000);
     const takerMarginEther = 2;
     const makerMarginEther = 4;
     const qty = -10;
     const leverage = 2;
-    // const positionParam: PositionParam = {
-    //   // takerMargin: parseEther(takerMarginEther), // 10% losscut ( 2 % ( 10 (qty) x 2 ) )
-    //   // makerMargin: parseEther(makerMarginEther), // 20% profitstop
-    //   qty: parseEther(qty).mul(10 ** 4 /* qty decimal*/),
-    //   leverage: leverage * 10 ** 2,
-    //   openTimestamp,
-    //   claimTimestamp: BigNumber.from(openTimestamp.toNumber() + 3600 * 24 * 36.5),
-    // };
-    const takerMargin = BigNumber.from(p.takerMargin);
-    const makerMargin = BigNumber.from(p.makerMargin);
     const positionParam: PositionParam = {
-      // takerMargin: parseEther(takerMarginEther), // 10% losscut ( 2 % ( 10 (qty) x 2 ) )
-      // makerMargin: parseEther(makerMarginEther), // 20% profitstop
-      takerMargin,
-      makerMargin,
-      qty: BigNumber.from(p.qty), // parseEther(qty).mul(10 ** 4 /* qty decimal*/),
-      leverage: p.leverage,
+      takerMargin: parseEther(takerMarginEther), // 10% losscut ( 2 % ( 10 (qty) x 2 ) )
+      makerMargin: parseEther(makerMarginEther), // 20% profitstop
+      qty: BigNumber.from(qty).mul(10 ** 4 /* qty decimal*/),
+      leverage: leverage * 10 ** 2,
       openTimestamp,
       claimTimestamp: BigNumber.from(openTimestamp.toNumber() + 3600 * 24 * 36.5),
     };
 
     const { lossCutPrice } = await position.getLiquidationPrice(
       "",
-      BigNumber.from(p.openPrice),
-      // parseEther(1500),
+      parseEther(1000),
       positionParam,
-      6
+      18
     );
 
     console.log("Losscut price - short", ethers.utils.formatUnits(lossCutPrice, 6));
 
-    expect(Number(ethers.utils.formatUnits(lossCutPrice, 6))).toEqual(
-      +ethers.utils.formatUnits(BigNumber.from(p.openPrice), 6) *
+    expect(Number(formatEther(lossCutPrice))).toEqual(
+      1000 *
         (1 -
-          ((+ethers.utils.formatUnits(takerMargin, 6)) -
-            (+ethers.utils.formatUnits(makerMargin, 6)) * 0.01) /* 1% interest for margin*/ /
+          (takerMarginEther - makerMarginEther * 0.01) /* 1% interest for margin*/ /
             (qty * leverage))
     );
   });
@@ -155,7 +88,7 @@ describe("postion sdk test", () => {
     const positionParam: PositionParam = {
       takerMargin: parseEther(takerMarginEther), // 10% losscut ( 2 % ( 10 (qty) x 2 ) )
       makerMargin: parseEther(makerMarginEther), // 20% profitstop
-      qty: parseEther(qty).mul(10 ** 4 /* qty decimal*/),
+      qty: BigNumber.from(qty).mul(10 ** 4 /* qty decimal*/),
       leverage: leverage * 10 ** 2,
       openTimestamp,
       claimTimestamp: BigNumber.from(openTimestamp.toNumber() + 3600 * 24 * 36.5),
@@ -183,7 +116,7 @@ describe("postion sdk test", () => {
     const positionParam: PositionParam = {
       takerMargin: parseEther(takerMarginEther), // 10% losscut ( 2 % ( 10 (qty) x 2 ) )
       makerMargin: parseEther(makerMarginEther), // 20% profitstop
-      qty: parseEther(qty).mul(10 ** 4 /* qty decimal*/),
+      qty: BigNumber.from(qty).mul(10 ** 4 /* qty decimal*/),
       leverage: leverage * 10 ** 2,
       openTimestamp,
       claimTimestamp: BigNumber.from(openTimestamp.toNumber() + 3600 * 24 * 36.5),

@@ -4,6 +4,7 @@ import type { Client } from "../Client";
 import { BigNumber, ethers } from "ethers";
 import { logger } from "../utils/helpers";
 import { token } from "../gen/@openzeppelin/contracts";
+import { ILiquidity } from "../gen/contracts/core/ChromaticMarket";
 export interface LiquidityBinResult {
   tradingFeeRate: number;
   clbValue: number;
@@ -130,9 +131,11 @@ export class ChromaticLens {
     );
 
     const encodedResponses = (await this.getContract().multicall(multicallParam)) as string[];
-    const decodedReponses = encodedResponses.map((response) =>
-      this.getContract().interface.decodeFunctionResult("claimableLiquidity", response)
-    );
+    const decodedReponses = encodedResponses
+      .map((response) =>
+        this.getContract().interface.decodeFunctionResult("claimableLiquidity", response)
+      )
+      .flat() as ILiquidity.ClaimableLiquidityStructOutput[];
 
     const results = decodedReponses.map((res, index) => {
       return {

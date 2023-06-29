@@ -9,6 +9,8 @@ on:
       - site/**
       - package.json
       - .github/workflows/release-publish.yml
+  workflow_dispatch:
+  
 permissions:
   contents: write
   packages: write

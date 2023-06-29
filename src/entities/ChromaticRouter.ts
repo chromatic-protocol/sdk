@@ -207,7 +207,4 @@ export class ChromaticRouter {
     return tx.wait();
   }
 
-  async getLpReceiptIds(marketAddress: string) {
-    await this.contracts().router()["getLpReceiptIds(address)"](marketAddress);
-  }
 }

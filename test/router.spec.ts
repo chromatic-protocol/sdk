@@ -192,34 +192,7 @@ describe("router sdk test", () => {
   // Time:        37.582 s, estimated 45 s
 
   test("revert msg haldling", async () => {
-    const {
-      marketAddress,
-      router,
-      token,
-      clbBalance,
-      addAndClaimLiquidity,
-      clbTokenAddress,
-      getPositions,
-    } = await getFixture();
-
-    // router.withdrawLiquidity
-    // NotExistLpReceipt
-    // await router.withdrawLiquidity(marketAddress,BigNumber.from(10).pow(10))
-
-    // ToSmallAmount
-    // await router.addLiquidity(marketAddress, {
-    //   feeRate: 100,
-    //   amount: BigNumber.from(1),
-    // });
-
-    // createAccount
-    // non msg
-    // await client.account().createAccount()
-    // await client.account().createAccount()
-
-  
-    
-    // require(feeRates.length == amounts.length, "TradeRouter: invalid arguments");
+    const { marketAddress, router, token } = await getFixture();
 
     // const { outputAmount, usdcBalance } = await swapToUSDC({
     //   amount: ethers.utils.parseEther("10"),
@@ -229,11 +202,23 @@ describe("router sdk test", () => {
     //   fee: 3000,
     // });
 
+    // router.withdrawLiquidity
+    // NotExistLpReceipt
+    await expect(
+      async () => await router.withdrawLiquidity(marketAddress, ethers.constants.MaxUint256)
+    ).rejects.toThrowError(Error("call reverted with error: NotExistLpReceipt"));
 
 
+    // createAccount
+    // require(accounts[owner] == address(0));
+    if ((await client.account().getAccount()) === ethers.constants.AddressZero) {
+      await client.account().createAccount();
+    }
+    await expect(async () => await client.account().createAccount()).rejects.toThrowError(
+      Error("call reverted without reason")
+    );
 
-    // addLiquidity
-    // require(amount > MIN_AMOUNT, Errors.TOO_SMALL_AMOUNT);
+    // TODO require with string - Errors.~~~
     // TSA
   }, 60000);
 });

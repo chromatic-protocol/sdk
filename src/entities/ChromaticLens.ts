@@ -2,7 +2,7 @@ import { BigNumber } from "ethers";
 import type { Client } from "../Client";
 import { ChromaticLens__factory, getDeployedAddress } from "../gen";
 import { ILiquidity } from "../gen/contracts/core/ChromaticMarket";
-import { decodeTokenId, encodeTokenId } from "../utils/helpers";
+import { decodeTokenId, encodeTokenId, handleBytesError } from "../utils/helpers";
 
 /**
  * Represents the result of a liquidity bin.
@@ -72,23 +72,25 @@ export class ChromaticLens {
    * @returns A promise that resolves to an array of LiquidityBinResult.
    */
   async liquidityBins(marketAddress: string): Promise<LiquidityBinResult[]> {
-    const totalLiquidityBins = await this.getContract().liquidityBinStatuses(marketAddress);
-    const clbToken = await this._client.market().clbToken(marketAddress);
-    const tokenIds = totalLiquidityBins.map((bin) => encodeTokenId(bin.tradingFeeRate));
+    return await handleBytesError(async () => {
+      const totalLiquidityBins = await this.getContract().liquidityBinStatuses(marketAddress);
+      const clbToken = await this._client.market().clbToken(marketAddress);
+      const tokenIds = totalLiquidityBins.map((bin) => encodeTokenId(bin.tradingFeeRate));
 
-    const totalSupplies = await clbToken.totalSupplyBatch(tokenIds);
+      const totalSupplies = await clbToken.totalSupplyBatch(tokenIds);
 
-    return totalLiquidityBins.map((bin, index) => {
-      return {
-        tradingFeeRate: bin.tradingFeeRate,
-        clbValue: totalSupplies[index].isZero()
-          ? 0
-          : Number(bin.liquidity.toString()) / Number(totalSupplies[index].toString()),
-        liquidity: bin.liquidity,
-        clbTokenTotalSupply: totalSupplies[index],
-        freeLiquidity: bin.freeLiquidity,
-      };
-    });
+      return totalLiquidityBins.map((bin, index) => {
+        return {
+          tradingFeeRate: bin.tradingFeeRate,
+          clbValue: totalSupplies[index].isZero()
+            ? 0
+            : Number(bin.liquidity.toString()) / Number(totalSupplies[index].toString()),
+          liquidity: bin.liquidity,
+          clbTokenTotalSupply: totalSupplies[index],
+          freeLiquidity: bin.freeLiquidity,
+        };
+      });
+    }, this._client.signer.provider);
   }
 
   /**
@@ -101,46 +103,48 @@ export class ChromaticLens {
     marketAddress: string,
     ownerAddress?: string
   ): Promise<OwnedLiquidityBinResult[]> {
-    if (!ownerAddress && !this._client.signer) {
-      throw new Error("signer is required");
-    }
+    return await handleBytesError(async () => {
+      if (!ownerAddress && !this._client.signer) {
+        throw new Error("signer is required");
+      }
 
-    //
+      //
 
-    const totalLiquidityBins = await this.getContract().liquidityBinStatuses(marketAddress);
-    const ownedLiquidities = await this.getContract().clbBalanceOf(
-      marketAddress,
-      ownerAddress ?? (await this._client.signer.getAddress())
-    );
+      const totalLiquidityBins = await this.getContract().liquidityBinStatuses(marketAddress);
+      const ownedLiquidities = await this.getContract().clbBalanceOf(
+        marketAddress,
+        ownerAddress ?? (await this._client.signer.getAddress())
+      );
 
-    // tokenId parsing then get tradingFee
-    // data merge mapping by tradingFee
+      // tokenId parsing then get tradingFee
+      // data merge mapping by tradingFee
 
-    const results = ownedLiquidities.map((ownedBin) => {
-      const tradingFeeRate = decodeTokenId(ownedBin.tokenId);
-      const targetTotalLiqBin = totalLiquidityBins.find(
-        (bin) => bin.tradingFeeRate === tradingFeeRate
-      )!;
+      const results = ownedLiquidities.map((ownedBin) => {
+        const tradingFeeRate = decodeTokenId(ownedBin.tokenId);
+        const targetTotalLiqBin = totalLiquidityBins.find(
+          (bin) => bin.tradingFeeRate === tradingFeeRate
+        )!;
 
-      // totalSupplyBatch
+        // totalSupplyBatch
 
-      return {
-        tradingFeeRate,
-        liquidity: ownedBin.binValue,
-        freeLiquidity: targetTotalLiqBin.freeLiquidity,
-        clbBalance: ownedBin.balance,
-        clbTotalSupply: ownedBin.totalSupply,
-        clbValue: ownedBin.totalSupply.isZero()
-          ? 0
-          : Number(ownedBin.binValue.toString() || 0) / Number(ownedBin.totalSupply.toString()),
-        removableRate: targetTotalLiqBin.liquidity.isZero()
-          ? 0
-          : Number(targetTotalLiqBin.freeLiquidity.toString() || 0) /
-            Number(targetTotalLiqBin.liquidity.toString()),
-      };
-    });
+        return {
+          tradingFeeRate,
+          liquidity: ownedBin.binValue,
+          freeLiquidity: targetTotalLiqBin.freeLiquidity,
+          clbBalance: ownedBin.balance,
+          clbTotalSupply: ownedBin.totalSupply,
+          clbValue: ownedBin.totalSupply.isZero()
+            ? 0
+            : Number(ownedBin.binValue.toString() || 0) / Number(ownedBin.totalSupply.toString()),
+          removableRate: targetTotalLiqBin.liquidity.isZero()
+            ? 0
+            : Number(targetTotalLiqBin.freeLiquidity.toString() || 0) /
+              Number(targetTotalLiqBin.liquidity.toString()),
+        };
+      });
 
-    return results.filter((bin) => bin.clbBalance.gt(0));
+      return results.filter((bin) => bin.clbBalance.gt(0));
+    }, this._client.signer.provider);
   }
 
   /**
@@ -153,33 +157,35 @@ export class ChromaticLens {
     marketAddress: string,
     params: { tradingFeeRate: number; oracleVersion: BigNumber }[]
   ): Promise<ClaimableLiquidityResult[]> {
-    const multicallParam = params.map(({ tradingFeeRate, oracleVersion }) =>
-      this.getContract().interface.encodeFunctionData("claimableLiquidity", [
-        marketAddress,
-        tradingFeeRate,
-        oracleVersion,
-      ])
-    );
+    return await handleBytesError(async () => {
+      const multicallParam = params.map(({ tradingFeeRate, oracleVersion }) =>
+        this.getContract().interface.encodeFunctionData("claimableLiquidity", [
+          marketAddress,
+          tradingFeeRate,
+          oracleVersion,
+        ])
+      );
 
-    const encodedResponses = (await this.getContract().multicall(multicallParam)) as string[];
-    const decodedReponses = encodedResponses
-      .map((response) =>
-        this.getContract().interface.decodeFunctionResult("claimableLiquidity", response)
-      )
-      .flat() as ILiquidity.ClaimableLiquidityStructOutput[];
+      const encodedResponses = (await this.getContract().multicall(multicallParam)) as string[];
+      const decodedReponses = encodedResponses
+        .map((response) =>
+          this.getContract().interface.decodeFunctionResult("claimableLiquidity", response)
+        )
+        .flat() as ILiquidity.ClaimableLiquidityStructOutput[];
 
-    const results = decodedReponses.map((res, index) => {
-      return {
-        tradingFeeRate: params[index].tradingFeeRate,
-        mintingTokenAmountRequested: res.mintingTokenAmountRequested,
-        mintingCLBTokenAmount: res.mintingCLBTokenAmount,
-        burningCLBTokenAmountRequested: res.burningCLBTokenAmountRequested,
-        burningCLBTokenAmount: res.burningCLBTokenAmount,
-        burningTokenAmount: res.burningTokenAmount,
-      };
-    });
+      const results = decodedReponses.map((res, index) => {
+        return {
+          tradingFeeRate: params[index].tradingFeeRate,
+          mintingTokenAmountRequested: res.mintingTokenAmountRequested,
+          mintingCLBTokenAmount: res.mintingCLBTokenAmount,
+          burningCLBTokenAmountRequested: res.burningCLBTokenAmountRequested,
+          burningCLBTokenAmount: res.burningCLBTokenAmount,
+          burningTokenAmount: res.burningTokenAmount,
+        };
+      });
 
-    return results;
+      return results;
+    }, this._client.signer.provider);
   }
 
   /**
@@ -189,9 +195,11 @@ export class ChromaticLens {
    * @returns A promise that resolves to the LP receipts.
    */
   async lpReceipts(marketAddress: string, owner?: string) {
-    return await this.getContract().lpReceipts(
-      marketAddress,
-      owner === undefined ? this._client.signer.getAddress() : owner!
-    );
+    return await handleBytesError(async () => {
+      return await this.getContract().lpReceipts(
+        marketAddress,
+        owner === undefined ? this._client.signer.getAddress() : owner!
+      );
+    }, this._client.signer.provider);
   }
 }

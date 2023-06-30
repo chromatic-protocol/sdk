@@ -1,17 +1,9 @@
 import { BigNumber, ContractReceipt, Signer, ethers } from "ethers";
 import {
-  CLBToken__factory,
-  ChromaticAccount__factory,
-  ChromaticLiquidator__factory,
-  ChromaticMarketFactory__factory,
   ChromaticMarket__factory,
-  ChromaticRouter__factory,
-  ChromaticVault__factory,
   IERC20__factory,
-  IOracleProvider__factory,
 } from "../src/gen";
 import { LpReceiptStructOutput } from "../src/gen/contracts/core/ChromaticMarket";
-import { Provider } from "@ethersproject/providers";
 
 export const MNEMONIC_JUNK = "test test test test test test test test test test test junk";
 
@@ -46,9 +38,7 @@ export interface WaitMiningTxOptions {
   timeoutMillSeconds?: number;
 }
 
-interface ErrorSignatures {
-  [key: string]: string;
-}
+
 
 export function getSigner(param?: GetSignerParam): ethers.Signer {
   const provider = getDefaultProvider();
@@ -276,53 +266,3 @@ export function parseLpReceipt(
     tradingFeeRate: parsedValue[5] as number,
   } as LpReceiptStructOutput;
 }
-
-export async function tryTx(
-  waitTxFn: Promise<ContractReceipt>,
-  provider: Provider
-): Promise<ContractReceipt | undefined> {
-  try {
-    return await waitTxFn;
-  } catch (e) {
-    const match = (e as Error).message.match(/transactionHash="([^"]+)"/);
-    if (match) {
-      const txHash = match[0].replaceAll('"', "").replaceAll("transactionHash=", "");
-      const tx = await provider.getTransaction(txHash);
-      const code = await provider.call(tx, tx.blockNumber);
-      console.log("code", code);
-      if (code.length === 0) {
-        throw Error(`call reverted without reasons`);
-      }
-      if (code.length === 10) {
-        const errorName = errorSignitures[code];
-        if (errorName) {
-          // 0xc9b05689
-          // TooSmallTakerMargin()
-          throw Error(`call reverted: ${errorName}`);
-        }
-      }
-
-      const reason = ethers.utils.toUtf8String("0x" + code.substring(138));
-      throw reason.length === 0
-        ? Error(`call reverted: ${code}`)
-        : Error(`call reverted: ${reason}`);
-    }
-  }
-}
-
-export const errorSignitures: ErrorSignatures = [
-  ...ChromaticMarket__factory.abi,
-  ...ChromaticMarketFactory__factory.abi,
-  ...ChromaticVault__factory.abi,
-  ...CLBToken__factory.abi,
-  ...IOracleProvider__factory.abi,
-  ...ChromaticAccount__factory.abi,
-  ...ChromaticRouter__factory.abi,
-  ...ChromaticLiquidator__factory.abi,
-]
-  .filter((abi) => abi.type === "error")
-  .reduce((prevErrMap, currErrAbi) => {
-    const signature = ethers.utils.id(`${currErrAbi["name"]}()`).substring(0, 10);
-    prevErrMap[signature] = currErrAbi["name"];
-    return prevErrMap;
-  }, {} as ErrorSignatures);

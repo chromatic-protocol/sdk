@@ -69,16 +69,16 @@ export async function handleBytesError<T>(fn: () => Promise<T>, provider: Provid
 
 function parseHexError(errHex: string): string {
   if (errHex === "0x") {
-    return `call reverted without reasons`;
+    return `call reverted without reason`;
   }
   if (errHex.length === 10) {
     const errorName = errorSignitures[errHex];
     if (errorName) {
-      return `call reverted: ${errorName}`;
+      return `call reverted with error: ${errorName}`;
     }
   }
   const reason = ethers.utils.toUtf8String("0x" + errHex.substring(138));
-  return reason.length === 0 ? `call reverted: ${errHex}` : `call reverted: ${reason}`;
+  return reason.length === 0 ? `call reverted: ${errHex}` : `call reverted with reason: ${reason}`;
 }
 
 interface ErrorSignatures {

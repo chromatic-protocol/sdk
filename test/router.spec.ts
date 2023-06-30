@@ -1,15 +1,8 @@
 import { BigNumber, ethers } from "ethers";
 import { Client } from "../src/Client";
-import {
-  getSigner,
-  parseLpReceipt,
-  swapToUSDC,
-  tryTx,
-  updatePrice,
-  waitTxMining,
-} from "./testHelpers";
+import { getSigner, parseLpReceipt, swapToUSDC, updatePrice, waitTxMining } from "./testHelpers";
 import { CLBToken__factory, ChromaticMarket__factory, IERC20__factory } from "../src/gen";
-import { encodeTokenId } from "../src/utils/helpers";
+import { encodeTokenId, errorSignitures, handleBytesError } from "../src/utils/helpers";
 
 describe("router sdk test", () => {
   const signer = getSigner();
@@ -164,7 +157,7 @@ describe("router sdk test", () => {
         maxAllowableTradingFee: bin100[0].freeLiquidity.div(2).div(10),
       })
     );
-    await tryTx(openTxReceipt, signer.provider);
+    await handleBytesError(() => openTxReceipt, signer.provider);
 
     const afterOpenPositions = await getPositions();
     expect(beforeOpenPositions.length).toBeLessThan(afterOpenPositions.length);
@@ -174,10 +167,11 @@ describe("router sdk test", () => {
 
     await updatePrice({ market: marketAddress, signer, price: 1100 });
 
-    await tryTx(
-      waitTxMining(() =>
-        router.closePosition(marketAddress, afterOpenPositions[afterOpenPositions.length - 1].id)
-      ),
+    await handleBytesError(
+      () =>
+        waitTxMining(() =>
+          router.closePosition(marketAddress, afterOpenPositions[afterOpenPositions.length - 1].id)
+        ),
       signer.provider
     );
 
@@ -187,15 +181,59 @@ describe("router sdk test", () => {
 
     await updatePrice({ market: marketAddress, signer, price: 1200 });
 
-    await tryTx(
-      waitTxMining(() => router.claimPosition(marketAddress, position.id)),
+    await handleBytesError(
+      () => waitTxMining(() => router.claimPosition(marketAddress, position.id)),
       signer.provider
     );
 
-    expect((await getPositions()).filter(pos => pos.id === position.id).length).toEqual(0);
-
-
+    expect((await getPositions()).filter((pos) => pos.id === position.id).length).toEqual(0);
   }, 60000);
   // after yarn chain
   // Time:        37.582 s, estimated 45 s
+
+  test("revert msg haldling", async () => {
+    const {
+      marketAddress,
+      router,
+      token,
+      clbBalance,
+      addAndClaimLiquidity,
+      clbTokenAddress,
+      getPositions,
+    } = await getFixture();
+
+    // router.withdrawLiquidity
+    // NotExistLpReceipt
+    // await router.withdrawLiquidity(marketAddress,BigNumber.from(10).pow(10))
+
+    // ToSmallAmount
+    // await router.addLiquidity(marketAddress, {
+    //   feeRate: 100,
+    //   amount: BigNumber.from(1),
+    // });
+
+    // createAccount
+    // non msg
+    // await client.account().createAccount()
+    // await client.account().createAccount()
+
+  
+    
+    // require(feeRates.length == amounts.length, "TradeRouter: invalid arguments");
+
+    // const { outputAmount, usdcBalance } = await swapToUSDC({
+    //   amount: ethers.utils.parseEther("10"),
+    //   signer: signer,
+    //   weth9: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
+    //   usdc: token,
+    //   fee: 3000,
+    // });
+
+
+
+
+    // addLiquidity
+    // require(amount > MIN_AMOUNT, Errors.TOO_SMALL_AMOUNT);
+    // TSA
+  }, 60000);
 });

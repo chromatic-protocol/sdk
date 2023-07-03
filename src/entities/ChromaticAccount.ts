@@ -40,7 +40,7 @@ export class ChromaticAccount {
     return await handleBytesError(async () => {
       const tx = await this.contracts().router().createAccount();
       return await tx.wait();
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -50,7 +50,7 @@ export class ChromaticAccount {
   async getAccount() {
     return await handleBytesError(async () => {
       return await this.contracts().router().getAccount();
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -64,7 +64,7 @@ export class ChromaticAccount {
       const currAccountAddress = await this.getCurrentAddress();
       const chromaticAcc = this.contracts().account(accountAddress || currAccountAddress);
       return await chromaticAcc.getPositionIds(marketAddress);
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -79,7 +79,7 @@ export class ChromaticAccount {
       return this.contracts()
         .account(accountAddress || currAccountAddress)
         .balance(token);
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -101,7 +101,7 @@ export class ChromaticAccount {
           } satisfies TokenBalancesResult;
         }) || []
       );
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -113,6 +113,6 @@ export class ChromaticAccount {
       if (!this._currentAccountAddress)
         this._currentAccountAddress = await this.contracts().router().getAccount();
       return this._currentAccountAddress;
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 }

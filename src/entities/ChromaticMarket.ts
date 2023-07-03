@@ -46,7 +46,7 @@ export class ChromaticMarket {
         await this.contracts().market(marketAddress).settlementToken(),
         this._client.signer || this._client.provider
       );
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -60,7 +60,7 @@ export class ChromaticMarket {
         await this.contracts().market(marketAddress).clbToken(),
         this._client.signer || this._client.provider
       );
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -84,7 +84,7 @@ export class ChromaticMarket {
         description,
         decimals,
       };
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -112,7 +112,7 @@ export class ChromaticMarket {
     return await handleBytesError(async () => {
       const contract = await this.getOracleProviderContract(marketAddress);
       return contract.currentVersion();
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -123,7 +123,7 @@ export class ChromaticMarket {
   async getMarketName(marketAddress: string) {
     return await handleBytesError(async () => {
       return (await this.getOracleProviderContract(marketAddress)).description();
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -143,6 +143,6 @@ export class ChromaticMarket {
           };
         })
       );
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 }

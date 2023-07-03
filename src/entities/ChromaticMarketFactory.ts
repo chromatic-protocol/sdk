@@ -74,7 +74,7 @@ export class ChromaticMarketFactory {
         .map(({ value }) => value);
 
       return fulfilled;
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -85,7 +85,7 @@ export class ChromaticMarketFactory {
   async currentInterestRate(settlementToken: string) {
     return await handleBytesError(async () => {
       return this.contracts().marketFactory.currentInterestRate(settlementToken);
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -111,6 +111,6 @@ export class ChromaticMarketFactory {
           };
         })
       );
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 }

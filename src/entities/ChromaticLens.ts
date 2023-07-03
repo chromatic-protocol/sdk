@@ -90,7 +90,7 @@ export class ChromaticLens {
           freeLiquidity: bin.freeLiquidity,
         };
       });
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -144,7 +144,7 @@ export class ChromaticLens {
       });
 
       return results.filter((bin) => bin.clbBalance.gt(0));
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -185,7 +185,7 @@ export class ChromaticLens {
       });
 
       return results;
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -200,6 +200,6 @@ export class ChromaticLens {
         marketAddress,
         owner === undefined ? this._client.signer.getAddress() : owner!
       );
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 }

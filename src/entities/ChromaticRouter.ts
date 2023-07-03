@@ -76,7 +76,7 @@ export class ChromaticRouter {
           BigNumber.from(param.maxAllowableTradingFee)
         );
       return await transaction.wait();
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -89,7 +89,7 @@ export class ChromaticRouter {
     return await handleBytesError(async () => {
       const transaction = await this.contracts().router().closePosition(marketAddress, positionId);
       return transaction.wait();
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -102,7 +102,7 @@ export class ChromaticRouter {
     return await handleBytesError(async () => {
       const tx = await this.contracts().router().claimPosition(marketAdress, positionId);
       return tx.wait();
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -165,7 +165,7 @@ export class ChromaticRouter {
           receipient || this._client.signer.getAddress()
         );
       return await tx.wait();
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -198,7 +198,7 @@ export class ChromaticRouter {
         .router()
         .addLiquidityBatch(marketAddress, recipient, feeRates, amounts);
       return await tx.wait();
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -223,7 +223,7 @@ export class ChromaticRouter {
           param.receipient || this._client.signer.getAddress()
         );
       return await tx.wait();
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -265,7 +265,7 @@ export class ChromaticRouter {
           contractParam.clbTokenAmount
         );
       return await tx.wait();
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -280,7 +280,7 @@ export class ChromaticRouter {
         .router()
         .claimLiquidity(marketAddress, BigNumber.from(receiptId));
       return await tx.wait();
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -293,7 +293,7 @@ export class ChromaticRouter {
     return await handleBytesError(async () => {
       const tx = await this.contracts().router().claimLiquidityBatch(marketAddress, receiptIds);
       return await tx.wait();
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -308,7 +308,7 @@ export class ChromaticRouter {
         .router()
         .withdrawLiquidity(marketAddress, BigNumber.from(receiptId));
       return await tx.wait();
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -321,6 +321,6 @@ export class ChromaticRouter {
     return await handleBytesError(async () => {
       const tx = await this.contracts().router().withdrawLiquidityBatch(marketAddress, receiptIds);
       return await tx.wait();
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 }

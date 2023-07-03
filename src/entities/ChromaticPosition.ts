@@ -104,7 +104,7 @@ export class ChromaticPosition {
             ?.price,
         } as IPosition;
       });
-    }, this._client.signer.provider);
+    }, this._client.provider);
   }
 
   /**
@@ -119,7 +119,7 @@ export class ChromaticPosition {
     if (!this.settlementTokenAddress) {
       this.settlementTokenAddress = await handleBytesError(
         async () => await this.contracts().market(marketAddress).settlementToken(),
-        this._client.signer.provider
+        this._client.provider
       );
     }
 

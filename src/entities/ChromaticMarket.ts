@@ -1,4 +1,4 @@
-import { BigNumberish, Signer } from "ethers";
+import { BigNumberish } from "ethers";
 import type { Client } from "../Client";
 import {
   CLBToken,

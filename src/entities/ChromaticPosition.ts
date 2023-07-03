@@ -2,9 +2,9 @@ import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import { Client } from "../Client";
 import { LIQUIDATION_PRICE_PRECISION, QTY_LEVERAGE_PRECISION } from "../constants";
 import { IOracleProvider } from "../gen";
-import { handleBytesError, logger } from "../utils/helpers";
 import { BinMarginStructOutput, PositionStructOutput } from "../gen/contracts/core/ChromaticMarket";
 import { InterestRate } from "../gen/contracts/core/ChromaticMarketFactory";
+import { handleBytesError, logger } from "../utils/helpers";
 
 type InterestParam = Pick<PositionParam, "makerMargin" | "claimTimestamp" | "openTimestamp">;
 

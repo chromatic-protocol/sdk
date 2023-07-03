@@ -1,4 +1,4 @@
-import { BigNumber, Signer } from "ethers";
+import { BigNumber } from "ethers";
 import { Client } from "../Client";
 import { ChromaticAccount__factory } from "../gen";
 import { PromiseOnlySuccess, handleBytesError } from "../utils/helpers";

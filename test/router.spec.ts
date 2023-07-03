@@ -1,8 +1,8 @@
 import { BigNumber, ethers } from "ethers";
 import { Client } from "../src/Client";
-import { getSigner, parseLpReceipt, swapToUSDC, updatePrice, waitTxMining } from "./testHelpers";
 import { CLBToken__factory, ChromaticMarket__factory, IERC20__factory } from "../src/gen";
-import { encodeTokenId, errorSignitures, handleBytesError } from "../src/utils/helpers";
+import { encodeTokenId, handleBytesError } from "../src/utils/helpers";
+import { getSigner, parseLpReceipt, swapToUSDC, updatePrice, waitTxMining } from "./testHelpers";
 
 describe("router sdk test", () => {
   const signer = getSigner();

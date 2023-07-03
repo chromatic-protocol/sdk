@@ -1,4 +1,5 @@
-import { BigNumber, ContractReceipt, Signer, ethers } from "ethers";
+import { Provider } from "@ethersproject/providers";
+import { BigNumber, ethers } from "ethers";
 import {
   CLBToken__factory,
   ChromaticAccount__factory,
@@ -7,11 +8,8 @@ import {
   ChromaticMarket__factory,
   ChromaticRouter__factory,
   ChromaticVault__factory,
-  IERC20__factory,
   IOracleProvider__factory,
 } from "../gen";
-import { LpReceiptStructOutput } from "../gen/contracts/core/ChromaticMarket";
-import { Provider } from "@ethersproject/providers";
 
 import debug from "debug";
 const DIRECTION_PRECISION = BigNumber.from(10).pow(10);

@@ -122,7 +122,11 @@ export class ChromaticPosition {
         this._client.provider
       );
     }
-
+    this.interestRateRecords = await handleBytesError(
+      async () =>
+        await this.contracts().marketFactory.getInterestRateRecords(this.settlementTokenAddress),
+      this._client.provider
+    );
     return this.interestRateRecords;
   }
 

@@ -1,39 +1,52 @@
-import { Provider } from "@ethersproject/providers";
-import { Contract, Signer } from "ethers";
+import type { Client } from "../Client";
 import {
   ChromaticMarketFactory__factory,
-  ChromaticMarketFactory as ChromaticMarketFactoryContract,
-  ChromaticMarket as ChromaticMarketContract,
   IERC20Metadata__factory,
   getDeployedAddress,
 } from "../gen";
-import { ChromaticMarket } from "./ChromaticMarket";
-import type { Client } from "../Client";
 
 export interface SettlementToken {
   name: string;
   address: string;
   decimals: number;
 }
+
+/**
+ * Represents the Chromatic Market Factory and provides methods to interact with it.
+ */
 export class ChromaticMarketFactory {
-  // contract: ChromaticMarketFactoryContract;
+  /**
+   * Creates a new instance of ChromaticMarketFactory.
+   * @param _client The Chromatic Client instance.
+   */
+  constructor(private readonly _client: Client) {}
 
-  constructor(addressOrName: string, private _client: Client) {
-    // this.contract = ChromaticMarketFactory__factory.connect(addressOrName, this._client.provider);
-  }
-
+  /**
+   * Retrieves the contract instance of the Chromatic Market Factory.
+   * @param addressOrName The address or name of the Chromatic Market Factory contract.
+   * @returns The Chromatic Market Factory contract instance.
+   */
   private factoryContract(addressOrName?: string) {
     return ChromaticMarketFactory__factory.connect(
       addressOrName || getDeployedAddress("ChromaticMarketFactory", this._client.chainName),
       this._client.provider
     );
   }
+
+  /**
+   * Retrieves the contract instances associated with the Chromatic Market Factory.
+   * @returns An object containing the contract instance of the Market Factory.
+   */
   contracts() {
     return {
       marketFactory: this.factoryContract(),
     };
   }
 
+  /**
+   * Retrieves the registered settlement tokens.
+   * @returns A promise that resolves to an array of settlement tokens.
+   */
   async registeredSettlementTokens() {
     const totalRegisteredTokenAddrs =
       await this.contracts().marketFactory.registeredSettlementTokens();
@@ -57,10 +70,20 @@ export class ChromaticMarketFactory {
     return fulfilled;
   }
 
+  /**
+   * Retrieves the current interest rate for a specific settlement token.
+   * @param settlementToken The address of the settlement token.
+   * @returns A promise that resolves to the current interest rate.
+   */
   async currentInterestRate(settlementToken: string) {
     return this.contracts().marketFactory.currentInterestRate(settlementToken);
   }
 
+  /**
+   * Retrieves the markets associated with a specific settlement token.
+   * @param settlementToken The address of the settlement token.
+   * @returns A promise that resolves to an array of market information.
+   */
   async getMarkets(settlementToken: string) {
     const marketAddresses = await this.contracts().marketFactory.getMarketsBySettlmentToken(
       settlementToken

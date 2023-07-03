@@ -1,15 +1,8 @@
 import { BigNumber, ethers } from "ethers";
 import { Client } from "../src/Client";
-import {
-  getSigner,
-  parseLpReceipt,
-  swapToUSDC,
-  tryTx,
-  updatePrice,
-  waitTxMining,
-} from "./testHelpers";
 import { CLBToken__factory, ChromaticMarket__factory, IERC20__factory } from "../src/gen";
-import { encodeTokenId } from "../src/utils/helpers";
+import { encodeTokenId, handleBytesError } from "../src/utils/helpers";
+import { getSigner, parseLpReceipt, swapToUSDC, updatePrice, waitTxMining } from "./testHelpers";
 
 describe("router sdk test", () => {
   const signer = getSigner();
@@ -148,7 +141,7 @@ describe("router sdk test", () => {
     });
 
     const accountBalance = await IERC20__factory.connect(token, signer).balanceOf(account);
-    console.log(accountBalance);
+    console.log("accountBalance", accountBalance);
 
     const bin100 = (await client.lens().liquidityBins(marketAddress)).filter(
       (b) => b.tradingFeeRate == 100
@@ -159,12 +152,12 @@ describe("router sdk test", () => {
       router.openPosition(marketAddress, {
         quantity: BigNumber.from(10 ** 4),
         leverage: BigNumber.from(100), // x1
-        takerMargin: accountBalance.div(2),
+        takerMargin: accountBalance.div(3),
         makerMargin: bin100[0].freeLiquidity.div(2),
         maxAllowableTradingFee: bin100[0].freeLiquidity.div(2).div(10),
       })
     );
-    await tryTx(openTxReceipt, signer.provider);
+    await handleBytesError(() => openTxReceipt, signer.provider);
 
     const afterOpenPositions = await getPositions();
     expect(beforeOpenPositions.length).toBeLessThan(afterOpenPositions.length);
@@ -174,10 +167,11 @@ describe("router sdk test", () => {
 
     await updatePrice({ market: marketAddress, signer, price: 1100 });
 
-    await tryTx(
-      waitTxMining(() =>
-        router.closePosition(marketAddress, afterOpenPositions[afterOpenPositions.length - 1].id)
-      ),
+    await handleBytesError(
+      () =>
+        waitTxMining(() =>
+          router.closePosition(marketAddress, afterOpenPositions[afterOpenPositions.length - 1].id)
+        ),
       signer.provider
     );
 
@@ -187,15 +181,50 @@ describe("router sdk test", () => {
 
     await updatePrice({ market: marketAddress, signer, price: 1200 });
 
-    await tryTx(
-      waitTxMining(() => router.claimPosition(marketAddress, position.id)),
+    await handleBytesError(
+      () => waitTxMining(() => router.claimPosition(marketAddress, position.id)),
       signer.provider
     );
 
-    expect((await getPositions()).filter(pos => pos.id === position.id).length).toEqual(0);
-
-
+    expect((await getPositions()).filter((pos) => pos.id === position.id).length).toEqual(0);
   }, 60000);
   // after yarn chain
   // Time:        37.582 s, estimated 45 s
+
+  test("revert msg haldling", async () => {
+    const { marketAddress, router, token } = await getFixture();
+
+    const tokenContract = IERC20__factory.connect(token, signer);
+
+    // require Long String message
+    async function erc20TransferFromTx() {
+      return await handleBytesError(async () => {
+        const tx = await tokenContract.transferFrom(marketAddress, await signer.getAddress(), 1);
+        return await tx.wait();
+      }, signer.provider);
+    }
+    await expect(async () => await erc20TransferFromTx()).rejects.toThrow(
+      "call reverted with reason: ERC20: transfer amount exceeds balance"
+    );
+
+    // revert Custom error
+    await expect(
+      async () => await router.withdrawLiquidity(marketAddress, ethers.constants.MaxUint256)
+    ).rejects.toThrow("call reverted with error: NotExistLpReceipt");
+
+    // Non revert message(require)
+    if ((await client.account().getAccount()) === ethers.constants.AddressZero) {
+      await client.account().createAccount();
+    }
+    await expect(async () => await client.account().createAccount()).rejects.toThrow(
+      "call reverted without reason"
+    );
+
+    // require with Short string error(Constant string)
+    // call revert exception; VM Exception while processing transaction: reverted with reason string "URT"
+    // parsed in ethers
+    await expect(
+      async () => await client.marketFactory().currentInterestRate(await signer.getAddress())
+    ).rejects.toThrow("URT");
+  }, 60000);
 });

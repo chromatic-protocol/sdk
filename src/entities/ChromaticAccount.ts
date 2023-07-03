@@ -1,7 +1,7 @@
-import { BigNumber } from "ethers"
-import { Client } from "../Client"
-import { ChromaticAccount__factory } from "../gen"
-import { PromiseOnlySuccess } from "../utils/helpers"
+import { BigNumber } from "ethers";
+import { Client } from "../Client";
+import { ChromaticAccount__factory } from "../gen";
+import { PromiseOnlySuccess, handleBytesError } from "../utils/helpers";
 
 export interface TokenBalancesResult {
   token: string;
@@ -37,8 +37,10 @@ export class ChromaticAccount {
    * @returns A promise that resolves to the transaction receipt of the account creation.
    */
   async createAccount() {
-    const tx = await this.contracts().router().createAccount();
-    return tx.wait();
+    return await handleBytesError(async () => {
+      const tx = await this.contracts().router().createAccount();
+      return await tx.wait();
+    }, this._client.provider);
   }
 
   /**
@@ -46,7 +48,9 @@ export class ChromaticAccount {
    * @returns A promise that resolves to the Chromatic Account details.
    */
   async getAccount() {
-    return await this.contracts().router().getAccount();
+    return await handleBytesError(async () => {
+      return await this.contracts().router().getAccount();
+    }, this._client.provider);
   }
 
   /**
@@ -56,9 +60,11 @@ export class ChromaticAccount {
    * @returns A promise that resolves to an array of position IDs.
    */
   async getPositionIds(marketAddress: string, accountAddress?: string) {
-    const currAccountAddress = await this.getCurrentAddress();
-    const chromaticAcc = this.contracts().account(accountAddress || currAccountAddress);
-    return await chromaticAcc.getPositionIds(marketAddress);
+    return await handleBytesError(async () => {
+      const currAccountAddress = await this.getCurrentAddress();
+      const chromaticAcc = this.contracts().account(accountAddress || currAccountAddress);
+      return await chromaticAcc.getPositionIds(marketAddress);
+    }, this._client.provider);
   }
 
   /**
@@ -68,10 +74,12 @@ export class ChromaticAccount {
    * @returns A promise that resolves to the balance of the token.
    */
   async balance(token: string, accountAddress?: string) {
-    const currAccountAddress = await this.getCurrentAddress();
-    return this.contracts()
-      .account(accountAddress || currAccountAddress)
-      .balance(token);
+    return await handleBytesError(async () => {
+      const currAccountAddress = await this.getCurrentAddress();
+      return this.contracts()
+        .account(accountAddress || currAccountAddress)
+        .balance(token);
+    }, this._client.provider);
   }
 
   /**
@@ -81,17 +89,19 @@ export class ChromaticAccount {
    * @returns A promise that resolves to an array of TokenBalancesResult objects.
    */
   async balances(tokens: string[], accountAddress?: string): Promise<TokenBalancesResult[]> {
-    const currAccountAddress = await this.getCurrentAddress();
-    return PromiseOnlySuccess(
-      tokens.map(async (token) => {
-        return {
-          token,
-          balance: await this.contracts()
-            .account(accountAddress || currAccountAddress)
-            .balance(token),
-        } satisfies TokenBalancesResult;
-      }) || []
-    );
+    return await handleBytesError(async () => {
+      const currAccountAddress = await this.getCurrentAddress();
+      return PromiseOnlySuccess(
+        tokens.map(async (token) => {
+          return {
+            token,
+            balance: await this.contracts()
+              .account(accountAddress || currAccountAddress)
+              .balance(token),
+          } satisfies TokenBalancesResult;
+        }) || []
+      );
+    }, this._client.provider);
   }
 
   /**
@@ -99,8 +109,10 @@ export class ChromaticAccount {
    * @returns A promise that resolves to the current account address.
    */
   private async getCurrentAddress() {
-    if (!this._currentAccountAddress)
-      this._currentAccountAddress = await this.contracts().router().getAccount();
-    return this._currentAccountAddress;
+    return await handleBytesError(async () => {
+      if (!this._currentAccountAddress)
+        this._currentAccountAddress = await this.contracts().router().getAccount();
+      return this._currentAccountAddress;
+    }, this._client.provider);
   }
 }

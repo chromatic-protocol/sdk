@@ -4,7 +4,7 @@ import { LIQUIDATION_PRICE_PRECISION, QTY_LEVERAGE_PRECISION } from "../constant
 import { IOracleProvider } from "../gen";
 import { BinMarginStructOutput, PositionStructOutput } from "../gen/contracts/core/ChromaticMarket";
 import { InterestRate } from "../gen/contracts/core/ChromaticMarketFactory";
-import { logger } from "../utils/helpers";
+import { handleBytesError, logger } from "../utils/helpers";
 
 type InterestParam = Pick<PositionParam, "makerMargin" | "claimTimestamp" | "openTimestamp">;
 
@@ -74,35 +74,37 @@ export class ChromaticPosition {
    * @returns A promise that resolves to an array of positions.
    */
   async getPositions(marketAddress: string, positionIds: BigNumberish[]) {
-    const positions = await this.contracts().market(marketAddress).getPositions(positionIds);
-    const lensContract = this.contracts().lens;
-    const oracleVersions = new Set(
-      positions.map((position) => [position.openVersion, position.closeVersion]).flat()
-    );
+    return await handleBytesError(async () => {
+      const positions = await this.contracts().market(marketAddress).getPositions(positionIds);
+      const lensContract = this.contracts().lens;
+      const oracleVersions = new Set(
+        positions.map((position) => [position.openVersion, position.closeVersion]).flat()
+      );
 
-    const multicallParam = [...oracleVersions].map((version) =>
-      lensContract.interface.encodeFunctionData("oracleVersion", [marketAddress, version])
-    );
+      const multicallParam = [...oracleVersions].map((version) =>
+        lensContract.interface.encodeFunctionData("oracleVersion", [marketAddress, version])
+      );
 
-    const encodedResponses = (await lensContract.multicall(multicallParam)) as string[];
-    const oracleVersionData = encodedResponses
-      .map((response) => lensContract.interface.decodeFunctionResult("oracleVersion", response))
-      .flat() as IOracleProvider.OracleVersionStructOutput[];
-    logger("oracleVersionData", oracleVersionData);
+      const encodedResponses = (await lensContract.multicall(multicallParam)) as string[];
+      const oracleVersionData = encodedResponses
+        .map((response) => lensContract.interface.decodeFunctionResult("oracleVersion", response))
+        .flat() as IOracleProvider.OracleVersionStructOutput[];
+      logger("oracleVersionData", oracleVersionData);
 
-    return positions.map((position) => {
-      return {
-        ...position,
-        makerMargin: position._binMargins.reduce(
-          (acc, bin) => acc.add(bin.amount),
-          BigNumber.from(0)
-        ),
-        openPrice: oracleVersionData.find((oracle) => oracle.version?.eq(position.openVersion))
-          ?.price,
-        closePrice: oracleVersionData.find((oracle) => oracle.version?.eq(position.closeVersion))
-          ?.price,
-      } as IPosition;
-    });
+      return positions.map((position) => {
+        return {
+          ...position,
+          makerMargin: position._binMargins.reduce(
+            (acc, bin) => acc.add(bin.amount),
+            BigNumber.from(0)
+          ),
+          openPrice: oracleVersionData.find((oracle) => oracle.version?.eq(position.openVersion))
+            ?.price,
+          closePrice: oracleVersionData.find((oracle) => oracle.version?.eq(position.closeVersion))
+            ?.price,
+        } as IPosition;
+      });
+    }, this._client.provider);
   }
 
   /**
@@ -115,12 +117,12 @@ export class ChromaticPosition {
       return this.interestRateRecords;
     }
     if (!this.settlementTokenAddress) {
-      this.settlementTokenAddress = await this.contracts().market(marketAddress).settlementToken();
+      this.settlementTokenAddress = await handleBytesError(
+        async () => await this.contracts().market(marketAddress).settlementToken(),
+        this._client.provider
+      );
     }
 
-    this.interestRateRecords = await this.contracts().marketFactory.getInterestRateRecords(
-      this.settlementTokenAddress
-    );
     return this.interestRateRecords;
   }
 

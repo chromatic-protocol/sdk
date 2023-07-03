@@ -141,7 +141,7 @@ describe("router sdk test", () => {
     });
 
     const accountBalance = await IERC20__factory.connect(token, signer).balanceOf(account);
-    console.log(accountBalance);
+    console.log("accountBalance", accountBalance);
 
     const bin100 = (await client.lens().liquidityBins(marketAddress)).filter(
       (b) => b.tradingFeeRate == 100
@@ -152,7 +152,7 @@ describe("router sdk test", () => {
       router.openPosition(marketAddress, {
         quantity: BigNumber.from(10 ** 4),
         leverage: BigNumber.from(100), // x1
-        takerMargin: accountBalance.div(2),
+        takerMargin: accountBalance.div(3),
         makerMargin: bin100[0].freeLiquidity.div(2),
         maxAllowableTradingFee: bin100[0].freeLiquidity.div(2).div(10),
       })
@@ -194,31 +194,37 @@ describe("router sdk test", () => {
   test("revert msg haldling", async () => {
     const { marketAddress, router, token } = await getFixture();
 
-    // const { outputAmount, usdcBalance } = await swapToUSDC({
-    //   amount: ethers.utils.parseEther("10"),
-    //   signer: signer,
-    //   weth9: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
-    //   usdc: token,
-    //   fee: 3000,
-    // });
+    const tokenContract = IERC20__factory.connect(token, signer);
 
-    // router.withdrawLiquidity
-    // NotExistLpReceipt
+    // require Long String message
+    async function erc20TransferFromTx() {
+      return await handleBytesError(async () => {
+        const tx = await tokenContract.transferFrom(marketAddress, await signer.getAddress(), 1);
+        return await tx.wait();
+      }, signer.provider);
+    }
+    await expect(async () => await erc20TransferFromTx()).rejects.toThrow(
+      "call reverted with reason: ERC20: transfer amount exceeds balance"
+    );
+
+    // revert Custom error
     await expect(
       async () => await router.withdrawLiquidity(marketAddress, ethers.constants.MaxUint256)
-    ).rejects.toThrowError(Error("call reverted with error: NotExistLpReceipt"));
+    ).rejects.toThrow("call reverted with error: NotExistLpReceipt");
 
-
-    // createAccount
-    // require(accounts[owner] == address(0));
+    // Non revert message(require)
     if ((await client.account().getAccount()) === ethers.constants.AddressZero) {
       await client.account().createAccount();
     }
-    await expect(async () => await client.account().createAccount()).rejects.toThrowError(
-      Error("call reverted without reason")
+    await expect(async () => await client.account().createAccount()).rejects.toThrow(
+      "call reverted without reason"
     );
 
-    // TODO require with string - Errors.~~~
-    // TSA
+    // require with Short string error(Constant string)
+    // call revert exception; VM Exception while processing transaction: reverted with reason string "URT"
+    // parsed in ethers
+    await expect(
+      async () => await client.marketFactory().currentInterestRate(await signer.getAddress())
+    ).rejects.toThrow("URT");
   }, 60000);
 });

@@ -1,10 +1,12 @@
-import { getDeployedAddress, ChromaticLens__factory } from "../gen";
-import { decodeTokenId, encodeTokenId } from "../utils/helpers";
+import { BigNumber } from "ethers";
 import type { Client } from "../Client";
-import { BigNumber, ethers } from "ethers";
-import { logger } from "../utils/helpers";
-import { token } from "../gen/@openzeppelin/contracts";
+import { ChromaticLens__factory, getDeployedAddress } from "../gen";
 import { ILiquidity } from "../gen/contracts/core/ChromaticMarket";
+import { decodeTokenId, encodeTokenId } from "../utils/helpers";
+
+/**
+ * Represents the result of a liquidity bin.
+ */
 export interface LiquidityBinResult {
   tradingFeeRate: number;
   clbValue: number;
@@ -12,6 +14,9 @@ export interface LiquidityBinResult {
   freeLiquidity: BigNumber;
 }
 
+/**
+ * Represents the result of an owned liquidity bin.
+ */
 export interface OwnedLiquidityBinResult {
   tradingFeeRate: number;
   liquidity: BigNumber;
@@ -22,6 +27,9 @@ export interface OwnedLiquidityBinResult {
   removableRate: number;
 }
 
+/**
+ * Represents the result of a claimable liquidity.
+ */
 export interface ClaimableLiquidityResult {
   tradingFeeRate: number;
   mintingTokenAmountRequested: BigNumber;
@@ -31,7 +39,14 @@ export interface ClaimableLiquidityResult {
   burningTokenAmount: BigNumber;
 }
 
+/**
+ * A class representing Chromatic Lens, which provides access to liquidity-related functions.
+ */
 export class ChromaticLens {
+  /**
+   * Creates a new instance of ChromaticLens.
+   * @param _client The Chromatic Client instance.
+   */
   constructor(private _client: Client) {}
 
   private getContract(lensAddress?: string) {
@@ -41,6 +56,10 @@ export class ChromaticLens {
     );
   }
 
+  /**
+   * Retrieves the ChromaticLens contract.
+   * @returns The ChromaticLens contract.
+   */
   contracts() {
     return {
       lens: this.getContract(),
@@ -48,9 +67,9 @@ export class ChromaticLens {
   }
 
   /**
-   * liquidity bins
-   * @param marketAddress
-   * @returns
+   * Retrieves the liquidity bins for a given market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @returns A promise that resolves to an array of LiquidityBinResult.
    */
   async liquidityBins(marketAddress: string): Promise<LiquidityBinResult[]> {
     const totalLiquidityBins = await this.getContract().liquidityBinStatuses(marketAddress);
@@ -72,6 +91,12 @@ export class ChromaticLens {
     });
   }
 
+  /**
+   * Retrieves the owned liquidity bins for a given market and owner.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param ownerAddress The address of the liquidity owner.
+   * @returns A promise that resolves to an array of OwnedLiquidityBinResult.
+   */
   async ownedLiquidityBins(
     marketAddress: string,
     ownerAddress?: string
@@ -118,6 +143,12 @@ export class ChromaticLens {
     return results.filter((bin) => bin.clbBalance.gt(0));
   }
 
+  /**
+   * Retrieves the claimable liquidities for a given market and parameters.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param params An array of objects containing tradingFeeRate and oracleVersion.
+   * @returns A promise that resolves to an array of ClaimableLiquidityResult.
+   */
   async claimableLiquidities(
     marketAddress: string,
     params: { tradingFeeRate: number; oracleVersion: BigNumber }[]
@@ -151,6 +182,12 @@ export class ChromaticLens {
     return results;
   }
 
+  /**
+   * Retrieves the LP receipts for a given market and owner.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param owner The address of the LP owner.
+   * @returns A promise that resolves to the LP receipts.
+   */
   async lpReceipts(marketAddress: string, owner?: string) {
     return await this.getContract().lpReceipts(
       marketAddress,

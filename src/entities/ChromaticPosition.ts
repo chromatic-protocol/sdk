@@ -1,13 +1,16 @@
-import { BinMarginStructOutput, PositionStructOutput } from "../gen/contracts/core/ChromaticMarket";
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
-
-import { LIQUIDATION_PRICE_PRECISION, QTY_LEVERAGE_PRECISION } from "../constants";
 import { Client } from "../Client";
-import { ethers } from "ethers";
+import { LIQUIDATION_PRICE_PRECISION, QTY_LEVERAGE_PRECISION } from "../constants";
 import { IOracleProvider } from "../gen";
+import { BinMarginStructOutput, PositionStructOutput } from "../gen/contracts/core/ChromaticMarket";
+import { InterestRate } from "../gen/contracts/core/ChromaticMarketFactory";
 import { logger } from "../utils/helpers";
-import { ConstructorFragment } from "@ethersproject/abi";
 
+type InterestParam = Pick<PositionParam, "makerMargin" | "claimTimestamp" | "openTimestamp">;
+
+/**
+ * Represents the parameters of a Chromatic position.
+ */
 export interface PositionParam {
   id?: PositionStructOutput["id"];
   takerMargin: PositionStructOutput["takerMargin"];
@@ -17,7 +20,10 @@ export interface PositionParam {
   qty: PositionStructOutput["qty"];
   leverage: PositionStructOutput["leverage"];
 }
-type InterestFeeParam = Pick<PositionParam, "makerMargin" | "claimTimestamp" | "openTimestamp">;
+
+/**
+ * Represents a Chromatic position.
+ */
 export interface IPosition {
   id: BigNumber;
   openVersion: BigNumber;
@@ -35,15 +41,24 @@ export interface IPosition {
   openPrice: BigNumber | undefined;
   claimTimestamp?: BigNumber;
 }
+
+/**
+ * Represents a Chromatic position and provides methods to interact with it.
+ */
 export class ChromaticPosition {
   private settlementTokenAddress: string;
-  private interestRateRecords;
-  _client: Client;
-  private _contracts;
-  constructor(client: Client) {
-    this._client = client;
-  }
+  private interestRateRecords: InterestRate.RecordStructOutput[];
 
+  /**
+   * Creates a new instance of ChromaticPosition.
+   * @param _client The Chromatic Client instance.
+   */
+  constructor(private readonly _client: Client) {}
+
+  /**
+   * Retrieves the contract instances associated with Chromatic Position.
+   * @returns An object containing the contract instances of Lens, Market, and Market Factory.
+   */
   contracts() {
     return {
       lens: this._client.lens().contracts().lens,
@@ -51,6 +66,13 @@ export class ChromaticPosition {
       marketFactory: this._client.marketFactory().contracts().marketFactory,
     };
   }
+
+  /**
+   * Retrieves positions from the Chromatic Market contract.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param positionIds An array of position IDs.
+   * @returns A promise that resolves to an array of positions.
+   */
   async getPositions(marketAddress: string, positionIds: BigNumberish[]) {
     const positions = await this.contracts().market(marketAddress).getPositions(positionIds);
     const lensContract = this.contracts().lens;
@@ -83,7 +105,12 @@ export class ChromaticPosition {
     });
   }
 
-  async getBpsRecords(marketAddress: string) {
+  /**
+   * Retrieves the interest rate records for the specified market address.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @returns A promise that resolves to an array of interest rate records.
+   */
+  async getInterestRateRecords(marketAddress: string) {
     if (this.interestRateRecords != null) {
       return this.interestRateRecords;
     }
@@ -97,11 +124,17 @@ export class ChromaticPosition {
     return this.interestRateRecords;
   }
 
-  async getInterestFee(marketAddress: string, position: InterestFeeParam) {
+  /**
+   * Retrieves the interest for a position in the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param position The position parameters.
+   * @returns A promise that resolves to the interest.
+   */
+  async getInterest(marketAddress: string, position: InterestParam) {
     const yearSecond = 3600 * 24 * 365;
     const denominator = BigNumber.from(yearSecond * 10000);
     let to = position.claimTimestamp?.toNumber() || Math.floor(Date.now() / 1000);
-    const filteredInterestFees = (await this.getBpsRecords(marketAddress))
+    const filteredInterestFees = (await this.getInterestRateRecords(marketAddress))
       .filter((fee) => fee.beginTimestamp.lte(BigNumber.from(to)))
       .sort((a, b) => b.beginTimestamp.sub(a.beginTimestamp).toNumber());
 
@@ -126,6 +159,15 @@ export class ChromaticPosition {
     return totalInterestFee;
   }
 
+  /**
+   * Calculates the profit and loss (PNL) for a position in the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param entryPrice The entry price of the position.
+   * @param exitPrice The exit price of the position.
+   * @param position The position parameters.
+   * @param options Optional parameters for PNL calculation.
+   * @returns A promise that resolves to the PNL value.
+   */
   async getPnl(
     marketAddress: string,
     entryPrice: BigNumber,
@@ -138,12 +180,20 @@ export class ChromaticPosition {
     if (leveragedQty.lt(0)) delta = delta.mul(-1);
     let pnl = leveragedQty.abs().mul(delta).div(entryPrice);
     if (options.includeInterestFee) {
-      const interestFee = await this.getInterestFee(marketAddress, position);
+      const interestFee = await this.getInterest(marketAddress, position);
       pnl = pnl.sub(interestFee);
     }
     return pnl;
   }
 
+  /**
+   * Calculates the liquidation price for a position in the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param entryPrice The entry price of the position.
+   * @param position The position parameters.
+   * @param oraclePriceDecimals The number of decimals used for the oracle price.
+   * @returns A promise that resolves to an object containing the profit stop price and loss cut price.
+   */
   async getLiquidationPrice(
     marketAddress: string,
     entryPrice: BigNumber | undefined,
@@ -166,7 +216,15 @@ export class ChromaticPosition {
     };
   }
 
-
+  /**
+   * Calculates the delta for liquidation price calculation.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param entryPrice The entry price of the position.
+   * @param position The position parameters.
+   * @param isProfitStop A flag indicating whether it is for the profit stop price calculation.
+   * @param oraclePriceDecimals The number of decimals used for the oracle price.
+   * @returns A promise that resolves to the delta value.
+   */
   private async getDeltaForLiquidation(
     marketAddress: string,
     entryPrice: BigNumber,
@@ -174,20 +232,29 @@ export class ChromaticPosition {
     isProfitStop: boolean,
     oraclePriceDecimals: number
   ) {
-    const interestFee = await this.getInterestFee(marketAddress, position);
+    const interestFee = await this.getInterest(marketAddress, position);
     const margin = isProfitStop ? position.makerMargin : position.takerMargin;
-    const leveragedQty = position.qty.mul(position.leverage); 
-    const pricePrecision = BigNumber.from(QTY_LEVERAGE_PRECISION).mul(LIQUIDATION_PRICE_PRECISION)
+    const leveragedQty = position.qty.mul(position.leverage);
+    const pricePrecision = BigNumber.from(QTY_LEVERAGE_PRECISION).mul(LIQUIDATION_PRICE_PRECISION);
     const marginWithInterest = isProfitStop ? margin.add(interestFee) : margin.sub(interestFee);
-    //18 + 18 + 10 - 10  36 
+    //18 + 18 + 10 - 10  36
     // 6 + 6 + 10 - 10  12
-    let delta = entryPrice 
-      .mul(marginWithInterest.mul(pricePrecision)).div(leveragedQty)
+    let delta = entryPrice
+      .mul(marginWithInterest.mul(pricePrecision))
+      .div(leveragedQty)
       .div(LIQUIDATION_PRICE_PRECISION)
-      .div(BigNumber.from(10).pow(oraclePriceDecimals))
+      .div(BigNumber.from(10).pow(oraclePriceDecimals));
     return delta;
   }
 
+  /**
+   * Calculates the profit stop price for a position in the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param entryPrice The entry price of the position.
+   * @param position The position parameters.
+   * @param oraclePriceDecimals The number of decimals used for the oracle price.
+   * @returns A promise that resolves to the profit stop price.
+   */
   async profitStopPrice(
     marketAddress: string,
     entryPrice: BigNumber | undefined,
@@ -205,6 +272,14 @@ export class ChromaticPosition {
     return entryPrice.add(delta);
   }
 
+  /**
+   * Calculates the loss cut price for a position in the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param entryPrice The entry price of the position.
+   * @param position The position parameters.
+   * @param oraclePriceDecimals The number of decimals used for the oracle price.
+   * @returns A promise that resolves to the loss cut price.
+   */
   async lossCutPrice(
     marketAddress: string,
     entryPrice: BigNumber | undefined,

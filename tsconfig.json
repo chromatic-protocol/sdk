@@ -8,7 +8,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "sourceRoot": "src",
+    "sourceRoot": "",
     "declarationMap": true,
     "lib": [
       "ES2021.String"

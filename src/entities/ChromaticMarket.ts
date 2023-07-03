@@ -1,28 +1,29 @@
-import { BigNumber, BigNumberish, Contract, Signer } from "ethers";
+import { BigNumberish } from "ethers";
+import type { Client } from "../Client";
 import {
-  ChromaticMarket__factory,
-  ChromaticMarket as ChromaticMarketContract,
-  CLBToken__factory,
   CLBToken,
+  CLBToken__factory,
+  ChromaticMarket__factory,
+  IERC20,
+  IERC20__factory,
   IOracleProvider,
   IOracleProvider__factory,
-  IERC20__factory,
-  IERC20,
 } from "../gen";
-import type { Client } from "../Client";
-import { token } from "../gen/@openzeppelin/contracts";
 
+/**
+ * Represents a Chromatic Market and provides methods to interact with it.
+ */
 export class ChromaticMarket {
-  private oracleProvider: IOracleProvider;
-  _client: Client;
-  constructor(client: Client) {
-    this._client = client;
-  }
+  /**
+   * Creates a new instance of ChromaticMarket.
+   * @param _client The Chromatic Client instance.
+   */
+  constructor(private readonly _client: Client) {}
 
-  // getContract(address: string) {
-  //   return ChromaticMarket__factory.connect(address, this._client.signer || this._client.provider);
-  // }
-
+  /**
+   * Retrieves the contract instances associated with the Chromatic Market.
+   * @returns An object containing the contract instances.
+   */
   contracts() {
     return {
       market: (marketAddress: string) =>
@@ -33,6 +34,11 @@ export class ChromaticMarket {
     };
   }
 
+  /**
+   * Retrieves the settlement token associated with a specific market.
+   * @param marketAddress The address of the market.
+   * @returns A promise that resolves to the settlement token instance.
+   */
   async settlementToken(marketAddress: string): Promise<IERC20> {
     return IERC20__factory.connect(
       await this.contracts().market(marketAddress).settlementToken(),
@@ -40,6 +46,11 @@ export class ChromaticMarket {
     );
   }
 
+  /**
+   * Retrieves the CLB token associated with a specific market.
+   * @param marketAddress The address of the market.
+   * @returns A promise that resolves to the CLB token instance.
+   */
   async clbToken(marketAddress: string): Promise<CLBToken> {
     return CLBToken__factory.connect(
       await this.contracts().market(marketAddress).clbToken(),
@@ -47,6 +58,12 @@ export class ChromaticMarket {
     );
   }
 
+  /**
+   * Retrieves the metadata of a CLB token associated with a specific market and token ID.
+   * @param marketAddress The address of the market.
+   * @param tokenId The ID of the CLB token.
+   * @returns A promise that resolves to the CLB token metadata.
+   */
   async clbTokenMeta(marketAddress: string, tokenId: BigNumberish) {
     const clbTokenContract = await this.clbToken(marketAddress);
     const [name, image, description, decimals] = await Promise.all([
@@ -63,25 +80,44 @@ export class ChromaticMarket {
     };
   }
 
+  /**
+   * Retrieves the OracleProvider contract associated with a specific market.
+   * @param marketAddress The address of the market.
+   * @returns A promise that resolves to the OracleProvider contract instance.
+   */
   async getOracleProviderContract(marketAddress: string): Promise<IOracleProvider> {
     const marketContract = this.contracts().market(marketAddress);
 
-    this.oracleProvider = IOracleProvider__factory.connect(
+    return IOracleProvider__factory.connect(
       await marketContract.oracleProvider(),
       this._client.signer || this._client.provider
     );
-    return this.oracleProvider;
   }
 
+  /**
+   * Retrieves the current price from the OracleProvider contract associated with a specific market.
+   * @param marketAddress The address of the market.
+   * @returns A promise that resolves to the current price.
+   */
   async getCurrentPrice(marketAddress: string): Promise<IOracleProvider.OracleVersionStructOutput> {
     const contract = await this.getOracleProviderContract(marketAddress);
     return contract.currentVersion();
   }
 
+  /**
+   * Retrieves the name of the market from the OracleProvider contract associated with a specific market.
+   * @param marketAddress The address of the market.
+   * @returns A promise that resolves to the market name.
+   */
   async getMarketName(marketAddress: string) {
     return (await this.getOracleProviderContract(marketAddress)).description();
   }
 
+  /**
+   * Retrieves the current prices from the OracleProvider contracts associated with multiple markets.
+   * @param marketAddresses An array of market addresses.
+   * @returns A promise that resolves to an array of market addresses and their corresponding current prices.
+   */
   async getCurrentPrices(
     marketAddresses: string[]
   ): Promise<{ market: string; value: IOracleProvider.OracleVersionStructOutput }[]> {

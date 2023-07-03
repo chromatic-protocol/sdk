@@ -3,11 +3,18 @@ import { BigNumber, BigNumberish, Signer, ethers } from "ethers";
 import { Client } from "../Client";
 import { ChromaticRouter__factory, getDeployedAddress } from "../gen";
 import { logger } from "../utils/helpers";
+
+/**
+ * Represents the parameters for adding liquidity to a market using the ChromaticRouter.
+ */
 export interface RouterAddLiquidityParam {
   feeRate: BigNumberish;
   amount: BigNumberish;
 }
 
+/**
+ * Represents the parameters for opening a position using the ChromaticRouter.
+ */
 export interface RouterOpenPositionParam {
   quantity: BigNumberish;
   leverage: BigNumberish;
@@ -16,18 +23,29 @@ export interface RouterOpenPositionParam {
   maxAllowableTradingFee: BigNumberish;
 }
 
+/**
+ * Represents the parameters for removing liquidity from a market using the ChromaticRouter.
+ */
 export interface RouterRemoveLiquidityParam {
   feeRate: BigNumberish;
   receipient?: string;
   clbTokenAmount: BigNumberish;
 }
 
+/**
+ * Represents the ChromaticRouter, which is used to interact with ChromaticRouter contracts.
+ */
 export class ChromaticRouter {
-  _client: Client;
-  constructor(client: Client) {
-    this._client = client;
-  }
+  /**
+   * Creates an instance of ChromaticRouter.
+   * @param _client The Client instance used to connect to the Chromatic contracts.
+   */
+  constructor(private readonly _client: Client) {}
 
+  /**
+   * Retrieves the ChromaticRouter contract instance.
+   * @returns A contract instance for the ChromaticRouter.
+   */
   contracts() {
     return {
       router: (signerOrProvider?: Signer | Provider) => {
@@ -39,6 +57,12 @@ export class ChromaticRouter {
     };
   }
 
+  /**
+   * Opens a new position in the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param param The parameters for opening the position.
+   * @returns A promise that resolves to the transaction receipt of the position opening.
+   */
   async openPosition(marketAddress: string, param: RouterOpenPositionParam) {
     const transaction = await this.contracts()
       .router()
@@ -53,16 +77,33 @@ export class ChromaticRouter {
     return transaction.wait();
   }
 
+  /**
+   * Closes an existing position in the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param positionId The ID of the position to close.
+   * @returns A promise that resolves to the transaction receipt of the position closing.
+   */
   async closePosition(marketAddress: string, positionId: BigNumberish) {
     const transaction = await this.contracts().router().closePosition(marketAddress, positionId);
     return transaction.wait();
   }
 
+  /**
+   * Claims a position in the specified market.
+   * @param marketAdress The address of the Chromatic Market contract.
+   * @param positionId The ID of the position to claim.
+   * @returns A promise that resolves to the transaction receipt of the position claiming.
+   */
   async claimPosition(marketAdress: string, positionId: BigNumberish) {
     const tx = await this.contracts().router().claimPosition(marketAdress, positionId);
     return tx.wait();
   }
 
+  /**
+   * Approves the CLB token for the ChromaticRouter contract.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @returns A promise that resolves to a boolean indicating whether the approval was successful.
+   */
   async approvalClbTokenToRouter(marketAddress: string): Promise<boolean> {
     const clbToken = await this._client.market().clbToken(marketAddress);
     const routerAddress = this.contracts().router().address;
@@ -76,6 +117,11 @@ export class ChromaticRouter {
     return true;
   }
 
+  /**
+   * Approves the settlement token for the ChromaticRouter contract.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @returns A promise that resolves to a boolean indicating whether the approval was successful.
+   */
   async approvalSettlementTokenToRouter(marketAddress: string): Promise<boolean> {
     const settlementToken = await this._client.market().settlementToken(marketAddress);
     const routerAddress = this.contracts().router().address;
@@ -90,6 +136,13 @@ export class ChromaticRouter {
     return true;
   }
 
+  /**
+   * Adds liquidity to the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param param The parameters for adding liquidity.
+   * @param receipient The recipient address for the liquidity tokens.
+   * @returns A promise that resolves to the transaction receipt of the liquidity addition.
+   */
   async addLiquidity(marketAddress: string, param: RouterAddLiquidityParam, receipient?: string) {
     // TODO check option flag
     if (!(await this.approvalSettlementTokenToRouter(marketAddress))) {
@@ -106,6 +159,13 @@ export class ChromaticRouter {
     return tx.wait();
   }
 
+  /**
+   * Adds multiple liquidity positions to the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param params The array of parameters for adding liquidity.
+   * @param recipient The recipient address for the liquidity tokens.
+   * @returns A promise that resolves to the transaction receipt of the liquidity additions.
+   */
   async addLiquidities(
     marketAddress: string,
     params: RouterAddLiquidityParam[],
@@ -129,6 +189,12 @@ export class ChromaticRouter {
     return tx.wait();
   }
 
+  /**
+   * Removes liquidity from the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param param The parameters for removing liquidity.
+   * @returns A promise that resolves to the transaction receipt of the liquidity removal.
+   */
   async removeLiquidity(marketAddress: string, param: RouterRemoveLiquidityParam) {
     // TODO check option flag
     if (!(await this.approvalClbTokenToRouter(marketAddress))) {
@@ -145,6 +211,13 @@ export class ChromaticRouter {
     return tx.wait();
   }
 
+  /**
+   * Removes multiple liquidity positions from the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param params The array of parameters for removing liquidity.
+   * @param recipient The recipient address for the liquidity tokens.
+   * @returns A promise that resolves to the transaction receipt of the liquidity removals.
+   */
   async removeLiquidities(
     marketAddress: string,
     params: RouterRemoveLiquidityParam[],
@@ -177,6 +250,12 @@ export class ChromaticRouter {
     return tx.wait();
   }
 
+  /**
+   * Claims a liquidity position from the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param receiptId The ID of the liquidity position to claim.
+   * @returns A promise that resolves to the transaction receipt of the liquidity position claiming.
+   */
   async claimLiquidity(marketAddress: string, receiptId: BigNumberish) {
     try {
       const tx = await this.contracts()
@@ -190,11 +269,23 @@ export class ChromaticRouter {
     }
   }
 
+  /**
+   * Claims multiple liquidity positions from the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param receiptIds The array of IDs of the liquidity positions to claim.
+   * @returns A promise that resolves to the transaction receipt of the liquidity positions claiming.
+   */
   async claimLiquidites(marketAddress: string, receiptIds: BigNumberish[]) {
     const tx = await this.contracts().router().claimLiquidityBatch(marketAddress, receiptIds);
     return tx.wait();
   }
 
+  /**
+   * Withdraws a liquidity position from the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param receiptId The ID of the liquidity position to withdraw.
+   * @returns A promise that resolves to the transaction receipt of the liquidity position withdrawal.
+   */
   async withdrawLiquidity(marketAddress: string, receiptId) {
     const tx = await this.contracts()
       .router()
@@ -202,9 +293,14 @@ export class ChromaticRouter {
     return tx.wait();
   }
 
+  /**
+   * Withdraws multiple liquidity positions from the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param receiptIds The array of IDs of the liquidity positions to withdraw.
+   * @returns A promise that resolves to the transaction receipt of the liquidity positions withdrawal.
+   */
   async withdrawLiquidities(marketAddress: string, receiptIds: BigNumberish[]) {
     const tx = await this.contracts().router().withdrawLiquidityBatch(marketAddress, receiptIds);
     return tx.wait();
   }
-
 }

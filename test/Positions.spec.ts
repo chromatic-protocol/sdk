@@ -1,7 +1,8 @@
 import { BigNumber } from "@ethersproject/bignumber";
-import { PositionParam, ChromaticPosition } from "../src/entities/ChromaticPosition";
 import { ethers } from "ethers";
 import { Client } from "../src/Client";
+import { ChromaticPosition, PositionParam } from "../src/entities/ChromaticPosition";
+import { InterestRate } from "../src/gen/contracts/core/ChromaticMarketFactory";
 import { getSigner } from "./testHelpers";
 
 const { formatEther } = ethers.utils;
@@ -10,8 +11,10 @@ function parseEther(value: string | number) {
 }
 
 describe("postion sdk test", () => {
-  jest.spyOn(ChromaticPosition.prototype, "getBpsRecords").mockImplementation(async () => {
-    return [{ annualRateBPS: BigNumber.from(1000), beginTimestamp: BigNumber.from(0) }];
+  jest.spyOn(ChromaticPosition.prototype, "getInterestRateRecords").mockImplementation(async () => {
+    return [
+      { annualRateBPS: BigNumber.from(1000), beginTimestamp: BigNumber.from(0) },
+    ] as InterestRate.RecordStructOutput[];
   });
 
   const position = new Client("anvil", ethers.getDefaultProvider()).position();

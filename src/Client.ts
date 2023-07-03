@@ -7,10 +7,8 @@ import {
   ChromaticPosition,
   ChromaticRouter,
 } from "./entities";
-import { getDeployedAddress } from "./gen";
 
 import { ChromaticAccount } from "./entities/ChromaticAccount";
-
 
 export class Client {
   private _contracts: Record<string, Contract> = {};
@@ -25,13 +23,20 @@ export class Client {
     return this._provider;
   }
 
-  setSignerOrProvider(signerOrProvider: Signer | Provider) {}
+  setSignerOrProvider(signerOrProvider: Signer | Provider) {
+    if (isSigner(signerOrProvider)) {
+      this._signer = signerOrProvider;
+      this._provider = signerOrProvider.provider;
+    }
+    if (isProvider(signerOrProvider)) {
+      this._provider = signerOrProvider;
+    }
+  }
+
   set signer(signer: Signer) {
-    //TODO reinitialize contract if signer changeed
     this._signer = signer;
   }
   set provider(provider: Provider | undefined) {
-    // reinitialize contract if signer changeed
     this._provider = provider;
   }
 
@@ -51,10 +56,7 @@ export class Client {
   }
 
   public marketFactory(): ChromaticMarketFactory {
-    return new ChromaticMarketFactory(
-      getDeployedAddress("ChromaticMarketFactory", this.chainName),
-      this
-    );
+    return new ChromaticMarketFactory(this);
   }
 
   market(): ChromaticMarket {

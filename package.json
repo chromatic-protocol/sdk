@@ -41,9 +41,6 @@
     "@ethersproject/providers": "^5.0.0",
     "ethers": "^5"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
   "devDependencies": {
     "@ethersproject/abi": "^5.0.0",
     "@ethersproject/bignumber": "^5.7.0",

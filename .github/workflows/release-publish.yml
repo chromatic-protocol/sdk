@@ -49,14 +49,14 @@ jobs:
       with:
         node-version: 18.15
         cache: yarn
-        registry-url: https://npm.pkg.github.com/
+        registry-url: https://registry.npmjs.org
       env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_CHROMATIC }}    
     - name: build and publish
       run: |
         yarn install
         yarn build
-        yarn publish
+        yarn publish --access public
         yarn docs
     - name: publish gh-pages
       uses: peaceiris/actions-gh-pages@v3

@@ -9,7 +9,7 @@ For the [full documentation of the Chromatic Protocol SDK](https://chromatic.fin
 ## Prerequisites
 Before you can start using the Chromatic Protocol SDK, make sure you have the following:
 
-- Node.js (v12 or higher)
+- Node.js (v18 or higher)
 - npm (Node Package Manager)
 - An Arbitrum Ethereum provider or a local Arbitrum Ethereum node
 - An Ethereum wallet or signer (such as MetaMask) with a funded account on the Arbitrum chain

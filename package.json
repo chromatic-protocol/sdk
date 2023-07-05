@@ -1,5 +1,6 @@
 {
   "name": "@chromatic-protocol/sdk",
+  "license": "GPLV3",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts",

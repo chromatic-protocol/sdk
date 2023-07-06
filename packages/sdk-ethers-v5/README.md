@@ -18,13 +18,13 @@ Before you can start using the Chromatic Protocol SDK, make sure you have the fo
 To install the Chromatic Protocol SDK, run the following command in your project directory:
 
 ```shell
-npm install @chromatic-protocol/sdk
+npm install @chromatic-protocol/sdk-ethers-v5
 ```
 
 or
 
 ```shell
-yarn add @chromatic-protocol/sdk
+yarn add @chromatic-protocol/sdk-ethers-v5
 ```
 
 ## Setting up the Client
@@ -34,7 +34,7 @@ Here's an example of setting up the Client:
 
 ```javascript
 import { Signer } from 'ethers';
-import { Client } from "@chromatic-protocol/sdk"
+import { Client } from "@chromatic-protocol/sdk-ethers-v5"
 
 const chain = "arbitrum"; // Specify "arbitrum" as the chain name for the Arbitrum chain
 const signer = ...; // Replace with your Ethereum signer or wallet instance

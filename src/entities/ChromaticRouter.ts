@@ -126,14 +126,15 @@ export class ChromaticRouter {
   /**
    * Approves the settlement token for the ChromaticRouter contract.
    * @param marketAddress The address of the Chromatic Market contract.
+   * @param amount The allowance of Chromatic Router over the caller's tokens
    * @returns A promise that resolves to a boolean indicating whether the approval was successful.
    */
-  async approvalSettlementTokenToRouter(marketAddress: string): Promise<boolean> {
+  async approvalSettlementTokenToRouter(marketAddress: string, amount : BigNumberish): Promise<boolean> {
     const settlementToken = await this._client.market().settlementToken(marketAddress);
     const routerAddress = this.contracts().router().address;
     const signerAddress = await this._client.signer.getAddress();
     const allowance = await settlementToken.allowance(signerAddress, routerAddress);
-    if (!allowance.eq(ethers.constants.MaxUint256)) {
+    if (allowance.lt(amount)) {
       const tx = await settlementToken.approve(routerAddress, ethers.constants.MaxUint256);
       await tx.wait();
       // TODO verify tx
@@ -151,7 +152,7 @@ export class ChromaticRouter {
    */
   async addLiquidity(marketAddress: string, param: RouterAddLiquidityParam, receipient?: string) {
     // TODO check option flag
-    if (!(await this.approvalSettlementTokenToRouter(marketAddress))) {
+    if (!(await this.approvalSettlementTokenToRouter(marketAddress,param.amount))) {
       return;
     }
 
@@ -181,7 +182,8 @@ export class ChromaticRouter {
     recipient?: string
   ) {
     // TODO check option flag
-    if (!(await this.approvalSettlementTokenToRouter(marketAddress))) {
+    const totalAmount = params.reduce((prev, curr) => prev.add(curr.amount),BigNumber.from(0))
+    if (!(await this.approvalSettlementTokenToRouter(marketAddress, totalAmount))) {
       return;
     }
 

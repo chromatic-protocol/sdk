@@ -37,6 +37,16 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "NotAllowableMakerMargin",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotAllowableTakerMargin",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "NotClaimableLpReceipt",
     type: "error",
   },

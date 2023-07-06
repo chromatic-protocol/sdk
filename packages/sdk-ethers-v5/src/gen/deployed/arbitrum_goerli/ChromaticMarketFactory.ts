@@ -27,6 +27,30 @@ import type {
   PromiseOrValue,
 } from "../../common";
 
+export declare namespace IOracleProviderRegistry {
+  export type OracleProviderPropertiesStruct = {
+    minStopLossBPS: PromiseOrValue<BigNumberish>;
+    maxStopLossBPS: PromiseOrValue<BigNumberish>;
+    minTakeProfitBPS: PromiseOrValue<BigNumberish>;
+    maxTakeProfitBPS: PromiseOrValue<BigNumberish>;
+    leverageLevel: PromiseOrValue<BigNumberish>;
+  };
+
+  export type OracleProviderPropertiesStructOutput = [
+    number,
+    number,
+    number,
+    number,
+    number
+  ] & {
+    minStopLossBPS: number;
+    maxStopLossBPS: number;
+    minTakeProfitBPS: number;
+    maxTakeProfitBPS: number;
+    leverageLevel: number;
+  };
+}
+
 export declare namespace InterestRate {
   export type RecordStruct = {
     annualRateBPS: PromiseOrValue<BigNumberish>;
@@ -53,7 +77,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "getMarkets()": FunctionFragment;
     "getMarketsBySettlmentToken(address)": FunctionFragment;
     "getMinimumMargin(address)": FunctionFragment;
-    "getOracleProviderLevel(address)": FunctionFragment;
+    "getOracleProviderProperties(address)": FunctionFragment;
     "getUniswapFeeTier(address)": FunctionFragment;
     "isRegisteredMarket(address)": FunctionFragment;
     "isRegisteredOracleProvider(address)": FunctionFragment;
@@ -61,7 +85,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "keeperFeePayer()": FunctionFragment;
     "liquidator()": FunctionFragment;
     "parameters()": FunctionFragment;
-    "registerOracleProvider(address)": FunctionFragment;
+    "registerOracleProvider(address,(uint32,uint32,uint32,uint32,uint8))": FunctionFragment;
     "registerSettlementToken(address,uint256,uint256,uint256,uint256,uint24)": FunctionFragment;
     "registeredOracleProviders()": FunctionFragment;
     "registeredSettlementTokens()": FunctionFragment;
@@ -71,12 +95,14 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "setKeeperFeePayer(address)": FunctionFragment;
     "setLiquidator(address)": FunctionFragment;
     "setMinimumMargin(address,uint256)": FunctionFragment;
-    "setOracleProviderLevel(address,uint8)": FunctionFragment;
     "setUniswapFeeTier(address,uint24)": FunctionFragment;
     "setVault(address)": FunctionFragment;
     "treasury()": FunctionFragment;
     "unregisterOracleProvider(address)": FunctionFragment;
     "updateDao(address)": FunctionFragment;
+    "updateLeverageLevel(address,uint8)": FunctionFragment;
+    "updateStopLossBPSRange(address,uint32,uint32)": FunctionFragment;
+    "updateTakeProfitBPSRange(address,uint32,uint32)": FunctionFragment;
     "updateTreasury(address)": FunctionFragment;
     "vault()": FunctionFragment;
   };
@@ -95,7 +121,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
       | "getMarkets"
       | "getMarketsBySettlmentToken"
       | "getMinimumMargin"
-      | "getOracleProviderLevel"
+      | "getOracleProviderProperties"
       | "getUniswapFeeTier"
       | "isRegisteredMarket"
       | "isRegisteredOracleProvider"
@@ -113,12 +139,14 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
       | "setKeeperFeePayer"
       | "setLiquidator"
       | "setMinimumMargin"
-      | "setOracleProviderLevel"
       | "setUniswapFeeTier"
       | "setVault"
       | "treasury"
       | "unregisterOracleProvider"
       | "updateDao"
+      | "updateLeverageLevel"
+      | "updateStopLossBPSRange"
+      | "updateTakeProfitBPSRange"
       | "updateTreasury"
       | "vault"
   ): FunctionFragment;
@@ -178,7 +206,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
-    functionFragment: "getOracleProviderLevel",
+    functionFragment: "getOracleProviderProperties",
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
@@ -211,7 +239,10 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "registerOracleProvider",
-    values: [PromiseOrValue<string>]
+    values: [
+      PromiseOrValue<string>,
+      IOracleProviderRegistry.OracleProviderPropertiesStruct
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "registerSettlementToken",
@@ -257,10 +288,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "setOracleProviderLevel",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
     functionFragment: "setUniswapFeeTier",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
@@ -276,6 +303,26 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "updateDao",
     values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateLeverageLevel",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateStopLossBPSRange",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateTakeProfitBPSRange",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "updateTreasury",
@@ -323,7 +370,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getOracleProviderLevel",
+    functionFragment: "getOracleProviderProperties",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -389,10 +436,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setOracleProviderLevel",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "setUniswapFeeTier",
     data: BytesLike
   ): Result;
@@ -404,6 +447,18 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "updateDao", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "updateLeverageLevel",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateStopLossBPSRange",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateTakeProfitBPSRange",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "updateTreasury",
     data: BytesLike
   ): Result;
@@ -413,18 +468,20 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "InterestRateRecordAppended(address,uint256,uint256)": EventFragment;
     "LastInterestRateRecordRemoved(address,uint256,uint256)": EventFragment;
     "MarketCreated(address,address,address)": EventFragment;
-    "OracleProviderRegistered(address)": EventFragment;
+    "OracleProviderRegistered(address,tuple)": EventFragment;
     "OracleProviderUnregistered(address)": EventFragment;
     "SetEarningDistributionThreshold(address,uint256)": EventFragment;
     "SetFlashLoanFeeRate(address,uint256)": EventFragment;
     "SetKeeperFeePayer(address)": EventFragment;
     "SetLiquidator(address)": EventFragment;
     "SetMinimumMargin(address,uint256)": EventFragment;
-    "SetOracleProviderLevel(address,uint8)": EventFragment;
     "SetUniswapFeeTier(address,uint24)": EventFragment;
     "SetVault(address)": EventFragment;
     "SettlementTokenRegistered(address,uint256,uint256,uint256,uint256,uint24)": EventFragment;
     "UpdateDao(address)": EventFragment;
+    "UpdateLeverageLevel(address,uint8)": EventFragment;
+    "UpdateStopLossBPSRange(address,uint32,uint32)": EventFragment;
+    "UpdateTakeProfitBPSRange(address,uint32,uint32)": EventFragment;
     "UpdateTreasury(address)": EventFragment;
   };
 
@@ -442,11 +499,13 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "SetKeeperFeePayer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetLiquidator"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetMinimumMargin"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SetOracleProviderLevel"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetUniswapFeeTier"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetVault"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SettlementTokenRegistered"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UpdateDao"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "UpdateLeverageLevel"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "UpdateStopLossBPSRange"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "UpdateTakeProfitBPSRange"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UpdateTreasury"): EventFragment;
 }
 
@@ -490,9 +549,10 @@ export type MarketCreatedEventFilter = TypedEventFilter<MarketCreatedEvent>;
 
 export interface OracleProviderRegisteredEventObject {
   oracleProvider: string;
+  properties: IOracleProviderRegistry.OracleProviderPropertiesStructOutput;
 }
 export type OracleProviderRegisteredEvent = TypedEvent<
-  [string],
+  [string, IOracleProviderRegistry.OracleProviderPropertiesStructOutput],
   OracleProviderRegisteredEventObject
 >;
 
@@ -564,18 +624,6 @@ export type SetMinimumMarginEvent = TypedEvent<
 export type SetMinimumMarginEventFilter =
   TypedEventFilter<SetMinimumMarginEvent>;
 
-export interface SetOracleProviderLevelEventObject {
-  oracleProvider: string;
-  level: number;
-}
-export type SetOracleProviderLevelEvent = TypedEvent<
-  [string, number],
-  SetOracleProviderLevelEventObject
->;
-
-export type SetOracleProviderLevelEventFilter =
-  TypedEventFilter<SetOracleProviderLevelEvent>;
-
 export interface SetUniswapFeeTierEventObject {
   token: string;
   uniswapFeeTier: number;
@@ -617,6 +665,44 @@ export interface UpdateDaoEventObject {
 export type UpdateDaoEvent = TypedEvent<[string], UpdateDaoEventObject>;
 
 export type UpdateDaoEventFilter = TypedEventFilter<UpdateDaoEvent>;
+
+export interface UpdateLeverageLevelEventObject {
+  oracleProvider: string;
+  level: number;
+}
+export type UpdateLeverageLevelEvent = TypedEvent<
+  [string, number],
+  UpdateLeverageLevelEventObject
+>;
+
+export type UpdateLeverageLevelEventFilter =
+  TypedEventFilter<UpdateLeverageLevelEvent>;
+
+export interface UpdateStopLossBPSRangeEventObject {
+  oracleProvider: string;
+  minStopLossBPS: number;
+  maxStopLossBPS: number;
+}
+export type UpdateStopLossBPSRangeEvent = TypedEvent<
+  [string, number, number],
+  UpdateStopLossBPSRangeEventObject
+>;
+
+export type UpdateStopLossBPSRangeEventFilter =
+  TypedEventFilter<UpdateStopLossBPSRangeEvent>;
+
+export interface UpdateTakeProfitBPSRangeEventObject {
+  oracleProvider: string;
+  minTakeProfitBPS: number;
+  maxTakeProfitBPS: number;
+}
+export type UpdateTakeProfitBPSRangeEvent = TypedEvent<
+  [string, number, number],
+  UpdateTakeProfitBPSRangeEventObject
+>;
+
+export type UpdateTakeProfitBPSRangeEventFilter =
+  TypedEventFilter<UpdateTakeProfitBPSRangeEvent>;
 
 export interface UpdateTreasuryEventObject {
   treasury: string;
@@ -772,13 +858,13 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<[BigNumber]>;
 
     /**
-     * Retrieves the level of an oracle provider in the registry.
+     * Retrieves the properties of an oracle provider.
      * @param oracleProvider The address of the oracle provider.
      */
-    getOracleProviderLevel(
+    getOracleProviderProperties(
       oracleProvider: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<[number]>;
+    ): Promise<[IOracleProviderRegistry.OracleProviderPropertiesStructOutput]>;
 
     /**
      * Gets the Uniswap fee tier for a settlement token.
@@ -836,13 +922,9 @@ export interface ChromaticMarketFactory extends BaseContract {
       [string, string] & { oracleProvider: string; settlementToken: string }
     >;
 
-    /**
-     * This function can only be called by the DAO address.
-     * Registers an oracle provider.
-     * @param oracleProvider The address of the oracle provider to register.
-     */
     registerOracleProvider(
       oracleProvider: PromiseOrValue<string>,
+      properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -943,18 +1025,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * This function can only be called by the DAO and registered oracle providers.
-     * Sets the level of an oracle provider in the registry.
-     * @param level The new level to be set for the oracle provider.
-     * @param oracleProvider The address of the oracle provider.
-     */
-    setOracleProviderLevel(
-      oracleProvider: PromiseOrValue<string>,
-      level: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    /**
      * This function can only be called by the DAO address.
      * Sets the Uniswap fee tier for a settlement token.
      * @param token The address of the settlement token.
@@ -998,6 +1068,45 @@ export interface ChromaticMarketFactory extends BaseContract {
      */
     updateDao(
       _dao: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * This function can only be called by the DAO and registered oracle providers.
+     * Updates the leverage level of an oracle provider in the registry.
+     * @param level The new leverage level to be set for the oracle provider.
+     * @param oracleProvider The address of the oracle provider.
+     */
+    updateLeverageLevel(
+      oracleProvider: PromiseOrValue<string>,
+      level: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * This function can only be called by the DAO and registered oracle providers.
+     * Updates the stop-loss basis points range of an oracle provider.
+     * @param maxStopLossBPS The new maximum stop-loss basis points.
+     * @param oracleProvider The address of the oracle provider@param minStopLossBPS The new minimum stop-loss basis points.
+     */
+    updateStopLossBPSRange(
+      oracleProvider: PromiseOrValue<string>,
+      minStopLossBPS: PromiseOrValue<BigNumberish>,
+      maxStopLossBPS: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * This function can only be called by the DAO and registered oracle providers.
+     * Updates the take-profit basis points range of an oracle provider.
+     * @param maxTakeProfitBPS The new maximum take-profit basis points.
+     * @param minTakeProfitBPS The new minimum take-profit basis points.
+     * @param oracleProvider The address of the oracle provider.
+     */
+    updateTakeProfitBPSRange(
+      oracleProvider: PromiseOrValue<string>,
+      minTakeProfitBPS: PromiseOrValue<BigNumberish>,
+      maxTakeProfitBPS: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -1134,13 +1243,13 @@ export interface ChromaticMarketFactory extends BaseContract {
   ): Promise<BigNumber>;
 
   /**
-   * Retrieves the level of an oracle provider in the registry.
+   * Retrieves the properties of an oracle provider.
    * @param oracleProvider The address of the oracle provider.
    */
-  getOracleProviderLevel(
+  getOracleProviderProperties(
     oracleProvider: PromiseOrValue<string>,
     overrides?: CallOverrides
-  ): Promise<number>;
+  ): Promise<IOracleProviderRegistry.OracleProviderPropertiesStructOutput>;
 
   /**
    * Gets the Uniswap fee tier for a settlement token.
@@ -1198,13 +1307,9 @@ export interface ChromaticMarketFactory extends BaseContract {
     [string, string] & { oracleProvider: string; settlementToken: string }
   >;
 
-  /**
-   * This function can only be called by the DAO address.
-   * Registers an oracle provider.
-   * @param oracleProvider The address of the oracle provider to register.
-   */
   registerOracleProvider(
     oracleProvider: PromiseOrValue<string>,
+    properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1305,18 +1410,6 @@ export interface ChromaticMarketFactory extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * This function can only be called by the DAO and registered oracle providers.
-   * Sets the level of an oracle provider in the registry.
-   * @param level The new level to be set for the oracle provider.
-   * @param oracleProvider The address of the oracle provider.
-   */
-  setOracleProviderLevel(
-    oracleProvider: PromiseOrValue<string>,
-    level: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  /**
    * This function can only be called by the DAO address.
    * Sets the Uniswap fee tier for a settlement token.
    * @param token The address of the settlement token.
@@ -1360,6 +1453,45 @@ export interface ChromaticMarketFactory extends BaseContract {
    */
   updateDao(
     _dao: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * This function can only be called by the DAO and registered oracle providers.
+   * Updates the leverage level of an oracle provider in the registry.
+   * @param level The new leverage level to be set for the oracle provider.
+   * @param oracleProvider The address of the oracle provider.
+   */
+  updateLeverageLevel(
+    oracleProvider: PromiseOrValue<string>,
+    level: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * This function can only be called by the DAO and registered oracle providers.
+   * Updates the stop-loss basis points range of an oracle provider.
+   * @param maxStopLossBPS The new maximum stop-loss basis points.
+   * @param oracleProvider The address of the oracle provider@param minStopLossBPS The new minimum stop-loss basis points.
+   */
+  updateStopLossBPSRange(
+    oracleProvider: PromiseOrValue<string>,
+    minStopLossBPS: PromiseOrValue<BigNumberish>,
+    maxStopLossBPS: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * This function can only be called by the DAO and registered oracle providers.
+   * Updates the take-profit basis points range of an oracle provider.
+   * @param maxTakeProfitBPS The new maximum take-profit basis points.
+   * @param minTakeProfitBPS The new minimum take-profit basis points.
+   * @param oracleProvider The address of the oracle provider.
+   */
+  updateTakeProfitBPSRange(
+    oracleProvider: PromiseOrValue<string>,
+    minTakeProfitBPS: PromiseOrValue<BigNumberish>,
+    maxTakeProfitBPS: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1496,13 +1628,13 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Retrieves the level of an oracle provider in the registry.
+     * Retrieves the properties of an oracle provider.
      * @param oracleProvider The address of the oracle provider.
      */
-    getOracleProviderLevel(
+    getOracleProviderProperties(
       oracleProvider: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<number>;
+    ): Promise<IOracleProviderRegistry.OracleProviderPropertiesStructOutput>;
 
     /**
      * Gets the Uniswap fee tier for a settlement token.
@@ -1560,13 +1692,9 @@ export interface ChromaticMarketFactory extends BaseContract {
       [string, string] & { oracleProvider: string; settlementToken: string }
     >;
 
-    /**
-     * This function can only be called by the DAO address.
-     * Registers an oracle provider.
-     * @param oracleProvider The address of the oracle provider to register.
-     */
     registerOracleProvider(
       oracleProvider: PromiseOrValue<string>,
+      properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1667,18 +1795,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<void>;
 
     /**
-     * This function can only be called by the DAO and registered oracle providers.
-     * Sets the level of an oracle provider in the registry.
-     * @param level The new level to be set for the oracle provider.
-     * @param oracleProvider The address of the oracle provider.
-     */
-    setOracleProviderLevel(
-      oracleProvider: PromiseOrValue<string>,
-      level: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    /**
      * This function can only be called by the DAO address.
      * Sets the Uniswap fee tier for a settlement token.
      * @param token The address of the settlement token.
@@ -1722,6 +1838,45 @@ export interface ChromaticMarketFactory extends BaseContract {
      */
     updateDao(
       _dao: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * This function can only be called by the DAO and registered oracle providers.
+     * Updates the leverage level of an oracle provider in the registry.
+     * @param level The new leverage level to be set for the oracle provider.
+     * @param oracleProvider The address of the oracle provider.
+     */
+    updateLeverageLevel(
+      oracleProvider: PromiseOrValue<string>,
+      level: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * This function can only be called by the DAO and registered oracle providers.
+     * Updates the stop-loss basis points range of an oracle provider.
+     * @param maxStopLossBPS The new maximum stop-loss basis points.
+     * @param oracleProvider The address of the oracle provider@param minStopLossBPS The new minimum stop-loss basis points.
+     */
+    updateStopLossBPSRange(
+      oracleProvider: PromiseOrValue<string>,
+      minStopLossBPS: PromiseOrValue<BigNumberish>,
+      maxStopLossBPS: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * This function can only be called by the DAO and registered oracle providers.
+     * Updates the take-profit basis points range of an oracle provider.
+     * @param maxTakeProfitBPS The new maximum take-profit basis points.
+     * @param minTakeProfitBPS The new minimum take-profit basis points.
+     * @param oracleProvider The address of the oracle provider.
+     */
+    updateTakeProfitBPSRange(
+      oracleProvider: PromiseOrValue<string>,
+      minTakeProfitBPS: PromiseOrValue<BigNumberish>,
+      maxTakeProfitBPS: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1775,11 +1930,13 @@ export interface ChromaticMarketFactory extends BaseContract {
       market?: PromiseOrValue<string> | null
     ): MarketCreatedEventFilter;
 
-    "OracleProviderRegistered(address)"(
-      oracleProvider?: PromiseOrValue<string> | null
+    "OracleProviderRegistered(address,tuple)"(
+      oracleProvider?: PromiseOrValue<string> | null,
+      properties?: null
     ): OracleProviderRegisteredEventFilter;
     OracleProviderRegistered(
-      oracleProvider?: PromiseOrValue<string> | null
+      oracleProvider?: PromiseOrValue<string> | null,
+      properties?: null
     ): OracleProviderRegisteredEventFilter;
 
     "OracleProviderUnregistered(address)"(
@@ -1830,15 +1987,6 @@ export interface ChromaticMarketFactory extends BaseContract {
       minimumMargin?: PromiseOrValue<BigNumberish> | null
     ): SetMinimumMarginEventFilter;
 
-    "SetOracleProviderLevel(address,uint8)"(
-      oracleProvider?: PromiseOrValue<string> | null,
-      level?: PromiseOrValue<BigNumberish> | null
-    ): SetOracleProviderLevelEventFilter;
-    SetOracleProviderLevel(
-      oracleProvider?: PromiseOrValue<string> | null,
-      level?: PromiseOrValue<BigNumberish> | null
-    ): SetOracleProviderLevelEventFilter;
-
     "SetUniswapFeeTier(address,uint24)"(
       token?: PromiseOrValue<string> | null,
       uniswapFeeTier?: PromiseOrValue<BigNumberish> | null
@@ -1874,6 +2022,37 @@ export interface ChromaticMarketFactory extends BaseContract {
       dao?: PromiseOrValue<string> | null
     ): UpdateDaoEventFilter;
     UpdateDao(dao?: PromiseOrValue<string> | null): UpdateDaoEventFilter;
+
+    "UpdateLeverageLevel(address,uint8)"(
+      oracleProvider?: PromiseOrValue<string> | null,
+      level?: PromiseOrValue<BigNumberish> | null
+    ): UpdateLeverageLevelEventFilter;
+    UpdateLeverageLevel(
+      oracleProvider?: PromiseOrValue<string> | null,
+      level?: PromiseOrValue<BigNumberish> | null
+    ): UpdateLeverageLevelEventFilter;
+
+    "UpdateStopLossBPSRange(address,uint32,uint32)"(
+      oracleProvider?: PromiseOrValue<string> | null,
+      minStopLossBPS?: PromiseOrValue<BigNumberish> | null,
+      maxStopLossBPS?: PromiseOrValue<BigNumberish> | null
+    ): UpdateStopLossBPSRangeEventFilter;
+    UpdateStopLossBPSRange(
+      oracleProvider?: PromiseOrValue<string> | null,
+      minStopLossBPS?: PromiseOrValue<BigNumberish> | null,
+      maxStopLossBPS?: PromiseOrValue<BigNumberish> | null
+    ): UpdateStopLossBPSRangeEventFilter;
+
+    "UpdateTakeProfitBPSRange(address,uint32,uint32)"(
+      oracleProvider?: PromiseOrValue<string> | null,
+      minTakeProfitBPS?: PromiseOrValue<BigNumberish> | null,
+      maxTakeProfitBPS?: PromiseOrValue<BigNumberish> | null
+    ): UpdateTakeProfitBPSRangeEventFilter;
+    UpdateTakeProfitBPSRange(
+      oracleProvider?: PromiseOrValue<string> | null,
+      minTakeProfitBPS?: PromiseOrValue<BigNumberish> | null,
+      maxTakeProfitBPS?: PromiseOrValue<BigNumberish> | null
+    ): UpdateTakeProfitBPSRangeEventFilter;
 
     "UpdateTreasury(address)"(
       treasury?: PromiseOrValue<string> | null
@@ -2001,10 +2180,10 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Retrieves the level of an oracle provider in the registry.
+     * Retrieves the properties of an oracle provider.
      * @param oracleProvider The address of the oracle provider.
      */
-    getOracleProviderLevel(
+    getOracleProviderProperties(
       oracleProvider: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -2061,13 +2240,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      */
     parameters(overrides?: CallOverrides): Promise<BigNumber>;
 
-    /**
-     * This function can only be called by the DAO address.
-     * Registers an oracle provider.
-     * @param oracleProvider The address of the oracle provider to register.
-     */
     registerOracleProvider(
       oracleProvider: PromiseOrValue<string>,
+      properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -2168,18 +2343,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * This function can only be called by the DAO and registered oracle providers.
-     * Sets the level of an oracle provider in the registry.
-     * @param level The new level to be set for the oracle provider.
-     * @param oracleProvider The address of the oracle provider.
-     */
-    setOracleProviderLevel(
-      oracleProvider: PromiseOrValue<string>,
-      level: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    /**
      * This function can only be called by the DAO address.
      * Sets the Uniswap fee tier for a settlement token.
      * @param token The address of the settlement token.
@@ -2223,6 +2386,45 @@ export interface ChromaticMarketFactory extends BaseContract {
      */
     updateDao(
       _dao: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    /**
+     * This function can only be called by the DAO and registered oracle providers.
+     * Updates the leverage level of an oracle provider in the registry.
+     * @param level The new leverage level to be set for the oracle provider.
+     * @param oracleProvider The address of the oracle provider.
+     */
+    updateLeverageLevel(
+      oracleProvider: PromiseOrValue<string>,
+      level: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    /**
+     * This function can only be called by the DAO and registered oracle providers.
+     * Updates the stop-loss basis points range of an oracle provider.
+     * @param maxStopLossBPS The new maximum stop-loss basis points.
+     * @param oracleProvider The address of the oracle provider@param minStopLossBPS The new minimum stop-loss basis points.
+     */
+    updateStopLossBPSRange(
+      oracleProvider: PromiseOrValue<string>,
+      minStopLossBPS: PromiseOrValue<BigNumberish>,
+      maxStopLossBPS: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    /**
+     * This function can only be called by the DAO and registered oracle providers.
+     * Updates the take-profit basis points range of an oracle provider.
+     * @param maxTakeProfitBPS The new maximum take-profit basis points.
+     * @param minTakeProfitBPS The new minimum take-profit basis points.
+     * @param oracleProvider The address of the oracle provider.
+     */
+    updateTakeProfitBPSRange(
+      oracleProvider: PromiseOrValue<string>,
+      minTakeProfitBPS: PromiseOrValue<BigNumberish>,
+      maxTakeProfitBPS: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -2360,10 +2562,10 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Retrieves the level of an oracle provider in the registry.
+     * Retrieves the properties of an oracle provider.
      * @param oracleProvider The address of the oracle provider.
      */
-    getOracleProviderLevel(
+    getOracleProviderProperties(
       oracleProvider: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -2420,13 +2622,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      */
     parameters(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    /**
-     * This function can only be called by the DAO address.
-     * Registers an oracle provider.
-     * @param oracleProvider The address of the oracle provider to register.
-     */
     registerOracleProvider(
       oracleProvider: PromiseOrValue<string>,
+      properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2531,18 +2729,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * This function can only be called by the DAO and registered oracle providers.
-     * Sets the level of an oracle provider in the registry.
-     * @param level The new level to be set for the oracle provider.
-     * @param oracleProvider The address of the oracle provider.
-     */
-    setOracleProviderLevel(
-      oracleProvider: PromiseOrValue<string>,
-      level: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    /**
      * This function can only be called by the DAO address.
      * Sets the Uniswap fee tier for a settlement token.
      * @param token The address of the settlement token.
@@ -2586,6 +2772,45 @@ export interface ChromaticMarketFactory extends BaseContract {
      */
     updateDao(
       _dao: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * This function can only be called by the DAO and registered oracle providers.
+     * Updates the leverage level of an oracle provider in the registry.
+     * @param level The new leverage level to be set for the oracle provider.
+     * @param oracleProvider The address of the oracle provider.
+     */
+    updateLeverageLevel(
+      oracleProvider: PromiseOrValue<string>,
+      level: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * This function can only be called by the DAO and registered oracle providers.
+     * Updates the stop-loss basis points range of an oracle provider.
+     * @param maxStopLossBPS The new maximum stop-loss basis points.
+     * @param oracleProvider The address of the oracle provider@param minStopLossBPS The new minimum stop-loss basis points.
+     */
+    updateStopLossBPSRange(
+      oracleProvider: PromiseOrValue<string>,
+      minStopLossBPS: PromiseOrValue<BigNumberish>,
+      maxStopLossBPS: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * This function can only be called by the DAO and registered oracle providers.
+     * Updates the take-profit basis points range of an oracle provider.
+     * @param maxTakeProfitBPS The new maximum take-profit basis points.
+     * @param minTakeProfitBPS The new minimum take-profit basis points.
+     * @param oracleProvider The address of the oracle provider.
+     */
+    updateTakeProfitBPSRange(
+      oracleProvider: PromiseOrValue<string>,
+      minTakeProfitBPS: PromiseOrValue<BigNumberish>,
+      maxTakeProfitBPS: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

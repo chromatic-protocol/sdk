@@ -28,7 +28,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/@chromatic-protocol/sdk.git"
+    "url": "git+https://github.com/chromatic-protocol/sdk.git"
   },
   "files": [
     "src",

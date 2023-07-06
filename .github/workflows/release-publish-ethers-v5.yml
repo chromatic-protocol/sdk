@@ -31,6 +31,7 @@ jobs:
         pre-release: true
         git-push: true
         skip-on-empty: false
+        version-file: packages/sdk-ethers-v5/package.json
         # skip-version-file: false
         # skip-commit: false
     - name: Create Release # This action will create the actual release

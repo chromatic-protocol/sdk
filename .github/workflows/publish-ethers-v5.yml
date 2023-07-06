@@ -71,9 +71,9 @@ jobs:
       working-directory: ./packages/sdk-ethers-v5
       run: |
         yarn docs:sdk
-        cp docs-repo/docs/sdk/reference/_category_.yml site/docs/sdk/ 
-        rm -rf docs-repo/docs/sdk/reference/*
-        cp -r site/docs/sdk/* docs-repo/docs/sdk/reference/
+        cp docs-repo/docs/sdk/reference/sdk-ethers-v5/_category_.yml site/docs/sdk/ 
+        rm -rf docs-repo/docs/sdk/reference/sdk-ethers-v5/*
+        cp -r site/docs/sdk/* docs-repo/docs/sdk/reference/sdk-ethers-v5/
         cp src/gen/deployedAddress.ts docs-repo/docs/contracts/reference/
     - name: pull-request
       uses: peter-evans/create-pull-request@v5
@@ -82,7 +82,7 @@ jobs:
         branch: docs/sdk-ethers-v5
         path: packages/sdk-ethers-v5/docs-repo
         add-paths: |
-          docs/sdk/reference/**
+          docs/sdk/reference/sdk-ethers-v5/**
           docs/contracts/reference/deployedAddress.ts
         token: ${{ steps.generate-token.outputs.token }}
         commit-message: ${{ github.event.pull_request.title }}

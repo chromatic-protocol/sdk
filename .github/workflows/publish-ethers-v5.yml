@@ -1,4 +1,4 @@
-name: Release and Publish sdk-ethers-v5
+name: publish sdk-ethers-v5
 
 on:
   pull_request:
@@ -10,14 +10,14 @@ on:
       - packages/sdk-ethers-v5/package.json
       - packages/sdk-ethers-v5/tsconfig.json
       - packages/sdk-ethers-v5/tsconfig.*.json
-      - .github/workflows/release-publish-ethers-v5.yml
+      - .github/workflows/publish-ethers-v5.yml
   
 permissions:
   contents: write
   packages: write
 
 jobs:
-  Release-publish:
+  publish:
     if: ${{ github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
     steps:
@@ -34,16 +34,6 @@ jobs:
         version-file: packages/sdk-ethers-v5/package.json
         # skip-version-file: false
         # skip-commit: false
-    - name: Create Release # This action will create the actual release
-      uses: actions/create-release@v1.1.4
-      if: ${{ steps.changelog.outputs.skipped == 'false' }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.changelog.outputs.tag }}
-        release_name: ${{ steps.changelog.outputs.tag }}
-        body: ${{ steps.changelog.outputs.clean_changelog }}
-        prerelease: true
     - uses: actions/setup-node@v3
       id: setup-node
       with:

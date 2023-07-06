@@ -1,5 +1,5 @@
 {
-  "name": "@chromatic-protocol/sdk",
+  "name": "@chromatic-protocol/sdk-ethers-v5",
   "license": "GPLV3",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",

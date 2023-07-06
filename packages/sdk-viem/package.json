@@ -1,5 +1,4 @@
 {
-    "name": "@chromatic-protocol/sdk-viem",
-    "license": "GPLV3"
-  }
-  
+  "name": "@chromatic-protocol/sdk-viem",
+  "license": "GPLV3"
+}

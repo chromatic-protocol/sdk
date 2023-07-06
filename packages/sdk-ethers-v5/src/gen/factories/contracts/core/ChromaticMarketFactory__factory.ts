@@ -139,6 +139,39 @@ const _abi = [
         name: "oracleProvider",
         type: "address",
       },
+      {
+        components: [
+          {
+            internalType: "uint32",
+            name: "minStopLossBPS",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "maxStopLossBPS",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "minTakeProfitBPS",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "maxTakeProfitBPS",
+            type: "uint32",
+          },
+          {
+            internalType: "uint8",
+            name: "leverageLevel",
+            type: "uint8",
+          },
+        ],
+        indexed: false,
+        internalType: "struct IOracleProviderRegistry.OracleProviderProperties",
+        name: "properties",
+        type: "tuple",
+      },
     ],
     name: "OracleProviderRegistered",
     type: "event",
@@ -245,25 +278,6 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "oracleProvider",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "uint8",
-        name: "level",
-        type: "uint8",
-      },
-    ],
-    name: "SetOracleProviderLevel",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
         name: "token",
         type: "address",
       },
@@ -344,6 +358,75 @@ const _abi = [
       },
     ],
     name: "UpdateDao",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "oracleProvider",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "uint8",
+        name: "level",
+        type: "uint8",
+      },
+    ],
+    name: "UpdateLeverageLevel",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "oracleProvider",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "uint32",
+        name: "minStopLossBPS",
+        type: "uint32",
+      },
+      {
+        indexed: true,
+        internalType: "uint32",
+        name: "maxStopLossBPS",
+        type: "uint32",
+      },
+    ],
+    name: "UpdateStopLossBPSRange",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "oracleProvider",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "uint32",
+        name: "minTakeProfitBPS",
+        type: "uint32",
+      },
+      {
+        indexed: true,
+        internalType: "uint32",
+        name: "maxTakeProfitBPS",
+        type: "uint32",
+      },
+    ],
+    name: "UpdateTakeProfitBPSRange",
     type: "event",
   },
   {
@@ -618,12 +701,39 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "getOracleProviderLevel",
+    name: "getOracleProviderProperties",
     outputs: [
       {
-        internalType: "uint8",
+        components: [
+          {
+            internalType: "uint32",
+            name: "minStopLossBPS",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "maxStopLossBPS",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "minTakeProfitBPS",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "maxTakeProfitBPS",
+            type: "uint32",
+          },
+          {
+            internalType: "uint8",
+            name: "leverageLevel",
+            type: "uint8",
+          },
+        ],
+        internalType: "struct IOracleProviderRegistry.OracleProviderProperties",
         name: "",
-        type: "uint8",
+        type: "tuple",
       },
     ],
     stateMutability: "view",
@@ -755,6 +865,38 @@ const _abi = [
         internalType: "address",
         name: "oracleProvider",
         type: "address",
+      },
+      {
+        components: [
+          {
+            internalType: "uint32",
+            name: "minStopLossBPS",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "maxStopLossBPS",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "minTakeProfitBPS",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "maxTakeProfitBPS",
+            type: "uint32",
+          },
+          {
+            internalType: "uint8",
+            name: "leverageLevel",
+            type: "uint8",
+          },
+        ],
+        internalType: "struct IOracleProviderRegistry.OracleProviderProperties",
+        name: "properties",
+        type: "tuple",
       },
     ],
     name: "registerOracleProvider",
@@ -923,24 +1065,6 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "oracleProvider",
-        type: "address",
-      },
-      {
-        internalType: "uint8",
-        name: "level",
-        type: "uint8",
-      },
-    ],
-    name: "setOracleProviderLevel",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
         name: "token",
         type: "address",
       },
@@ -1003,6 +1127,70 @@ const _abi = [
       },
     ],
     name: "updateDao",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "oracleProvider",
+        type: "address",
+      },
+      {
+        internalType: "uint8",
+        name: "level",
+        type: "uint8",
+      },
+    ],
+    name: "updateLeverageLevel",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "oracleProvider",
+        type: "address",
+      },
+      {
+        internalType: "uint32",
+        name: "minStopLossBPS",
+        type: "uint32",
+      },
+      {
+        internalType: "uint32",
+        name: "maxStopLossBPS",
+        type: "uint32",
+      },
+    ],
+    name: "updateStopLossBPSRange",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "oracleProvider",
+        type: "address",
+      },
+      {
+        internalType: "uint32",
+        name: "minTakeProfitBPS",
+        type: "uint32",
+      },
+      {
+        internalType: "uint32",
+        name: "maxTakeProfitBPS",
+        type: "uint32",
+      },
+    ],
+    name: "updateTakeProfitBPSRange",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

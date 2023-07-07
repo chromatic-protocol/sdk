@@ -3,4 +3,6 @@
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
+  runner:'jest-runner-tsc',
+  watchman: false,
 };

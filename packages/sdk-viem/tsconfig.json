@@ -1,15 +1,16 @@
 {
   "compilerOptions": {
+    // "strict": true,
     "module": "esnext",
     "outDir": "./esm",
     "target": "esnext",
     "moduleResolution": "NodeNext",
-    "declaration": true,
+    // "declaration": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": true,
     "sourceRoot": "",
-    "declarationMap": true,
+    // "declarationMap": true,
     "lib": [
       "ES2021.String"
     ],

@@ -1,10 +1,15 @@
-import { BigNumber } from "ethers";
-import { Address, getContract, zeroAddress } from "viem";
-import type { Client } from "../Client";
 import {
-  chromaticLensABI,
-  chromaticLensAddress
-} from "../gen";
+  Address,
+  GetContractReturnType,
+  decodeFunctionResult,
+  encodeAbiParameters,
+  encodeFunctionData,
+  getContract,
+  zeroAddress,
+} from "viem";
+import type { Client } from "../Client";
+import { chromaticLensABI, chromaticLensAddress } from "../gen";
+import { Contract, decodeTokenId, encodeTokenId, handleBytesError } from "../utils/helpers";
 
 /**
  * Represents the result of a liquidity bin.
@@ -12,8 +17,8 @@ import {
 export interface LiquidityBinResult {
   tradingFeeRate: number;
   clbValue: number;
-  liquidity: BigNumber;
-  freeLiquidity: BigNumber;
+  liquidity: bigint;
+  freeLiquidity: bigint;
 }
 
 /**
@@ -21,10 +26,10 @@ export interface LiquidityBinResult {
  */
 export interface OwnedLiquidityBinResult {
   tradingFeeRate: number;
-  liquidity: BigNumber;
-  freeLiquidity: BigNumber;
-  clbBalance: BigNumber;
-  clbTotalSupply: BigNumber;
+  liquidity: bigint;
+  freeLiquidity: bigint;
+  clbBalance: bigint;
+  clbTotalSupply: bigint;
   clbValue: number;
   removableRate: number;
 }
@@ -34,11 +39,11 @@ export interface OwnedLiquidityBinResult {
  */
 export interface ClaimableLiquidityResult {
   tradingFeeRate: number;
-  mintingTokenAmountRequested: BigNumber;
-  mintingCLBTokenAmount: BigNumber;
-  burningCLBTokenAmountRequested: BigNumber;
-  burningCLBTokenAmount: BigNumber;
-  burningTokenAmount: BigNumber;
+  mintingTokenAmountRequested: bigint;
+  mintingCLBTokenAmount: bigint;
+  burningCLBTokenAmountRequested: bigint;
+  burningCLBTokenAmount: bigint;
+  burningTokenAmount: bigint;
 }
 
 /**
@@ -51,7 +56,7 @@ export class ChromaticLens {
    */
   constructor(private _client: Client) {}
 
-  private getContract(lensAddress?: Address) {
+  private getContract(lensAddress?: Address): Contract<typeof chromaticLensABI> {
     return getContract({
       address:
         (chromaticLensAddress as Record<number, Address>)[
@@ -61,10 +66,6 @@ export class ChromaticLens {
       publicClient: this._client.publicClient,
       walletClient: this._client.walletClient,
     });
-    // return ChromaticLens__factory.connect(
-    //   lensAddress || getDeployedAddress("ChromaticLens", this._client.chainName),
-    //   this._client.signer || this._client.provider
-    // );
   }
 
   /**
@@ -82,25 +83,31 @@ export class ChromaticLens {
    * @param marketAddress The address of the Chromatic Market contract.
    * @returns A promise that resolves to an array of LiquidityBinResult.
    */
-  async liquidityBins(marketAddress: string){
-  // : Promise<LiquidityBinResult[]> {
-    // return await handleBytesError(async () => {
-    //   const totalLiquidityBins = await this.getContract().liquidityBinStatuses(marketAddress);
-    //   const clbToken = await this._client.market().clbToken(marketAddress);
-    //   const tokenIds = totalLiquidityBins.map((bin) => encodeTokenId(bin.tradingFeeRate));
-    //   const totalSupplies = await clbToken.totalSupplyBatch(tokenIds);
-    //   return totalLiquidityBins.map((bin, index) => {
-    //     return {
-    //       tradingFeeRate: bin.tradingFeeRate,
-    //       clbValue: totalSupplies[index].isZero()
-    //         ? 0
-    //         : Number(bin.liquidity.toString()) / Number(totalSupplies[index].toString()),
-    //       liquidity: bin.liquidity,
-    //       clbTokenTotalSupply: totalSupplies[index],
-    //       freeLiquidity: bin.freeLiquidity,
-    //     };
-    //   });
-    // }, this._client.provider);
+  async liquidityBins(marketAddress: Address) {
+    // : Promise<LiquidityBinResult[]> {
+    return await handleBytesError(async () => {
+      const market = this._client.market();
+      const totalLiquidityBins = await this.getContract().read.liquidityBinStatuses([
+        marketAddress,
+      ]);
+      const clbTokenAddress = await market.clbToken(marketAddress);
+      const clbTokenContract = await market.contracts().clbToken(marketAddress);
+      const tokenIds = totalLiquidityBins.map((bin) => encodeTokenId(bin.tradingFeeRate));
+
+      const totalSupplies = await clbTokenContract.read.totalSupplyBatch([tokenIds]);
+      return totalLiquidityBins.map((bin, index) => {
+        return {
+          tradingFeeRate: bin.tradingFeeRate,
+          clbValue:
+            totalSupplies[index] == BigInt(0)
+              ? 0
+              : Number(bin.liquidity.toString()) / Number(totalSupplies[index].toString()),
+          liquidity: bin.liquidity,
+          clbTokenTotalSupply: totalSupplies[index],
+          freeLiquidity: bin.freeLiquidity,
+        };
+      });
+    });
   }
 
   /**
@@ -109,45 +116,48 @@ export class ChromaticLens {
    * @param ownerAddress The address of the liquidity owner.
    * @returns A promise that resolves to an array of OwnedLiquidityBinResult.
    */
-  async ownedLiquidityBins(
-    marketAddress: string,
-    ownerAddress?: string
-  ) {
-    // return await handleBytesError(async () => {
-    //   if (!ownerAddress && !this._client.signer) {
-    //     throw new Error("signer is required");
-    //   }
-    //   //
-    //   const totalLiquidityBins = await this.getContract().liquidityBinStatuses(marketAddress);
-    //   const ownedLiquidities = await this.getContract().clbBalanceOf(
-    //     marketAddress,
-    //     ownerAddress ?? (await this._client.signer.getAddress())
-    //   );
-    //   // tokenId parsing then get tradingFee
-    //   // data merge mapping by tradingFee
-    //   const results = ownedLiquidities.map((ownedBin) => {
-    //     const tradingFeeRate = decodeTokenId(ownedBin.tokenId);
-    //     const targetTotalLiqBin = totalLiquidityBins.find(
-    //       (bin) => bin.tradingFeeRate === tradingFeeRate
-    //     )!;
-    //     // totalSupplyBatch
-    //     return {
-    //       tradingFeeRate,
-    //       liquidity: ownedBin.binValue,
-    //       freeLiquidity: targetTotalLiqBin.freeLiquidity,
-    //       clbBalance: ownedBin.balance,
-    //       clbTotalSupply: ownedBin.totalSupply,
-    //       clbValue: ownedBin.totalSupply.isZero()
-    //         ? 0
-    //         : Number(ownedBin.binValue.toString() || 0) / Number(ownedBin.totalSupply.toString()),
-    //       removableRate: targetTotalLiqBin.liquidity.isZero()
-    //         ? 0
-    //         : Number(targetTotalLiqBin.freeLiquidity.toString() || 0) /
-    //           Number(targetTotalLiqBin.liquidity.toString()),
-    //     };
-    //   });
-    //   return results.filter((bin) => bin.clbBalance.gt(0));
-    // }, this._client.provider);
+  async ownedLiquidityBins(marketAddress: Address, ownerAddress?: Address) {
+    return await handleBytesError(async () => {
+      const lens = this.getContract();
+
+      if (!ownerAddress && !this._client.walletClient) {
+        throw new Error("wallet client is required");
+      }
+      //
+      const [totalLiquidityBins, ownedLiquidities] = await Promise.all([
+        lens.read.liquidityBinStatuses([marketAddress]),
+        lens.read.clbBalanceOf([
+          marketAddress,
+          ownerAddress ?? (await this._client.walletClient.account.address),
+        ]),
+      ]);
+
+      // tokenId parsing then get tradingFee
+      // data merge mapping by tradingFee
+      const results = ownedLiquidities.map((ownedBin) => {
+        const tradingFeeRate = decodeTokenId(ownedBin.tokenId);
+        const targetTotalLiqBin = totalLiquidityBins.find(
+          (bin) => bin.tradingFeeRate === tradingFeeRate
+        )!;
+        // totalSupplyBatch
+        return {
+          tradingFeeRate,
+          liquidity: ownedBin.binValue,
+          freeLiquidity: targetTotalLiqBin.freeLiquidity,
+          clbBalance: ownedBin.balance,
+          clbTotalSupply: ownedBin.totalSupply,
+          clbValue:
+            ownedBin.totalSupply == BigInt(0)
+              ? 0
+              : Number(ownedBin.binValue || 0) / Number(ownedBin.totalSupply),
+          removableRate:
+            targetTotalLiqBin.liquidity == BigInt(0)
+              ? 0
+              : Number(targetTotalLiqBin.freeLiquidity || 0) / Number(targetTotalLiqBin.liquidity),
+        };
+      });
+      return results.filter((bin) => bin.clbBalance > BigInt(0));
+    });
   }
 
   /**
@@ -157,35 +167,37 @@ export class ChromaticLens {
    * @returns A promise that resolves to an array of ClaimableLiquidityResult.
    */
   async claimableLiquidities(
-    marketAddress: string,
-    params: { tradingFeeRate: number; oracleVersion: BigNumber }[]
+    marketAddress: Address,
+    params: { tradingFeeRate: number; oracleVersion: bigint }[]
   ) {
-    // return await handleBytesError(async () => {
-    //   const multicallParam = params.map(({ tradingFeeRate, oracleVersion }) =>
-    //     this.getContract().interface.encodeFunctionData("claimableLiquidity", [
-    //       marketAddress,
-    //       tradingFeeRate,
-    //       oracleVersion,
-    //     ])
-    //   );
-    //   const encodedResponses = (await this.getContract().multicall(multicallParam)) as string[];
-    //   const decodedReponses = encodedResponses
-    //     .map((response) =>
-    //       this.getContract().interface.decodeFunctionResult("claimableLiquidity", response)
-    //     )
-    //     .flat() as ILiquidity.ClaimableLiquidityStructOutput[];
-    //   const results = decodedReponses.map((res, index) => {
-    //     return {
-    //       tradingFeeRate: params[index].tradingFeeRate,
-    //       mintingTokenAmountRequested: res.mintingTokenAmountRequested,
-    //       mintingCLBTokenAmount: res.mintingCLBTokenAmount,
-    //       burningCLBTokenAmountRequested: res.burningCLBTokenAmountRequested,
-    //       burningCLBTokenAmount: res.burningCLBTokenAmount,
-    //       burningTokenAmount: res.burningTokenAmount,
-    //     };
-    //   });
-    //   return results;
-    // }, this._client.provider);
+    return await handleBytesError(async () => {
+      const multicallParam = params.map(({ tradingFeeRate, oracleVersion }) =>
+        encodeFunctionData({
+          abi: chromaticLensABI,
+          functionName: "claimableLiquidity",
+          args: [marketAddress, tradingFeeRate, oracleVersion],
+        })
+      );
+      const encodedResponses = await this.contracts().lens.read.multicall([multicallParam]);
+      const decodedReponses = encodedResponses.map((response) =>
+        decodeFunctionResult({
+          abi: chromaticLensABI,
+          functionName: "claimableLiquidity",
+          data: response,
+        })
+      );
+      const results = decodedReponses.map((res, index) => {
+        return {
+          tradingFeeRate: params[index].tradingFeeRate,
+          mintingTokenAmountRequested: res.mintingTokenAmountRequested,
+          mintingCLBTokenAmount: res.mintingCLBTokenAmount,
+          burningCLBTokenAmountRequested: res.burningCLBTokenAmountRequested,
+          burningCLBTokenAmount: res.burningCLBTokenAmount,
+          burningTokenAmount: res.burningTokenAmount,
+        };
+      });
+      return results;
+    });
   }
 
   /**
@@ -194,12 +206,12 @@ export class ChromaticLens {
    * @param owner The address of the LP owner.
    * @returns A promise that resolves to the LP receipts.
    */
-  async lpReceipts(marketAddress: string, owner?: string) {
-    // return await handleBytesError(async () => {
-    //   return await this.getContract().lpReceipts(
-    //     marketAddress,
-    //     owner === undefined ? this._client.signer.getAddress() : owner!
-    //   );
-    // }, this._client.provider);
+  async lpReceipts(marketAddress: Address, owner?: Address) {
+    return await handleBytesError(async () => {
+      return await this.getContract().read.lpReceipts([
+        marketAddress,
+        owner === undefined ? this._client.walletClient.account.address : owner!,
+      ]);
+    });
   }
 }

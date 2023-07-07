@@ -3,7 +3,6 @@
   "compilerOptions": {
     "module": "commonjs",
     "outDir": "./dist/cjs",
-    "target": "es2015"
   },
   "exclude": ["test"],
   "include": ["**/*.d.ts", "**/*.ts", "**/*.js"],

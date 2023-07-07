@@ -1,9 +1,11 @@
-import { Address, getContract } from "viem";
+import { Address, GetContractReturnType, getContract } from "viem";
 import type { Client } from "../Client";
 import {
   chromaticMarketFactoryABI,
-  chromaticMarketFactoryAddress
+  chromaticMarketFactoryAddress,
+  ierc20MetadataABI,
 } from "../gen";
+import { Contract, PromiseOnlySuccess, handleBytesError } from "../utils/helpers";
 
 export interface SettlementToken {
   name: string;
@@ -26,7 +28,7 @@ export class ChromaticMarketFactory {
    * @param addressOrName The address or name of the Chromatic Market Factory contract.
    * @returns The Chromatic Market Factory contract instance.
    */
-  private factoryContract(address?: Address) {
+  private factoryContract(address?: Address): Contract<typeof chromaticMarketFactoryABI> {
     const deployedMarketFactoryAddress = (chromaticMarketFactoryAddress as Record<number, Address>)[
       this._client.publicClient?.chain?.id || 0
     ];
@@ -45,6 +47,13 @@ export class ChromaticMarketFactory {
   contracts() {
     return {
       marketFactory: this.factoryContract(),
+      IERC20Meta: (address: Address): Contract<typeof ierc20MetadataABI> =>
+        getContract({
+          abi: ierc20MetadataABI,
+          address,
+          publicClient: this._client.publicClient,
+          walletClient: this._client.walletClient,
+        }),
     };
   }
 
@@ -53,32 +62,20 @@ export class ChromaticMarketFactory {
    * @returns A promise that resolves to an array of settlement tokens.
    */
   async registeredSettlementTokens() {
-    // return await handleBytesError(async () => {
-    //   const totalRegisteredTokenAddrs =
-    //     await this.contracts().marketFactory.registeredSettlementTokens();
-    //   const promise = totalRegisteredTokenAddrs.map(async (address) => {
-    //     const { symbol, decimals } = IERC20Metadata__factory.connect(
-    //       address,
-    //       this._client.provider
-    //     );
+    return await handleBytesError(async () => {
+      const totalRegisteredTokenAddrs =
+        await this.contracts().marketFactory.read.registeredSettlementTokens();
+      const promise = totalRegisteredTokenAddrs.map(async (address) => {
+        const { symbol, decimals } = this.contracts().IERC20Meta(address).read;
+        return {
+          name: await symbol(),
+          address,
+          decimals: await decimals(),
+        } satisfies SettlementToken;
+      });
 
-    //     return {
-    //       name: await symbol(),
-    //       address,
-    //       decimals: await decimals(),
-    //     } satisfies SettlementToken;
-    //   });
-
-    //   const response = await Promise.allSettled(promise);
-    //   const fulfilled = response
-    //     .filter(
-    //       (result): result is PromiseFulfilledResult<SettlementToken> =>
-    //         result.status === "fulfilled"
-    //     )
-    //     .map(({ value }) => value);
-
-    //   return fulfilled;
-    // }, this._client.provider);
+      return await PromiseOnlySuccess(promise);
+    });
   }
 
   /**
@@ -86,10 +83,10 @@ export class ChromaticMarketFactory {
    * @param settlementToken The address of the settlement token.
    * @returns A promise that resolves to the current interest rate.
    */
-  async currentInterestRate(settlementToken: string) {
-    // return await handleBytesError(async () => {
-    //   return this.contracts().marketFactory.currentInterestRate(settlementToken);
-    // }, this._client.provider);
+  async currentInterestRate(settlementToken: Address) {
+    return await handleBytesError(async () => {
+      return this.contracts().marketFactory.read.currentInterestRate([settlementToken]);
+    });
   }
 
   /**
@@ -97,24 +94,23 @@ export class ChromaticMarketFactory {
    * @param settlementToken The address of the settlement token.
    * @returns A promise that resolves to an array of market information.
    */
-  async getMarkets(settlementToken: string) {
-    // return await handleBytesError(async () => {
-    //   const marketAddresses = await this.contracts().marketFactory.getMarketsBySettlmentToken(
-    //     settlementToken
-    //   );
-    //   const market = this._client.market();
-    //   const orcales = await market.getCurrentPrices(marketAddresses);
-
-    //   return Promise.all(
-    //     orcales.map(async (orcale) => {
-    //       const { market: address, value } = orcale;
-    //       return {
-    //         address,
-    //         oracleValue: value,
-    //         description: await market.getMarketName(address),
-    //       };
-    //     })
-    //   );
-    // }, this._client.provider);
+  async getMarkets(settlementToken: Address) {
+    return await handleBytesError(async () => {
+      const marketAddresses = await this.contracts().marketFactory.read.getMarketsBySettlmentToken([
+        settlementToken,
+      ]);
+      const market = this._client.market();
+      const orcales = await market.getCurrentPrices([...marketAddresses]);
+      return Promise.all(
+        orcales.map(async (orcale) => {
+          const { market: address, value } = orcale;
+          return {
+            address,
+            oracleValue: value,
+            description: await market.getMarketName(address),
+          };
+        })
+      );
+    });
   }
 }

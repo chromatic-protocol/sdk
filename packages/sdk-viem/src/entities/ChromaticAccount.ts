@@ -1,18 +1,20 @@
 import { BigNumber } from "ethers";
 import { Client } from "../Client";
-import { Address, getContract } from "viem";
+import { Address, GetContractReturnType, getContract } from "viem";
 import { chromaticAccountABI } from "../gen";
+import { Contract, PromiseOnlySuccess, handleBytesError } from "../utils/helpers";
+import { GetLogsReturnType } from "viem/actions";
 
 export interface TokenBalancesResult {
   token: string;
-  balance: BigNumber;
+  balance: BigInt;
 }
 
 /**
  * Represents a Chromatic Account and provides methods to interact with it.
  */
 export class ChromaticAccount {
-  // private _currentAccountAddress: string;
+  private _currentAccountAddress: Address;
 
   /**
    * Creates a new instance of ChromaticAccount.
@@ -26,7 +28,9 @@ export class ChromaticAccount {
    */
   contracts() {
     return {
-      account: (address: Address) =>
+      account: (
+        address: Address
+      ): Contract<typeof chromaticAccountABI> =>
         getContract({
           address,
           abi: chromaticAccountABI,
@@ -43,10 +47,11 @@ export class ChromaticAccount {
    * @returns A promise that resolves to the transaction receipt of the account creation.
    */
   async createAccount() {
-    // return await handleBytesError(async () => {
-    //   const tx = await this.contracts().router().createAccount();
-    //   return await tx.wait();
-    // }, this._client.provider);
+    return await handleBytesError(async () => {
+      const { request } = await this.contracts().router().simulate.createAccount();
+      const hash = await this._client.walletClient.writeContract(request);
+      return await this._client.publicClient.waitForTransactionReceipt({ hash });
+    });
   }
 
   /**
@@ -54,9 +59,9 @@ export class ChromaticAccount {
    * @returns A promise that resolves to the Chromatic Account details.
    */
   async getAccount() {
-    // return await handleBytesError(async () => {
-    //   return await this.contracts().router().getAccount();
-    // }, this._client.provider);
+    return await handleBytesError(async () => {
+      return await this.contracts().router().read.getAccount();
+    });
   }
 
   /**
@@ -65,12 +70,12 @@ export class ChromaticAccount {
    * @param accountAddress The address of the account (optional).
    * @returns A promise that resolves to an array of position IDs.
    */
-  async getPositionIds(marketAddress: string, accountAddress?: string) {
-    // return await handleBytesError(async () => {
-    //   const currAccountAddress = await this.getCurrentAddress();
-    //   const chromaticAcc = this.contracts().account(accountAddress || currAccountAddress);
-    //   return await chromaticAcc.getPositionIds(marketAddress);
-    // }, this._client.provider);
+  async getPositionIds(marketAddress: Address, accountAddress?: Address) {
+    return await handleBytesError(async () => {
+      const currAccountAddress = await this.getCurrentAddress();
+      const chromaticAcc = this.contracts().account(accountAddress || currAccountAddress);
+      return await chromaticAcc.read.getPositionIds([marketAddress]);
+    });
   }
 
   /**
@@ -79,13 +84,13 @@ export class ChromaticAccount {
    * @param accountAddress The address of the account (optional).
    * @returns A promise that resolves to the balance of the token.
    */
-  async balance(token: string, accountAddress?: string) {
-    // return await handleBytesError(async () => {
-    //   const currAccountAddress = await this.getCurrentAddress();
-    //   return this.contracts()
-    //     .account(accountAddress || currAccountAddress)
-    //     .balance(token);
-    // }, this._client.provider);
+  async balance(token: Address, accountAddress?: Address) {
+    return await handleBytesError(async () => {
+      const currAccountAddress = await this.getCurrentAddress();
+      return this.contracts()
+        .account(accountAddress || currAccountAddress)
+        .read.balance([token]);
+    });
   }
 
   /**
@@ -94,21 +99,21 @@ export class ChromaticAccount {
    * @param accountAddress The address of the account (optional).
    * @returns A promise that resolves to an array of TokenBalancesResult objects.
    */
-  async balances(tokens: string[], accountAddress?: string) {
+  async balances(tokens: Address[], accountAddress?: Address) {
     // : Promise<TokenBalancesResult[]> {
-    // return await handleBytesError(async () => {
-    //   const currAccountAddress = await this.getCurrentAddress();
-    //   return PromiseOnlySuccess(
-    //     tokens.map(async (token) => {
-    //       return {
-    //         token,
-    //         balance: await this.contracts()
-    //           .account(accountAddress || currAccountAddress)
-    //           .balance(token),
-    //       } satisfies TokenBalancesResult;
-    //     }) || []
-    //   );
-    // }, this._client.provider);
+    return await handleBytesError(async () => {
+      const currAccountAddress = await this.getCurrentAddress();
+      return PromiseOnlySuccess(
+        tokens.map(async (token) => {
+          return {
+            token,
+            balance: await this.contracts()
+              .account(accountAddress || currAccountAddress)
+              .read.balance([token]),
+          } satisfies TokenBalancesResult;
+        }) || []
+      );
+    });
   }
 
   /**
@@ -116,10 +121,10 @@ export class ChromaticAccount {
    * @returns A promise that resolves to the current account address.
    */
   private async getCurrentAddress() {
-    // return await handleBytesError(async () => {
-    //   if (!this._currentAccountAddress)
-    //     this._currentAccountAddress = await this.contracts().router().getAccount();
-    //   return this._currentAccountAddress;
-    // }, this._client.provider);
+    return await handleBytesError(async () => {
+      if (!this._currentAccountAddress)
+        this._currentAccountAddress = await this.contracts().router().read.getAccount();
+      return this._currentAccountAddress;
+    });
   }
 }

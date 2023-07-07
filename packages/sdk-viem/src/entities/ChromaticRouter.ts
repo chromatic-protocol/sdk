@@ -1,7 +1,14 @@
 import { Client } from "../Client";
-import { Address, getContract, zeroAddress } from "viem";
+import {
+  Address,
+  GetContractReturnType,
+  PublicClient,
+  WalletClient,
+  getContract,
+  zeroAddress,
+} from "viem";
 import { chromaticRouterABI, chromaticRouterAddress } from "../gen";
-
+import { Contract, handleBytesError, MAX_UINT256 } from "../utils/helpers";
 /**
  * Represents the parameters for adding liquidity to a market using the ChromaticRouter.
  */
@@ -25,8 +32,8 @@ export interface RouterOpenPositionParam {
  * Represents the parameters for removing liquidity from a market using the ChromaticRouter.
  */
 export interface RouterRemoveLiquidityParam {
-  feeRate: bigint;
-  receipient?: string;
+  feeRate: number;
+  receipient?: Address;
   clbTokenAmount: bigint;
 }
 
@@ -46,7 +53,7 @@ export class ChromaticRouter {
    */
   contracts() {
     return {
-      router: () =>
+      router: (): Contract<typeof chromaticRouterABI> =>
         getContract({
           address:
             (chromaticRouterAddress as Record<number, Address>)[
@@ -69,22 +76,25 @@ export class ChromaticRouter {
     if (!this._client.walletClient) {
       throw new Error("Wallet Client is not set");
     }
-    const { request } = await this.contracts()
-      .router()
-      .simulate.openPosition(
-        [
-          marketAddress,
-          param.quantity,
-          param.leverage,
-          param.takerMargin,
-          param.makerMargin,
-          param.maxAllowableTradingFee,
-        ],
-        { account: this._client.walletClient.account }
-      );
 
-    const hash = await this._client.walletClient.writeContract(request);
-    return this._client.publicClient.waitForTransactionReceipt({ hash });
+    return await handleBytesError(async () => {
+      const { request } = await this.contracts()
+        .router()
+        .simulate.openPosition(
+          [
+            marketAddress,
+            param.quantity,
+            param.leverage,
+            param.takerMargin,
+            param.makerMargin,
+            param.maxAllowableTradingFee,
+          ],
+          { account: this._client.walletClient.account }
+        );
+
+      const hash = await this._client.walletClient.writeContract(request);
+      return await this._client.publicClient.waitForTransactionReceipt({ hash });
+    });
   }
 
   /**
@@ -93,66 +103,90 @@ export class ChromaticRouter {
    * @param positionId The ID of the position to close.
    * @returns A promise that resolves to the transaction receipt of the position closing.
    */
-  // async closePosition(marketAddress: string, positionId: BigNumberish) {
-  //   return await handleBytesError(async () => {
-  //     const transaction = await this.contracts().router().closePosition(marketAddress, positionId);
-  //     return transaction.wait();
-  //   }, this._client.provider);
-  // }
+  async closePosition(marketAddress: Address, positionId: bigint) {
+    if (!this._client.walletClient) {
+      throw new Error("Wallet Client is not set");
+    }
 
-  // /**
-  //  * Claims a position in the specified market.
-  //  * @param marketAdress The address of the Chromatic Market contract.
-  //  * @param positionId The ID of the position to claim.
-  //  * @returns A promise that resolves to the transaction receipt of the position claiming.
-  //  */
-  // async claimPosition(marketAdress: string, positionId: BigNumberish) {
-  //   return await handleBytesError(async () => {
-  //     const tx = await this.contracts().router().claimPosition(marketAdress, positionId);
-  //     return tx.wait();
-  //   }, this._client.provider);
-  // }
+    return await handleBytesError(async () => {
+      const { request } = await this.contracts()
+        .router()
+        .simulate.closePosition([marketAddress, positionId], {
+          account: this._client.walletClient.account,
+        });
 
-  // /**
-  //  * Approves the CLB token for the ChromaticRouter contract.
-  //  * @param marketAddress The address of the Chromatic Market contract.
-  //  * @returns A promise that resolves to a boolean indicating whether the approval was successful.
-  //  */
-  // async approvalClbTokenToRouter(marketAddress: string): Promise<boolean> {
-  //   const clbToken = await this._client.market().clbToken(marketAddress);
-  //   const routerAddress = this.contracts().router().address;
-  //   const signerAddress = await this._client.signer.getAddress();
-  //   if (!(await clbToken.isApprovedForAll(signerAddress, routerAddress))) {
-  //     const tx = await clbToken.setApprovalForAll(routerAddress, true);
-  //     await tx.wait();
-  //     // TODO verify tx
-  //     return tx.blockHash !== undefined;
-  //   }
-  //   return true;
-  // }
+      const hash = await this._client.walletClient.writeContract(request);
+      return await this._client.publicClient.waitForTransactionReceipt({ hash });
+    });
+  }
 
-  // /**
-  //  * Approves the settlement token for the ChromaticRouter contract.
-  //  * @param marketAddress The address of the Chromatic Market contract.
-  //  * @param amount The allowance of Chromatic Router over the caller's tokens
-  //  * @returns A promise that resolves to a boolean indicating whether the approval was successful.
-  //  */
-  // async approvalSettlementTokenToRouter(
-  //   marketAddress: string,
-  //   amount: BigNumberish
-  // ): Promise<boolean> {
-  //   const settlementToken = await this._client.market().settlementToken(marketAddress);
-  //   const routerAddress = this.contracts().router().address;
-  //   const signerAddress = await this._client.signer.getAddress();
-  //   const allowance = await settlementToken.allowance(signerAddress, routerAddress);
-  //   if (allowance.lt(amount)) {
-  //     const tx = await settlementToken.approve(routerAddress, ethers.constants.MaxUint256);
-  //     await tx.wait();
-  //     // TODO verify tx
-  //     return tx.blockHash !== undefined;
-  //   }
-  //   return true;
-  // }
+  /**
+   * Claims a position in the specified market.
+   * @param marketAdress The address of the Chromatic Market contract.
+   * @param positionId The ID of the position to claim.
+   * @returns A promise that resolves to the transaction receipt of the position claiming.
+   */
+  async claimPosition(marketAdress: Address, positionId: bigint) {
+    if (!this._client.walletClient) {
+      throw new Error("Wallet Client is not set");
+    }
+
+    return await handleBytesError(async () => {
+      const { request } = await this.contracts()
+        .router()
+        .simulate.claimPosition([marketAdress, positionId], {
+          account: this._client.walletClient.account,
+        });
+
+      const hash = await this._client.walletClient.writeContract(request);
+      return await this._client.publicClient.waitForTransactionReceipt({ hash });
+    });
+  }
+
+  /**
+   * Approves the CLB token for the ChromaticRouter contract.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @returns A promise that resolves to a boolean indicating whether the approval was successful.
+   */
+  async approvalClbTokenToRouter(marketAddress: Address): Promise<boolean> {
+    const clbToken = await this._client.market().contracts().clbToken(marketAddress);
+    const routerAddress = this.contracts().router().address;
+    const account = this._client.walletClient.account.address;
+    if (!(await clbToken.read.isApprovedForAll([account, routerAddress]))) {
+      const { request } = await clbToken.simulate.setApprovalForAll([routerAddress, true], {
+        account,
+      });
+
+      const hash = await this._client.walletClient.writeContract(request);
+
+      // TODO false condition
+      const receipt = await this._client.publicClient.waitForTransactionReceipt({ hash });
+      return receipt !== undefined;
+    }
+    return true;
+  }
+
+  /**
+   * Approves the settlement token for the ChromaticRouter contract.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param amount The allowance of Chromatic Router over the caller's tokens
+   * @returns A promise that resolves to a boolean indicating whether the approval was successful.
+   */
+  async approvalSettlementTokenToRouter(marketAddress: Address, amount: bigint): Promise<boolean> {
+    const settlementToken = await this._client.market().contracts().settlementToken(marketAddress);
+    const routerAddress = this.contracts().router().address;
+    const account = this._client.walletClient.account.address;
+    const allowance = await settlementToken.read.allowance([account, routerAddress]);
+    if (allowance < amount) {
+      const { request } = await settlementToken.simulate.approve([routerAddress, MAX_UINT256]);
+
+      const hash = await this._client.walletClient.writeContract(request);
+      // TODO false condition
+      const receipt = await this._client.publicClient.waitForTransactionReceipt({ hash });
+      return receipt !== undefined;
+    }
+    return true;
+  }
 
   /**
    * Adds liquidity to the specified market.
@@ -162,11 +196,15 @@ export class ChromaticRouter {
    * @returns A promise that resolves to the transaction receipt of the liquidity addition.
    */
   async addLiquidity(marketAddress: Address, param: RouterAddLiquidityParam, receipient?: Address) {
-
-
     if (!this._client.walletClient) {
       throw new Error("Wallet Client is not set");
     }
+
+    // TODO check option flag
+    if (!(await this.approvalSettlementTokenToRouter(marketAddress, param.amount))) {
+      return;
+    }
+
     const { request } = await this.contracts()
       .router()
       .simulate.addLiquidity(
@@ -174,176 +212,216 @@ export class ChromaticRouter {
           marketAddress,
           param.feeRate,
           param.amount,
-          receipient || this._client.walletClient.account?.address || zeroAddress
+          receipient || this._client.walletClient.account?.address || zeroAddress,
         ],
         { account: this._client.walletClient.account }
       );
 
     const hash = await this._client.walletClient.writeContract(request);
-    return this._client.publicClient.waitForTransactionReceipt({ hash });
-
-
-
-    // TODO check option flag
-    // if (!(await this.approvalSettlementTokenToRouter(marketAddress, param.amount))) {
-    //   return;
-    // }
+    return await this._client.publicClient.waitForTransactionReceipt({ hash });
   }
 
-  // /**
-  //  * Adds multiple liquidity positions to the specified market.
-  //  * @param marketAddress The address of the Chromatic Market contract.
-  //  * @param params The array of parameters for adding liquidity.
-  //  * @param recipient The recipient address for the liquidity tokens.
-  //  * @returns A promise that resolves to the transaction receipt of the liquidity additions.
-  //  */
-  // async addLiquidities(
-  //   marketAddress: string,
-  //   params: RouterAddLiquidityParam[],
-  //   recipient?: string
-  // ) {
-  //   // TODO check option flag
-  //   const totalAmount = params.reduce((prev, curr) => prev.add(curr.amount), BigNumber.from(0));
-  //   if (!(await this.approvalSettlementTokenToRouter(marketAddress, totalAmount))) {
-  //     return;
-  //   }
+  /**
+   * Adds multiple liquidity positions to the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param params The array of parameters for adding liquidity.
+   * @param recipient The recipient address for the liquidity tokens.
+   * @returns A promise that resolves to the transaction receipt of the liquidity additions.
+   */
+  async addLiquidities(
+    marketAddress: Address,
+    params: RouterAddLiquidityParam[],
+    recipient?: Address
+  ) {
+    if (!this._client.walletClient) {
+      throw new Error("Wallet Client is not set");
+    }
 
-  //   return await handleBytesError(async () => {
-  //     const feeRates: BigNumberish[] = [];
-  //     const amounts: BigNumberish[] = [];
-  //     recipient = recipient || (await this._client.signer.getAddress());
+    // TODO check option flag
+    const totalAmount = params.reduce((prev, curr) => prev + curr.amount, BigInt(0));
+    if (!(await this.approvalSettlementTokenToRouter(marketAddress, totalAmount))) {
+      return;
+    }
 
-  //     params.forEach((param) => {
-  //       feeRates.push(param.feeRate);
-  //       amounts.push(param.amount);
-  //     });
-  //     const tx = await this.contracts()
-  //       .router()
-  //       .addLiquidityBatch(marketAddress, recipient, feeRates, amounts);
-  //     return await tx.wait();
-  //   }, this._client.provider);
-  // }
+    return await handleBytesError(async () => {
+      const feeRates: number[] = [];
+      const amounts: bigint[] = [];
+      recipient = recipient || this._client.walletClient.account.address;
 
-  // /**
-  //  * Removes liquidity from the specified market.
-  //  * @param marketAddress The address of the Chromatic Market contract.
-  //  * @param param The parameters for removing liquidity.
-  //  * @returns A promise that resolves to the transaction receipt of the liquidity removal.
-  //  */
-  // async removeLiquidity(marketAddress: string, param: RouterRemoveLiquidityParam) {
-  //   // TODO check option flag
-  //   if (!(await this.approvalClbTokenToRouter(marketAddress))) {
-  //     return;
-  //   }
+      params.forEach((param) => {
+        feeRates.push(param.feeRate);
+        amounts.push(param.amount);
+      });
 
-  //   return await handleBytesError(async () => {
-  //     const tx = await this.contracts()
-  //       .router()
-  //       .removeLiquidity(
-  //         marketAddress,
-  //         BigNumber.from(param.feeRate),
-  //         BigNumber.from(param.clbTokenAmount),
-  //         param.receipient || this._client.signer.getAddress()
-  //       );
-  //     return await tx.wait();
-  //   }, this._client.provider);
-  // }
+      const { request } = await this.contracts()
+        .router()
+        .simulate.addLiquidityBatch([marketAddress, recipient, feeRates, amounts], {
+          account: this._client.walletClient.account,
+        });
 
-  // /**
-  //  * Removes multiple liquidity positions from the specified market.
-  //  * @param marketAddress The address of the Chromatic Market contract.
-  //  * @param params The array of parameters for removing liquidity.
-  //  * @param recipient The recipient address for the liquidity tokens.
-  //  * @returns A promise that resolves to the transaction receipt of the liquidity removals.
-  //  */
-  // async removeLiquidities(
-  //   marketAddress: string,
-  //   params: RouterRemoveLiquidityParam[],
-  //   receipient?: string
-  // ) {
-  //   // TODO check option flag
-  //   if (!(await this.approvalClbTokenToRouter(marketAddress))) {
-  //     return;
-  //   }
+      const hash = await this._client.walletClient.writeContract(request);
+      return await this._client.publicClient.waitForTransactionReceipt({ hash });
+    });
+  }
 
-  //   return await handleBytesError(async () => {
-  //     receipient = receipient || (await this._client.signer.getAddress());
-  //     const contractParam = params.reduce(
-  //       (contractParam, param) => {
-  //         contractParam["clbTokenAmount"].push(param.clbTokenAmount);
-  //         contractParam["feeRate"].push(param.feeRate);
-  //         return contractParam;
-  //       },
-  //       {
-  //         clbTokenAmount: [],
-  //         feeRate: [],
-  //       } as { clbTokenAmount: BigNumberish[]; feeRate: BigNumberish[] }
-  //     );
-  //     const tx = await this.contracts()
-  //       .router()
-  //       .removeLiquidityBatch(
-  //         marketAddress,
-  //         receipient,
-  //         contractParam.feeRate,
-  //         contractParam.clbTokenAmount
-  //       );
-  //     return await tx.wait();
-  //   }, this._client.provider);
-  // }
+  /**
+   * Removes liquidity from the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param param The parameters for removing liquidity.
+   * @returns A promise that resolves to the transaction receipt of the liquidity removal.
+   */
+  async removeLiquidity(marketAddress: Address, param: RouterRemoveLiquidityParam) {
+    if (!this._client.walletClient) {
+      throw new Error("Wallet Client is not set");
+    }
 
-  // /**
-  //  * Claims a liquidity position from the specified market.
-  //  * @param marketAddress The address of the Chromatic Market contract.
-  //  * @param receiptId The ID of the liquidity position to claim.
-  //  * @returns A promise that resolves to the transaction receipt of the liquidity position claiming.
-  //  */
-  // async claimLiquidity(marketAddress: string, receiptId: BigNumberish) {
-  //   return await handleBytesError(async () => {
-  //     const tx = await this.contracts()
-  //       .router()
-  //       .claimLiquidity(marketAddress, BigNumber.from(receiptId));
-  //     return await tx.wait();
-  //   }, this._client.provider);
-  // }
+    // TODO check option flag
+    if (!(await this.approvalClbTokenToRouter(marketAddress))) {
+      return;
+    }
 
-  // /**
-  //  * Claims multiple liquidity positions from the specified market.
-  //  * @param marketAddress The address of the Chromatic Market contract.
-  //  * @param receiptIds The array of IDs of the liquidity positions to claim.
-  //  * @returns A promise that resolves to the transaction receipt of the liquidity positions claiming.
-  //  */
-  // async claimLiquidites(marketAddress: string, receiptIds: BigNumberish[]) {
-  //   return await handleBytesError(async () => {
-  //     const tx = await this.contracts().router().claimLiquidityBatch(marketAddress, receiptIds);
-  //     return await tx.wait();
-  //   }, this._client.provider);
-  // }
+    return await handleBytesError(async () => {
+      const { request } = await this.contracts()
+        .router()
+        .simulate.removeLiquidity(
+          [
+            marketAddress,
+            param.feeRate,
+            param.clbTokenAmount,
+            param.receipient || this._client.walletClient.account.address,
+          ],
+          {
+            account: this._client.walletClient.account,
+          }
+        );
 
-  // /**
-  //  * Withdraws a liquidity position from the specified market.
-  //  * @param marketAddress The address of the Chromatic Market contract.
-  //  * @param receiptId The ID of the liquidity position to withdraw.
-  //  * @returns A promise that resolves to the transaction receipt of the liquidity position withdrawal.
-  //  */
-  // async withdrawLiquidity(marketAddress: string, receiptId: BigNumberish) {
-  //   return await handleBytesError(async () => {
-  //     const tx = await this.contracts()
-  //       .router()
-  //       .withdrawLiquidity(marketAddress, BigNumber.from(receiptId));
-  //     return await tx.wait();
-  //   }, this._client.provider);
-  // }
+      const hash = await this._client.walletClient.writeContract(request);
+      return await this._client.publicClient.waitForTransactionReceipt({ hash });
+    });
+  }
 
-  // /**
-  //  * Withdraws multiple liquidity positions from the specified market.
-  //  * @param marketAddress The address of the Chromatic Market contract.
-  //  * @param receiptIds The array of IDs of the liquidity positions to withdraw.
-  //  * @returns A promise that resolves to the transaction receipt of the liquidity positions withdrawal.
-  //  */
-  // async withdrawLiquidities(marketAddress: string, receiptIds: BigNumberish[]) {
-  //   return await handleBytesError(async () => {
-  //     const tx = await this.contracts().router().withdrawLiquidityBatch(marketAddress, receiptIds);
-  //     return await tx.wait();
-  //   }, this._client.provider);
-  // }
+  /**
+   * Removes multiple liquidity positions from the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param params The array of parameters for removing liquidity.
+   * @param recipient The recipient address for the liquidity tokens.
+   * @returns A promise that resolves to the transaction receipt of the liquidity removals.
+   */
+  async removeLiquidities(
+    marketAddress: Address,
+    params: RouterRemoveLiquidityParam[],
+    receipient?: Address
+  ) {
+    if (!this._client.walletClient) {
+      throw new Error("Wallet Client is not set");
+    }
+
+    // TODO check option flag
+    if (!(await this.approvalClbTokenToRouter(marketAddress))) {
+      return;
+    }
+
+    return await handleBytesError(async () => {
+      receipient = receipient || this._client.walletClient.account.address;
+      const contractParam = params.reduce(
+        (contractParam, param) => {
+          contractParam["clbTokenAmount"].push(param.clbTokenAmount);
+          contractParam["feeRate"].push(param.feeRate);
+          return contractParam;
+        },
+        {
+          clbTokenAmount: [],
+          feeRate: [],
+        } as { clbTokenAmount: bigint[]; feeRate: number[] }
+      );
+
+      const { request } = await this.contracts()
+        .router()
+        .simulate.removeLiquidityBatch(
+          [marketAddress, receipient, contractParam.feeRate, contractParam.clbTokenAmount],
+          {
+            account: this._client.walletClient.account,
+          }
+        );
+
+      const hash = await this._client.walletClient.writeContract(request);
+      return await this._client.publicClient.waitForTransactionReceipt({ hash });
+    });
+  }
+
+  /**
+   * Claims a liquidity position from the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param receiptId The ID of the liquidity position to claim.
+   * @returns A promise that resolves to the transaction receipt of the liquidity position claiming.
+   */
+  async claimLiquidity(marketAddress: Address, receiptId: bigint) {
+    return await handleBytesError(async () => {
+      const { request } = await this.contracts()
+        .router()
+        .simulate.claimLiquidity([marketAddress, receiptId], {
+          account: this._client.walletClient.account,
+        });
+
+      const hash = await this._client.walletClient.writeContract(request);
+      return await this._client.publicClient.waitForTransactionReceipt({ hash });
+    });
+  }
+
+  /**
+   * Claims multiple liquidity positions from the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param receiptIds The array of IDs of the liquidity positions to claim.
+   * @returns A promise that resolves to the transaction receipt of the liquidity positions claiming.
+   */
+  async claimLiquidites(marketAddress: Address, receiptIds: bigint[]) {
+    return await handleBytesError(async () => {
+      const { request } = await this.contracts()
+        .router()
+        .simulate.claimLiquidityBatch([marketAddress, receiptIds], {
+          account: this._client.walletClient.account,
+        });
+
+      const hash = await this._client.walletClient.writeContract(request);
+      return await this._client.publicClient.waitForTransactionReceipt({ hash });
+    });
+  }
+
+  /**
+   * Withdraws a liquidity position from the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param receiptId The ID of the liquidity position to withdraw.
+   * @returns A promise that resolves to the transaction receipt of the liquidity position withdrawal.
+   */
+  async withdrawLiquidity(marketAddress: Address, receiptId: bigint) {
+    return await handleBytesError(async () => {
+      const { request } = await this.contracts()
+        .router()
+        .simulate.withdrawLiquidity([marketAddress, receiptId], {
+          account: this._client.walletClient.account,
+        });
+
+      const hash = await this._client.walletClient.writeContract(request);
+      return await this._client.publicClient.waitForTransactionReceipt({ hash });
+    });
+  }
+
+  /**
+   * Withdraws multiple liquidity positions from the specified market.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param receiptIds The array of IDs of the liquidity positions to withdraw.
+   * @returns A promise that resolves to the transaction receipt of the liquidity positions withdrawal.
+   */
+  async withdrawLiquidities(marketAddress: Address, receiptIds: bigint[]) {
+    return await handleBytesError(async () => {
+      const { request } = await this.contracts()
+        .router()
+        .simulate.withdrawLiquidityBatch([marketAddress, receiptIds], {
+          account: this._client.walletClient.account,
+        });
+
+      const hash = await this._client.walletClient.writeContract(request);
+      return await this._client.publicClient.waitForTransactionReceipt({ hash });
+    });
+  }
 }

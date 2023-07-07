@@ -1,10 +1,7 @@
-import { BigNumberish } from "ethers";
-import { Address, getContract } from "viem";
+import { Address, GetContractReturnType, PublicClient, WalletClient, getContract } from "viem";
 import type { Client } from "../Client";
-import {
-  chromaticMarketABI,
-  ierc20MetadataABI
-} from "../gen";
+import { chromaticMarketABI, ierc20MetadataABI, clbTokenABI, iOracleProviderABI } from "../gen";
+import { Contract, handleBytesError } from "../utils/helpers";
 
 /**
  * Represents a Chromatic Market and provides methods to interact with it.
@@ -22,10 +19,35 @@ export class ChromaticMarket {
    */
   contracts() {
     return {
-      market: (marketAddress: Address) =>
+      market: (marketAddress: Address): Contract<typeof chromaticMarketABI> =>
         getContract({
           address: marketAddress,
           abi: chromaticMarketABI,
+          publicClient: this._client.publicClient,
+          walletClient: this._client.walletClient,
+        }),
+      settlementToken: async (
+        marketAddress: Address
+      ): Promise<Contract<typeof ierc20MetadataABI>> =>
+        getContract({
+          address: await this.settlementToken(marketAddress),
+          abi: ierc20MetadataABI,
+          publicClient: this._client.publicClient,
+          walletClient: this._client.walletClient,
+        }),
+      clbToken: async (marketAddress: Address): Promise<Contract<typeof clbTokenABI>> =>
+        getContract({
+          address: await this.clbToken(marketAddress),
+          abi: clbTokenABI,
+          publicClient: this._client.publicClient,
+          walletClient: this._client.walletClient,
+        }),
+      oracleProvider: async (
+        marketAddress: Address
+      ): Promise<Contract<typeof iOracleProviderABI>> =>
+        getContract({
+          address: await this.oracleProvider(marketAddress),
+          abi: iOracleProviderABI,
           publicClient: this._client.publicClient,
           walletClient: this._client.walletClient,
         }),
@@ -33,40 +55,25 @@ export class ChromaticMarket {
   }
 
   /**
-   * Retrieves the settlement token associated with a specific market.
+   * Retrieves the settlement token address associated with a specific market.
    * @param marketAddress The address of the market.
-   * @returns A promise that resolves to the settlement token instance.
+   * @returns A promise that resolves to the settlement token contract address.
    */
   async settlementToken(marketAddress: Address) {
-    const settlementTokenAddress = await this.contracts()
-      .market(marketAddress)
-      .read.settlementToken();
-    return getContract({
-      abi: ierc20MetadataABI,
-      address: settlementTokenAddress,
-      publicClient: this._client.publicClient,
-      walletClient: this._client.walletClient,
+    return await handleBytesError(async () => {
+      return await this.contracts().market(marketAddress).read.settlementToken();
     });
-    // return await handleBytesError(async () => {
-    //   return IERC20__factory.connect(
-    //     await this.contracts().market(marketAddress).settlementToken(),
-    //     this._client.signer || this._client.provider
-    //   );
-    // }, this._client.provider);
   }
 
   /**
-   * Retrieves the CLB token associated with a specific market.
+   * Retrieves the CLB token address associated with a specific market.
    * @param marketAddress The address of the market.
-   * @returns A promise that resolves to the CLB token instance.
+   * @returns A promise that resolves to the CLB token contract address.
    */
-  async clbToken(marketAddress: string) {
-    // return await handleBytesError(async () => {
-    //   return CLBToken__factory.connect(
-    //     await this.contracts().market(marketAddress).clbToken(),
-    //     this._client.signer || this._client.provider
-    //   );
-    // }, this._client.provider);
+  async clbToken(marketAddress: Address) {
+    return await handleBytesError(async () => {
+      return await this.contracts().market(marketAddress).read.clbToken();
+    });
   }
 
   /**
@@ -75,22 +82,22 @@ export class ChromaticMarket {
    * @param tokenId The ID of the CLB token.
    * @returns A promise that resolves to the CLB token metadata.
    */
-  async clbTokenMeta(marketAddress: string, tokenId: BigNumberish) {
-    // return await handleBytesError(async () => {
-    //   const clbTokenContract = await this.clbToken(marketAddress);
-    //   const [name, image, description, decimals] = await Promise.all([
-    //     clbTokenContract.name(tokenId),
-    //     clbTokenContract.image(tokenId),
-    //     clbTokenContract.description(tokenId),
-    //     clbTokenContract.decimals(),
-    //   ]);
-    //   return {
-    //     name,
-    //     image,
-    //     description,
-    //     decimals,
-    //   };
-    // }, this._client.provider);
+  async clbTokenMeta(marketAddress: Address, tokenId: bigint) {
+    return await handleBytesError(async () => {
+      const clbTokenContract = await this.contracts().clbToken(marketAddress);
+      const [name, image, description, decimals] = await Promise.all([
+        clbTokenContract.read.name([tokenId]),
+        clbTokenContract.read.image([tokenId]),
+        clbTokenContract.read.description([tokenId]),
+        clbTokenContract.read.decimals(),
+      ]);
+      return {
+        name,
+        image,
+        description,
+        decimals,
+      };
+    });
   }
 
   /**
@@ -98,14 +105,11 @@ export class ChromaticMarket {
    * @param marketAddress The address of the market.
    * @returns A promise that resolves to the OracleProvider contract instance.
    */
-  async getOracleProviderContract(marketAddress: string){
-    // return await handleBytesError(async () => {
-    //   const marketContract = this.contracts().market(marketAddress);
-    //   return IOracleProvider__factory.connect(
-    //     await marketContract.oracleProvider(),
-    //     this._client.signer || this._client.provider
-    //   );
-    // }, this._client.provider);
+  async oracleProvider(marketAddress: Address) {
+    return await handleBytesError(async () => {
+      const marketContract = this.contracts().market(marketAddress);
+      return await marketContract.read.oracleProvider();
+    });
   }
 
   /**
@@ -113,11 +117,11 @@ export class ChromaticMarket {
    * @param marketAddress The address of the market.
    * @returns A promise that resolves to the current price.
    */
-  async getCurrentPrice(marketAddress: string) {
-    // return await handleBytesError(async () => {
-    //   const contract = await this.getOracleProviderContract(marketAddress);
-    //   return contract.currentVersion();
-    // }, this._client.provider);
+  async getCurrentPrice(marketAddress: Address) {
+    return await handleBytesError(async () => {
+      const oracleProvider = await this.contracts().oracleProvider(marketAddress);
+      return await oracleProvider.read.currentVersion();
+    });
   }
 
   /**
@@ -125,10 +129,11 @@ export class ChromaticMarket {
    * @param marketAddress The address of the market.
    * @returns A promise that resolves to the market name.
    */
-  async getMarketName(marketAddress: string) {
-    // return await handleBytesError(async () => {
-    //   return (await this.getOracleProviderContract(marketAddress)).description();
-    // }, this._client.provider);
+  async getMarketName(marketAddress: Address) {
+    return await handleBytesError(async () => {
+      const oracleProvider = await this.contracts().oracleProvider(marketAddress);
+      return await oracleProvider.read.description();
+    });
   }
 
   /**
@@ -136,19 +141,17 @@ export class ChromaticMarket {
    * @param marketAddresses An array of market addresses.
    * @returns A promise that resolves to an array of market addresses and their corresponding current prices.
    */
-  async getCurrentPrices(
-    marketAddresses: string[]
-  ){
-  // ): Promise<{ market: string; value: IOracleProvider.OracleVersionStructOutput }[]> {
-    // return await handleBytesError(async () => {
-    //   return await Promise.all(
-    //     marketAddresses.map(async (address) => {
-    //       return {
-    //         market: address,
-    //         value: await this.getCurrentPrice(address),
-    //       };
-    //     })
-    //   );
-    // }, this._client.provider);
+  async getCurrentPrices(marketAddresses: Address[]) {
+    // ): Promise<{ market: string; value: IOracleProvider.OracleVersionStructOutput }[]> {
+    return await handleBytesError(async () => {
+      return await Promise.all(
+        marketAddresses.map(async (address) => {
+          return {
+            market: address,
+            value: await this.getCurrentPrice(address),
+          };
+        })
+      );
+    });
   }
 }

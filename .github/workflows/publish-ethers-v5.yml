@@ -32,6 +32,7 @@ jobs:
         git-push: true
         skip-on-empty: false
         version-file: packages/sdk-ethers-v5/package.json
+        skip-tag: true
         # skip-version-file: false
         # skip-commit: false
     - uses: actions/setup-node@v3
@@ -48,12 +49,6 @@ jobs:
         yarn install
         yarn build
         yarn publish --access public
-        yarn docs
-    - name: publish gh-pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./packages/sdk-ethers-v5/docs
     
     # export markdown docs to docs repository
     - uses: chromatic-protocol/action-github-app-token@v1

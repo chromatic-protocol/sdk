@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "module": "commonjs",
+    "outDir": "./dist/cjs",
+    "target": "es2020"
+  },
+  "exclude": ["test"],
+  "include": ["**/*.d.ts", "**/*.ts", "**/*.js"],
+}

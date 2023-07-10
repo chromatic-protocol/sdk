@@ -1,0 +1,263 @@
+import { ContractTransactionReceipt, Signer, ethers } from "ethers";
+import { ChromaticMarket__factory, IERC20__factory } from "../src/gen";
+import { LpReceiptStructOutput } from "../src/gen/contracts/core/ChromaticMarket";
+
+export const MNEMONIC_JUNK = "test test test test test test test test test test test junk";
+
+export interface GetSignerParam {
+  mnemonic?: string;
+  selectedAccount?: number;
+  privateKey?: string;
+}
+
+export interface WrapEthParam {
+  signer: Signer;
+  weth9: string;
+  amount: bigint;
+}
+
+export interface SwapToUSDCParam {
+  signer: Signer;
+  weth9: string;
+  usdc: string;
+  fee: number;
+  amount: bigint;
+}
+
+export interface UpdatePriceParam {
+  signer: Signer;
+  market: string;
+  price: number;
+}
+
+export interface WaitMiningTxOptions {
+  intervalMillSeconds?: number;
+  timeoutMillSeconds?: number;
+}
+
+export function getSigner(param?: GetSignerParam): ethers.Signer {
+  const provider = getDefaultProvider();
+
+  if (param?.privateKey !== undefined) {
+    return new ethers.Wallet(param.privateKey, provider);
+  }
+
+  const account = ethers.HDNodeWallet.fromPhrase(
+    param?.mnemonic === undefined ? MNEMONIC_JUNK : param!.mnemonic!
+  ).derivePath(
+    `m/44'/60'/0'/0/${param?.selectedAccount === undefined ? 0 : param!.selectedAccount!}`
+  );
+  return new ethers.Wallet(account.signingKey, provider);
+}
+
+export function getDefaultProvider(): ethers.JsonRpcProvider {
+  return new ethers.JsonRpcProvider(); // "http://localhost:8545"; // default value
+  // return new ethers.providers.JsonRpcProvider('http://127.0.0.1:8545'); // "http://localhost:8545"; // default value
+}
+
+export async function wrapEth(param: WrapEthParam) {
+  const warpTx = await param.signer.sendTransaction({
+    to: param.weth9,
+    data: ethers.id("deposit()").substring(0, 10),
+    value: param.amount,
+    gasPrice: (await param.signer.provider.getFeeData()).gasPrice,
+  });
+  await warpTx.wait();
+}
+
+export async function swapToUSDC(param: SwapToUSDCParam) {
+  const recipient = await param.signer.getAddress();
+  const ARBITRUM_GOERLI_SWAP_ROUTER = "0xF1596041557707B1bC0b3ffB34346c1D9Ce94E86";
+
+  const WETH9 = IERC20__factory.connect(param.weth9, param.signer);
+  if ((await WETH9.balanceOf(recipient)) < param.amount) {
+    await wrapEth({ signer: param.signer, amount: param.amount, weth9: param.weth9 });
+  }
+
+  if ((await WETH9.allowance(recipient, ARBITRUM_GOERLI_SWAP_ROUTER)) < param.amount) {
+    const approveTx = await IERC20__factory.connect(param.weth9, param.signer).approve(
+      ARBITRUM_GOERLI_SWAP_ROUTER,
+      ethers.MaxUint256
+    );
+    await approveTx.wait();
+  }
+
+  const routerContract = new ethers.Contract(
+    ARBITRUM_GOERLI_SWAP_ROUTER,
+    [
+      {
+        inputs: [
+          {
+            components: [
+              {
+                internalType: "address",
+                name: "tokenIn",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "tokenOut",
+                type: "address",
+              },
+              {
+                internalType: "uint24",
+                name: "fee",
+                type: "uint24",
+              },
+              {
+                internalType: "address",
+                name: "recipient",
+                type: "address",
+              },
+              {
+                internalType: "uint256",
+                name: "deadline",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "amountIn",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "amountOutMinimum",
+                type: "uint256",
+              },
+              {
+                internalType: "uint160",
+                name: "sqrtPriceLimitX96",
+                type: "uint160",
+              },
+            ],
+            internalType: "struct ISwapRouter.ExactInputSingleParams",
+            name: "params",
+            type: "tuple",
+          },
+        ],
+        name: "exactInputSingle",
+        outputs: [
+          {
+            internalType: "uint256",
+            name: "amountOut",
+            type: "uint256",
+          },
+        ],
+        stateMutability: "payable",
+        type: "function",
+      },
+    ],
+    param.signer
+  );
+
+  const swapTx = await param.signer.sendTransaction({
+    to: ARBITRUM_GOERLI_SWAP_ROUTER,
+    data: routerContract.interface.encodeFunctionData("exactInputSingle", [
+      {
+        tokenIn: param.weth9,
+        tokenOut: param.usdc,
+        fee: param.fee,
+        recipient: recipient,
+        deadline: ethers.MaxUint256,
+        amountIn: param.amount,
+        amountOutMinimum: 0,
+        sqrtPriceLimitX96: 0,
+      },
+    ]),
+  });
+
+  const receipt = await swapTx.wait();
+  const usdcEvent = receipt.logs.find((log) => log.address == param.usdc);
+
+  return {
+    outputAmount: BigInt(usdcEvent.data),
+    usdcBalance: await IERC20__factory.connect(param.usdc, param.signer).balanceOf(recipient),
+  };
+}
+
+export async function updatePrice(param: UpdatePriceParam) {
+  const market = ChromaticMarket__factory.connect(param.market, param.signer);
+  const oracleProviderAddress = await market.oracleProvider();
+  const oracleProvider = new ethers.Contract(
+    oracleProviderAddress,
+    [
+      {
+        inputs: [
+          {
+            internalType: "Fixed18",
+            name: "price",
+            type: "int256",
+          },
+        ],
+        name: "increaseVersion",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+      },
+    ],
+    param.signer
+  );
+
+  const tx = await param.signer.sendTransaction({
+    to: oracleProviderAddress,
+    data: oracleProvider.interface.encodeFunctionData("increaseVersion", [
+      BigInt(param.price.toString()) * BigInt(10 ** 8),
+    ]),
+  });
+
+  await tx.wait();
+}
+
+// send tx until mining
+export async function waitTxMining(
+  waitTxFn: () => Promise<ContractTransactionReceipt>,
+  options?: WaitMiningTxOptions
+): Promise<ContractTransactionReceipt | undefined> {
+  const startTime = Date.now();
+  while (true) {
+    const receipt = await waitTxFn();
+    if (receipt !== undefined) {
+      return receipt;
+    }
+    await wait(options?.intervalMillSeconds === undefined ? 2000 : options!.intervalMillSeconds!);
+    const timeoutMs =
+      options?.timeoutMillSeconds === undefined ? 10000 : options!.timeoutMillSeconds!;
+    if (Date.now() - startTime >= timeoutMs) {
+      throw Error("Transaction was not mined");
+    }
+  }
+}
+
+export async function wait(millseconds: number) {
+  return new Promise((resolve) => setTimeout(resolve, millseconds));
+}
+
+export function parseLpReceipt(
+  marketAddress: string,
+  txReceipt: ContractTransactionReceipt
+): LpReceiptStructOutput {
+  const addLiquidityEvent = txReceipt.logs.filter((r) => r.address == marketAddress);
+  if (addLiquidityEvent.length < 1) {
+    throw Error("invaild receipt");
+  }
+
+  const parsedValue = ethers.AbiCoder.defaultAbiCoder().decode(
+    ["uint256", "uint256", "uint256", "address", "uint8", "int16"],
+    addLiquidityEvent[0].data
+  );
+
+  return {
+    0: parsedValue[0] as bigint,
+    1: parsedValue[1] as bigint,
+    2: parsedValue[2] as bigint,
+    3: parsedValue[3] as string,
+    4: parsedValue[4] as bigint,
+    5: parsedValue[5] as bigint,
+    id: parsedValue[0] as bigint,
+    oracleVersion: parsedValue[1] as bigint,
+    amount: parsedValue[2] as bigint,
+    recipient: parsedValue[3] as string,
+    action: parsedValue[4] as bigint,
+    tradingFeeRate: parsedValue[5] as bigint,
+  } as LpReceiptStructOutput;
+}

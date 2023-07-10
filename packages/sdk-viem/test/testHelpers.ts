@@ -1,10 +1,4 @@
-import {
-  Address,
-  createPublicClient,
-  createWalletClient,
-  getContract,
-  http
-} from "viem";
+import { Address, createPublicClient, createWalletClient, getContract, http } from "viem";
 import { mnemonicToAccount } from "viem/accounts";
 import { hardhat } from "viem/chains";
 import { Client } from "../src/Client";
@@ -45,7 +39,7 @@ export function testClient(): Client {
     account: account,
   });
 
-  return new Client(publicClient, walletClient);
+  return new Client({ publicClient, walletClient });
 }
 
 export async function wrapEth(param: WrapEthParam) {
@@ -72,7 +66,6 @@ export async function wrapEth(param: WrapEthParam) {
 export async function swapToUSDC(param: SwapToUSDCParam) {
   const recipient = param.client.walletClient.account.address;
   const ARBITRUM_GOERLI_SWAP_ROUTER = "0xF1596041557707B1bC0b3ffB34346c1D9Ce94E86";
-
 
   const WETH9 = getContract({
     abi: ierc20ABI,

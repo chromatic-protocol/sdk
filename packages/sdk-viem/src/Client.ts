@@ -1,19 +1,26 @@
 import { PublicClient, WalletClient } from "viem";
 import {
-    ChromaticAccount,
-    ChromaticLens,
-    ChromaticMarket,
-    ChromaticMarketFactory,
-    ChromaticPosition,
-    ChromaticRouter,
+  ChromaticAccount,
+  ChromaticLens,
+  ChromaticMarket,
+  ChromaticMarketFactory,
+  ChromaticPosition,
+  ChromaticRouter,
 } from "./entities";
 
 export class Client {
-  // https://viem.sh/docs/ethers-migration.html#writing-to-contracts
-  constructor(
-    public publicClient: PublicClient | null | undefined,
-    public walletClient?: WalletClient | null
-  ) {}
+  public walletClient: WalletClient;
+  public publicClient: PublicClient;
+  constructor({
+    publicClient,
+    walletClient,
+  }: {
+    publicClient?: PublicClient | null;
+    walletClient?: WalletClient | null;
+  } = {}) {
+    this.publicClient = publicClient;
+    this.walletClient = walletClient;
+  }
 
   get chainName(): string | undefined {
     return this.publicClient?.chain?.name;

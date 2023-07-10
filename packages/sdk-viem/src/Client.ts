@@ -22,7 +22,6 @@ export class Client {
     if (walletClient) this.walletClient = walletClient;
   }
 
-
   get chainName() {
     return this.publicClient?.chain?.name;
   }

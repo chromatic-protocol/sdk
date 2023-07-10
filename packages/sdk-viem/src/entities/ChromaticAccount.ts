@@ -59,7 +59,9 @@ export class ChromaticAccount {
    */
   async getAccount() {
     return await handleBytesError(async () => {
-      return await this.contracts().router().read.getAccount();
+      return await this.contracts()
+        .router()
+        .read.getAccount({ account: this._client.walletClient?.account });
     });
   }
 
@@ -73,7 +75,9 @@ export class ChromaticAccount {
     return await handleBytesError(async () => {
       const currAccountAddress = await this.getCurrentAddress();
       const chromaticAcc = this.contracts().account(accountAddress || currAccountAddress);
-      return await chromaticAcc.read.getPositionIds([marketAddress]);
+      return await chromaticAcc.read.getPositionIds([marketAddress], {
+        account: this._client.walletClient?.account,
+      });
     });
   }
 
@@ -122,7 +126,9 @@ export class ChromaticAccount {
   private async getCurrentAddress() {
     return await handleBytesError(async () => {
       if (!this._currentAccountAddress)
-        this._currentAccountAddress = await this.contracts().router().read.getAccount();
+        this._currentAccountAddress = await this.contracts()
+          .router()
+          .read.getAccount({ account: this._client.walletClient?.account });
       return this._currentAccountAddress;
     });
   }

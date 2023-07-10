@@ -78,7 +78,8 @@ export class ChromaticRouter {
     }
 
     return await handleBytesError(async () => {
-      checkClient(this._client)
+      checkClient(this._client);
+
       const { request } = await this.contracts()
         .router()
         .simulate.openPosition(
@@ -105,10 +106,8 @@ export class ChromaticRouter {
    * @returns A promise that resolves to the transaction receipt of the position closing.
    */
   async closePosition(marketAddress: Address, positionId: bigint) {
-
-
     return await handleBytesError(async () => {
-      checkClient(this._client)
+      checkClient(this._client);
       const { request } = await this.contracts()
         .router()
         .simulate.closePosition([marketAddress, positionId], {
@@ -132,7 +131,7 @@ export class ChromaticRouter {
     }
 
     return await handleBytesError(async () => {
-      checkClient(this._client)
+      checkClient(this._client);
       const { request } = await this.contracts()
         .router()
         .simulate.claimPosition([marketAdress, positionId], {
@@ -154,9 +153,13 @@ export class ChromaticRouter {
     const clbToken = await this._client.market().contracts().clbToken(marketAddress);
     const routerAddress = this.contracts().router().address;
     const account = this._client.walletClient.account!.address;
-    if (!(await clbToken.read.isApprovedForAll([account, routerAddress]))) {
+    if (
+      !(await clbToken.read.isApprovedForAll([account, routerAddress], {
+        account: this._client.walletClient!.account,
+      }))
+    ) {
       const { request } = await clbToken.simulate.setApprovalForAll([routerAddress, true], {
-        account,
+        account: this._client.walletClient!.account,
       });
 
       const hash = await this._client.walletClient.writeContract(request);
@@ -179,9 +182,13 @@ export class ChromaticRouter {
     const settlementToken = await this._client.market().contracts().settlementToken(marketAddress);
     const routerAddress = this.contracts().router().address;
     const account = this._client.walletClient.account!.address;
-    const allowance = await settlementToken.read.allowance([account, routerAddress]);
+    const allowance = await settlementToken.read.allowance([account, routerAddress], {
+      account: this._client.walletClient!.account,
+    });
     if (allowance < amount) {
-      const { request } = await settlementToken.simulate.approve([routerAddress, MAX_UINT256]);
+      const { request } = await settlementToken.simulate.approve([routerAddress, MAX_UINT256], {
+        account: this._client.walletClient!.account,
+      });
 
       const hash = await this._client.walletClient.writeContract(request);
       // TODO false condition
@@ -397,7 +404,7 @@ export class ChromaticRouter {
    */
   async withdrawLiquidity(marketAddress: Address, receiptId: bigint) {
     return await handleBytesError(async () => {
-      checkClient(this._client)
+      checkClient(this._client);
       const { request } = await this.contracts()
         .router()
         .simulate.withdrawLiquidity([marketAddress, receiptId], {
@@ -417,7 +424,7 @@ export class ChromaticRouter {
    */
   async withdrawLiquidities(marketAddress: Address, receiptIds: bigint[]) {
     return await handleBytesError(async () => {
-      checkClient(this._client)
+      checkClient(this._client);
       const { request } = await this.contracts()
         .router()
         .simulate.withdrawLiquidityBatch([marketAddress, receiptIds], {

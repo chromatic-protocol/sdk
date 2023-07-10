@@ -58,13 +58,16 @@ export async function wrapEth(param: WrapEthParam) {
     walletClient: param.client.walletClient,
   });
 
-  const { request } = await WETH9.simulate.deposit([], { value: param.amount });
-  const hash = await param.client!.walletClient!.writeContract({ ...request, value: param.amount });
-  await param.client!.publicClient!.waitForTransactionReceipt({ hash });
+  const { request } = await WETH9.simulate.deposit([], {
+    value: param.amount,
+    account: param.client.walletClient!.account,
+  });
+  const hash = await param.client.walletClient!.writeContract({ ...request, value: param.amount });
+  await param.client.publicClient!.waitForTransactionReceipt({ hash });
 }
 
 export async function swapToUSDC(param: SwapToUSDCParam) {
-  const recipient = param.client!.walletClient!.account!.address;
+  const recipient = param.client.walletClient!.account!.address;
   const ARBITRUM_GOERLI_SWAP_ROUTER = "0xF1596041557707B1bC0b3ffB34346c1D9Ce94E86";
 
   const WETH9 = getContract({
@@ -79,9 +82,11 @@ export async function swapToUSDC(param: SwapToUSDCParam) {
   }
 
   if ((await WETH9.read.allowance([recipient, ARBITRUM_GOERLI_SWAP_ROUTER])) < param.amount) {
-    const { request } = await WETH9.simulate.approve([ARBITRUM_GOERLI_SWAP_ROUTER, MAX_UINT256]);
-    const hash = await param.client!.walletClient!.writeContract(request);
-    await param.client!.publicClient!.waitForTransactionReceipt({ hash });
+    const { request } = await WETH9.simulate.approve([ARBITRUM_GOERLI_SWAP_ROUTER, MAX_UINT256], {
+      account: param.client.walletClient!.account,
+    });
+    const hash = await param.client.walletClient!.writeContract(request);
+    await param.client.publicClient!.waitForTransactionReceipt({ hash });
   }
 
   const uniswapRouter = getContract({
@@ -153,21 +158,25 @@ export async function swapToUSDC(param: SwapToUSDCParam) {
     walletClient: param.client.walletClient,
   });
 
-  const { request } = await uniswapRouter.simulate.exactInputSingle([
-    {
-      tokenIn: param.weth9,
-      tokenOut: param.usdc,
-      fee: param.fee,
-      recipient: recipient,
-      deadline: MAX_UINT256,
-      amountIn: param.amount,
-      amountOutMinimum: 0,
-      sqrtPriceLimitX96: 0,
-    },
-  ]);
+  const { request } = await uniswapRouter.simulate.exactInputSingle(
+    [
+      {
+        tokenIn: param.weth9,
+        tokenOut: param.usdc,
+        fee: param.fee,
+        recipient: recipient,
+        deadline: MAX_UINT256,
+        amountIn: param.amount,
+        amountOutMinimum: 0,
+        sqrtPriceLimitX96: 0,
+      },
+    ],
+    { account: param.client.walletClient!.account, value: BigInt(0) }
+  );
 
-  const hash = await param.client!.walletClient!.writeContract({ ...request, value: BigInt(0) });
-  await param.client!.publicClient!.waitForTransactionReceipt({ hash });
+
+  const hash = await param.client.walletClient!.writeContract({ ...request, value: BigInt(0) });
+  await param.client.publicClient!.waitForTransactionReceipt({ hash });
 
   return {
     usdcBalance: await getContract({
@@ -203,9 +212,9 @@ export async function updatePrice(param: UpdatePriceParam) {
     walletClient: param.client.walletClient,
   });
 
-  const { request } = await oracleProvider.simulate.oracleProvider([
+  const { request } = await oracleProvider.simulate.increaseVersion([
     BigInt(param.price) * BigInt(10 ** 8),
   ]);
-  const hash = await param.client!.walletClient!.writeContract(request);
-  await param.client!.publicClient!.waitForTransactionReceipt({ hash });
+  const hash = await param.client.walletClient!.writeContract(request);
+  await param.client.publicClient!.waitForTransactionReceipt({ hash });
 }

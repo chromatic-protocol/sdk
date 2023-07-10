@@ -1,4 +1,4 @@
-import { PublicClient, WalletClient } from "viem";
+import { PublicClient, WalletClient, createPublicClient } from "viem";
 import {
   ChromaticAccount,
   ChromaticLens,
@@ -9,8 +9,8 @@ import {
 } from "./entities";
 
 export class Client {
-  public walletClient: WalletClient;
-  public publicClient: PublicClient;
+  public walletClient: WalletClient | undefined;
+  public publicClient: PublicClient | undefined;
   constructor({
     publicClient,
     walletClient,
@@ -18,11 +18,12 @@ export class Client {
     publicClient?: PublicClient | null;
     walletClient?: WalletClient | null;
   } = {}) {
-    this.publicClient = publicClient;
-    this.walletClient = walletClient;
+    if (publicClient) this.publicClient = publicClient;
+    if (walletClient) this.walletClient = walletClient;
   }
 
-  get chainName(): string | undefined {
+
+  get chainName() {
     return this.publicClient?.chain?.name;
   }
 

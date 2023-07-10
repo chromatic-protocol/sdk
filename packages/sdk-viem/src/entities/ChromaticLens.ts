@@ -9,7 +9,13 @@ import {
 } from "viem";
 import type { Client } from "../Client";
 import { chromaticLensABI, chromaticLensAddress } from "../gen";
-import { Contract, decodeTokenId, encodeTokenId, handleBytesError } from "../utils/helpers";
+import {
+  Contract,
+  checkWalletClient,
+  decodeTokenId,
+  encodeTokenId,
+  handleBytesError,
+} from "../utils/helpers";
 
 /**
  * Represents the result of a liquidity bin.
@@ -120,15 +126,15 @@ export class ChromaticLens {
     return await handleBytesError(async () => {
       const lens = this.getContract();
 
-      if (!ownerAddress && !this._client.walletClient) {
-        throw new Error("wallet client is required");
+      if (!ownerAddress) {
+        checkWalletClient(this._client);
       }
       //
       const [totalLiquidityBins, ownedLiquidities] = await Promise.all([
         lens.read.liquidityBinStatuses([marketAddress]),
         lens.read.clbBalanceOf([
           marketAddress,
-          ownerAddress ?? (await this._client.walletClient.account.address),
+          ownerAddress ?? (await this._client.walletClient!.account!.address),
         ]),
       ]);
 
@@ -208,9 +214,10 @@ export class ChromaticLens {
    */
   async lpReceipts(marketAddress: Address, owner?: Address) {
     return await handleBytesError(async () => {
+      checkWalletClient(this._client);
       return await this.getContract().read.lpReceipts([
         marketAddress,
-        owner === undefined ? this._client.walletClient.account.address : owner!,
+        owner === undefined ? this._client.walletClient.account!.address : owner!,
       ]);
     });
   }

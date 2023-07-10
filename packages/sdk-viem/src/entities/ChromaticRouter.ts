@@ -8,7 +8,7 @@ import {
   zeroAddress,
 } from "viem";
 import { chromaticRouterABI, chromaticRouterAddress } from "../gen";
-import { Contract, handleBytesError, MAX_UINT256 } from "../utils/helpers";
+import { checkClient, Contract, handleBytesError, MAX_UINT256 } from "../utils/helpers";
 /**
  * Represents the parameters for adding liquidity to a market using the ChromaticRouter.
  */
@@ -78,6 +78,7 @@ export class ChromaticRouter {
     }
 
     return await handleBytesError(async () => {
+      checkClient(this._client)
       const { request } = await this.contracts()
         .router()
         .simulate.openPosition(
@@ -104,11 +105,10 @@ export class ChromaticRouter {
    * @returns A promise that resolves to the transaction receipt of the position closing.
    */
   async closePosition(marketAddress: Address, positionId: bigint) {
-    if (!this._client.walletClient) {
-      throw new Error("Wallet Client is not set");
-    }
+
 
     return await handleBytesError(async () => {
+      checkClient(this._client)
       const { request } = await this.contracts()
         .router()
         .simulate.closePosition([marketAddress, positionId], {
@@ -132,6 +132,7 @@ export class ChromaticRouter {
     }
 
     return await handleBytesError(async () => {
+      checkClient(this._client)
       const { request } = await this.contracts()
         .router()
         .simulate.claimPosition([marketAdress, positionId], {
@@ -149,9 +150,10 @@ export class ChromaticRouter {
    * @returns A promise that resolves to a boolean indicating whether the approval was successful.
    */
   async approvalClbTokenToRouter(marketAddress: Address): Promise<boolean> {
+    checkClient(this._client);
     const clbToken = await this._client.market().contracts().clbToken(marketAddress);
     const routerAddress = this.contracts().router().address;
-    const account = this._client.walletClient.account.address;
+    const account = this._client.walletClient.account!.address;
     if (!(await clbToken.read.isApprovedForAll([account, routerAddress]))) {
       const { request } = await clbToken.simulate.setApprovalForAll([routerAddress, true], {
         account,
@@ -173,9 +175,10 @@ export class ChromaticRouter {
    * @returns A promise that resolves to a boolean indicating whether the approval was successful.
    */
   async approvalSettlementTokenToRouter(marketAddress: Address, amount: bigint): Promise<boolean> {
+    checkClient(this._client);
     const settlementToken = await this._client.market().contracts().settlementToken(marketAddress);
     const routerAddress = this.contracts().router().address;
-    const account = this._client.walletClient.account.address;
+    const account = this._client.walletClient.account!.address;
     const allowance = await settlementToken.read.allowance([account, routerAddress]);
     if (allowance < amount) {
       const { request } = await settlementToken.simulate.approve([routerAddress, MAX_UINT256]);
@@ -196,9 +199,7 @@ export class ChromaticRouter {
    * @returns A promise that resolves to the transaction receipt of the liquidity addition.
    */
   async addLiquidity(marketAddress: Address, param: RouterAddLiquidityParam, receipient?: Address) {
-    if (!this._client.walletClient) {
-      throw new Error("Wallet Client is not set");
-    }
+    checkClient(this._client);
 
     // TODO check option flag
     if (!(await this.approvalSettlementTokenToRouter(marketAddress, param.amount))) {
@@ -244,9 +245,10 @@ export class ChromaticRouter {
     }
 
     return await handleBytesError(async () => {
+      checkClient(this._client);
       const feeRates: number[] = [];
       const amounts: bigint[] = [];
-      recipient = recipient || this._client.walletClient.account.address;
+      recipient = recipient || this._client.walletClient.account!.address;
 
       params.forEach((param) => {
         feeRates.push(param.feeRate);
@@ -281,6 +283,7 @@ export class ChromaticRouter {
     }
 
     return await handleBytesError(async () => {
+      checkClient(this._client);
       const { request } = await this.contracts()
         .router()
         .simulate.removeLiquidity(
@@ -288,7 +291,7 @@ export class ChromaticRouter {
             marketAddress,
             param.feeRate,
             param.clbTokenAmount,
-            param.receipient || this._client.walletClient.account.address,
+            param.receipient || this._client.walletClient.account!.address,
           ],
           {
             account: this._client.walletClient.account,
@@ -312,17 +315,14 @@ export class ChromaticRouter {
     params: RouterRemoveLiquidityParam[],
     receipient?: Address
   ) {
-    if (!this._client.walletClient) {
-      throw new Error("Wallet Client is not set");
-    }
-
     // TODO check option flag
     if (!(await this.approvalClbTokenToRouter(marketAddress))) {
       return;
     }
 
     return await handleBytesError(async () => {
-      receipient = receipient || this._client.walletClient.account.address;
+      checkClient(this._client);
+      receipient = receipient || this._client.walletClient.account!.address;
       const contractParam = params.reduce(
         (contractParam, param) => {
           contractParam["clbTokenAmount"].push(param.clbTokenAmount);
@@ -340,7 +340,7 @@ export class ChromaticRouter {
         .simulate.removeLiquidityBatch(
           [marketAddress, receipient, contractParam.feeRate, contractParam.clbTokenAmount],
           {
-            account: this._client.walletClient.account,
+            account: this._client.walletClient!.account,
           }
         );
 
@@ -357,6 +357,7 @@ export class ChromaticRouter {
    */
   async claimLiquidity(marketAddress: Address, receiptId: bigint) {
     return await handleBytesError(async () => {
+      checkClient(this._client);
       const { request } = await this.contracts()
         .router()
         .simulate.claimLiquidity([marketAddress, receiptId], {
@@ -376,6 +377,7 @@ export class ChromaticRouter {
    */
   async claimLiquidites(marketAddress: Address, receiptIds: bigint[]) {
     return await handleBytesError(async () => {
+      checkClient(this._client);
       const { request } = await this.contracts()
         .router()
         .simulate.claimLiquidityBatch([marketAddress, receiptIds], {
@@ -395,6 +397,7 @@ export class ChromaticRouter {
    */
   async withdrawLiquidity(marketAddress: Address, receiptId: bigint) {
     return await handleBytesError(async () => {
+      checkClient(this._client)
       const { request } = await this.contracts()
         .router()
         .simulate.withdrawLiquidity([marketAddress, receiptId], {
@@ -414,6 +417,7 @@ export class ChromaticRouter {
    */
   async withdrawLiquidities(marketAddress: Address, receiptIds: bigint[]) {
     return await handleBytesError(async () => {
+      checkClient(this._client)
       const { request } = await this.contracts()
         .router()
         .simulate.withdrawLiquidityBatch([marketAddress, receiptIds], {

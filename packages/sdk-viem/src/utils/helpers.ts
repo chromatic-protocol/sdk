@@ -1,3 +1,4 @@
+import { Client } from "../Client";
 import {
   chromaticAccountABI,
   chromaticLensABI,
@@ -34,6 +35,24 @@ export type Contract<TAbi extends Abi> = GetContractReturnType<
   WalletClient,
   Address
 >;
+
+export function checkPublicClient(
+  client: Client
+): asserts client is Client & { publicClient: PublicClient } {
+  if (!client.publicClient) throw new Error("Public client is not set");
+}
+export function checkWalletClient(
+  client: Client
+): asserts client is Client & { walletClient: WalletClient } {
+  if (!client.walletClient) throw new Error("Wallet client is not set");
+}
+
+export function checkClient(
+  client: Client
+): asserts client is Client & { publicClient: PublicClient; walletClient: WalletClient } {
+  if (!client.walletClient) throw new Error("Wallet client is not set");
+  if (!client.publicClient) throw new Error("Public client is not set");
+}
 
 export function encodeTokenId(tradingFeeRate: number, long: boolean = true) {
   return long
@@ -81,8 +100,11 @@ export const errorSignitures: ErrorSignatures = [
   ...chromaticLensABI,
 ]
   .filter((abi) => abi.type === "error")
+
   .reduce((prevErrMap, currErrAbi) => {
+    // @ts-expect-error
     const signature = keccak256(toHex(`${currErrAbi["name"]}()`)).substring(0, 10);
+    // @ts-expect-error
     prevErrMap[signature] = currErrAbi["name"];
     return prevErrMap;
   }, {} as ErrorSignatures);

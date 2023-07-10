@@ -2,7 +2,7 @@ import { BigNumber } from "ethers";
 import { Client } from "../Client";
 import { Address, GetContractReturnType, getContract } from "viem";
 import { chromaticAccountABI } from "../gen";
-import { Contract, PromiseOnlySuccess, handleBytesError } from "../utils/helpers";
+import { Contract, PromiseOnlySuccess, checkClient, handleBytesError } from "../utils/helpers";
 import { GetLogsReturnType } from "viem/actions";
 
 export interface TokenBalancesResult {
@@ -14,7 +14,7 @@ export interface TokenBalancesResult {
  * Represents a Chromatic Account and provides methods to interact with it.
  */
 export class ChromaticAccount {
-  private _currentAccountAddress: Address;
+  private _currentAccountAddress: Address | undefined;
 
   /**
    * Creates a new instance of ChromaticAccount.
@@ -28,9 +28,7 @@ export class ChromaticAccount {
    */
   contracts() {
     return {
-      account: (
-        address: Address
-      ): Contract<typeof chromaticAccountABI> =>
+      account: (address: Address): Contract<typeof chromaticAccountABI> =>
         getContract({
           address,
           abi: chromaticAccountABI,
@@ -48,6 +46,7 @@ export class ChromaticAccount {
    */
   async createAccount() {
     return await handleBytesError(async () => {
+      checkClient(this._client);
       const { request } = await this.contracts().router().simulate.createAccount();
       const hash = await this._client.walletClient.writeContract(request);
       return await this._client.publicClient.waitForTransactionReceipt({ hash });

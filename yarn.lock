@@ -2914,10 +2914,10 @@ v8-to-istanbul@^9.0.1:
     "@types/istanbul-lib-coverage" "^2.0.1"
     convert-source-map "^1.6.0"
 
-viem@^1.2.10:
-  version "1.2.10"
-  resolved "https://registry.yarnpkg.com/viem/-/viem-1.2.10.tgz#2fec517f73b0e205ab866a3ec451127845a8162c"
-  integrity sha512-1WWhgb+WoQyPIt4zuSTaWsbXJ2q+rslohtg0g+kbo4Z9IGfXNLsp/wAjUhgUgArScCL6oALhjnnZ1O91I+gFrA==
+viem@1.2.12:
+  version "1.2.12"
+  resolved "https://registry.yarnpkg.com/viem/-/viem-1.2.12.tgz#0342f52d05968bd1c2af5db0b9bc569926ae9151"
+  integrity sha512-TMhvqT2VaCaJyBfuNDyL1h8xPFyPDHeX6Qab66TjWscnNcTwkW0gojO4Uh+A4RuPzFxIlWSW+b5SjS8SJHlHpg==
   dependencies:
     "@adraffy/ens-normalize" "1.9.0"
     "@noble/curves" "1.0.0"

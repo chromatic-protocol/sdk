@@ -1,9 +1,8 @@
-import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
+import { Address, decodeFunctionResult, encodeFunctionData } from "viem";
 import { Client } from "../Client";
 import { LIQUIDATION_PRICE_PRECISION, QTY_LEVERAGE_PRECISION } from "../constants";
-import { handleBytesError } from "../utils/helpers";
-import { Address, GetContractReturnType, decodeFunctionResult, encodeFunctionData } from "viem";
 import { chromaticLensABI } from "../gen";
+import { handleBytesError } from "../utils/helpers";
 
 type InterestParam = Pick<PositionParam, "makerMargin" | "claimTimestamp" | "openTimestamp">;
 
@@ -23,7 +22,10 @@ export interface PositionParam {
   qty: bigint;
   leverage: number;
 }
-
+interface InterestRateRecord {
+  annualRateBPS: bigint;
+  beginTimestamp: bigint;
+}
 /**
  * Represents a Chromatic position.
  */
@@ -49,8 +51,8 @@ export interface IPosition {
  * Represents a Chromatic position and provides methods to interact with it.
  */
 export class ChromaticPosition {
-  private settlementTokenAddress: Address;
-  private interestRateRecords;
+  private settlementTokenAddress: Address | undefined;
+  private interestRateRecords: InterestRateRecord[] = [];
 
   /**
    * Creates a new instance of ChromaticPosition.
@@ -130,12 +132,14 @@ export class ChromaticPosition {
         async () => await this.contracts().market(marketAddress).read.settlementToken()
       );
     }
-    this.interestRateRecords = await handleBytesError(
-      async () =>
-        await this.contracts().marketFactory.read.getInterestRateRecords([
-          this.settlementTokenAddress,
-        ])
-    );
+    this.interestRateRecords = [
+      ...(await handleBytesError(
+        async () =>
+          await this.contracts().marketFactory.read.getInterestRateRecords([
+            this.settlementTokenAddress!,
+          ])
+      )),
+    ];
     return this.interestRateRecords;
   }
 
@@ -151,20 +155,20 @@ export class ChromaticPosition {
     let to = position.claimTimestamp || BigInt(Math.floor(Date.now() / 1000));
     const filteredInterestFees = (await this.getInterestRateRecords(marketAddress))
       .filter((fee) => fee.beginTimestamp <= BigInt(to))
-      .sort((a, b) => b.beginTimestamp - a.beginTimestamp);
+      .sort((a, b) => Number(b.beginTimestamp - a.beginTimestamp));
     let totalInterestFee = BigInt(0);
     for (let fee of filteredInterestFees) {
       const from = BigInt(Math.max(Number(fee.beginTimestamp), Number(position.openTimestamp)));
       const period = to - from;
-      to = fee.beginTimestamp.toNumber();
+      to = fee.beginTimestamp;
       const x = position.makerMargin;
-      const y = fee.annualRateBPS.mul(period);
+      const y = fee.annualRateBPS * period;
       let calculatedInterestFee = (x * y) / denominator;
       if ((x * y) % denominator > BigInt(0)) {
         calculatedInterestFee = calculatedInterestFee + BigInt(1);
       }
       totalInterestFee = totalInterestFee + calculatedInterestFee;
-      if (fee.beginTimestamp.lte(position.openTimestamp)) break;
+      if (fee.beginTimestamp <= position.openTimestamp) break;
     }
     return totalInterestFee;
   }

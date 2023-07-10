@@ -34,7 +34,8 @@
     "build:cjs": "rm -rf ./dist/cjs && tsc --build --force tsconfig.cjs.build.json",
     "build:esm": "rm -rf ./dist/esm && tsc --build --force tsconfig.build.json",
     "build": "yarn build:cjs && yarn build:esm",
-    "clean": "rm -rf docs dist"
+    "clean": "rm -rf docs dist",
+    "docs:sdk": "cd site && yarn install && yarn clear && yarn build"
   },
   "repository": {
     "type": "git",

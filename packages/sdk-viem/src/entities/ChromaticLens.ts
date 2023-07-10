@@ -1,11 +1,9 @@
 import {
   Address,
-  GetContractReturnType,
   decodeFunctionResult,
-  encodeAbiParameters,
   encodeFunctionData,
   getContract,
-  zeroAddress,
+  zeroAddress
 } from "viem";
 import type { Client } from "../Client";
 import { chromaticLensABI, chromaticLensAddress } from "../gen";

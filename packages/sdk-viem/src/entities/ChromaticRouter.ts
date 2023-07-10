@@ -1,14 +1,11 @@
-import { Client } from "../Client";
 import {
   Address,
-  GetContractReturnType,
-  PublicClient,
-  WalletClient,
   getContract,
-  zeroAddress,
+  zeroAddress
 } from "viem";
+import { Client } from "../Client";
 import { chromaticRouterABI, chromaticRouterAddress } from "../gen";
-import { checkClient, Contract, handleBytesError, MAX_UINT256 } from "../utils/helpers";
+import { Contract, MAX_UINT256, checkClient, handleBytesError } from "../utils/helpers";
 /**
  * Represents the parameters for adding liquidity to a market using the ChromaticRouter.
  */

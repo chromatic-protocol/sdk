@@ -1,9 +1,7 @@
-import { BigNumber } from "ethers";
+import { Address, getContract } from "viem";
 import { Client } from "../Client";
-import { Address, GetContractReturnType, getContract } from "viem";
 import { chromaticAccountABI } from "../gen";
 import { Contract, PromiseOnlySuccess, checkClient, handleBytesError } from "../utils/helpers";
-import { GetLogsReturnType } from "viem/actions";
 
 export interface TokenBalancesResult {
   token: string;

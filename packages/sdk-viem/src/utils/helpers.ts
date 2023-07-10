@@ -11,14 +11,14 @@ import {
 } from "../gen";
 
 import {
-  keccak256,
-  toHex,
-  hexToBigInt,
-  GetContractReturnType,
+  Abi,
   Address,
+  GetContractReturnType,
   PublicClient,
   WalletClient,
-  Abi,
+  hexToBigInt,
+  keccak256,
+  toHex,
 } from "viem";
 const DIRECTION_PRECISION = BigInt(10 ** 10);
 export function decodeTokenId(encodedId: bigint) {

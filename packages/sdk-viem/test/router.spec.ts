@@ -1,9 +1,8 @@
-import { encodeTokenId, handleBytesError } from "../src/utils/helpers";
-import { testClient, swapToUSDC, updatePrice } from "./testHelpers";
-import { parseEther, zeroAddress, getContract } from "viem";
-import { ierc20ABI } from "../src/gen";
-import { MAX_UINT256 } from "../src/utils/helpers";
 import * as segFaultHandler from "segfault-handler";
+import { getContract, parseEther, zeroAddress } from "viem";
+import { ierc20ABI } from "../src/gen";
+import { encodeTokenId } from "../src/utils/helpers";
+import { swapToUSDC, testClient, updatePrice } from "./testHelpers";
 //TODO fix segmentation fault error
 segFaultHandler.registerHandler("crash.log");
 

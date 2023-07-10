@@ -1,4 +1,4 @@
-import { PublicClient, WalletClient, createPublicClient } from "viem";
+import { PublicClient, WalletClient } from "viem";
 import {
   ChromaticAccount,
   ChromaticLens,

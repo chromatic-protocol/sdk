@@ -1,4 +1,4 @@
-import { Address, GetContractReturnType, getContract } from "viem";
+import { Address, getContract } from "viem";
 import type { Client } from "../Client";
 import {
   chromaticMarketFactoryABI,

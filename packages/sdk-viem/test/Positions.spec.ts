@@ -1,7 +1,6 @@
-import { Client } from "../src/Client";
+import { formatEther, formatUnits, parseEther } from "viem";
 import { ChromaticPosition, PositionParam } from "../src/entities/ChromaticPosition";
 import { testClient } from "./testHelpers";
-import { formatEther, formatUnits, parseEther } from "viem";
 
 type RecordStructOutput = [bigint, bigint] & {
   annualRateBPS: bigint;

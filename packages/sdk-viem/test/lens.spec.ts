@@ -1,10 +1,10 @@
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
+import { parseEther } from "viem";
 import {
   swapToUSDC,
   testClient,
   updatePrice,
 } from "./testHelpers";
-import { parseEther } from "viem";
 
 describe("lens sdk test", () => {
   const client = testClient();

@@ -1,6 +1,6 @@
-import { Address, GetContractReturnType, PublicClient, WalletClient, getContract } from "viem";
+import { Address, getContract } from "viem";
 import type { Client } from "../Client";
-import { chromaticMarketABI, ierc20MetadataABI, clbTokenABI, iOracleProviderABI } from "../gen";
+import { chromaticMarketABI, clbTokenABI, iOracleProviderABI, ierc20MetadataABI } from "../gen";
 import { Contract, handleBytesError } from "../utils/helpers";
 
 /**

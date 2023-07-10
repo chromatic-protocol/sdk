@@ -32,6 +32,7 @@ jobs:
         git-push: true
         skip-on-empty: false
         version-file: packages/sdk-ethers-v5/package.json
+        skip-tag: true
         # skip-version-file: false
         # skip-commit: false
     - uses: actions/setup-node@v3
@@ -48,7 +49,6 @@ jobs:
         yarn install
         yarn build
         yarn publish --access public
-        yarn docs
     
     # export markdown docs to docs repository
     - uses: chromatic-protocol/action-github-app-token@v1

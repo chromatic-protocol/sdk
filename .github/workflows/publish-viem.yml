@@ -32,6 +32,7 @@ jobs:
         git-push: true
         skip-on-empty: false
         version-file: packages/sdk-viem/package.json
+        skip-tag: true
         # skip-version-file: false
         # skip-commit: false
     - uses: actions/setup-node@v3
@@ -50,7 +51,7 @@ jobs:
         yarn install
         yarn build
         yarn publish --access public
-    
+
     # export markdown docs to docs repository
     - uses: chromatic-protocol/action-github-app-token@v1
       id: generate-token
@@ -74,8 +75,8 @@ jobs:
       uses: peter-evans/create-pull-request@v5
       with:
         base: main
-        branch: docs/sdk-ethers-v5
-        path: packages/sdk-ethers-v5/docs-repo
+        branch: docs/sdk-viem
+        path: packages/sdk-viem/docs-repo
         add-paths: |
           docs/sdk/reference/sdk-viem/**
         token: ${{ steps.generate-token.outputs.token }}

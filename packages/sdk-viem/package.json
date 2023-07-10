@@ -1,0 +1,53 @@
+{
+  "name": "@chromatic-protocol/sdk-viem",
+  "license": "GPLV3",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "node": "./dist/cjs/index.js",
+      "require": "./dist/cjs/index.js",
+      "default": "./dist/esm/index.js"
+    },
+    "./contracts": {
+      "types": "./dist/esm/gen/index.d.ts",
+      "node": "./dist/cjs/gen/index.js",
+      "require": "./dist/cjs/gen/index.js",
+      "default": "./dist/esm/gen/index.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "contracts": [
+        "dist/cjs/gen/index.d.ts",
+        "dist/esm/gen/index.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "scripts": {
+    "build:cjs": "rm -rf ./dist/cjs && tsc --build --force tsconfig.cjs.build.json",
+    "build:esm": "rm -rf ./dist/esm && tsc --build --force tsconfig.build.json",
+    "build": "yarn build:cjs && yarn build:esm",
+    "clean": "rm -rf docs dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chromatic-protocol/sdk.git"
+  },
+  "version": "0.1.0-rc.0",
+  "dependencies": {
+    "viem": "1.2.12"
+  },
+  "devDependencies": {
+    "fetch": "^1.1.0",
+    "jest-runner-tsc": "^1.6.0",
+    "segfault-handler": "^1.3.0",
+    "typescript": "^5.1.6"
+  }
+}

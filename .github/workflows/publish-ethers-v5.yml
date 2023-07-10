@@ -1,0 +1,88 @@
+name: publish sdk-ethers-v5
+
+on:
+  pull_request:
+    types:
+      - closed
+    paths:
+      - packages/sdk-ethers-v5/src/**
+      - packages/sdk-ethers-v5/site/**
+      - packages/sdk-ethers-v5/package.json
+      - packages/sdk-ethers-v5/tsconfig.json
+      - packages/sdk-ethers-v5/tsconfig.*.json
+      - .github/workflows/publish-ethers-v5.yml
+  
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  publish:
+    if: ${{ github.event.pull_request.merged == true }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3 # Checkout our working repository
+    - name: Conventional Changelog Action
+      id: changelog
+      uses: TriPSs/conventional-changelog-action@v3
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        output-file: false
+        pre-release: true
+        git-push: true
+        skip-on-empty: false
+        version-file: packages/sdk-ethers-v5/package.json
+        # skip-version-file: false
+        # skip-commit: false
+    - uses: actions/setup-node@v3
+      id: setup-node
+      with:
+        node-version: 18.15
+        cache: yarn
+        registry-url: https://registry.npmjs.org
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_CHROMATIC }}    
+    - name: build and publish
+      working-directory: ./packages/sdk-ethers-v5 
+      run: |
+        yarn install
+        yarn build
+        yarn publish --access public
+        yarn docs
+    - name: publish gh-pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./packages/sdk-ethers-v5/docs
+    
+    # export markdown docs to docs repository
+    - uses: chromatic-protocol/action-github-app-token@v1
+      id: generate-token
+      with:
+        app_id: ${{ secrets.PR_ACTION_APP_ID }}
+        private_key: ${{ secrets.PR_ACTION_PRIVATE }}
+    - uses: actions/checkout@v3
+      with:
+        repository: chromatic-protocol/docs
+        ref: main
+        path: packages/sdk-ethers-v5/docs-repo
+        token: ${{ steps.generate-token.outputs.token }}
+    - name: export docs:sdk and cp
+      working-directory: ./packages/sdk-ethers-v5
+      run: |
+        yarn docs:sdk
+        cp docs-repo/docs/sdk/reference/sdk-ethers-v5/_category_.yml site/docs/sdk/ 
+        rm -rf docs-repo/docs/sdk/reference/sdk-ethers-v5/*
+        cp -r site/docs/sdk/* docs-repo/docs/sdk/reference/sdk-ethers-v5/
+        cp src/gen/deployedAddress.ts docs-repo/docs/contracts/reference/
+    - name: pull-request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        base: main
+        branch: docs/sdk-ethers-v5
+        path: packages/sdk-ethers-v5/docs-repo
+        add-paths: |
+          docs/sdk/reference/sdk-ethers-v5/**
+          docs/contracts/reference/deployedAddress.ts
+        token: ${{ steps.generate-token.outputs.token }}
+        commit-message: ${{ github.event.pull_request.title }}

@@ -1,9 +1,5 @@
 import { BigNumber, ContractReceipt, Signer, ethers } from "ethers";
-import {
-  ChromaticMarket__factory,
-  IERC20__factory,
-} from "../src/gen";
-import { LpReceiptStructOutput } from "../src/gen/contracts/core/ChromaticMarket";
+import { IChromaticMarket__factory, IERC20__factory } from "../src/gen";
 
 export const MNEMONIC_JUNK = "test test test test test test test test test test test junk";
 
@@ -38,8 +34,6 @@ export interface WaitMiningTxOptions {
   timeoutMillSeconds?: number;
 }
 
-
-
 export function getSigner(param?: GetSignerParam): ethers.Signer {
   const provider = getDefaultProvider();
 
@@ -56,18 +50,29 @@ export function getSigner(param?: GetSignerParam): ethers.Signer {
 }
 
 export function getDefaultProvider(): ethers.providers.JsonRpcProvider {
-  return new ethers.providers.JsonRpcProvider(); // "http://localhost:8545"; // default value
-  // return new ethers.providers.JsonRpcProvider('http://127.0.0.1:8545'); // "http://localhost:8545"; // default value
+  return new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545"); // "http://localhost:8545"; // default value
 }
 
 export async function wrapEth(param: WrapEthParam) {
-  const warpTx = await param.signer.sendTransaction({
-    to: param.weth9,
-    data: ethers.utils.id("deposit()").substring(0, 10),
+  const weth9 = new ethers.Contract(
+    param.weth9,
+    [
+      {
+        inputs: [],
+        name: "deposit",
+        outputs: [],
+        stateMutability: "payable",
+        type: "function",
+      },
+    ],
+    param.signer
+  );
+
+  const tx = await weth9.deposit({
     value: param.amount,
     gasPrice: await param.signer.getGasPrice(),
   });
-  await warpTx.wait();
+  await tx.wait();
 }
 
 export async function swapToUSDC(param: SwapToUSDCParam) {
@@ -155,20 +160,15 @@ export async function swapToUSDC(param: SwapToUSDCParam) {
     param.signer
   );
 
-  const swapTx = await param.signer.sendTransaction({
-    to: ARBITRUM_GOERLI_SWAP_ROUTER,
-    data: routerContract.interface.encodeFunctionData("exactInputSingle", [
-      {
-        tokenIn: param.weth9,
-        tokenOut: param.usdc,
-        fee: param.fee,
-        recipient: recipient,
-        deadline: ethers.constants.MaxUint256,
-        amountIn: param.amount,
-        amountOutMinimum: 0,
-        sqrtPriceLimitX96: 0,
-      },
-    ]),
+  const swapTx = await routerContract.exactInputSingle({
+    tokenIn: param.weth9,
+    tokenOut: param.usdc,
+    fee: param.fee,
+    recipient: recipient,
+    deadline: ethers.constants.MaxUint256,
+    amountIn: param.amount,
+    amountOutMinimum: 0,
+    sqrtPriceLimitX96: 0,
   });
 
   const receipt = await swapTx.wait();
@@ -181,7 +181,7 @@ export async function swapToUSDC(param: SwapToUSDCParam) {
 }
 
 export async function updatePrice(param: UpdatePriceParam) {
-  const market = ChromaticMarket__factory.connect(param.market, param.signer);
+  const market = IChromaticMarket__factory.connect(param.market, param.signer);
   const oracleProviderAddress = await market.oracleProvider();
   const oracleProvider = new ethers.Contract(
     oracleProviderAddress,
@@ -203,12 +203,7 @@ export async function updatePrice(param: UpdatePriceParam) {
     param.signer
   );
 
-  const tx = await param.signer.sendTransaction({
-    to: oracleProviderAddress,
-    data: oracleProvider.interface.encodeFunctionData("increaseVersion", [
-      BigNumber.from(param.price.toString()).mul(10 ** 8),
-    ]),
-  });
+  const tx = await oracleProvider.increaseVersion(BigInt(param.price.toString()) * BigInt(10 ** 8));
 
   await tx.wait();
 }
@@ -235,34 +230,4 @@ export async function waitTxMining(
 
 export async function wait(millseconds: number) {
   return new Promise((resolve) => setTimeout(resolve, millseconds));
-}
-
-export function parseLpReceipt(
-  marketAddress: string,
-  txReceipt: ContractReceipt
-): LpReceiptStructOutput {
-  const addLiquidityEvent = txReceipt.events.filter((r) => r.address == marketAddress);
-  if (addLiquidityEvent.length < 1) {
-    throw Error("invaild receipt");
-  }
-
-  const parsedValue = ethers.utils.defaultAbiCoder.decode(
-    ["uint256", "uint256", "uint256", "address", "uint8", "int16"],
-    addLiquidityEvent[0].data
-  );
-
-  return {
-    0: parsedValue[0] as BigNumber,
-    1: parsedValue[1] as BigNumber,
-    2: parsedValue[2] as BigNumber,
-    3: parsedValue[3] as string,
-    4: parsedValue[4] as number,
-    5: parsedValue[5] as number,
-    id: parsedValue[0] as BigNumber,
-    oracleVersion: parsedValue[1] as BigNumber,
-    amount: parsedValue[2] as BigNumber,
-    recipient: parsedValue[3] as string,
-    action: parsedValue[4] as number,
-    tradingFeeRate: parsedValue[5] as number,
-  } as LpReceiptStructOutput;
 }

@@ -4,10 +4,17 @@ import {
   ChromaticAccount__factory,
   ChromaticLiquidator__factory,
   ChromaticMarketFactory__factory,
-  ChromaticMarket__factory,
   ChromaticRouter__factory,
   ChromaticVault__factory,
+  IChromaticMarket__factory,
   IOracleProvider__factory,
+  MarketDiamondCutFacet__factory,
+  MarketFacetBase__factory,
+  MarketLiquidateFacet__factory,
+  MarketLiquidityFacet__factory,
+  MarketSettleFacet__factory,
+  MarketStateFacet__factory,
+  MarketTradeFacet__factory,
 } from "../gen";
 
 import debug from "debug";
@@ -38,16 +45,18 @@ export async function PromiseOnlySuccess<T>(values: Iterable<T | PromiseLike<T>>
   );
 }
 
-// TODO panic error
+
 export async function handleBytesError<T>(fn: () => Promise<T>, provider: Provider): Promise<T> {
   try {
     return await fn();
   } catch (e) {
-    /// exception with estimateGas
-    /// error code 3 : execution reverted
-    const revertMatch = (e as Error).message.match(/"error":{"code":3,"data":"([^"]*)"/);
-    if (revertMatch) {
-      throw Error(parseHexError(revertMatch[1]));
+    // TODO e.action === 'estimateGas'
+    if(e.info && e.info.error.message && e.info.error.data){
+      throw Error(parseHexError(e.info.error.data));
+    }
+
+    if(e.revert && e.revert.args && e.revert.args.length > 0){
+      throw Error(`call reverted with error: ${e.revert.args[0]}`);
     }
 
     /// When gasLimit and gasPrice are set
@@ -84,7 +93,14 @@ interface ErrorSignatures {
 }
 
 export const errorSignitures: ErrorSignatures = [
-  ...ChromaticMarket__factory.abi,
+  ...MarketDiamondCutFacet__factory.abi,
+  ...MarketFacetBase__factory.abi,
+  ...MarketLiquidateFacet__factory.abi,
+  ...MarketLiquidityFacet__factory.abi,
+  ...MarketSettleFacet__factory.abi,
+  ...MarketStateFacet__factory.abi,
+  ...MarketTradeFacet__factory.abi,
+  ...IChromaticMarket__factory.abi,
   ...ChromaticMarketFactory__factory.abi,
   ...ChromaticVault__factory.abi,
   ...CLBToken__factory.abi,

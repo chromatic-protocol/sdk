@@ -1,8 +1,8 @@
 import { ethers } from "ethers";
 import { Client } from "../src/Client";
-import { CLBToken__factory, ChromaticMarket__factory, IERC20__factory } from "../src/gen";
+import { CLBToken__factory, IChromaticMarket__factory, IERC20__factory } from "../src/gen";
 import { encodeTokenId, handleBytesError } from "../src/utils/helpers";
-import { getSigner, parseLpReceipt, swapToUSDC, updatePrice, waitTxMining } from "./testHelpers";
+import { getSigner, swapToUSDC, updatePrice, waitTxMining } from "./testHelpers";
 
 describe("router sdk test", () => {
   const signer = getSigner();
@@ -15,16 +15,15 @@ describe("router sdk test", () => {
       throw new Error(`market is not registered (token : ${tokens[0].address})`);
     }
     const marketAddress = markets[0].address;
-    const clbTokenAddress = await ChromaticMarket__factory.connect(
+    const clbTokenAddress = await IChromaticMarket__factory.connect(
       marketAddress,
       signer
     ).clbToken();
     const signerAddress = await signer.getAddress();
 
     async function getPositions() {
-      return await ChromaticMarket__factory.connect(marketAddress, signer).getPositions(
-        await client.account().getPositionIds(marketAddress)
-      );
+      const ids = await client.account().getPositionIds(marketAddress);
+      return await IChromaticMarket__factory.connect(marketAddress, signer).getPositions([...ids]);
     }
 
     async function clbBalance(feeRate: number) {
@@ -40,6 +39,10 @@ describe("router sdk test", () => {
 
     const usdc = tokens[0].address;
     const router = client.router();
+
+    async function getLpReceiptIds() {
+      return router.contracts().router()["getLpReceiptIds(address)"](marketAddress);
+    }
 
     async function addAndClaimLiquidity(tradingFeeRate: number) {
       // swap
@@ -58,12 +61,13 @@ describe("router sdk test", () => {
         router.addLiquidities(marketAddress, [{ feeRate: tradingFeeRate, amount: amount }])
       );
 
-      const addLpReceipt = parseLpReceipt(marketAddress, addTxReceipt);
-      expect(addLpReceipt.id !== undefined).toEqual(true);
+      const lpReceiptIds = await getLpReceiptIds();
 
       // claimLiquidity - router
       await updatePrice({ market: marketAddress, signer, price: 1000 });
-      await waitTxMining(() => router.claimLiquidites(marketAddress, [addLpReceipt.id]));
+      await waitTxMining(() =>
+        router.claimLiquidites(marketAddress, [lpReceiptIds[lpReceiptIds.length - 1]])
+      );
 
       // balance check - ClbToken
       const clbBalanceAfterAdd = await clbBalance(tradingFeeRate);
@@ -81,11 +85,13 @@ describe("router sdk test", () => {
       addAndClaimLiquidity,
       clbTokenAddress,
       getPositions,
+      getLpReceiptIds,
     };
   }
 
   test("add/remove Liquidity", async () => {
-    const { marketAddress, router, token, clbBalance, addAndClaimLiquidity } = await getFixture();
+    const { marketAddress, router, getLpReceiptIds, clbBalance, addAndClaimLiquidity } =
+      await getFixture();
 
     await updatePrice({ market: marketAddress, signer, price: 1000 });
     const tradingFeeRate = 100;
@@ -98,12 +104,13 @@ describe("router sdk test", () => {
         { feeRate: tradingFeeRate, clbTokenAmount: clbBalanceAfterAdd },
       ])
     );
-    const removeLpReceipt = parseLpReceipt(marketAddress, removeTxReceipt);
-    expect(removeLpReceipt.id !== undefined).toEqual(true);
+    const lpReceiptIds = await getLpReceiptIds();
 
     // withdrawLiquidity - router
     await updatePrice({ market: marketAddress, signer, price: 1000 });
-    await waitTxMining(() => router.withdrawLiquidities(marketAddress, [removeLpReceipt.id]));
+    await waitTxMining(() =>
+      router.withdrawLiquidities(marketAddress, [lpReceiptIds[lpReceiptIds.length - 1]])
+    );
 
     // balance check - ClbToken
     expect((await clbBalance(tradingFeeRate)) < clbBalanceAfterAdd).toEqual(true);
@@ -146,18 +153,17 @@ describe("router sdk test", () => {
     const bin100 = (await client.lens().liquidityBins(marketAddress)).filter(
       (b) => b.tradingFeeRate == 100n
     );
-
+    // 0xd0e30db0
     const beforeOpenPositions = await getPositions();
-    const openTxReceipt = waitTxMining(() =>
+    await waitTxMining(() =>
       router.openPosition(marketAddress, {
-        quantity: BigInt(10 ** 4),
+        quantity: BigInt(10 ** 8),
         leverage: BigInt(100), // x1
         takerMargin: accountBalance / 3n,
         makerMargin: bin100[0].freeLiquidity / 2n,
         maxAllowableTradingFee: bin100[0].freeLiquidity / 2n / 10n,
       })
     );
-    await handleBytesError(() => openTxReceipt, signer.provider);
 
     const afterOpenPositions = await getPositions();
     expect(beforeOpenPositions.length).toBeLessThan(afterOpenPositions.length);
@@ -167,12 +173,8 @@ describe("router sdk test", () => {
 
     await updatePrice({ market: marketAddress, signer, price: 1100 });
 
-    await handleBytesError(
-      () =>
-        waitTxMining(() =>
-          router.closePosition(marketAddress, afterOpenPositions[afterOpenPositions.length - 1].id)
-        ),
-      signer.provider
+    await waitTxMining(() =>
+      router.closePosition(marketAddress, afterOpenPositions[afterOpenPositions.length - 1].id)
     );
 
     const positions = await getPositions();
@@ -181,17 +183,14 @@ describe("router sdk test", () => {
 
     await updatePrice({ market: marketAddress, signer, price: 1200 });
 
-    await handleBytesError(
-      () => waitTxMining(() => router.claimPosition(marketAddress, position.id)),
-      signer.provider
-    );
+    await waitTxMining(() => router.claimPosition(marketAddress, position.id));
 
     expect((await getPositions()).filter((pos) => pos.id === position.id).length).toEqual(0);
   }, 60000);
   // after yarn chain
   // Time:        37.582 s, estimated 45 s
 
-  test("revert msg haldling", async () => {
+  test("revert msg handling", async () => {
     const { marketAddress, router, token } = await getFixture();
 
     const tokenContract = IERC20__factory.connect(token, signer);
@@ -225,6 +224,6 @@ describe("router sdk test", () => {
     // parsed in ethers
     await expect(
       async () => await client.marketFactory().currentInterestRate(await signer.getAddress())
-    ).rejects.toThrow("URT");
+    ).rejects.toThrow("call reverted with error: URT");
   }, 60000);
 });

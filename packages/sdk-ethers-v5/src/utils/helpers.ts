@@ -5,10 +5,17 @@ import {
   ChromaticAccount__factory,
   ChromaticLiquidator__factory,
   ChromaticMarketFactory__factory,
-  ChromaticMarket__factory,
   ChromaticRouter__factory,
   ChromaticVault__factory,
+  IChromaticMarket__factory,
   IOracleProvider__factory,
+  MarketDiamondCutFacet__factory,
+  MarketFacetBase__factory,
+  MarketLiquidateFacet__factory,
+  MarketLiquidityFacet__factory,
+  MarketSettleFacet__factory,
+  MarketStateFacet__factory,
+  MarketTradeFacet__factory,
 } from "../gen";
 
 import debug from "debug";
@@ -50,7 +57,7 @@ export async function handleBytesError<T>(fn: () => Promise<T>, provider: Provid
     if (revertMatch) {
       throw Error(parseHexError(revertMatch[1]));
     }
-    
+
     /// When gasLimit and gasPrice are set
     const match = (e as Error).message.match(/transactionHash="([^"]+)"/);
     if (match) {
@@ -84,7 +91,14 @@ interface ErrorSignatures {
 }
 
 export const errorSignitures: ErrorSignatures = [
-  ...ChromaticMarket__factory.abi,
+  ...MarketDiamondCutFacet__factory.abi,
+  ...MarketFacetBase__factory.abi,
+  ...MarketLiquidateFacet__factory.abi,
+  ...MarketLiquidityFacet__factory.abi,
+  ...MarketSettleFacet__factory.abi,
+  ...MarketStateFacet__factory.abi,
+  ...MarketTradeFacet__factory.abi,
+  ...IChromaticMarket__factory.abi,
   ...ChromaticMarketFactory__factory.abi,
   ...ChromaticVault__factory.abi,
   ...CLBToken__factory.abi,

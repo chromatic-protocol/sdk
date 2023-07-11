@@ -103,9 +103,11 @@ export interface ChromaticRouterInterface extends Interface {
     nameOrSignature:
       | "addLiquidity"
       | "addLiquidityBatch"
+      | "addLiquidityBatchCallback"
       | "addLiquidityCallback"
       | "claimLiquidity"
       | "claimLiquidityBatch"
+      | "claimLiquidityBatchCallback"
       | "claimLiquidityCallback"
       | "claimPosition"
       | "closePosition"
@@ -117,11 +119,13 @@ export interface ChromaticRouterInterface extends Interface {
       | "owner"
       | "removeLiquidity"
       | "removeLiquidityBatch"
+      | "removeLiquidityBatchCallback"
       | "removeLiquidityCallback"
       | "renounceOwnership"
       | "transferOwnership"
       | "withdrawLiquidity"
       | "withdrawLiquidityBatch"
+      | "withdrawLiquidityBatchCallback"
       | "withdrawLiquidityCallback"
   ): FunctionFragment;
 
@@ -138,6 +142,10 @@ export interface ChromaticRouterInterface extends Interface {
     values: [AddressLike, AddressLike, BigNumberish[], BigNumberish[]]
   ): string;
   encodeFunctionData(
+    functionFragment: "addLiquidityBatchCallback",
+    values: [AddressLike, AddressLike, BytesLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "addLiquidityCallback",
     values: [AddressLike, AddressLike, BytesLike]
   ): string;
@@ -148,6 +156,10 @@ export interface ChromaticRouterInterface extends Interface {
   encodeFunctionData(
     functionFragment: "claimLiquidityBatch",
     values: [AddressLike, BigNumberish[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "claimLiquidityBatchCallback",
+    values: [BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "claimLiquidityCallback",
@@ -198,6 +210,10 @@ export interface ChromaticRouterInterface extends Interface {
     values: [AddressLike, AddressLike, BigNumberish[], BigNumberish[]]
   ): string;
   encodeFunctionData(
+    functionFragment: "removeLiquidityBatchCallback",
+    values: [AddressLike, BigNumberish[], BytesLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "removeLiquidityCallback",
     values: [AddressLike, BigNumberish, BytesLike]
   ): string;
@@ -218,6 +234,10 @@ export interface ChromaticRouterInterface extends Interface {
     values: [AddressLike, BigNumberish[]]
   ): string;
   encodeFunctionData(
+    functionFragment: "withdrawLiquidityBatchCallback",
+    values: [BigNumberish[], BytesLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "withdrawLiquidityCallback",
     values: [BigNumberish, BytesLike]
   ): string;
@@ -231,6 +251,10 @@ export interface ChromaticRouterInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "addLiquidityBatchCallback",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "addLiquidityCallback",
     data: BytesLike
   ): Result;
@@ -240,6 +264,10 @@ export interface ChromaticRouterInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "claimLiquidityBatch",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "claimLiquidityBatchCallback",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -281,6 +309,10 @@ export interface ChromaticRouterInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "removeLiquidityBatchCallback",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "removeLiquidityCallback",
     data: BytesLike
   ): Result;
@@ -298,6 +330,10 @@ export interface ChromaticRouterInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "withdrawLiquidityBatch",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawLiquidityBatchCallback",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -394,7 +430,7 @@ export interface ChromaticRouter extends BaseContract {
   >;
 
   /**
-   * Adds liquidity to multiple ChromaticMarket contracts in a batch.
+   * Adds liquidity to multiple liquidity bins of ChromaticMarket contract in a batch.
    * @param amounts An array of amounts to add as liquidity for each bin.
    * @param feeRates An array of fee rates for each liquidity bin.
    * @param market The address of the ChromaticMarket contract.
@@ -408,6 +444,18 @@ export interface ChromaticRouter extends BaseContract {
       amounts: BigNumberish[]
     ],
     [LpReceiptStructOutput[]],
+    "nonpayable"
+  >;
+
+  /**
+   * Handles the callback after adding liquidity to the Chromatic protocol.
+   * @param data Additional data associated with the liquidity addition.
+   * @param settlementToken The address of the settlement token used for adding liquidity.
+   * @param vault The address of the vault where the liquidity is added.
+   */
+  addLiquidityBatchCallback: TypedContractMethod<
+    [settlementToken: AddressLike, vault: AddressLike, data: BytesLike],
+    [void],
     "nonpayable"
   >;
 
@@ -441,6 +489,17 @@ export interface ChromaticRouter extends BaseContract {
    */
   claimLiquidityBatch: TypedContractMethod<
     [market: AddressLike, _receiptIds: BigNumberish[]],
+    [void],
+    "nonpayable"
+  >;
+
+  /**
+   * Handles the callback after claiming liquidity from the Chromatic protocol.
+   * @param data Additional data associated with the liquidity claim.
+   * @param receiptIds The array of the liquidity receipt IDs.
+   */
+  claimLiquidityBatchCallback: TypedContractMethod<
+    [_receiptIds: BigNumberish[], data: BytesLike],
     [void],
     "nonpayable"
   >;
@@ -576,6 +635,18 @@ export interface ChromaticRouter extends BaseContract {
   /**
    * Handles the callback after removing liquidity from the Chromatic protocol.
    * @param clbToken The address of the Chromatic liquidity token.
+   * @param clbTokenIds The array of the Chromatic liquidity token IDs to be removed.
+   * @param data Additional data associated with the liquidity removal.
+   */
+  removeLiquidityBatchCallback: TypedContractMethod<
+    [clbToken: AddressLike, clbTokenIds: BigNumberish[], data: BytesLike],
+    [void],
+    "nonpayable"
+  >;
+
+  /**
+   * Handles the callback after removing liquidity from the Chromatic protocol.
+   * @param clbToken The address of the Chromatic liquidity token.
    * @param clbTokenId The ID of the Chromatic liquidity token to be removed.
    * @param data Additional data associated with the liquidity removal.
    */
@@ -624,6 +695,17 @@ export interface ChromaticRouter extends BaseContract {
   /**
    * Handles the callback after withdrawing liquidity from the Chromatic protocol.
    * @param data Additional data associated with the liquidity withdrawal.
+   * @param receiptIds The array of the liquidity receipt IDs.
+   */
+  withdrawLiquidityBatchCallback: TypedContractMethod<
+    [_receiptIds: BigNumberish[], data: BytesLike],
+    [void],
+    "nonpayable"
+  >;
+
+  /**
+   * Handles the callback after withdrawing liquidity from the Chromatic protocol.
+   * @param data Additional data associated with the liquidity withdrawal.
    * @param receiptId The ID of the liquidity withdrawal receipt.
    */
   withdrawLiquidityCallback: TypedContractMethod<
@@ -661,6 +743,13 @@ export interface ChromaticRouter extends BaseContract {
     "nonpayable"
   >;
   getFunction(
+    nameOrSignature: "addLiquidityBatchCallback"
+  ): TypedContractMethod<
+    [settlementToken: AddressLike, vault: AddressLike, data: BytesLike],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
     nameOrSignature: "addLiquidityCallback"
   ): TypedContractMethod<
     [settlementToken: AddressLike, vault: AddressLike, data: BytesLike],
@@ -678,6 +767,13 @@ export interface ChromaticRouter extends BaseContract {
     nameOrSignature: "claimLiquidityBatch"
   ): TypedContractMethod<
     [market: AddressLike, _receiptIds: BigNumberish[]],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "claimLiquidityBatchCallback"
+  ): TypedContractMethod<
+    [_receiptIds: BigNumberish[], data: BytesLike],
     [void],
     "nonpayable"
   >;
@@ -760,6 +856,13 @@ export interface ChromaticRouter extends BaseContract {
     "nonpayable"
   >;
   getFunction(
+    nameOrSignature: "removeLiquidityBatchCallback"
+  ): TypedContractMethod<
+    [clbToken: AddressLike, clbTokenIds: BigNumberish[], data: BytesLike],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
     nameOrSignature: "removeLiquidityCallback"
   ): TypedContractMethod<
     [clbToken: AddressLike, clbTokenId: BigNumberish, data: BytesLike],
@@ -783,6 +886,13 @@ export interface ChromaticRouter extends BaseContract {
     nameOrSignature: "withdrawLiquidityBatch"
   ): TypedContractMethod<
     [market: AddressLike, _receiptIds: BigNumberish[]],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "withdrawLiquidityBatchCallback"
+  ): TypedContractMethod<
+    [_receiptIds: BigNumberish[], data: BytesLike],
     [void],
     "nonpayable"
   >;

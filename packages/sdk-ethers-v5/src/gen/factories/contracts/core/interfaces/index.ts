@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as factory from "./factory";
+export { IChromaticMarket__factory } from "./IChromaticMarket__factory";

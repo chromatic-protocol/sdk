@@ -107,7 +107,7 @@ export interface ChromaticVaultInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getPendingBinShare",
-    values: [AddressLike, BigNumberish]
+    values: [AddressLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "makerBalances",
@@ -127,23 +127,29 @@ export interface ChromaticVaultInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "onAddLiquidity",
-    values: [BigNumberish]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "onClaimPosition",
-    values: [BigNumberish, AddressLike, BigNumberish, BigNumberish]
+    values: [AddressLike, BigNumberish, AddressLike, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "onOpenPosition",
-    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
+    values: [
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "onSettlePendingLiquidity",
-    values: [BigNumberish, BigNumberish]
+    values: [AddressLike, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "onWithdrawLiquidity",
-    values: [AddressLike, BigNumberish]
+    values: [AddressLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "pendingDeposits",
@@ -179,7 +185,7 @@ export interface ChromaticVaultInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "transferKeeperFee",
-    values: [AddressLike, BigNumberish, BigNumberish]
+    values: [AddressLike, AddressLike, BigNumberish, BigNumberish]
   ): string;
 
   decodeFunctionResult(functionFragment: "automate", data: BytesLike): Result;
@@ -673,9 +679,14 @@ export interface ChromaticVault extends BaseContract {
    * Retrieves the pending share of earnings for a specific bin (subset) of funds in a market.
    * @param binBalance The balance of funds in the bin.
    * @param market The address of the market.
+   * @param settlementToken The settlement token address.
    */
   getPendingBinShare: TypedContractMethod<
-    [market: AddressLike, binBalance: BigNumberish],
+    [
+      market: AddressLike,
+      settlementToken: AddressLike,
+      binBalance: BigNumberish
+    ],
     [bigint],
     "view"
   >;
@@ -704,9 +715,10 @@ export interface ChromaticVault extends BaseContract {
    * This function can only be called by a market contract.
    * Called when liquidity is added to the vault by a market contract.
    * @param amount The amount of liquidity being added.
+   * @param settlementToken The settlement token address.
    */
   onAddLiquidity: TypedContractMethod<
-    [amount: BigNumberish],
+    [settlementToken: AddressLike, amount: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -717,10 +729,12 @@ export interface ChromaticVault extends BaseContract {
    * @param positionId The ID of the claimed position.
    * @param recipient The address that will receive the settlement amount.
    * @param settlementAmount The amount to be settled for the position.
+   * @param settlementToken The settlement token address.
    * @param takerMargin The margin amount provided by the taker for the position.
    */
   onClaimPosition: TypedContractMethod<
     [
+      settlementToken: AddressLike,
       positionId: BigNumberish,
       recipient: AddressLike,
       takerMargin: BigNumberish,
@@ -735,11 +749,13 @@ export interface ChromaticVault extends BaseContract {
    * Called when a position is opened by a market contract.
    * @param positionId The ID of the opened position.
    * @param protocolFee The protocol fee associated with the position.
+   * @param settlementToken The settlement token address.
    * @param takerMargin The margin amount provided by the taker for the position.
    * @param tradingFee The trading fee associated with the position.
    */
   onOpenPosition: TypedContractMethod<
     [
+      settlementToken: AddressLike,
       positionId: BigNumberish,
       takerMargin: BigNumberish,
       tradingFee: BigNumberish,
@@ -754,9 +770,14 @@ export interface ChromaticVault extends BaseContract {
    * Called when pending liquidity is settled in the vault by a market contract.
    * @param pendingDeposit The amount of pending deposits being settled.
    * @param pendingWithdrawal The amount of pending withdrawals being settled.
+   * @param settlementToken The settlement token address.
    */
   onSettlePendingLiquidity: TypedContractMethod<
-    [pendingDeposit: BigNumberish, pendingWithdrawal: BigNumberish],
+    [
+      settlementToken: AddressLike,
+      pendingDeposit: BigNumberish,
+      pendingWithdrawal: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
@@ -766,9 +787,14 @@ export interface ChromaticVault extends BaseContract {
    * Called when liquidity is withdrawn from the vault by a market contract.
    * @param amount The amount of liquidity to be withdrawn.
    * @param recipient The address that will receive the withdrawn liquidity.
+   * @param settlementToken The settlement token address.
    */
   onWithdrawLiquidity: TypedContractMethod<
-    [recipient: AddressLike, amount: BigNumberish],
+    [
+      settlementToken: AddressLike,
+      recipient: AddressLike,
+      amount: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
@@ -827,9 +853,15 @@ export interface ChromaticVault extends BaseContract {
    * @param fee The amount of the fee to transfer as native token.
    * @param keeper The address of the keeper to receive the fee.
    * @param margin The margin amount used for the fee payment.
+   * @param settlementToken The settlement token address.
    */
   transferKeeperFee: TypedContractMethod<
-    [keeper: AddressLike, fee: BigNumberish, margin: BigNumberish],
+    [
+      settlementToken: AddressLike,
+      keeper: AddressLike,
+      fee: BigNumberish,
+      margin: BigNumberish
+    ],
     [bigint],
     "nonpayable"
   >;
@@ -877,7 +909,11 @@ export interface ChromaticVault extends BaseContract {
   getFunction(
     nameOrSignature: "getPendingBinShare"
   ): TypedContractMethod<
-    [market: AddressLike, binBalance: BigNumberish],
+    [
+      market: AddressLike,
+      settlementToken: AddressLike,
+      binBalance: BigNumberish
+    ],
     [bigint],
     "view"
   >;
@@ -895,11 +931,16 @@ export interface ChromaticVault extends BaseContract {
   ): TypedContractMethod<[arg0: AddressLike], [string], "view">;
   getFunction(
     nameOrSignature: "onAddLiquidity"
-  ): TypedContractMethod<[amount: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [settlementToken: AddressLike, amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "onClaimPosition"
   ): TypedContractMethod<
     [
+      settlementToken: AddressLike,
       positionId: BigNumberish,
       recipient: AddressLike,
       takerMargin: BigNumberish,
@@ -912,6 +953,7 @@ export interface ChromaticVault extends BaseContract {
     nameOrSignature: "onOpenPosition"
   ): TypedContractMethod<
     [
+      settlementToken: AddressLike,
       positionId: BigNumberish,
       takerMargin: BigNumberish,
       tradingFee: BigNumberish,
@@ -923,14 +965,22 @@ export interface ChromaticVault extends BaseContract {
   getFunction(
     nameOrSignature: "onSettlePendingLiquidity"
   ): TypedContractMethod<
-    [pendingDeposit: BigNumberish, pendingWithdrawal: BigNumberish],
+    [
+      settlementToken: AddressLike,
+      pendingDeposit: BigNumberish,
+      pendingWithdrawal: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "onWithdrawLiquidity"
   ): TypedContractMethod<
-    [recipient: AddressLike, amount: BigNumberish],
+    [
+      settlementToken: AddressLike,
+      recipient: AddressLike,
+      amount: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
@@ -969,7 +1019,12 @@ export interface ChromaticVault extends BaseContract {
   getFunction(
     nameOrSignature: "transferKeeperFee"
   ): TypedContractMethod<
-    [keeper: AddressLike, fee: BigNumberish, margin: BigNumberish],
+    [
+      settlementToken: AddressLike,
+      keeper: AddressLike,
+      fee: BigNumberish,
+      margin: BigNumberish
+    ],
     [bigint],
     "nonpayable"
   >;

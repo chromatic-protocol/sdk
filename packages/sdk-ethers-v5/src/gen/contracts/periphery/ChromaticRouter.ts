@@ -106,9 +106,11 @@ export interface ChromaticRouterInterface extends utils.Interface {
   functions: {
     "addLiquidity(address,int16,uint256,address)": FunctionFragment;
     "addLiquidityBatch(address,address,int16[],uint256[])": FunctionFragment;
+    "addLiquidityBatchCallback(address,address,bytes)": FunctionFragment;
     "addLiquidityCallback(address,address,bytes)": FunctionFragment;
     "claimLiquidity(address,uint256)": FunctionFragment;
     "claimLiquidityBatch(address,uint256[])": FunctionFragment;
+    "claimLiquidityBatchCallback(uint256[],bytes)": FunctionFragment;
     "claimLiquidityCallback(uint256,bytes)": FunctionFragment;
     "claimPosition(address,uint256)": FunctionFragment;
     "closePosition(address,uint256)": FunctionFragment;
@@ -120,11 +122,13 @@ export interface ChromaticRouterInterface extends utils.Interface {
     "owner()": FunctionFragment;
     "removeLiquidity(address,int16,uint256,address)": FunctionFragment;
     "removeLiquidityBatch(address,address,int16[],uint256[])": FunctionFragment;
+    "removeLiquidityBatchCallback(address,uint256[],bytes)": FunctionFragment;
     "removeLiquidityCallback(address,uint256,bytes)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "withdrawLiquidity(address,uint256)": FunctionFragment;
     "withdrawLiquidityBatch(address,uint256[])": FunctionFragment;
+    "withdrawLiquidityBatchCallback(uint256[],bytes)": FunctionFragment;
     "withdrawLiquidityCallback(uint256,bytes)": FunctionFragment;
   };
 
@@ -132,9 +136,11 @@ export interface ChromaticRouterInterface extends utils.Interface {
     nameOrSignatureOrTopic:
       | "addLiquidity"
       | "addLiquidityBatch"
+      | "addLiquidityBatchCallback"
       | "addLiquidityCallback"
       | "claimLiquidity"
       | "claimLiquidityBatch"
+      | "claimLiquidityBatchCallback"
       | "claimLiquidityCallback"
       | "claimPosition"
       | "closePosition"
@@ -146,11 +152,13 @@ export interface ChromaticRouterInterface extends utils.Interface {
       | "owner"
       | "removeLiquidity"
       | "removeLiquidityBatch"
+      | "removeLiquidityBatchCallback"
       | "removeLiquidityCallback"
       | "renounceOwnership"
       | "transferOwnership"
       | "withdrawLiquidity"
       | "withdrawLiquidityBatch"
+      | "withdrawLiquidityBatchCallback"
       | "withdrawLiquidityCallback"
   ): FunctionFragment;
 
@@ -173,6 +181,14 @@ export interface ChromaticRouterInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
+    functionFragment: "addLiquidityBatchCallback",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BytesLike>
+    ]
+  ): string;
+  encodeFunctionData(
     functionFragment: "addLiquidityCallback",
     values: [
       PromiseOrValue<string>,
@@ -187,6 +203,10 @@ export interface ChromaticRouterInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "claimLiquidityBatch",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "claimLiquidityBatchCallback",
+    values: [PromiseOrValue<BigNumberish>[], PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "claimLiquidityCallback",
@@ -247,6 +267,14 @@ export interface ChromaticRouterInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
+    functionFragment: "removeLiquidityBatchCallback",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>[],
+      PromiseOrValue<BytesLike>
+    ]
+  ): string;
+  encodeFunctionData(
     functionFragment: "removeLiquidityCallback",
     values: [
       PromiseOrValue<string>,
@@ -271,6 +299,10 @@ export interface ChromaticRouterInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>[]]
   ): string;
   encodeFunctionData(
+    functionFragment: "withdrawLiquidityBatchCallback",
+    values: [PromiseOrValue<BigNumberish>[], PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "withdrawLiquidityCallback",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BytesLike>]
   ): string;
@@ -284,6 +316,10 @@ export interface ChromaticRouterInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "addLiquidityBatchCallback",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "addLiquidityCallback",
     data: BytesLike
   ): Result;
@@ -293,6 +329,10 @@ export interface ChromaticRouterInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "claimLiquidityBatch",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "claimLiquidityBatchCallback",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -334,6 +374,10 @@ export interface ChromaticRouterInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "removeLiquidityBatchCallback",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "removeLiquidityCallback",
     data: BytesLike
   ): Result;
@@ -351,6 +395,10 @@ export interface ChromaticRouterInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "withdrawLiquidityBatch",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawLiquidityBatchCallback",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -433,7 +481,7 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * Adds liquidity to multiple ChromaticMarket contracts in a batch.
+     * Adds liquidity to multiple liquidity bins of ChromaticMarket contract in a batch.
      * @param amounts An array of amounts to add as liquidity for each bin.
      * @param feeRates An array of fee rates for each liquidity bin.
      * @param market The address of the ChromaticMarket contract.
@@ -444,6 +492,19 @@ export interface ChromaticRouter extends BaseContract {
       recipient: PromiseOrValue<string>,
       feeRates: PromiseOrValue<BigNumberish>[],
       amounts: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Handles the callback after adding liquidity to the Chromatic protocol.
+     * @param data Additional data associated with the liquidity addition.
+     * @param settlementToken The address of the settlement token used for adding liquidity.
+     * @param vault The address of the vault where the liquidity is added.
+     */
+    addLiquidityBatchCallback(
+      settlementToken: PromiseOrValue<string>,
+      vault: PromiseOrValue<string>,
+      data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -479,6 +540,17 @@ export interface ChromaticRouter extends BaseContract {
     claimLiquidityBatch(
       market: PromiseOrValue<string>,
       _receiptIds: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Handles the callback after claiming liquidity from the Chromatic protocol.
+     * @param data Additional data associated with the liquidity claim.
+     * @param receiptIds The array of the liquidity receipt IDs.
+     */
+    claimLiquidityBatchCallback(
+      _receiptIds: PromiseOrValue<BigNumberish>[],
+      data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -605,6 +677,19 @@ export interface ChromaticRouter extends BaseContract {
     /**
      * Handles the callback after removing liquidity from the Chromatic protocol.
      * @param clbToken The address of the Chromatic liquidity token.
+     * @param clbTokenIds The array of the Chromatic liquidity token IDs to be removed.
+     * @param data Additional data associated with the liquidity removal.
+     */
+    removeLiquidityBatchCallback(
+      clbToken: PromiseOrValue<string>,
+      clbTokenIds: PromiseOrValue<BigNumberish>[],
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Handles the callback after removing liquidity from the Chromatic protocol.
+     * @param clbToken The address of the Chromatic liquidity token.
      * @param clbTokenId The ID of the Chromatic liquidity token to be removed.
      * @param data Additional data associated with the liquidity removal.
      */
@@ -616,7 +701,7 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
+     * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.
      */
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -655,6 +740,17 @@ export interface ChromaticRouter extends BaseContract {
     /**
      * Handles the callback after withdrawing liquidity from the Chromatic protocol.
      * @param data Additional data associated with the liquidity withdrawal.
+     * @param receiptIds The array of the liquidity receipt IDs.
+     */
+    withdrawLiquidityBatchCallback(
+      _receiptIds: PromiseOrValue<BigNumberish>[],
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Handles the callback after withdrawing liquidity from the Chromatic protocol.
+     * @param data Additional data associated with the liquidity withdrawal.
      * @param receiptId The ID of the liquidity withdrawal receipt.
      */
     withdrawLiquidityCallback(
@@ -680,7 +776,7 @@ export interface ChromaticRouter extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * Adds liquidity to multiple ChromaticMarket contracts in a batch.
+   * Adds liquidity to multiple liquidity bins of ChromaticMarket contract in a batch.
    * @param amounts An array of amounts to add as liquidity for each bin.
    * @param feeRates An array of fee rates for each liquidity bin.
    * @param market The address of the ChromaticMarket contract.
@@ -691,6 +787,19 @@ export interface ChromaticRouter extends BaseContract {
     recipient: PromiseOrValue<string>,
     feeRates: PromiseOrValue<BigNumberish>[],
     amounts: PromiseOrValue<BigNumberish>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Handles the callback after adding liquidity to the Chromatic protocol.
+   * @param data Additional data associated with the liquidity addition.
+   * @param settlementToken The address of the settlement token used for adding liquidity.
+   * @param vault The address of the vault where the liquidity is added.
+   */
+  addLiquidityBatchCallback(
+    settlementToken: PromiseOrValue<string>,
+    vault: PromiseOrValue<string>,
+    data: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -726,6 +835,17 @@ export interface ChromaticRouter extends BaseContract {
   claimLiquidityBatch(
     market: PromiseOrValue<string>,
     _receiptIds: PromiseOrValue<BigNumberish>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Handles the callback after claiming liquidity from the Chromatic protocol.
+   * @param data Additional data associated with the liquidity claim.
+   * @param receiptIds The array of the liquidity receipt IDs.
+   */
+  claimLiquidityBatchCallback(
+    _receiptIds: PromiseOrValue<BigNumberish>[],
+    data: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -852,6 +972,19 @@ export interface ChromaticRouter extends BaseContract {
   /**
    * Handles the callback after removing liquidity from the Chromatic protocol.
    * @param clbToken The address of the Chromatic liquidity token.
+   * @param clbTokenIds The array of the Chromatic liquidity token IDs to be removed.
+   * @param data Additional data associated with the liquidity removal.
+   */
+  removeLiquidityBatchCallback(
+    clbToken: PromiseOrValue<string>,
+    clbTokenIds: PromiseOrValue<BigNumberish>[],
+    data: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Handles the callback after removing liquidity from the Chromatic protocol.
+   * @param clbToken The address of the Chromatic liquidity token.
    * @param clbTokenId The ID of the Chromatic liquidity token to be removed.
    * @param data Additional data associated with the liquidity removal.
    */
@@ -863,7 +996,7 @@ export interface ChromaticRouter extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
+   * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.
    */
   renounceOwnership(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -902,6 +1035,17 @@ export interface ChromaticRouter extends BaseContract {
   /**
    * Handles the callback after withdrawing liquidity from the Chromatic protocol.
    * @param data Additional data associated with the liquidity withdrawal.
+   * @param receiptIds The array of the liquidity receipt IDs.
+   */
+  withdrawLiquidityBatchCallback(
+    _receiptIds: PromiseOrValue<BigNumberish>[],
+    data: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Handles the callback after withdrawing liquidity from the Chromatic protocol.
+   * @param data Additional data associated with the liquidity withdrawal.
    * @param receiptId The ID of the liquidity withdrawal receipt.
    */
   withdrawLiquidityCallback(
@@ -927,7 +1071,7 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<LpReceiptStructOutput>;
 
     /**
-     * Adds liquidity to multiple ChromaticMarket contracts in a batch.
+     * Adds liquidity to multiple liquidity bins of ChromaticMarket contract in a batch.
      * @param amounts An array of amounts to add as liquidity for each bin.
      * @param feeRates An array of fee rates for each liquidity bin.
      * @param market The address of the ChromaticMarket contract.
@@ -940,6 +1084,19 @@ export interface ChromaticRouter extends BaseContract {
       amounts: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput[]>;
+
+    /**
+     * Handles the callback after adding liquidity to the Chromatic protocol.
+     * @param data Additional data associated with the liquidity addition.
+     * @param settlementToken The address of the settlement token used for adding liquidity.
+     * @param vault The address of the vault where the liquidity is added.
+     */
+    addLiquidityBatchCallback(
+      settlementToken: PromiseOrValue<string>,
+      vault: PromiseOrValue<string>,
+      data: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     /**
      * Handles the callback after adding liquidity to the Chromatic protocol.
@@ -973,6 +1130,17 @@ export interface ChromaticRouter extends BaseContract {
     claimLiquidityBatch(
       market: PromiseOrValue<string>,
       _receiptIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * Handles the callback after claiming liquidity from the Chromatic protocol.
+     * @param data Additional data associated with the liquidity claim.
+     * @param receiptIds The array of the liquidity receipt IDs.
+     */
+    claimLiquidityBatchCallback(
+      _receiptIds: PromiseOrValue<BigNumberish>[],
+      data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1097,6 +1265,19 @@ export interface ChromaticRouter extends BaseContract {
     /**
      * Handles the callback after removing liquidity from the Chromatic protocol.
      * @param clbToken The address of the Chromatic liquidity token.
+     * @param clbTokenIds The array of the Chromatic liquidity token IDs to be removed.
+     * @param data Additional data associated with the liquidity removal.
+     */
+    removeLiquidityBatchCallback(
+      clbToken: PromiseOrValue<string>,
+      clbTokenIds: PromiseOrValue<BigNumberish>[],
+      data: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * Handles the callback after removing liquidity from the Chromatic protocol.
+     * @param clbToken The address of the Chromatic liquidity token.
      * @param clbTokenId The ID of the Chromatic liquidity token to be removed.
      * @param data Additional data associated with the liquidity removal.
      */
@@ -1108,7 +1289,7 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<void>;
 
     /**
-     * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
+     * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.
      */
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
@@ -1139,6 +1320,17 @@ export interface ChromaticRouter extends BaseContract {
     withdrawLiquidityBatch(
       market: PromiseOrValue<string>,
       _receiptIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * Handles the callback after withdrawing liquidity from the Chromatic protocol.
+     * @param data Additional data associated with the liquidity withdrawal.
+     * @param receiptIds The array of the liquidity receipt IDs.
+     */
+    withdrawLiquidityBatchCallback(
+      _receiptIds: PromiseOrValue<BigNumberish>[],
+      data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1191,7 +1383,7 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Adds liquidity to multiple ChromaticMarket contracts in a batch.
+     * Adds liquidity to multiple liquidity bins of ChromaticMarket contract in a batch.
      * @param amounts An array of amounts to add as liquidity for each bin.
      * @param feeRates An array of fee rates for each liquidity bin.
      * @param market The address of the ChromaticMarket contract.
@@ -1202,6 +1394,19 @@ export interface ChromaticRouter extends BaseContract {
       recipient: PromiseOrValue<string>,
       feeRates: PromiseOrValue<BigNumberish>[],
       amounts: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    /**
+     * Handles the callback after adding liquidity to the Chromatic protocol.
+     * @param data Additional data associated with the liquidity addition.
+     * @param settlementToken The address of the settlement token used for adding liquidity.
+     * @param vault The address of the vault where the liquidity is added.
+     */
+    addLiquidityBatchCallback(
+      settlementToken: PromiseOrValue<string>,
+      vault: PromiseOrValue<string>,
+      data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1237,6 +1442,17 @@ export interface ChromaticRouter extends BaseContract {
     claimLiquidityBatch(
       market: PromiseOrValue<string>,
       _receiptIds: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    /**
+     * Handles the callback after claiming liquidity from the Chromatic protocol.
+     * @param data Additional data associated with the liquidity claim.
+     * @param receiptIds The array of the liquidity receipt IDs.
+     */
+    claimLiquidityBatchCallback(
+      _receiptIds: PromiseOrValue<BigNumberish>[],
+      data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1363,6 +1579,19 @@ export interface ChromaticRouter extends BaseContract {
     /**
      * Handles the callback after removing liquidity from the Chromatic protocol.
      * @param clbToken The address of the Chromatic liquidity token.
+     * @param clbTokenIds The array of the Chromatic liquidity token IDs to be removed.
+     * @param data Additional data associated with the liquidity removal.
+     */
+    removeLiquidityBatchCallback(
+      clbToken: PromiseOrValue<string>,
+      clbTokenIds: PromiseOrValue<BigNumberish>[],
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    /**
+     * Handles the callback after removing liquidity from the Chromatic protocol.
+     * @param clbToken The address of the Chromatic liquidity token.
      * @param clbTokenId The ID of the Chromatic liquidity token to be removed.
      * @param data Additional data associated with the liquidity removal.
      */
@@ -1374,7 +1603,7 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
+     * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.
      */
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1413,6 +1642,17 @@ export interface ChromaticRouter extends BaseContract {
     /**
      * Handles the callback after withdrawing liquidity from the Chromatic protocol.
      * @param data Additional data associated with the liquidity withdrawal.
+     * @param receiptIds The array of the liquidity receipt IDs.
+     */
+    withdrawLiquidityBatchCallback(
+      _receiptIds: PromiseOrValue<BigNumberish>[],
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    /**
+     * Handles the callback after withdrawing liquidity from the Chromatic protocol.
+     * @param data Additional data associated with the liquidity withdrawal.
      * @param receiptId The ID of the liquidity withdrawal receipt.
      */
     withdrawLiquidityCallback(
@@ -1439,7 +1679,7 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Adds liquidity to multiple ChromaticMarket contracts in a batch.
+     * Adds liquidity to multiple liquidity bins of ChromaticMarket contract in a batch.
      * @param amounts An array of amounts to add as liquidity for each bin.
      * @param feeRates An array of fee rates for each liquidity bin.
      * @param market The address of the ChromaticMarket contract.
@@ -1450,6 +1690,19 @@ export interface ChromaticRouter extends BaseContract {
       recipient: PromiseOrValue<string>,
       feeRates: PromiseOrValue<BigNumberish>[],
       amounts: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Handles the callback after adding liquidity to the Chromatic protocol.
+     * @param data Additional data associated with the liquidity addition.
+     * @param settlementToken The address of the settlement token used for adding liquidity.
+     * @param vault The address of the vault where the liquidity is added.
+     */
+    addLiquidityBatchCallback(
+      settlementToken: PromiseOrValue<string>,
+      vault: PromiseOrValue<string>,
+      data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1485,6 +1738,17 @@ export interface ChromaticRouter extends BaseContract {
     claimLiquidityBatch(
       market: PromiseOrValue<string>,
       _receiptIds: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Handles the callback after claiming liquidity from the Chromatic protocol.
+     * @param data Additional data associated with the liquidity claim.
+     * @param receiptIds The array of the liquidity receipt IDs.
+     */
+    claimLiquidityBatchCallback(
+      _receiptIds: PromiseOrValue<BigNumberish>[],
+      data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1611,6 +1875,19 @@ export interface ChromaticRouter extends BaseContract {
     /**
      * Handles the callback after removing liquidity from the Chromatic protocol.
      * @param clbToken The address of the Chromatic liquidity token.
+     * @param clbTokenIds The array of the Chromatic liquidity token IDs to be removed.
+     * @param data Additional data associated with the liquidity removal.
+     */
+    removeLiquidityBatchCallback(
+      clbToken: PromiseOrValue<string>,
+      clbTokenIds: PromiseOrValue<BigNumberish>[],
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Handles the callback after removing liquidity from the Chromatic protocol.
+     * @param clbToken The address of the Chromatic liquidity token.
      * @param clbTokenId The ID of the Chromatic liquidity token to be removed.
      * @param data Additional data associated with the liquidity removal.
      */
@@ -1622,7 +1899,7 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
+     * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.
      */
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1655,6 +1932,17 @@ export interface ChromaticRouter extends BaseContract {
     withdrawLiquidityBatch(
       market: PromiseOrValue<string>,
       _receiptIds: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Handles the callback after withdrawing liquidity from the Chromatic protocol.
+     * @param data Additional data associated with the liquidity withdrawal.
+     * @param receiptIds The array of the liquidity receipt IDs.
+     */
+    withdrawLiquidityBatchCallback(
+      _receiptIds: PromiseOrValue<BigNumberish>[],
+      data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

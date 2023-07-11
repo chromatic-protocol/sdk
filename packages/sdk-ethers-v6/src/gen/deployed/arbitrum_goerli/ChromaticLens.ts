@@ -46,7 +46,7 @@ export type LpReceiptStructOutput = [
   tradingFeeRate: bigint;
 };
 
-export declare namespace ILiquidity {
+export declare namespace IMarketLiquidity {
   export type ClaimableLiquidityStruct = {
     mintingTokenAmountRequested: BigNumberish;
     mintingCLBTokenAmount: BigNumberish;
@@ -235,7 +235,7 @@ export interface ChromaticLens extends BaseContract {
       tradingFeeRate: BigNumberish,
       _oracleVersion: BigNumberish
     ],
-    [ILiquidity.ClaimableLiquidityStructOutput],
+    [IMarketLiquidity.ClaimableLiquidityStructOutput],
     "view"
   >;
 
@@ -256,7 +256,7 @@ export interface ChromaticLens extends BaseContract {
    */
   liquidityBinStatuses: TypedContractMethod<
     [market: AddressLike],
-    [ILiquidity.LiquidityBinStatusStructOutput[]],
+    [IMarketLiquidity.LiquidityBinStatusStructOutput[]],
     "view"
   >;
 
@@ -296,7 +296,7 @@ export interface ChromaticLens extends BaseContract {
       tradingFeeRate: BigNumberish,
       _oracleVersion: BigNumberish
     ],
-    [ILiquidity.ClaimableLiquidityStructOutput],
+    [IMarketLiquidity.ClaimableLiquidityStructOutput],
     "view"
   >;
   getFunction(
@@ -310,7 +310,7 @@ export interface ChromaticLens extends BaseContract {
     nameOrSignature: "liquidityBinStatuses"
   ): TypedContractMethod<
     [market: AddressLike],
-    [ILiquidity.LiquidityBinStatusStructOutput[]],
+    [IMarketLiquidity.LiquidityBinStatusStructOutput[]],
     "view"
   >;
   getFunction(

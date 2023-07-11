@@ -525,6 +525,11 @@ const _abi = [
         type: "address",
       },
       {
+        internalType: "address",
+        name: "settlementToken",
+        type: "address",
+      },
+      {
         internalType: "uint256",
         name: "binBalance",
         type: "uint256",
@@ -620,6 +625,11 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "settlementToken",
+        type: "address",
+      },
+      {
         internalType: "uint256",
         name: "amount",
         type: "uint256",
@@ -632,6 +642,11 @@ const _abi = [
   },
   {
     inputs: [
+      {
+        internalType: "address",
+        name: "settlementToken",
+        type: "address",
+      },
       {
         internalType: "uint256",
         name: "positionId",
@@ -661,6 +676,11 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "settlementToken",
+        type: "address",
+      },
+      {
         internalType: "uint256",
         name: "positionId",
         type: "uint256",
@@ -689,6 +709,11 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "settlementToken",
+        type: "address",
+      },
+      {
         internalType: "uint256",
         name: "pendingDeposit",
         type: "uint256",
@@ -706,6 +731,11 @@ const _abi = [
   },
   {
     inputs: [
+      {
+        internalType: "address",
+        name: "settlementToken",
+        type: "address",
+      },
       {
         internalType: "address",
         name: "recipient",
@@ -886,6 +916,11 @@ const _abi = [
   },
   {
     inputs: [
+      {
+        internalType: "address",
+        name: "settlementToken",
+        type: "address",
+      },
       {
         internalType: "address",
         name: "keeper",

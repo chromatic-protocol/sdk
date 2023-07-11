@@ -38,16 +38,16 @@ export interface ChromaticVaultInterface extends utils.Interface {
     "distributeMakerEarning(address)": FunctionFragment;
     "distributeMarketEarning(address)": FunctionFragment;
     "flashLoan(address,uint256,address,bytes)": FunctionFragment;
-    "getPendingBinShare(address,uint256)": FunctionFragment;
+    "getPendingBinShare(address,address,uint256)": FunctionFragment;
     "makerBalances(address)": FunctionFragment;
     "makerEarningDistributionTaskIds(address)": FunctionFragment;
     "makerMarketBalances(address)": FunctionFragment;
     "marketEarningDistributionTaskIds(address)": FunctionFragment;
-    "onAddLiquidity(uint256)": FunctionFragment;
-    "onClaimPosition(uint256,address,uint256,uint256)": FunctionFragment;
-    "onOpenPosition(uint256,uint256,uint256,uint256)": FunctionFragment;
-    "onSettlePendingLiquidity(uint256,uint256)": FunctionFragment;
-    "onWithdrawLiquidity(address,uint256)": FunctionFragment;
+    "onAddLiquidity(address,uint256)": FunctionFragment;
+    "onClaimPosition(address,uint256,address,uint256,uint256)": FunctionFragment;
+    "onOpenPosition(address,uint256,uint256,uint256,uint256)": FunctionFragment;
+    "onSettlePendingLiquidity(address,uint256,uint256)": FunctionFragment;
+    "onWithdrawLiquidity(address,address,uint256)": FunctionFragment;
     "pendingDeposits(address)": FunctionFragment;
     "pendingMakerEarnings(address)": FunctionFragment;
     "pendingMarketEarnings(address)": FunctionFragment;
@@ -56,7 +56,7 @@ export interface ChromaticVaultInterface extends utils.Interface {
     "resolveMarketEarningDistribution(address)": FunctionFragment;
     "takerBalances(address)": FunctionFragment;
     "takerMarketBalances(address)": FunctionFragment;
-    "transferKeeperFee(address,uint256,uint256)": FunctionFragment;
+    "transferKeeperFee(address,address,uint256,uint256)": FunctionFragment;
   };
 
   getFunction(
@@ -131,7 +131,11 @@ export interface ChromaticVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getPendingBinShare",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "makerBalances",
@@ -151,11 +155,12 @@ export interface ChromaticVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "onAddLiquidity",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "onClaimPosition",
     values: [
+      PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
@@ -165,6 +170,7 @@ export interface ChromaticVaultInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "onOpenPosition",
     values: [
+      PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
@@ -173,11 +179,19 @@ export interface ChromaticVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "onSettlePendingLiquidity",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "onWithdrawLiquidity",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "pendingDeposits",
@@ -214,6 +228,7 @@ export interface ChromaticVaultInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "transferKeeperFee",
     values: [
+      PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
@@ -622,9 +637,11 @@ export interface ChromaticVault extends BaseContract {
      * Retrieves the pending share of earnings for a specific bin (subset) of funds in a market.
      * @param binBalance The balance of funds in the bin.
      * @param market The address of the market.
+     * @param settlementToken The settlement token address.
      */
     getPendingBinShare(
       market: PromiseOrValue<string>,
+      settlementToken: PromiseOrValue<string>,
       binBalance: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
@@ -653,8 +670,10 @@ export interface ChromaticVault extends BaseContract {
      * This function can only be called by a market contract.
      * Called when liquidity is added to the vault by a market contract.
      * @param amount The amount of liquidity being added.
+     * @param settlementToken The settlement token address.
      */
     onAddLiquidity(
+      settlementToken: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -665,9 +684,11 @@ export interface ChromaticVault extends BaseContract {
      * @param positionId The ID of the claimed position.
      * @param recipient The address that will receive the settlement amount.
      * @param settlementAmount The amount to be settled for the position.
+     * @param settlementToken The settlement token address.
      * @param takerMargin The margin amount provided by the taker for the position.
      */
     onClaimPosition(
+      settlementToken: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       recipient: PromiseOrValue<string>,
       takerMargin: PromiseOrValue<BigNumberish>,
@@ -680,10 +701,12 @@ export interface ChromaticVault extends BaseContract {
      * Called when a position is opened by a market contract.
      * @param positionId The ID of the opened position.
      * @param protocolFee The protocol fee associated with the position.
+     * @param settlementToken The settlement token address.
      * @param takerMargin The margin amount provided by the taker for the position.
      * @param tradingFee The trading fee associated with the position.
      */
     onOpenPosition(
+      settlementToken: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       takerMargin: PromiseOrValue<BigNumberish>,
       tradingFee: PromiseOrValue<BigNumberish>,
@@ -696,8 +719,10 @@ export interface ChromaticVault extends BaseContract {
      * Called when pending liquidity is settled in the vault by a market contract.
      * @param pendingDeposit The amount of pending deposits being settled.
      * @param pendingWithdrawal The amount of pending withdrawals being settled.
+     * @param settlementToken The settlement token address.
      */
     onSettlePendingLiquidity(
+      settlementToken: PromiseOrValue<string>,
       pendingDeposit: PromiseOrValue<BigNumberish>,
       pendingWithdrawal: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -708,8 +733,10 @@ export interface ChromaticVault extends BaseContract {
      * Called when liquidity is withdrawn from the vault by a market contract.
      * @param amount The amount of liquidity to be withdrawn.
      * @param recipient The address that will receive the withdrawn liquidity.
+     * @param settlementToken The settlement token address.
      */
     onWithdrawLiquidity(
+      settlementToken: PromiseOrValue<string>,
       recipient: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -769,8 +796,10 @@ export interface ChromaticVault extends BaseContract {
      * @param fee The amount of the fee to transfer as native token.
      * @param keeper The address of the keeper to receive the fee.
      * @param margin The margin amount used for the fee payment.
+     * @param settlementToken The settlement token address.
      */
     transferKeeperFee(
+      settlementToken: PromiseOrValue<string>,
       keeper: PromiseOrValue<string>,
       fee: PromiseOrValue<BigNumberish>,
       margin: PromiseOrValue<BigNumberish>,
@@ -856,9 +885,11 @@ export interface ChromaticVault extends BaseContract {
    * Retrieves the pending share of earnings for a specific bin (subset) of funds in a market.
    * @param binBalance The balance of funds in the bin.
    * @param market The address of the market.
+   * @param settlementToken The settlement token address.
    */
   getPendingBinShare(
     market: PromiseOrValue<string>,
+    settlementToken: PromiseOrValue<string>,
     binBalance: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
@@ -887,8 +918,10 @@ export interface ChromaticVault extends BaseContract {
    * This function can only be called by a market contract.
    * Called when liquidity is added to the vault by a market contract.
    * @param amount The amount of liquidity being added.
+   * @param settlementToken The settlement token address.
    */
   onAddLiquidity(
+    settlementToken: PromiseOrValue<string>,
     amount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -899,9 +932,11 @@ export interface ChromaticVault extends BaseContract {
    * @param positionId The ID of the claimed position.
    * @param recipient The address that will receive the settlement amount.
    * @param settlementAmount The amount to be settled for the position.
+   * @param settlementToken The settlement token address.
    * @param takerMargin The margin amount provided by the taker for the position.
    */
   onClaimPosition(
+    settlementToken: PromiseOrValue<string>,
     positionId: PromiseOrValue<BigNumberish>,
     recipient: PromiseOrValue<string>,
     takerMargin: PromiseOrValue<BigNumberish>,
@@ -914,10 +949,12 @@ export interface ChromaticVault extends BaseContract {
    * Called when a position is opened by a market contract.
    * @param positionId The ID of the opened position.
    * @param protocolFee The protocol fee associated with the position.
+   * @param settlementToken The settlement token address.
    * @param takerMargin The margin amount provided by the taker for the position.
    * @param tradingFee The trading fee associated with the position.
    */
   onOpenPosition(
+    settlementToken: PromiseOrValue<string>,
     positionId: PromiseOrValue<BigNumberish>,
     takerMargin: PromiseOrValue<BigNumberish>,
     tradingFee: PromiseOrValue<BigNumberish>,
@@ -930,8 +967,10 @@ export interface ChromaticVault extends BaseContract {
    * Called when pending liquidity is settled in the vault by a market contract.
    * @param pendingDeposit The amount of pending deposits being settled.
    * @param pendingWithdrawal The amount of pending withdrawals being settled.
+   * @param settlementToken The settlement token address.
    */
   onSettlePendingLiquidity(
+    settlementToken: PromiseOrValue<string>,
     pendingDeposit: PromiseOrValue<BigNumberish>,
     pendingWithdrawal: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -942,8 +981,10 @@ export interface ChromaticVault extends BaseContract {
    * Called when liquidity is withdrawn from the vault by a market contract.
    * @param amount The amount of liquidity to be withdrawn.
    * @param recipient The address that will receive the withdrawn liquidity.
+   * @param settlementToken The settlement token address.
    */
   onWithdrawLiquidity(
+    settlementToken: PromiseOrValue<string>,
     recipient: PromiseOrValue<string>,
     amount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1003,8 +1044,10 @@ export interface ChromaticVault extends BaseContract {
    * @param fee The amount of the fee to transfer as native token.
    * @param keeper The address of the keeper to receive the fee.
    * @param margin The margin amount used for the fee payment.
+   * @param settlementToken The settlement token address.
    */
   transferKeeperFee(
+    settlementToken: PromiseOrValue<string>,
     keeper: PromiseOrValue<string>,
     fee: PromiseOrValue<BigNumberish>,
     margin: PromiseOrValue<BigNumberish>,
@@ -1090,9 +1133,11 @@ export interface ChromaticVault extends BaseContract {
      * Retrieves the pending share of earnings for a specific bin (subset) of funds in a market.
      * @param binBalance The balance of funds in the bin.
      * @param market The address of the market.
+     * @param settlementToken The settlement token address.
      */
     getPendingBinShare(
       market: PromiseOrValue<string>,
+      settlementToken: PromiseOrValue<string>,
       binBalance: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1121,8 +1166,10 @@ export interface ChromaticVault extends BaseContract {
      * This function can only be called by a market contract.
      * Called when liquidity is added to the vault by a market contract.
      * @param amount The amount of liquidity being added.
+     * @param settlementToken The settlement token address.
      */
     onAddLiquidity(
+      settlementToken: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1133,9 +1180,11 @@ export interface ChromaticVault extends BaseContract {
      * @param positionId The ID of the claimed position.
      * @param recipient The address that will receive the settlement amount.
      * @param settlementAmount The amount to be settled for the position.
+     * @param settlementToken The settlement token address.
      * @param takerMargin The margin amount provided by the taker for the position.
      */
     onClaimPosition(
+      settlementToken: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       recipient: PromiseOrValue<string>,
       takerMargin: PromiseOrValue<BigNumberish>,
@@ -1148,10 +1197,12 @@ export interface ChromaticVault extends BaseContract {
      * Called when a position is opened by a market contract.
      * @param positionId The ID of the opened position.
      * @param protocolFee The protocol fee associated with the position.
+     * @param settlementToken The settlement token address.
      * @param takerMargin The margin amount provided by the taker for the position.
      * @param tradingFee The trading fee associated with the position.
      */
     onOpenPosition(
+      settlementToken: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       takerMargin: PromiseOrValue<BigNumberish>,
       tradingFee: PromiseOrValue<BigNumberish>,
@@ -1164,8 +1215,10 @@ export interface ChromaticVault extends BaseContract {
      * Called when pending liquidity is settled in the vault by a market contract.
      * @param pendingDeposit The amount of pending deposits being settled.
      * @param pendingWithdrawal The amount of pending withdrawals being settled.
+     * @param settlementToken The settlement token address.
      */
     onSettlePendingLiquidity(
+      settlementToken: PromiseOrValue<string>,
       pendingDeposit: PromiseOrValue<BigNumberish>,
       pendingWithdrawal: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -1176,8 +1229,10 @@ export interface ChromaticVault extends BaseContract {
      * Called when liquidity is withdrawn from the vault by a market contract.
      * @param amount The amount of liquidity to be withdrawn.
      * @param recipient The address that will receive the withdrawn liquidity.
+     * @param settlementToken The settlement token address.
      */
     onWithdrawLiquidity(
+      settlementToken: PromiseOrValue<string>,
       recipient: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -1237,8 +1292,10 @@ export interface ChromaticVault extends BaseContract {
      * @param fee The amount of the fee to transfer as native token.
      * @param keeper The address of the keeper to receive the fee.
      * @param margin The margin amount used for the fee payment.
+     * @param settlementToken The settlement token address.
      */
     transferKeeperFee(
+      settlementToken: PromiseOrValue<string>,
       keeper: PromiseOrValue<string>,
       fee: PromiseOrValue<BigNumberish>,
       margin: PromiseOrValue<BigNumberish>,
@@ -1459,9 +1516,11 @@ export interface ChromaticVault extends BaseContract {
      * Retrieves the pending share of earnings for a specific bin (subset) of funds in a market.
      * @param binBalance The balance of funds in the bin.
      * @param market The address of the market.
+     * @param settlementToken The settlement token address.
      */
     getPendingBinShare(
       market: PromiseOrValue<string>,
+      settlementToken: PromiseOrValue<string>,
       binBalance: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1490,8 +1549,10 @@ export interface ChromaticVault extends BaseContract {
      * This function can only be called by a market contract.
      * Called when liquidity is added to the vault by a market contract.
      * @param amount The amount of liquidity being added.
+     * @param settlementToken The settlement token address.
      */
     onAddLiquidity(
+      settlementToken: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -1502,9 +1563,11 @@ export interface ChromaticVault extends BaseContract {
      * @param positionId The ID of the claimed position.
      * @param recipient The address that will receive the settlement amount.
      * @param settlementAmount The amount to be settled for the position.
+     * @param settlementToken The settlement token address.
      * @param takerMargin The margin amount provided by the taker for the position.
      */
     onClaimPosition(
+      settlementToken: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       recipient: PromiseOrValue<string>,
       takerMargin: PromiseOrValue<BigNumberish>,
@@ -1517,10 +1580,12 @@ export interface ChromaticVault extends BaseContract {
      * Called when a position is opened by a market contract.
      * @param positionId The ID of the opened position.
      * @param protocolFee The protocol fee associated with the position.
+     * @param settlementToken The settlement token address.
      * @param takerMargin The margin amount provided by the taker for the position.
      * @param tradingFee The trading fee associated with the position.
      */
     onOpenPosition(
+      settlementToken: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       takerMargin: PromiseOrValue<BigNumberish>,
       tradingFee: PromiseOrValue<BigNumberish>,
@@ -1533,8 +1598,10 @@ export interface ChromaticVault extends BaseContract {
      * Called when pending liquidity is settled in the vault by a market contract.
      * @param pendingDeposit The amount of pending deposits being settled.
      * @param pendingWithdrawal The amount of pending withdrawals being settled.
+     * @param settlementToken The settlement token address.
      */
     onSettlePendingLiquidity(
+      settlementToken: PromiseOrValue<string>,
       pendingDeposit: PromiseOrValue<BigNumberish>,
       pendingWithdrawal: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1545,8 +1612,10 @@ export interface ChromaticVault extends BaseContract {
      * Called when liquidity is withdrawn from the vault by a market contract.
      * @param amount The amount of liquidity to be withdrawn.
      * @param recipient The address that will receive the withdrawn liquidity.
+     * @param settlementToken The settlement token address.
      */
     onWithdrawLiquidity(
+      settlementToken: PromiseOrValue<string>,
       recipient: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1606,8 +1675,10 @@ export interface ChromaticVault extends BaseContract {
      * @param fee The amount of the fee to transfer as native token.
      * @param keeper The address of the keeper to receive the fee.
      * @param margin The margin amount used for the fee payment.
+     * @param settlementToken The settlement token address.
      */
     transferKeeperFee(
+      settlementToken: PromiseOrValue<string>,
       keeper: PromiseOrValue<string>,
       fee: PromiseOrValue<BigNumberish>,
       margin: PromiseOrValue<BigNumberish>,
@@ -1696,9 +1767,11 @@ export interface ChromaticVault extends BaseContract {
      * Retrieves the pending share of earnings for a specific bin (subset) of funds in a market.
      * @param binBalance The balance of funds in the bin.
      * @param market The address of the market.
+     * @param settlementToken The settlement token address.
      */
     getPendingBinShare(
       market: PromiseOrValue<string>,
+      settlementToken: PromiseOrValue<string>,
       binBalance: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1727,8 +1800,10 @@ export interface ChromaticVault extends BaseContract {
      * This function can only be called by a market contract.
      * Called when liquidity is added to the vault by a market contract.
      * @param amount The amount of liquidity being added.
+     * @param settlementToken The settlement token address.
      */
     onAddLiquidity(
+      settlementToken: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
@@ -1739,9 +1814,11 @@ export interface ChromaticVault extends BaseContract {
      * @param positionId The ID of the claimed position.
      * @param recipient The address that will receive the settlement amount.
      * @param settlementAmount The amount to be settled for the position.
+     * @param settlementToken The settlement token address.
      * @param takerMargin The margin amount provided by the taker for the position.
      */
     onClaimPosition(
+      settlementToken: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       recipient: PromiseOrValue<string>,
       takerMargin: PromiseOrValue<BigNumberish>,
@@ -1754,10 +1831,12 @@ export interface ChromaticVault extends BaseContract {
      * Called when a position is opened by a market contract.
      * @param positionId The ID of the opened position.
      * @param protocolFee The protocol fee associated with the position.
+     * @param settlementToken The settlement token address.
      * @param takerMargin The margin amount provided by the taker for the position.
      * @param tradingFee The trading fee associated with the position.
      */
     onOpenPosition(
+      settlementToken: PromiseOrValue<string>,
       positionId: PromiseOrValue<BigNumberish>,
       takerMargin: PromiseOrValue<BigNumberish>,
       tradingFee: PromiseOrValue<BigNumberish>,
@@ -1770,8 +1849,10 @@ export interface ChromaticVault extends BaseContract {
      * Called when pending liquidity is settled in the vault by a market contract.
      * @param pendingDeposit The amount of pending deposits being settled.
      * @param pendingWithdrawal The amount of pending withdrawals being settled.
+     * @param settlementToken The settlement token address.
      */
     onSettlePendingLiquidity(
+      settlementToken: PromiseOrValue<string>,
       pendingDeposit: PromiseOrValue<BigNumberish>,
       pendingWithdrawal: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1782,8 +1863,10 @@ export interface ChromaticVault extends BaseContract {
      * Called when liquidity is withdrawn from the vault by a market contract.
      * @param amount The amount of liquidity to be withdrawn.
      * @param recipient The address that will receive the withdrawn liquidity.
+     * @param settlementToken The settlement token address.
      */
     onWithdrawLiquidity(
+      settlementToken: PromiseOrValue<string>,
       recipient: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1843,8 +1926,10 @@ export interface ChromaticVault extends BaseContract {
      * @param fee The amount of the fee to transfer as native token.
      * @param keeper The address of the keeper to receive the fee.
      * @param margin The margin amount used for the fee payment.
+     * @param settlementToken The settlement token address.
      */
     transferKeeperFee(
+      settlementToken: PromiseOrValue<string>,
       keeper: PromiseOrValue<string>,
       fee: PromiseOrValue<BigNumberish>,
       margin: PromiseOrValue<BigNumberish>,

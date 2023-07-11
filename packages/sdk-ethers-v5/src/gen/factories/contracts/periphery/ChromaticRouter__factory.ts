@@ -219,6 +219,29 @@ const _abi = [
         type: "bytes",
       },
     ],
+    name: "addLiquidityBatchCallback",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "settlementToken",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "vault",
+        type: "address",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+    ],
     name: "addLiquidityCallback",
     outputs: [],
     stateMutability: "nonpayable",
@@ -256,6 +279,24 @@ const _abi = [
       },
     ],
     name: "claimLiquidityBatch",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256[]",
+        name: "_receiptIds",
+        type: "uint256[]",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+    ],
+    name: "claimLiquidityBatchCallback",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -643,6 +684,29 @@ const _abi = [
         type: "address",
       },
       {
+        internalType: "uint256[]",
+        name: "clbTokenIds",
+        type: "uint256[]",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+    ],
+    name: "removeLiquidityBatchCallback",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "clbToken",
+        type: "address",
+      },
+      {
         internalType: "uint256",
         name: "clbTokenId",
         type: "uint256",
@@ -710,6 +774,24 @@ const _abi = [
       },
     ],
     name: "withdrawLiquidityBatch",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256[]",
+        name: "_receiptIds",
+        type: "uint256[]",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+    ],
+    name: "withdrawLiquidityBatchCallback",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

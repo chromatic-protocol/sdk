@@ -25,7 +25,7 @@ import type {
   TypedListener,
   OnEvent,
   PromiseOrValue,
-} from "../../common";
+} from "../../../common";
 
 export type LpReceiptStruct = {
   id: PromiseOrValue<BigNumberish>;
@@ -102,7 +102,7 @@ export type PositionStructOutput = [
   _feeProtocol: number;
 };
 
-export declare namespace ILiquidity {
+export declare namespace IMarketLiquidity {
   export type ClaimableLiquidityStruct = {
     mintingTokenAmountRequested: PromiseOrValue<BigNumberish>;
     mintingCLBTokenAmount: PromiseOrValue<BigNumberish>;
@@ -145,12 +145,14 @@ export declare namespace ILiquidity {
   };
 }
 
-export interface ChromaticMarketInterface extends utils.Interface {
+export interface IChromaticMarketInterface extends utils.Interface {
   functions: {
     "addLiquidity(address,int16,bytes)": FunctionFragment;
+    "addLiquidityBatch(address,int16[],uint256[],bytes)": FunctionFragment;
     "checkClaimPosition(uint256)": FunctionFragment;
     "checkLiquidation(uint256)": FunctionFragment;
     "claimLiquidity(uint256,bytes)": FunctionFragment;
+    "claimLiquidityBatch(uint256[],bytes)": FunctionFragment;
     "claimPosition(uint256,address,bytes)": FunctionFragment;
     "claimPosition(uint256,address,uint256)": FunctionFragment;
     "claimableLiquidity(int16,uint256)": FunctionFragment;
@@ -158,6 +160,7 @@ export interface ChromaticMarketInterface extends utils.Interface {
     "closePosition(uint256)": FunctionFragment;
     "distributeEarningToBins(uint256,uint256)": FunctionFragment;
     "factory()": FunctionFragment;
+    "feeProtocol()": FunctionFragment;
     "getBinFreeLiquidity(int16)": FunctionFragment;
     "getBinLiquidity(int16)": FunctionFragment;
     "getBinValues(int16[])": FunctionFragment;
@@ -167,25 +170,26 @@ export interface ChromaticMarketInterface extends utils.Interface {
     "liquidate(uint256,address,uint256)": FunctionFragment;
     "liquidator()": FunctionFragment;
     "liquidityBinStatuses()": FunctionFragment;
-    "onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)": FunctionFragment;
-    "onERC1155Received(address,address,uint256,uint256,bytes)": FunctionFragment;
     "openPosition(int224,uint32,uint256,uint256,uint256,bytes)": FunctionFragment;
     "oracleProvider()": FunctionFragment;
     "removeLiquidity(address,int16,bytes)": FunctionFragment;
+    "removeLiquidityBatch(address,int16[],uint256[],bytes)": FunctionFragment;
     "setFeeProtocol(uint8)": FunctionFragment;
     "settle()": FunctionFragment;
     "settlementToken()": FunctionFragment;
-    "supportsInterface(bytes4)": FunctionFragment;
     "vault()": FunctionFragment;
     "withdrawLiquidity(uint256,bytes)": FunctionFragment;
+    "withdrawLiquidityBatch(uint256[],bytes)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
       | "addLiquidity"
+      | "addLiquidityBatch"
       | "checkClaimPosition"
       | "checkLiquidation"
       | "claimLiquidity"
+      | "claimLiquidityBatch"
       | "claimPosition(uint256,address,bytes)"
       | "claimPosition(uint256,address,uint256)"
       | "claimableLiquidity"
@@ -193,6 +197,7 @@ export interface ChromaticMarketInterface extends utils.Interface {
       | "closePosition"
       | "distributeEarningToBins"
       | "factory"
+      | "feeProtocol"
       | "getBinFreeLiquidity"
       | "getBinLiquidity"
       | "getBinValues"
@@ -202,17 +207,16 @@ export interface ChromaticMarketInterface extends utils.Interface {
       | "liquidate"
       | "liquidator"
       | "liquidityBinStatuses"
-      | "onERC1155BatchReceived"
-      | "onERC1155Received"
       | "openPosition"
       | "oracleProvider"
       | "removeLiquidity"
+      | "removeLiquidityBatch"
       | "setFeeProtocol"
       | "settle"
       | "settlementToken"
-      | "supportsInterface"
       | "vault"
       | "withdrawLiquidity"
+      | "withdrawLiquidityBatch"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -220,6 +224,15 @@ export interface ChromaticMarketInterface extends utils.Interface {
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addLiquidityBatch",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>[],
+      PromiseOrValue<BigNumberish>[],
       PromiseOrValue<BytesLike>
     ]
   ): string;
@@ -234,6 +247,10 @@ export interface ChromaticMarketInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "claimLiquidity",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "claimLiquidityBatch",
+    values: [PromiseOrValue<BigNumberish>[], PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "claimPosition(uint256,address,bytes)",
@@ -265,6 +282,10 @@ export interface ChromaticMarketInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(functionFragment: "factory", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "feeProtocol",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "getBinFreeLiquidity",
     values: [PromiseOrValue<BigNumberish>]
@@ -306,26 +327,6 @@ export interface ChromaticMarketInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "onERC1155BatchReceived",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BytesLike>
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "onERC1155Received",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
-  ): string;
-  encodeFunctionData(
     functionFragment: "openPosition",
     values: [
       PromiseOrValue<BigNumberish>,
@@ -349,6 +350,15 @@ export interface ChromaticMarketInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
+    functionFragment: "removeLiquidityBatch",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>[],
+      PromiseOrValue<BigNumberish>[],
+      PromiseOrValue<BytesLike>
+    ]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setFeeProtocol",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
@@ -357,18 +367,22 @@ export interface ChromaticMarketInterface extends utils.Interface {
     functionFragment: "settlementToken",
     values?: undefined
   ): string;
-  encodeFunctionData(
-    functionFragment: "supportsInterface",
-    values: [PromiseOrValue<BytesLike>]
-  ): string;
   encodeFunctionData(functionFragment: "vault", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "withdrawLiquidity",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BytesLike>]
   ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawLiquidityBatch",
+    values: [PromiseOrValue<BigNumberish>[], PromiseOrValue<BytesLike>]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "addLiquidity",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "addLiquidityBatch",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -381,6 +395,10 @@ export interface ChromaticMarketInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "claimLiquidity",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "claimLiquidityBatch",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -405,6 +423,10 @@ export interface ChromaticMarketInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "feeProtocol",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getBinFreeLiquidity",
     data: BytesLike
@@ -436,14 +458,6 @@ export interface ChromaticMarketInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "onERC1155BatchReceived",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "onERC1155Received",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "openPosition",
     data: BytesLike
   ): Result;
@@ -456,6 +470,10 @@ export interface ChromaticMarketInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "removeLiquidityBatch",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setFeeProtocol",
     data: BytesLike
   ): Result;
@@ -464,63 +482,94 @@ export interface ChromaticMarketInterface extends utils.Interface {
     functionFragment: "settlementToken",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "supportsInterface",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "vault", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "withdrawLiquidity",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawLiquidityBatch",
+    data: BytesLike
+  ): Result;
 
   events: {
-    "AddLiquidity(address,tuple)": EventFragment;
-    "ClaimLiquidity(address,uint256,tuple)": EventFragment;
+    "AddLiquidity(tuple)": EventFragment;
+    "AddLiquidityBatch(tuple[])": EventFragment;
+    "ClaimLiquidity(tuple,uint256)": EventFragment;
+    "ClaimLiquidityBatch(tuple[],uint256[])": EventFragment;
     "ClaimPosition(address,int256,uint256,tuple)": EventFragment;
+    "ClaimPositionByKeeper(address,int256,uint256,uint256,tuple)": EventFragment;
     "ClosePosition(address,tuple)": EventFragment;
-    "Liquidate(address,uint256,tuple)": EventFragment;
+    "Liquidate(address,int256,uint256,uint256,tuple)": EventFragment;
     "OpenPosition(address,tuple)": EventFragment;
-    "RemoveLiquidity(address,tuple)": EventFragment;
+    "RemoveLiquidity(tuple)": EventFragment;
+    "RemoveLiquidityBatch(tuple[])": EventFragment;
     "SetFeeProtocol(uint8,uint8)": EventFragment;
     "TransferProtocolFee(uint256,uint256)": EventFragment;
-    "WithdrawLiquidity(address,uint256,uint256,tuple)": EventFragment;
+    "WithdrawLiquidity(tuple,uint256,uint256)": EventFragment;
+    "WithdrawLiquidityBatch(tuple[],uint256[],uint256[])": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "AddLiquidity"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "AddLiquidityBatch"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ClaimLiquidity"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ClaimLiquidityBatch"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ClaimPosition"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ClaimPositionByKeeper"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ClosePosition"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Liquidate"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OpenPosition"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveLiquidity"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RemoveLiquidityBatch"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetFeeProtocol"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferProtocolFee"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "WithdrawLiquidity"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "WithdrawLiquidityBatch"): EventFragment;
 }
 
 export interface AddLiquidityEventObject {
-  recipient: string;
   receipt: LpReceiptStructOutput;
 }
 export type AddLiquidityEvent = TypedEvent<
-  [string, LpReceiptStructOutput],
+  [LpReceiptStructOutput],
   AddLiquidityEventObject
 >;
 
 export type AddLiquidityEventFilter = TypedEventFilter<AddLiquidityEvent>;
 
+export interface AddLiquidityBatchEventObject {
+  receipts: LpReceiptStructOutput[];
+}
+export type AddLiquidityBatchEvent = TypedEvent<
+  [LpReceiptStructOutput[]],
+  AddLiquidityBatchEventObject
+>;
+
+export type AddLiquidityBatchEventFilter =
+  TypedEventFilter<AddLiquidityBatchEvent>;
+
 export interface ClaimLiquidityEventObject {
-  recipient: string;
-  clbTokenAmount: BigNumber;
   receipt: LpReceiptStructOutput;
+  clbTokenAmount: BigNumber;
 }
 export type ClaimLiquidityEvent = TypedEvent<
-  [string, BigNumber, LpReceiptStructOutput],
+  [LpReceiptStructOutput, BigNumber],
   ClaimLiquidityEventObject
 >;
 
 export type ClaimLiquidityEventFilter = TypedEventFilter<ClaimLiquidityEvent>;
+
+export interface ClaimLiquidityBatchEventObject {
+  receipts: LpReceiptStructOutput[];
+  clbTokenAmounts: BigNumber[];
+}
+export type ClaimLiquidityBatchEvent = TypedEvent<
+  [LpReceiptStructOutput[], BigNumber[]],
+  ClaimLiquidityBatchEventObject
+>;
+
+export type ClaimLiquidityBatchEventFilter =
+  TypedEventFilter<ClaimLiquidityBatchEvent>;
 
 export interface ClaimPositionEventObject {
   account: string;
@@ -535,6 +584,21 @@ export type ClaimPositionEvent = TypedEvent<
 
 export type ClaimPositionEventFilter = TypedEventFilter<ClaimPositionEvent>;
 
+export interface ClaimPositionByKeeperEventObject {
+  account: string;
+  pnl: BigNumber;
+  interest: BigNumber;
+  usedKeeperFee: BigNumber;
+  position: PositionStructOutput;
+}
+export type ClaimPositionByKeeperEvent = TypedEvent<
+  [string, BigNumber, BigNumber, BigNumber, PositionStructOutput],
+  ClaimPositionByKeeperEventObject
+>;
+
+export type ClaimPositionByKeeperEventFilter =
+  TypedEventFilter<ClaimPositionByKeeperEvent>;
+
 export interface ClosePositionEventObject {
   account: string;
   position: PositionStructOutput;
@@ -548,11 +612,13 @@ export type ClosePositionEventFilter = TypedEventFilter<ClosePositionEvent>;
 
 export interface LiquidateEventObject {
   account: string;
+  pnl: BigNumber;
+  interest: BigNumber;
   usedKeeperFee: BigNumber;
   position: PositionStructOutput;
 }
 export type LiquidateEvent = TypedEvent<
-  [string, BigNumber, PositionStructOutput],
+  [string, BigNumber, BigNumber, BigNumber, PositionStructOutput],
   LiquidateEventObject
 >;
 
@@ -570,15 +636,25 @@ export type OpenPositionEvent = TypedEvent<
 export type OpenPositionEventFilter = TypedEventFilter<OpenPositionEvent>;
 
 export interface RemoveLiquidityEventObject {
-  recipient: string;
   receipt: LpReceiptStructOutput;
 }
 export type RemoveLiquidityEvent = TypedEvent<
-  [string, LpReceiptStructOutput],
+  [LpReceiptStructOutput],
   RemoveLiquidityEventObject
 >;
 
 export type RemoveLiquidityEventFilter = TypedEventFilter<RemoveLiquidityEvent>;
+
+export interface RemoveLiquidityBatchEventObject {
+  receipts: LpReceiptStructOutput[];
+}
+export type RemoveLiquidityBatchEvent = TypedEvent<
+  [LpReceiptStructOutput[]],
+  RemoveLiquidityBatchEventObject
+>;
+
+export type RemoveLiquidityBatchEventFilter =
+  TypedEventFilter<RemoveLiquidityBatchEvent>;
 
 export interface SetFeeProtocolEventObject {
   feeProtocolOld: number;
@@ -604,25 +680,37 @@ export type TransferProtocolFeeEventFilter =
   TypedEventFilter<TransferProtocolFeeEvent>;
 
 export interface WithdrawLiquidityEventObject {
-  recipient: string;
+  receipt: LpReceiptStructOutput;
   amount: BigNumber;
   burnedCLBTokenAmount: BigNumber;
-  receipt: LpReceiptStructOutput;
 }
 export type WithdrawLiquidityEvent = TypedEvent<
-  [string, BigNumber, BigNumber, LpReceiptStructOutput],
+  [LpReceiptStructOutput, BigNumber, BigNumber],
   WithdrawLiquidityEventObject
 >;
 
 export type WithdrawLiquidityEventFilter =
   TypedEventFilter<WithdrawLiquidityEvent>;
 
-export interface ChromaticMarket extends BaseContract {
+export interface WithdrawLiquidityBatchEventObject {
+  receipts: LpReceiptStructOutput[];
+  amounts: BigNumber[];
+  burnedCLBTokenAmounts: BigNumber[];
+}
+export type WithdrawLiquidityBatchEvent = TypedEvent<
+  [LpReceiptStructOutput[], BigNumber[], BigNumber[]],
+  WithdrawLiquidityBatchEventObject
+>;
+
+export type WithdrawLiquidityBatchEventFilter =
+  TypedEventFilter<WithdrawLiquidityBatchEvent>;
+
+export interface IChromaticMarket extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: ChromaticMarketInterface;
+  interface: IChromaticMarketInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -658,6 +746,21 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
+     * Adds liquidity to multiple liquidity bins of the market in a batch.
+     * @param amounts An array of amounts to add as liquidity for each bin.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address of the recipient for each liquidity bin.
+     * @param tradingFeeRates An array of fee rates for each liquidity bin.
+     */
+    addLiquidityBatch(
+      recipient: PromiseOrValue<string>,
+      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      amounts: PromiseOrValue<BigNumberish>[],
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    /**
      * Checks if a position is eligible for claim.
      * @param positionId The ID of the position to check.
      */
@@ -673,7 +776,7 @@ export interface ChromaticMarket extends BaseContract {
     checkLiquidation(
       positionId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[boolean] & { _liquidate: boolean }>;
+    ): Promise<[boolean]>;
 
     /**
      * Claims liquidity from a liquidity receipt.
@@ -682,6 +785,17 @@ export interface ChromaticMarket extends BaseContract {
      */
     claimLiquidity(
       receiptId: PromiseOrValue<BigNumberish>,
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Claims liquidity from a liquidity receipt.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptIds The array of the liquidity receipt IDs.
+     */
+    claimLiquidityBatch(
+      receiptIds: PromiseOrValue<BigNumberish>[],
       data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -721,8 +835,11 @@ export interface ChromaticMarket extends BaseContract {
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       oracleVersion: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[ILiquidity.ClaimableLiquidityStructOutput]>;
+    ): Promise<[IMarketLiquidity.ClaimableLiquidityStructOutput]>;
 
+    /**
+     * Returns the CLB token contract for the market.
+     */
     clbToken(overrides?: CallOverrides): Promise<[string]>;
 
     /**
@@ -745,7 +862,15 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Returns the factory contract for the market.
+     */
     factory(overrides?: CallOverrides): Promise<[string]>;
+
+    /**
+     * Returns the denominator of the protocol's % share of the fees
+     */
+    feeProtocol(overrides?: CallOverrides): Promise<[number]>;
 
     /**
      * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
@@ -772,7 +897,7 @@ export interface ChromaticMarket extends BaseContract {
     getBinValues(
       tradingFeeRates: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
-    ): Promise<[BigNumber[]]>;
+    ): Promise<[BigNumber[]] & { values: BigNumber[] }>;
 
     /**
      * Retrieves the liquidity receipt with the given receipt ID.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
@@ -781,7 +906,7 @@ export interface ChromaticMarket extends BaseContract {
     getLpReceipt(
       receiptId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[LpReceiptStructOutput] & { receipt: LpReceiptStructOutput }>;
+    ): Promise<[LpReceiptStructOutput]>;
 
     /**
      * Retrieves multiple positions by their IDs.
@@ -791,9 +916,12 @@ export interface ChromaticMarket extends BaseContract {
       positionIds: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<
-      [PositionStructOutput[]] & { _positions: PositionStructOutput[] }
+      [PositionStructOutput[]] & { positions: PositionStructOutput[] }
     >;
 
+    /**
+     * Returns the keeper fee payer contract for the market.
+     */
     keeperFeePayer(overrides?: CallOverrides): Promise<[string]>;
 
     /**
@@ -809,6 +937,9 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Returns the liquidator contract for the market.
+     */
     liquidator(overrides?: CallOverrides): Promise<[string]>;
 
     /**
@@ -816,41 +947,7 @@ export interface ChromaticMarket extends BaseContract {
      */
     liquidityBinStatuses(
       overrides?: CallOverrides
-    ): Promise<[ILiquidity.LiquidityBinStatusStructOutput[]]>;
-
-    /**
-     * Handles the receipt of a multiple ERC1155 token types. This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated. NOTE: To accept the transfer(s), this must return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81, or its own function selector).
-     * @param data Additional data with no specified format
-     * @param from The address which previously owned the token
-     * @param ids An array containing ids of each token being transferred (order and length must match values array)
-     * @param operator The address which initiated the batch transfer (i.e. msg.sender)
-     * @param values An array containing amounts of each token being transferred (order and length must match ids array)
-     */
-    onERC1155BatchReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>[],
-      arg3: PromiseOrValue<BigNumberish>[],
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    /**
-     * Handles the receipt of a single ERC1155 token type. This function is called at the end of a `safeTransferFrom` after the balance has been updated. NOTE: To accept the transfer, this must return `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))` (i.e. 0xf23a6e61, or its own function selector).
-     * @param data Additional data with no specified format
-     * @param from The address which previously owned the token
-     * @param id The ID of the token being transferred
-     * @param operator The address which initiated the transfer (i.e. msg.sender)
-     * @param value The amount of tokens being transferred
-     */
-    onERC1155Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+    ): Promise<[IMarketLiquidity.LiquidityBinStatusStructOutput[]]>;
 
     /**
      * Opens a new position in the market.
@@ -871,6 +968,9 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Returns the oracle provider contract for the market.
+     */
     oracleProvider(overrides?: CallOverrides): Promise<[string]>;
 
     /**
@@ -887,6 +987,21 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
+     * Removes liquidity from the market.
+     * @param clbTokenAmounts An array of clb token amounts to remove as liquidity for each bin.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address to receive the removed liquidity.
+     * @param tradingFeeRates An array of fee rates for each liquidity bin.
+     */
+    removeLiquidityBatch(
+      recipient: PromiseOrValue<string>,
+      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    /**
      * Set the denominator of the protocol's % share of the fees
      * @param feeProtocol new protocol fee for the market
      */
@@ -896,23 +1011,21 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
+     * This function is called to settle the market.
      * Executes the settlement process for the Chromatic market.
      */
     settle(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Returns the settlement token of the market.
+     */
     settlementToken(overrides?: CallOverrides): Promise<[string]>;
 
     /**
-     * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
+     * Returns the vault contract for the market.
      */
-    supportsInterface(
-      interfaceID: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
     vault(overrides?: CallOverrides): Promise<[string]>;
 
     /**
@@ -922,6 +1035,17 @@ export interface ChromaticMarket extends BaseContract {
      */
     withdrawLiquidity(
       receiptId: PromiseOrValue<BigNumberish>,
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Withdraws liquidity from a liquidity receipt.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptIds The array of the liquidity receipt IDs.
+     */
+    withdrawLiquidityBatch(
+      receiptIds: PromiseOrValue<BigNumberish>[],
       data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -936,6 +1060,21 @@ export interface ChromaticMarket extends BaseContract {
   addLiquidity(
     recipient: PromiseOrValue<string>,
     tradingFeeRate: PromiseOrValue<BigNumberish>,
+    data: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Adds liquidity to multiple liquidity bins of the market in a batch.
+   * @param amounts An array of amounts to add as liquidity for each bin.
+   * @param data Additional data for the liquidity callback.
+   * @param recipient The address of the recipient for each liquidity bin.
+   * @param tradingFeeRates An array of fee rates for each liquidity bin.
+   */
+  addLiquidityBatch(
+    recipient: PromiseOrValue<string>,
+    tradingFeeRates: PromiseOrValue<BigNumberish>[],
+    amounts: PromiseOrValue<BigNumberish>[],
     data: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -965,6 +1104,17 @@ export interface ChromaticMarket extends BaseContract {
    */
   claimLiquidity(
     receiptId: PromiseOrValue<BigNumberish>,
+    data: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Claims liquidity from a liquidity receipt.
+   * @param data Additional data for the liquidity callback.
+   * @param receiptIds The array of the liquidity receipt IDs.
+   */
+  claimLiquidityBatch(
+    receiptIds: PromiseOrValue<BigNumberish>[],
     data: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -1004,8 +1154,11 @@ export interface ChromaticMarket extends BaseContract {
     tradingFeeRate: PromiseOrValue<BigNumberish>,
     oracleVersion: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
-  ): Promise<ILiquidity.ClaimableLiquidityStructOutput>;
+  ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput>;
 
+  /**
+   * Returns the CLB token contract for the market.
+   */
   clbToken(overrides?: CallOverrides): Promise<string>;
 
   /**
@@ -1028,7 +1181,15 @@ export interface ChromaticMarket extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Returns the factory contract for the market.
+   */
   factory(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Returns the denominator of the protocol's % share of the fees
+   */
+  feeProtocol(overrides?: CallOverrides): Promise<number>;
 
   /**
    * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
@@ -1075,6 +1236,9 @@ export interface ChromaticMarket extends BaseContract {
     overrides?: CallOverrides
   ): Promise<PositionStructOutput[]>;
 
+  /**
+   * Returns the keeper fee payer contract for the market.
+   */
   keeperFeePayer(overrides?: CallOverrides): Promise<string>;
 
   /**
@@ -1090,6 +1254,9 @@ export interface ChromaticMarket extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Returns the liquidator contract for the market.
+   */
   liquidator(overrides?: CallOverrides): Promise<string>;
 
   /**
@@ -1097,41 +1264,7 @@ export interface ChromaticMarket extends BaseContract {
    */
   liquidityBinStatuses(
     overrides?: CallOverrides
-  ): Promise<ILiquidity.LiquidityBinStatusStructOutput[]>;
-
-  /**
-   * Handles the receipt of a multiple ERC1155 token types. This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated. NOTE: To accept the transfer(s), this must return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81, or its own function selector).
-   * @param data Additional data with no specified format
-   * @param from The address which previously owned the token
-   * @param ids An array containing ids of each token being transferred (order and length must match values array)
-   * @param operator The address which initiated the batch transfer (i.e. msg.sender)
-   * @param values An array containing amounts of each token being transferred (order and length must match ids array)
-   */
-  onERC1155BatchReceived(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<string>,
-    arg2: PromiseOrValue<BigNumberish>[],
-    arg3: PromiseOrValue<BigNumberish>[],
-    arg4: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  /**
-   * Handles the receipt of a single ERC1155 token type. This function is called at the end of a `safeTransferFrom` after the balance has been updated. NOTE: To accept the transfer, this must return `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))` (i.e. 0xf23a6e61, or its own function selector).
-   * @param data Additional data with no specified format
-   * @param from The address which previously owned the token
-   * @param id The ID of the token being transferred
-   * @param operator The address which initiated the transfer (i.e. msg.sender)
-   * @param value The amount of tokens being transferred
-   */
-  onERC1155Received(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<string>,
-    arg2: PromiseOrValue<BigNumberish>,
-    arg3: PromiseOrValue<BigNumberish>,
-    arg4: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<string>;
+  ): Promise<IMarketLiquidity.LiquidityBinStatusStructOutput[]>;
 
   /**
    * Opens a new position in the market.
@@ -1152,6 +1285,9 @@ export interface ChromaticMarket extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Returns the oracle provider contract for the market.
+   */
   oracleProvider(overrides?: CallOverrides): Promise<string>;
 
   /**
@@ -1168,6 +1304,21 @@ export interface ChromaticMarket extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
+   * Removes liquidity from the market.
+   * @param clbTokenAmounts An array of clb token amounts to remove as liquidity for each bin.
+   * @param data Additional data for the liquidity callback.
+   * @param recipient The address to receive the removed liquidity.
+   * @param tradingFeeRates An array of fee rates for each liquidity bin.
+   */
+  removeLiquidityBatch(
+    recipient: PromiseOrValue<string>,
+    tradingFeeRates: PromiseOrValue<BigNumberish>[],
+    clbTokenAmounts: PromiseOrValue<BigNumberish>[],
+    data: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  /**
    * Set the denominator of the protocol's % share of the fees
    * @param feeProtocol new protocol fee for the market
    */
@@ -1177,23 +1328,21 @@ export interface ChromaticMarket extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
+   * This function is called to settle the market.
    * Executes the settlement process for the Chromatic market.
    */
   settle(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Returns the settlement token of the market.
+   */
   settlementToken(overrides?: CallOverrides): Promise<string>;
 
   /**
-   * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
+   * Returns the vault contract for the market.
    */
-  supportsInterface(
-    interfaceID: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
   vault(overrides?: CallOverrides): Promise<string>;
 
   /**
@@ -1203,6 +1352,17 @@ export interface ChromaticMarket extends BaseContract {
    */
   withdrawLiquidity(
     receiptId: PromiseOrValue<BigNumberish>,
+    data: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Withdraws liquidity from a liquidity receipt.
+   * @param data Additional data for the liquidity callback.
+   * @param receiptIds The array of the liquidity receipt IDs.
+   */
+  withdrawLiquidityBatch(
+    receiptIds: PromiseOrValue<BigNumberish>[],
     data: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -1220,6 +1380,21 @@ export interface ChromaticMarket extends BaseContract {
       data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput>;
+
+    /**
+     * Adds liquidity to multiple liquidity bins of the market in a batch.
+     * @param amounts An array of amounts to add as liquidity for each bin.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address of the recipient for each liquidity bin.
+     * @param tradingFeeRates An array of fee rates for each liquidity bin.
+     */
+    addLiquidityBatch(
+      recipient: PromiseOrValue<string>,
+      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      amounts: PromiseOrValue<BigNumberish>[],
+      data: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<LpReceiptStructOutput[]>;
 
     /**
      * Checks if a position is eligible for claim.
@@ -1246,6 +1421,17 @@ export interface ChromaticMarket extends BaseContract {
      */
     claimLiquidity(
       receiptId: PromiseOrValue<BigNumberish>,
+      data: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * Claims liquidity from a liquidity receipt.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptIds The array of the liquidity receipt IDs.
+     */
+    claimLiquidityBatch(
+      receiptIds: PromiseOrValue<BigNumberish>[],
       data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1285,8 +1471,11 @@ export interface ChromaticMarket extends BaseContract {
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       oracleVersion: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<ILiquidity.ClaimableLiquidityStructOutput>;
+    ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput>;
 
+    /**
+     * Returns the CLB token contract for the market.
+     */
     clbToken(overrides?: CallOverrides): Promise<string>;
 
     /**
@@ -1309,7 +1498,15 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Returns the factory contract for the market.
+     */
     factory(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Returns the denominator of the protocol's % share of the fees
+     */
+    feeProtocol(overrides?: CallOverrides): Promise<number>;
 
     /**
      * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
@@ -1356,6 +1553,9 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PositionStructOutput[]>;
 
+    /**
+     * Returns the keeper fee payer contract for the market.
+     */
     keeperFeePayer(overrides?: CallOverrides): Promise<string>;
 
     /**
@@ -1371,6 +1571,9 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * Returns the liquidator contract for the market.
+     */
     liquidator(overrides?: CallOverrides): Promise<string>;
 
     /**
@@ -1378,41 +1581,7 @@ export interface ChromaticMarket extends BaseContract {
      */
     liquidityBinStatuses(
       overrides?: CallOverrides
-    ): Promise<ILiquidity.LiquidityBinStatusStructOutput[]>;
-
-    /**
-     * Handles the receipt of a multiple ERC1155 token types. This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated. NOTE: To accept the transfer(s), this must return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81, or its own function selector).
-     * @param data Additional data with no specified format
-     * @param from The address which previously owned the token
-     * @param ids An array containing ids of each token being transferred (order and length must match values array)
-     * @param operator The address which initiated the batch transfer (i.e. msg.sender)
-     * @param values An array containing amounts of each token being transferred (order and length must match ids array)
-     */
-    onERC1155BatchReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>[],
-      arg3: PromiseOrValue<BigNumberish>[],
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    /**
-     * Handles the receipt of a single ERC1155 token type. This function is called at the end of a `safeTransferFrom` after the balance has been updated. NOTE: To accept the transfer, this must return `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))` (i.e. 0xf23a6e61, or its own function selector).
-     * @param data Additional data with no specified format
-     * @param from The address which previously owned the token
-     * @param id The ID of the token being transferred
-     * @param operator The address which initiated the transfer (i.e. msg.sender)
-     * @param value The amount of tokens being transferred
-     */
-    onERC1155Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<string>;
+    ): Promise<IMarketLiquidity.LiquidityBinStatusStructOutput[]>;
 
     /**
      * Opens a new position in the market.
@@ -1433,6 +1602,9 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PositionStructOutput>;
 
+    /**
+     * Returns the oracle provider contract for the market.
+     */
     oracleProvider(overrides?: CallOverrides): Promise<string>;
 
     /**
@@ -1449,6 +1621,21 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<LpReceiptStructOutput>;
 
     /**
+     * Removes liquidity from the market.
+     * @param clbTokenAmounts An array of clb token amounts to remove as liquidity for each bin.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address to receive the removed liquidity.
+     * @param tradingFeeRates An array of fee rates for each liquidity bin.
+     */
+    removeLiquidityBatch(
+      recipient: PromiseOrValue<string>,
+      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
+      data: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<LpReceiptStructOutput[]>;
+
+    /**
      * Set the denominator of the protocol's % share of the fees
      * @param feeProtocol new protocol fee for the market
      */
@@ -1458,21 +1645,19 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<void>;
 
     /**
-     * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
+     * This function is called to settle the market.
      * Executes the settlement process for the Chromatic market.
      */
     settle(overrides?: CallOverrides): Promise<void>;
 
+    /**
+     * Returns the settlement token of the market.
+     */
     settlementToken(overrides?: CallOverrides): Promise<string>;
 
     /**
-     * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
+     * Returns the vault contract for the market.
      */
-    supportsInterface(
-      interfaceID: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     vault(overrides?: CallOverrides): Promise<string>;
 
     /**
@@ -1485,28 +1670,43 @@ export interface ChromaticMarket extends BaseContract {
       data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    /**
+     * Withdraws liquidity from a liquidity receipt.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptIds The array of the liquidity receipt IDs.
+     */
+    withdrawLiquidityBatch(
+      receiptIds: PromiseOrValue<BigNumberish>[],
+      data: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
-    "AddLiquidity(address,tuple)"(
-      recipient?: PromiseOrValue<string> | null,
-      receipt?: null
-    ): AddLiquidityEventFilter;
-    AddLiquidity(
-      recipient?: PromiseOrValue<string> | null,
-      receipt?: null
-    ): AddLiquidityEventFilter;
+    "AddLiquidity(tuple)"(receipt?: null): AddLiquidityEventFilter;
+    AddLiquidity(receipt?: null): AddLiquidityEventFilter;
 
-    "ClaimLiquidity(address,uint256,tuple)"(
-      recipient?: PromiseOrValue<string> | null,
-      clbTokenAmount?: PromiseOrValue<BigNumberish> | null,
-      receipt?: null
+    "AddLiquidityBatch(tuple[])"(receipts?: null): AddLiquidityBatchEventFilter;
+    AddLiquidityBatch(receipts?: null): AddLiquidityBatchEventFilter;
+
+    "ClaimLiquidity(tuple,uint256)"(
+      receipt?: null,
+      clbTokenAmount?: PromiseOrValue<BigNumberish> | null
     ): ClaimLiquidityEventFilter;
     ClaimLiquidity(
-      recipient?: PromiseOrValue<string> | null,
-      clbTokenAmount?: PromiseOrValue<BigNumberish> | null,
-      receipt?: null
+      receipt?: null,
+      clbTokenAmount?: PromiseOrValue<BigNumberish> | null
     ): ClaimLiquidityEventFilter;
+
+    "ClaimLiquidityBatch(tuple[],uint256[])"(
+      receipts?: null,
+      clbTokenAmounts?: null
+    ): ClaimLiquidityBatchEventFilter;
+    ClaimLiquidityBatch(
+      receipts?: null,
+      clbTokenAmounts?: null
+    ): ClaimLiquidityBatchEventFilter;
 
     "ClaimPosition(address,int256,uint256,tuple)"(
       account?: PromiseOrValue<string> | null,
@@ -1521,6 +1721,21 @@ export interface ChromaticMarket extends BaseContract {
       position?: null
     ): ClaimPositionEventFilter;
 
+    "ClaimPositionByKeeper(address,int256,uint256,uint256,tuple)"(
+      account?: PromiseOrValue<string> | null,
+      pnl?: PromiseOrValue<BigNumberish> | null,
+      interest?: PromiseOrValue<BigNumberish> | null,
+      usedKeeperFee?: null,
+      position?: null
+    ): ClaimPositionByKeeperEventFilter;
+    ClaimPositionByKeeper(
+      account?: PromiseOrValue<string> | null,
+      pnl?: PromiseOrValue<BigNumberish> | null,
+      interest?: PromiseOrValue<BigNumberish> | null,
+      usedKeeperFee?: null,
+      position?: null
+    ): ClaimPositionByKeeperEventFilter;
+
     "ClosePosition(address,tuple)"(
       account?: PromiseOrValue<string> | null,
       position?: null
@@ -1530,14 +1745,18 @@ export interface ChromaticMarket extends BaseContract {
       position?: null
     ): ClosePositionEventFilter;
 
-    "Liquidate(address,uint256,tuple)"(
+    "Liquidate(address,int256,uint256,uint256,tuple)"(
       account?: PromiseOrValue<string> | null,
-      usedKeeperFee?: PromiseOrValue<BigNumberish> | null,
+      pnl?: PromiseOrValue<BigNumberish> | null,
+      interest?: PromiseOrValue<BigNumberish> | null,
+      usedKeeperFee?: null,
       position?: null
     ): LiquidateEventFilter;
     Liquidate(
       account?: PromiseOrValue<string> | null,
-      usedKeeperFee?: PromiseOrValue<BigNumberish> | null,
+      pnl?: PromiseOrValue<BigNumberish> | null,
+      interest?: PromiseOrValue<BigNumberish> | null,
+      usedKeeperFee?: null,
       position?: null
     ): LiquidateEventFilter;
 
@@ -1550,14 +1769,13 @@ export interface ChromaticMarket extends BaseContract {
       position?: null
     ): OpenPositionEventFilter;
 
-    "RemoveLiquidity(address,tuple)"(
-      recipient?: PromiseOrValue<string> | null,
-      receipt?: null
-    ): RemoveLiquidityEventFilter;
-    RemoveLiquidity(
-      recipient?: PromiseOrValue<string> | null,
-      receipt?: null
-    ): RemoveLiquidityEventFilter;
+    "RemoveLiquidity(tuple)"(receipt?: null): RemoveLiquidityEventFilter;
+    RemoveLiquidity(receipt?: null): RemoveLiquidityEventFilter;
+
+    "RemoveLiquidityBatch(tuple[])"(
+      receipts?: null
+    ): RemoveLiquidityBatchEventFilter;
+    RemoveLiquidityBatch(receipts?: null): RemoveLiquidityBatchEventFilter;
 
     "SetFeeProtocol(uint8,uint8)"(
       feeProtocolOld?: null,
@@ -1577,18 +1795,27 @@ export interface ChromaticMarket extends BaseContract {
       amount?: PromiseOrValue<BigNumberish> | null
     ): TransferProtocolFeeEventFilter;
 
-    "WithdrawLiquidity(address,uint256,uint256,tuple)"(
-      recipient?: PromiseOrValue<string> | null,
+    "WithdrawLiquidity(tuple,uint256,uint256)"(
+      receipt?: null,
       amount?: PromiseOrValue<BigNumberish> | null,
-      burnedCLBTokenAmount?: PromiseOrValue<BigNumberish> | null,
-      receipt?: null
+      burnedCLBTokenAmount?: PromiseOrValue<BigNumberish> | null
     ): WithdrawLiquidityEventFilter;
     WithdrawLiquidity(
-      recipient?: PromiseOrValue<string> | null,
+      receipt?: null,
       amount?: PromiseOrValue<BigNumberish> | null,
-      burnedCLBTokenAmount?: PromiseOrValue<BigNumberish> | null,
-      receipt?: null
+      burnedCLBTokenAmount?: PromiseOrValue<BigNumberish> | null
     ): WithdrawLiquidityEventFilter;
+
+    "WithdrawLiquidityBatch(tuple[],uint256[],uint256[])"(
+      receipts?: null,
+      amounts?: null,
+      burnedCLBTokenAmounts?: null
+    ): WithdrawLiquidityBatchEventFilter;
+    WithdrawLiquidityBatch(
+      receipts?: null,
+      amounts?: null,
+      burnedCLBTokenAmounts?: null
+    ): WithdrawLiquidityBatchEventFilter;
   };
 
   estimateGas: {
@@ -1601,6 +1828,21 @@ export interface ChromaticMarket extends BaseContract {
     addLiquidity(
       recipient: PromiseOrValue<string>,
       tradingFeeRate: PromiseOrValue<BigNumberish>,
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    /**
+     * Adds liquidity to multiple liquidity bins of the market in a batch.
+     * @param amounts An array of amounts to add as liquidity for each bin.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address of the recipient for each liquidity bin.
+     * @param tradingFeeRates An array of fee rates for each liquidity bin.
+     */
+    addLiquidityBatch(
+      recipient: PromiseOrValue<string>,
+      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      amounts: PromiseOrValue<BigNumberish>[],
       data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -1630,6 +1872,17 @@ export interface ChromaticMarket extends BaseContract {
      */
     claimLiquidity(
       receiptId: PromiseOrValue<BigNumberish>,
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    /**
+     * Claims liquidity from a liquidity receipt.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptIds The array of the liquidity receipt IDs.
+     */
+    claimLiquidityBatch(
+      receiptIds: PromiseOrValue<BigNumberish>[],
       data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -1671,6 +1924,9 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Returns the CLB token contract for the market.
+     */
     clbToken(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
@@ -1693,7 +1949,15 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Returns the factory contract for the market.
+     */
     factory(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Returns the denominator of the protocol's % share of the fees
+     */
+    feeProtocol(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
@@ -1740,6 +2004,9 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Returns the keeper fee payer contract for the market.
+     */
     keeperFeePayer(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
@@ -1755,46 +2022,15 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Returns the liquidator contract for the market.
+     */
     liquidator(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * Retrieves the liquidity bin statuses for the caller's liquidity pool.
      */
     liquidityBinStatuses(overrides?: CallOverrides): Promise<BigNumber>;
-
-    /**
-     * Handles the receipt of a multiple ERC1155 token types. This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated. NOTE: To accept the transfer(s), this must return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81, or its own function selector).
-     * @param data Additional data with no specified format
-     * @param from The address which previously owned the token
-     * @param ids An array containing ids of each token being transferred (order and length must match values array)
-     * @param operator The address which initiated the batch transfer (i.e. msg.sender)
-     * @param values An array containing amounts of each token being transferred (order and length must match ids array)
-     */
-    onERC1155BatchReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>[],
-      arg3: PromiseOrValue<BigNumberish>[],
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
-     * Handles the receipt of a single ERC1155 token type. This function is called at the end of a `safeTransferFrom` after the balance has been updated. NOTE: To accept the transfer, this must return `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))` (i.e. 0xf23a6e61, or its own function selector).
-     * @param data Additional data with no specified format
-     * @param from The address which previously owned the token
-     * @param id The ID of the token being transferred
-     * @param operator The address which initiated the transfer (i.e. msg.sender)
-     * @param value The amount of tokens being transferred
-     */
-    onERC1155Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     /**
      * Opens a new position in the market.
@@ -1815,6 +2051,9 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Returns the oracle provider contract for the market.
+     */
     oracleProvider(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
@@ -1831,6 +2070,21 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * Removes liquidity from the market.
+     * @param clbTokenAmounts An array of clb token amounts to remove as liquidity for each bin.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address to receive the removed liquidity.
+     * @param tradingFeeRates An array of fee rates for each liquidity bin.
+     */
+    removeLiquidityBatch(
+      recipient: PromiseOrValue<string>,
+      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    /**
      * Set the denominator of the protocol's % share of the fees
      * @param feeProtocol new protocol fee for the market
      */
@@ -1840,23 +2094,21 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
+     * This function is called to settle the market.
      * Executes the settlement process for the Chromatic market.
      */
     settle(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Returns the settlement token of the market.
+     */
     settlementToken(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
+     * Returns the vault contract for the market.
      */
-    supportsInterface(
-      interfaceID: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     vault(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
@@ -1866,6 +2118,17 @@ export interface ChromaticMarket extends BaseContract {
      */
     withdrawLiquidity(
       receiptId: PromiseOrValue<BigNumberish>,
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    /**
+     * Withdraws liquidity from a liquidity receipt.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptIds The array of the liquidity receipt IDs.
+     */
+    withdrawLiquidityBatch(
+      receiptIds: PromiseOrValue<BigNumberish>[],
       data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -1881,6 +2144,21 @@ export interface ChromaticMarket extends BaseContract {
     addLiquidity(
       recipient: PromiseOrValue<string>,
       tradingFeeRate: PromiseOrValue<BigNumberish>,
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Adds liquidity to multiple liquidity bins of the market in a batch.
+     * @param amounts An array of amounts to add as liquidity for each bin.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address of the recipient for each liquidity bin.
+     * @param tradingFeeRates An array of fee rates for each liquidity bin.
+     */
+    addLiquidityBatch(
+      recipient: PromiseOrValue<string>,
+      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      amounts: PromiseOrValue<BigNumberish>[],
       data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
@@ -1910,6 +2188,17 @@ export interface ChromaticMarket extends BaseContract {
      */
     claimLiquidity(
       receiptId: PromiseOrValue<BigNumberish>,
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Claims liquidity from a liquidity receipt.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptIds The array of the liquidity receipt IDs.
+     */
+    claimLiquidityBatch(
+      receiptIds: PromiseOrValue<BigNumberish>[],
       data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
@@ -1951,6 +2240,9 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Returns the CLB token contract for the market.
+     */
     clbToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
@@ -1973,7 +2265,15 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Returns the factory contract for the market.
+     */
     factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Returns the denominator of the protocol's % share of the fees
+     */
+    feeProtocol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
      * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
@@ -2020,6 +2320,9 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Returns the keeper fee payer contract for the market.
+     */
     keeperFeePayer(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
@@ -2035,46 +2338,15 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Returns the liquidator contract for the market.
+     */
     liquidator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
      * Retrieves the liquidity bin statuses for the caller's liquidity pool.
      */
     liquidityBinStatuses(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Handles the receipt of a multiple ERC1155 token types. This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated. NOTE: To accept the transfer(s), this must return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81, or its own function selector).
-     * @param data Additional data with no specified format
-     * @param from The address which previously owned the token
-     * @param ids An array containing ids of each token being transferred (order and length must match values array)
-     * @param operator The address which initiated the batch transfer (i.e. msg.sender)
-     * @param values An array containing amounts of each token being transferred (order and length must match ids array)
-     */
-    onERC1155BatchReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>[],
-      arg3: PromiseOrValue<BigNumberish>[],
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Handles the receipt of a single ERC1155 token type. This function is called at the end of a `safeTransferFrom` after the balance has been updated. NOTE: To accept the transfer, this must return `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))` (i.e. 0xf23a6e61, or its own function selector).
-     * @param data Additional data with no specified format
-     * @param from The address which previously owned the token
-     * @param id The ID of the token being transferred
-     * @param operator The address which initiated the transfer (i.e. msg.sender)
-     * @param value The amount of tokens being transferred
-     */
-    onERC1155Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2097,6 +2369,9 @@ export interface ChromaticMarket extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Returns the oracle provider contract for the market.
+     */
     oracleProvider(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
@@ -2113,6 +2388,21 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * Removes liquidity from the market.
+     * @param clbTokenAmounts An array of clb token amounts to remove as liquidity for each bin.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address to receive the removed liquidity.
+     * @param tradingFeeRates An array of fee rates for each liquidity bin.
+     */
+    removeLiquidityBatch(
+      recipient: PromiseOrValue<string>,
+      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    /**
      * Set the denominator of the protocol's % share of the fees
      * @param feeProtocol new protocol fee for the market
      */
@@ -2122,23 +2412,21 @@ export interface ChromaticMarket extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
+     * This function is called to settle the market.
      * Executes the settlement process for the Chromatic market.
      */
     settle(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Returns the settlement token of the market.
+     */
     settlementToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
+     * Returns the vault contract for the market.
      */
-    supportsInterface(
-      interfaceID: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     vault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
@@ -2148,6 +2436,17 @@ export interface ChromaticMarket extends BaseContract {
      */
     withdrawLiquidity(
       receiptId: PromiseOrValue<BigNumberish>,
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Withdraws liquidity from a liquidity receipt.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptIds The array of the liquidity receipt IDs.
+     */
+    withdrawLiquidityBatch(
+      receiptIds: PromiseOrValue<BigNumberish>[],
       data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;

@@ -22,9 +22,8 @@ describe("router sdk test", () => {
     const signerAddress = await signer.getAddress();
 
     async function getPositions() {
-      return await IChromaticMarket__factory.connect(marketAddress, signer).getPositions(
-        await client.account().getPositionIds(marketAddress)
-      );
+      const ids = await client.account().getPositionIds(marketAddress);
+      return await IChromaticMarket__factory.connect(marketAddress, signer).getPositions([...ids]);
     }
 
     async function clbBalance(feeRate: number) {
@@ -42,7 +41,7 @@ describe("router sdk test", () => {
     const router = client.router();
 
     async function getLpReceiptIds() {
-      return router.contracts().router()["getLpReceiptIds(address)"](marketAddress)
+      return router.contracts().router()["getLpReceiptIds(address)"](marketAddress);
     }
 
     async function addAndClaimLiquidity(tradingFeeRate: number) {
@@ -66,7 +65,9 @@ describe("router sdk test", () => {
 
       // claimLiquidity - router
       await updatePrice({ market: marketAddress, signer, price: 1000 });
-      await waitTxMining(() => router.claimLiquidites(marketAddress, [lpReceiptIds[lpReceiptIds.length - 1]]));
+      await waitTxMining(() =>
+        router.claimLiquidites(marketAddress, [lpReceiptIds[lpReceiptIds.length - 1]])
+      );
 
       // balance check - ClbToken
       const clbBalanceAfterAdd = await clbBalance(tradingFeeRate);
@@ -89,7 +90,8 @@ describe("router sdk test", () => {
   }
 
   test("add/remove Liquidity", async () => {
-    const { marketAddress, router, getLpReceiptIds, clbBalance, addAndClaimLiquidity } = await getFixture();
+    const { marketAddress, router, getLpReceiptIds, clbBalance, addAndClaimLiquidity } =
+      await getFixture();
 
     await updatePrice({ market: marketAddress, signer, price: 1000 });
     const tradingFeeRate = 100;
@@ -106,7 +108,9 @@ describe("router sdk test", () => {
 
     // withdrawLiquidity - router
     await updatePrice({ market: marketAddress, signer, price: 1000 });
-    await waitTxMining(() => router.withdrawLiquidities(marketAddress, [lpReceiptIds[lpReceiptIds.length - 1]]));
+    await waitTxMining(() =>
+      router.withdrawLiquidities(marketAddress, [lpReceiptIds[lpReceiptIds.length - 1]])
+    );
 
     // balance check - ClbToken
     expect((await clbBalance(tradingFeeRate)) < clbBalanceAfterAdd).toEqual(true);
@@ -149,9 +153,9 @@ describe("router sdk test", () => {
     const bin100 = (await client.lens().liquidityBins(marketAddress)).filter(
       (b) => b.tradingFeeRate == 100n
     );
-
+    // 0xd0e30db0
     const beforeOpenPositions = await getPositions();
-    const openTxReceipt = waitTxMining(() =>
+    await waitTxMining(() =>
       router.openPosition(marketAddress, {
         quantity: BigInt(10 ** 8),
         leverage: BigInt(100), // x1
@@ -160,7 +164,6 @@ describe("router sdk test", () => {
         maxAllowableTradingFee: bin100[0].freeLiquidity / 2n / 10n,
       })
     );
-    await handleBytesError(() => openTxReceipt, signer.provider);
 
     const afterOpenPositions = await getPositions();
     expect(beforeOpenPositions.length).toBeLessThan(afterOpenPositions.length);
@@ -170,12 +173,8 @@ describe("router sdk test", () => {
 
     await updatePrice({ market: marketAddress, signer, price: 1100 });
 
-    await handleBytesError(
-      () =>
-        waitTxMining(() =>
-          router.closePosition(marketAddress, afterOpenPositions[afterOpenPositions.length - 1].id)
-        ),
-      signer.provider
+    await waitTxMining(() =>
+      router.closePosition(marketAddress, afterOpenPositions[afterOpenPositions.length - 1].id)
     );
 
     const positions = await getPositions();
@@ -184,17 +183,14 @@ describe("router sdk test", () => {
 
     await updatePrice({ market: marketAddress, signer, price: 1200 });
 
-    await handleBytesError(
-      () => waitTxMining(() => router.claimPosition(marketAddress, position.id)),
-      signer.provider
-    );
+    await waitTxMining(() => router.claimPosition(marketAddress, position.id));
 
     expect((await getPositions()).filter((pos) => pos.id === position.id).length).toEqual(0);
   }, 60000);
   // after yarn chain
   // Time:        37.582 s, estimated 45 s
 
-  test("revert msg haldling", async () => {
+  test("revert msg handling", async () => {
     const { marketAddress, router, token } = await getFixture();
 
     const tokenContract = IERC20__factory.connect(token, signer);

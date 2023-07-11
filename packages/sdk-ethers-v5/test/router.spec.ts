@@ -196,7 +196,7 @@ describe("router sdk test", () => {
   // after yarn chain
   // Time:        37.582 s, estimated 45 s
 
-  test("revert msg haldling", async () => {
+  test("revert msg handling", async () => {
     const { marketAddress, router, token } = await getFixture();
 
     const tokenContract = IERC20__factory.connect(token, signer);

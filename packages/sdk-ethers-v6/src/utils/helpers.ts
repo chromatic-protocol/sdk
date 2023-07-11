@@ -50,6 +50,7 @@ export async function handleBytesError<T>(fn: () => Promise<T>, provider: Provid
   try {
     return await fn();
   } catch (e) {
+    // TODO e.action === 'estimateGas'
     if(e.info && e.info.error.message && e.info.error.data){
       throw Error(parseHexError(e.info.error.data));
     }

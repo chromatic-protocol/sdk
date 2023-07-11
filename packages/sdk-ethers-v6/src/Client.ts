@@ -1,4 +1,4 @@
-import type { Provider, Signer } from "ethers";
+import type { ContractRunner, Provider, Signer } from "ethers";
 import {
   ChromaticAccount,
   ChromaticLens,
@@ -46,8 +46,7 @@ export class Client {
     if (isSigner(signerOrProvider)) {
       this._signer = signerOrProvider;
       this._provider = signerOrProvider.provider;
-    }
-    if (isProvider(signerOrProvider)) {
+    } else {
       this._signer = undefined;
       this._provider = signerOrProvider;
     }
@@ -104,18 +103,9 @@ export class Client {
 
 /**
  * Checks if the provided object is a Signer.
- * @param signerOrProvider The object to check.
+ * @param runner The object to check.
  * @returns True if the object is a Signer, false otherwise.
  */
-function isSigner(signerOrProvider: Signer | Provider): signerOrProvider is Signer {
-  return signerOrProvider["_isSigner"];
-}
-
-/**
- * Checks if the provided object is a Provider.
- * @param signerOrProvider The object to check.
- * @returns True if the object is a Provider, false otherwise.
- */
-function isProvider(signerOrProvider: Signer | Provider): signerOrProvider is Provider {
-  return signerOrProvider["_isProvider"];
+function isSigner(runner: ContractRunner): runner is Signer {
+  return runner !== runner.provider;
 }

@@ -1,4 +1,4 @@
-import { ContractTransactionReceipt, Signer, ethers } from "ethers";
+import { ContractTransactionReceipt, FeeData, Signer, ethers } from "ethers";
 import { IChromaticMarket__factory, IERC20__factory } from "../src/gen";
 
 export const MNEMONIC_JUNK = "test test test test test test test test test test test junk";
@@ -40,7 +40,7 @@ export function getSigner(param?: GetSignerParam): ethers.Signer {
   if (param?.privateKey !== undefined) {
     return new ethers.Wallet(param.privateKey, provider);
   }
-  
+
   const mnemonic = ethers.Mnemonic.fromPhrase(
     param?.mnemonic === undefined ? MNEMONIC_JUNK : param!.mnemonic!
   );
@@ -48,7 +48,7 @@ export function getSigner(param?: GetSignerParam): ethers.Signer {
     mnemonic,
     `m/44'/60'/0'/0/${param?.selectedAccount === undefined ? 0 : param!.selectedAccount!}`
   );
- 
+
   return new ethers.Wallet(wallet.privateKey, provider);
 }
 
@@ -58,13 +58,30 @@ export function getDefaultProvider(): ethers.JsonRpcProvider {
 }
 
 export async function wrapEth(param: WrapEthParam) {
-  const warpTx = await param.signer.sendTransaction({
-    to: param.weth9,
-    data: ethers.id("deposit()").substring(0, 10),
+  const feeData = await param.signer.provider.getFeeData();
+  const weth9 = new ethers.Contract(
+    param.weth9,
+    [
+      {
+        inputs: [],
+        name: "deposit",
+        outputs: [],
+        stateMutability: "payable",
+        type: "function",
+      },
+    ],
+    param.signer
+  );
+
+  const tx = await weth9.deposit({
     value: param.amount,
-    gasPrice: (await param.signer.provider.getFeeData()).gasPrice,
+    maxFeePerGas: feeData.maxFeePerGas * 2n,
+    maxPriorityFeePerGas: feeData.maxPriorityFeePerGas * 2n,
+    gasLimit: 100_000_000,
+    nonce: await param.signer.getNonce(),
   });
-  await warpTx.wait();
+
+  await tx.wait();
 }
 
 export async function swapToUSDC(param: SwapToUSDCParam) {
@@ -75,6 +92,7 @@ export async function swapToUSDC(param: SwapToUSDCParam) {
   if ((await WETH9.balanceOf(recipient)) < param.amount) {
     await wrapEth({ signer: param.signer, amount: param.amount, weth9: param.weth9 });
   }
+  // 0xa14b09d0
 
   if ((await WETH9.allowance(recipient, ARBITRUM_GOERLI_SWAP_ROUTER)) < param.amount) {
     const approveTx = await IERC20__factory.connect(param.weth9, param.signer).approve(
@@ -152,24 +170,20 @@ export async function swapToUSDC(param: SwapToUSDCParam) {
     param.signer
   );
 
-  const swapTx = await param.signer.sendTransaction({
-    to: ARBITRUM_GOERLI_SWAP_ROUTER,
-    data: routerContract.interface.encodeFunctionData("exactInputSingle", [
-      {
-        tokenIn: param.weth9,
-        tokenOut: param.usdc,
-        fee: param.fee,
-        recipient: recipient,
-        deadline: ethers.MaxUint256,
-        amountIn: param.amount,
-        amountOutMinimum: 0,
-        sqrtPriceLimitX96: 0,
-      },
-    ]),
+  const swapTx = await routerContract.exactInputSingle({
+    tokenIn: param.weth9,
+    tokenOut: param.usdc,
+    fee: param.fee,
+    recipient: recipient,
+    deadline: ethers.MaxUint256,
+    amountIn: param.amount,
+    amountOutMinimum: 0,
+    sqrtPriceLimitX96: 0,
   });
 
   const receipt = await swapTx.wait();
   const usdcEvent = receipt.logs.find((log) => log.address == param.usdc);
+  console.log("usdcEvent", usdcEvent);
 
   return {
     outputAmount: BigInt(usdcEvent.data),
@@ -200,12 +214,7 @@ export async function updatePrice(param: UpdatePriceParam) {
     param.signer
   );
 
-  const tx = await param.signer.sendTransaction({
-    to: oracleProviderAddress,
-    data: oracleProvider.interface.encodeFunctionData("increaseVersion", [
-      BigInt(param.price.toString()) * BigInt(10 ** 8),
-    ]),
-  });
+  const tx = await oracleProvider.increaseVersion(BigInt(param.price.toString()) * BigInt(10 ** 8));
 
   await tx.wait();
 }

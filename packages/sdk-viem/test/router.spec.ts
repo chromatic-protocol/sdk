@@ -191,7 +191,7 @@ describe("router sdk test", () => {
   // Time:        37.582 s, estimated 45 s
 
   // // TODO SIGSEGV
-  // test("revert msg haldling", async () => {
+  // test("revert msg handling", async () => {
   //   const { market, router, token } = await getFixture();
 
   //   const tokenContract = getContract({

@@ -1,8 +1,8 @@
 import { BigNumber, ethers } from "ethers";
 import { Client } from "../src/Client";
-import { CLBToken__factory, ChromaticMarket__factory, IERC20__factory } from "../src/gen";
+import { CLBToken__factory, IChromaticMarket__factory, IERC20__factory } from "../src/gen";
 import { encodeTokenId, handleBytesError } from "../src/utils/helpers";
-import { getSigner, parseLpReceipt, swapToUSDC, updatePrice, waitTxMining } from "./testHelpers";
+import { getSigner, swapToUSDC, updatePrice, waitTxMining } from "./testHelpers";
 
 describe("router sdk test", () => {
   const signer = getSigner();
@@ -15,14 +15,14 @@ describe("router sdk test", () => {
       throw new Error(`market is not registered (token : ${tokens[0].address})`);
     }
     const marketAddress = markets[0].address;
-    const clbTokenAddress = await ChromaticMarket__factory.connect(
+    const clbTokenAddress = await IChromaticMarket__factory.connect(
       marketAddress,
       signer
     ).clbToken();
     const signerAddress = await signer.getAddress();
 
     async function getPositions() {
-      return await ChromaticMarket__factory.connect(marketAddress, signer).getPositions(
+      return await IChromaticMarket__factory.connect(marketAddress, signer).getPositions(
         await client.account().getPositionIds(marketAddress)
       );
     }
@@ -41,6 +41,10 @@ describe("router sdk test", () => {
     const usdc = tokens[0].address;
     const router = client.router();
 
+    async function getLpReceiptIds() {
+      return client.router().contracts().router()["getLpReceiptIds(address)"](marketAddress)
+    }
+
     async function addAndClaimLiquidity(tradingFeeRate: number) {
       // swap
       const { outputAmount, usdcBalance } = await swapToUSDC({
@@ -58,12 +62,13 @@ describe("router sdk test", () => {
         router.addLiquidities(marketAddress, [{ feeRate: tradingFeeRate, amount: amount }])
       );
 
-      const addLpReceipt = parseLpReceipt(marketAddress, addTxReceipt);
-      expect(addLpReceipt.id !== undefined).toEqual(true);
+
+      
+      const lpReceiptIds = await getLpReceiptIds()
 
       // claimLiquidity - router
       await updatePrice({ market: marketAddress, signer, price: 1000 });
-      await waitTxMining(() => router.claimLiquidites(marketAddress, [addLpReceipt.id]));
+      await waitTxMining(() => router.claimLiquidites(marketAddress, [lpReceiptIds[lpReceiptIds.length - 1]]));
 
       // balance check - ClbToken
       const clbBalanceAfterAdd = await clbBalance(tradingFeeRate);
@@ -81,11 +86,12 @@ describe("router sdk test", () => {
       addAndClaimLiquidity,
       clbTokenAddress,
       getPositions,
+      getLpReceiptIds,
     };
   }
 
   test("add/remove Liquidity", async () => {
-    const { marketAddress, router, token, clbBalance, addAndClaimLiquidity } = await getFixture();
+    const { marketAddress, router, getLpReceiptIds, clbBalance, addAndClaimLiquidity } = await getFixture();
 
     await updatePrice({ market: marketAddress, signer, price: 1000 });
     const tradingFeeRate = 100;
@@ -98,12 +104,11 @@ describe("router sdk test", () => {
         { feeRate: tradingFeeRate, clbTokenAmount: clbBalanceAfterAdd },
       ])
     );
-    const removeLpReceipt = parseLpReceipt(marketAddress, removeTxReceipt);
-    expect(removeLpReceipt.id !== undefined).toEqual(true);
+    const lpReceiptIds = await getLpReceiptIds();
 
     // withdrawLiquidity - router
     await updatePrice({ market: marketAddress, signer, price: 1000 });
-    await waitTxMining(() => router.withdrawLiquidities(marketAddress, [removeLpReceipt.id]));
+    await waitTxMining(() => router.withdrawLiquidities(marketAddress, [lpReceiptIds[lpReceiptIds.length - 1]]));
 
     // balance check - ClbToken
     expect((await clbBalance(tradingFeeRate)).lt(clbBalanceAfterAdd)).toEqual(true);
@@ -150,7 +155,7 @@ describe("router sdk test", () => {
     const beforeOpenPositions = await getPositions();
     const openTxReceipt = waitTxMining(() =>
       router.openPosition(marketAddress, {
-        quantity: BigNumber.from(10 ** 4),
+        quantity: BigNumber.from(10 ** 8),
         leverage: BigNumber.from(100), // x1
         takerMargin: accountBalance.div(3),
         makerMargin: bin100[0].freeLiquidity.div(2),

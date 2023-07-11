@@ -1,9 +1,8 @@
 import { BigNumber, ContractReceipt, Signer, ethers } from "ethers";
 import {
-  ChromaticMarket__factory,
+  IChromaticMarket__factory,
   IERC20__factory,
 } from "../src/gen";
-import { LpReceiptStructOutput } from "../src/gen/contracts/core/ChromaticMarket";
 
 export const MNEMONIC_JUNK = "test test test test test test test test test test test junk";
 
@@ -56,8 +55,7 @@ export function getSigner(param?: GetSignerParam): ethers.Signer {
 }
 
 export function getDefaultProvider(): ethers.providers.JsonRpcProvider {
-  return new ethers.providers.JsonRpcProvider(); // "http://localhost:8545"; // default value
-  // return new ethers.providers.JsonRpcProvider('http://127.0.0.1:8545'); // "http://localhost:8545"; // default value
+  return new ethers.providers.JsonRpcProvider('http://127.0.0.1:8545'); // "http://localhost:8545"; // default value
 }
 
 export async function wrapEth(param: WrapEthParam) {
@@ -181,7 +179,7 @@ export async function swapToUSDC(param: SwapToUSDCParam) {
 }
 
 export async function updatePrice(param: UpdatePriceParam) {
-  const market = ChromaticMarket__factory.connect(param.market, param.signer);
+  const market = IChromaticMarket__factory.connect(param.market, param.signer);
   const oracleProviderAddress = await market.oracleProvider();
   const oracleProvider = new ethers.Contract(
     oracleProviderAddress,
@@ -237,32 +235,3 @@ export async function wait(millseconds: number) {
   return new Promise((resolve) => setTimeout(resolve, millseconds));
 }
 
-export function parseLpReceipt(
-  marketAddress: string,
-  txReceipt: ContractReceipt
-): LpReceiptStructOutput {
-  const addLiquidityEvent = txReceipt.events.filter((r) => r.address == marketAddress);
-  if (addLiquidityEvent.length < 1) {
-    throw Error("invaild receipt");
-  }
-
-  const parsedValue = ethers.utils.defaultAbiCoder.decode(
-    ["uint256", "uint256", "uint256", "address", "uint8", "int16"],
-    addLiquidityEvent[0].data
-  );
-
-  return {
-    0: parsedValue[0] as BigNumber,
-    1: parsedValue[1] as BigNumber,
-    2: parsedValue[2] as BigNumber,
-    3: parsedValue[3] as string,
-    4: parsedValue[4] as number,
-    5: parsedValue[5] as number,
-    id: parsedValue[0] as BigNumber,
-    oracleVersion: parsedValue[1] as BigNumber,
-    amount: parsedValue[2] as BigNumber,
-    recipient: parsedValue[3] as string,
-    action: parsedValue[4] as number,
-    tradingFeeRate: parsedValue[5] as number,
-  } as LpReceiptStructOutput;
-}

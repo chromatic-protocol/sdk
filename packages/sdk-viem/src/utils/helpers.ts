@@ -2,7 +2,7 @@ import { Client } from "../Client";
 import {
   chromaticAccountABI,
   chromaticLensABI,
-  chromaticMarketABI,
+  iChromaticMarketABI,
   chromaticMarketFactoryABI,
   chromaticRouterABI,
   chromaticVaultABI,
@@ -90,7 +90,7 @@ interface ErrorSignatures {
 }
 
 export const errorSignitures: ErrorSignatures = [
-  ...chromaticMarketABI,
+  ...iChromaticMarketABI,
   ...chromaticMarketFactoryABI,
   ...chromaticVaultABI,
   ...clbTokenABI,
@@ -100,12 +100,10 @@ export const errorSignitures: ErrorSignatures = [
   ...chromaticLensABI,
 ]
   .filter((abi) => abi.type === "error")
-
   .reduce((prevErrMap, currErrAbi) => {
-    // @ts-expect-error
-    const signature = keccak256(toHex(`${currErrAbi["name"]}()`)).substring(0, 10);
-    // @ts-expect-error
-    prevErrMap[signature] = currErrAbi["name"];
+    const errName = (currErrAbi as any)['name']
+    const signature = keccak256(toHex(`${errName}()`)).substring(0, 10);
+    prevErrMap[signature] = errName;
     return prevErrMap;
   }, {} as ErrorSignatures);
 

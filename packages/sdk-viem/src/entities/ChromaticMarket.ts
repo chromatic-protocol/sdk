@@ -1,6 +1,6 @@
 import { Address, getContract } from "viem";
 import type { Client } from "../Client";
-import { chromaticMarketABI, clbTokenABI, iOracleProviderABI, ierc20MetadataABI } from "../gen";
+import { iChromaticMarketABI, clbTokenABI, iOracleProviderABI, ierc20MetadataABI } from "../gen";
 import { Contract, handleBytesError } from "../utils/helpers";
 
 /**
@@ -19,10 +19,10 @@ export class ChromaticMarket {
    */
   contracts() {
     return {
-      market: (marketAddress: Address): Contract<typeof chromaticMarketABI> =>
+      market: (marketAddress: Address): Contract<typeof iChromaticMarketABI> =>
         getContract({
           address: marketAddress,
-          abi: chromaticMarketABI,
+          abi: iChromaticMarketABI,
           publicClient: this._client.publicClient,
           walletClient: this._client.walletClient,
         }),

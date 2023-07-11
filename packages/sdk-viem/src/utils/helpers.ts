@@ -2,12 +2,19 @@ import { Client } from "../Client";
 import {
   chromaticAccountABI,
   chromaticLensABI,
-  iChromaticMarketABI,
   chromaticMarketFactoryABI,
   chromaticRouterABI,
   chromaticVaultABI,
   clbTokenABI,
+  iChromaticMarketABI,
   iOracleProviderABI,
+  marketDiamondCutFacetABI,
+  marketFacetBaseABI,
+  marketLiquidateFacetABI,
+  marketLiquidityFacetABI,
+  marketSettleFacetABI,
+  marketStateFacetABI,
+  marketTradeFacetABI,
 } from "../gen";
 
 import {
@@ -98,10 +105,17 @@ export const errorSignitures: ErrorSignatures = [
   ...chromaticAccountABI,
   ...chromaticRouterABI,
   ...chromaticLensABI,
+  ...marketDiamondCutFacetABI,
+  ...marketFacetBaseABI,
+  ...marketLiquidateFacetABI,
+  ...marketLiquidityFacetABI,
+  ...marketSettleFacetABI,
+  ...marketStateFacetABI,
+  ...marketTradeFacetABI,
 ]
   .filter((abi) => abi.type === "error")
   .reduce((prevErrMap, currErrAbi) => {
-    const errName = (currErrAbi as any)['name']
+    const errName = (currErrAbi as any)["name"];
     const signature = keccak256(toHex(`${errName}()`)).substring(0, 10);
     prevErrMap[signature] = errName;
     return prevErrMap;

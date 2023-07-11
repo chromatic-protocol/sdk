@@ -1,4 +1,4 @@
-# Chromatic Protocol SDK
+# Chromatic Protocol SDK for Ethers-v5
 The Chromatic Protocol SDK is a JavaScript library that provides a convenient way to interact with the Chromatic Protocol on the Arbitrum Ethereum chain. This readme file will guide you through the setup procedure for using the SDK.
 
 If you want to learn more about the overview of the Chromatic Protocol, please refer to our [GitBook](https://chromatic-protocol.gitbook.io/docs). It provides detailed information about the protocol and its features.
@@ -32,7 +32,7 @@ To interact with the Chromatic Protocol, you need to create a Client instance. T
 
 Here's an example of setting up the Client:
 
-```javascript
+```ts
 import { Signer } from 'ethers';
 import { Client } from "@chromatic-protocol/sdk-ethers-v5"
 

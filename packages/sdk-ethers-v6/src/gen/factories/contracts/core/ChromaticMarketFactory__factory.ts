@@ -10,7 +10,43 @@ import type {
 
 const _abi = [
   {
-    inputs: [],
+    inputs: [
+      {
+        internalType: "address",
+        name: "_marketDiamondCutFacet",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_marketLoupeFacet",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_marketStateFacet",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_marketLiquidityFacet",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_marketTradeFacet",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_marketLiquidateFacet",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_marketSettleFacet",
+        type: "address",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "constructor",
   },

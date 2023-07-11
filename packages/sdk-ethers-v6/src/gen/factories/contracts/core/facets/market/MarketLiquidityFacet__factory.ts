@@ -2,32 +2,16 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
-import type { Provider } from "@ethersproject/providers";
+import { Contract, Interface, type ContractRunner } from "ethers";
 import type {
-  ChromaticMarket,
-  ChromaticMarketInterface,
-} from "../../../contracts/core/ChromaticMarket";
+  MarketLiquidityFacet,
+  MarketLiquidityFacetInterface,
+} from "../../../../../contracts/core/facets/market/MarketLiquidityFacet";
 
 const _abi = [
   {
     inputs: [],
-    name: "AlreadyClosedPosition",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "ClaimPositionCallbackError",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "ExceedMaxAllowableLeverage",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "ExceedMaxAllowableTradingFee",
+    name: "Empty",
     type: "error",
   },
   {
@@ -37,12 +21,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "NotAllowableMakerMargin",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "NotAllowableTakerMargin",
+    name: "InvalidTransferedTokenAmount",
     type: "error",
   },
   {
@@ -52,27 +31,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "NotClaimablePosition",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "NotEnoughMarginTransfered",
-    type: "error",
-  },
-  {
-    inputs: [],
     name: "NotExistLpReceipt",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "NotExistPosition",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "NotPermitted",
     type: "error",
   },
   {
@@ -97,12 +56,12 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "TooSmallAmount",
+    name: "OutOfBounds",
     type: "error",
   },
   {
     inputs: [],
-    name: "TooSmallTakerMargin",
+    name: "TooSmallAmount",
     type: "error",
   },
   {
@@ -117,19 +76,8 @@ const _abi = [
     type: "error",
   },
   {
-    inputs: [],
-    name: "ZeroTargetAmount",
-    type: "error",
-  },
-  {
     anonymous: false,
     inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "recipient",
-        type: "address",
-      },
       {
         components: [
           {
@@ -176,17 +124,50 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
-        internalType: "address",
-        name: "recipient",
-        type: "address",
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "oracleVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "recipient",
+            type: "address",
+          },
+          {
+            internalType: "enum LpAction",
+            name: "action",
+            type: "uint8",
+          },
+          {
+            internalType: "int16",
+            name: "tradingFeeRate",
+            type: "int16",
+          },
+        ],
+        indexed: false,
+        internalType: "struct LpReceipt[]",
+        name: "receipts",
+        type: "tuple[]",
       },
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "clbTokenAmount",
-        type: "uint256",
-      },
+    ],
+    name: "AddLiquidityBatch",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
       {
         components: [
           {
@@ -225,6 +206,12 @@ const _abi = [
         name: "receipt",
         type: "tuple",
       },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "clbTokenAmount",
+        type: "uint256",
+      },
     ],
     name: "ClaimLiquidity",
     type: "event",
@@ -233,24 +220,6 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "int256",
-        name: "pnl",
-        type: "int256",
-      },
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "interest",
-        type: "uint256",
-      },
-      {
         components: [
           {
             internalType: "uint256",
@@ -259,355 +228,48 @@ const _abi = [
           },
           {
             internalType: "uint256",
-            name: "openVersion",
+            name: "oracleVersion",
             type: "uint256",
           },
           {
             internalType: "uint256",
-            name: "closeVersion",
-            type: "uint256",
-          },
-          {
-            internalType: "int224",
-            name: "qty",
-            type: "int224",
-          },
-          {
-            internalType: "uint32",
-            name: "leverage",
-            type: "uint32",
-          },
-          {
-            internalType: "uint256",
-            name: "openTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "closeTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "takerMargin",
+            name: "amount",
             type: "uint256",
           },
           {
             internalType: "address",
-            name: "owner",
+            name: "recipient",
             type: "address",
           },
           {
-            components: [
-              {
-                internalType: "uint16",
-                name: "tradingFeeRate",
-                type: "uint16",
-              },
-              {
-                internalType: "uint256",
-                name: "amount",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct BinMargin[]",
-            name: "_binMargins",
-            type: "tuple[]",
+            internalType: "enum LpAction",
+            name: "action",
+            type: "uint8",
           },
           {
-            internalType: "uint8",
-            name: "_feeProtocol",
-            type: "uint8",
+            internalType: "int16",
+            name: "tradingFeeRate",
+            type: "int16",
           },
         ],
         indexed: false,
-        internalType: "struct Position",
-        name: "position",
-        type: "tuple",
+        internalType: "struct LpReceipt[]",
+        name: "receipts",
+        type: "tuple[]",
+      },
+      {
+        indexed: false,
+        internalType: "uint256[]",
+        name: "clbTokenAmounts",
+        type: "uint256[]",
       },
     ],
-    name: "ClaimPosition",
+    name: "ClaimLiquidityBatch",
     type: "event",
   },
   {
     anonymous: false,
     inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-      {
-        components: [
-          {
-            internalType: "uint256",
-            name: "id",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "openVersion",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "closeVersion",
-            type: "uint256",
-          },
-          {
-            internalType: "int224",
-            name: "qty",
-            type: "int224",
-          },
-          {
-            internalType: "uint32",
-            name: "leverage",
-            type: "uint32",
-          },
-          {
-            internalType: "uint256",
-            name: "openTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "closeTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "takerMargin",
-            type: "uint256",
-          },
-          {
-            internalType: "address",
-            name: "owner",
-            type: "address",
-          },
-          {
-            components: [
-              {
-                internalType: "uint16",
-                name: "tradingFeeRate",
-                type: "uint16",
-              },
-              {
-                internalType: "uint256",
-                name: "amount",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct BinMargin[]",
-            name: "_binMargins",
-            type: "tuple[]",
-          },
-          {
-            internalType: "uint8",
-            name: "_feeProtocol",
-            type: "uint8",
-          },
-        ],
-        indexed: false,
-        internalType: "struct Position",
-        name: "position",
-        type: "tuple",
-      },
-    ],
-    name: "ClosePosition",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "usedKeeperFee",
-        type: "uint256",
-      },
-      {
-        components: [
-          {
-            internalType: "uint256",
-            name: "id",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "openVersion",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "closeVersion",
-            type: "uint256",
-          },
-          {
-            internalType: "int224",
-            name: "qty",
-            type: "int224",
-          },
-          {
-            internalType: "uint32",
-            name: "leverage",
-            type: "uint32",
-          },
-          {
-            internalType: "uint256",
-            name: "openTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "closeTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "takerMargin",
-            type: "uint256",
-          },
-          {
-            internalType: "address",
-            name: "owner",
-            type: "address",
-          },
-          {
-            components: [
-              {
-                internalType: "uint16",
-                name: "tradingFeeRate",
-                type: "uint16",
-              },
-              {
-                internalType: "uint256",
-                name: "amount",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct BinMargin[]",
-            name: "_binMargins",
-            type: "tuple[]",
-          },
-          {
-            internalType: "uint8",
-            name: "_feeProtocol",
-            type: "uint8",
-          },
-        ],
-        indexed: false,
-        internalType: "struct Position",
-        name: "position",
-        type: "tuple",
-      },
-    ],
-    name: "Liquidate",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-      {
-        components: [
-          {
-            internalType: "uint256",
-            name: "id",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "openVersion",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "closeVersion",
-            type: "uint256",
-          },
-          {
-            internalType: "int224",
-            name: "qty",
-            type: "int224",
-          },
-          {
-            internalType: "uint32",
-            name: "leverage",
-            type: "uint32",
-          },
-          {
-            internalType: "uint256",
-            name: "openTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "closeTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "takerMargin",
-            type: "uint256",
-          },
-          {
-            internalType: "address",
-            name: "owner",
-            type: "address",
-          },
-          {
-            components: [
-              {
-                internalType: "uint16",
-                name: "tradingFeeRate",
-                type: "uint16",
-              },
-              {
-                internalType: "uint256",
-                name: "amount",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct BinMargin[]",
-            name: "_binMargins",
-            type: "tuple[]",
-          },
-          {
-            internalType: "uint8",
-            name: "_feeProtocol",
-            type: "uint8",
-          },
-        ],
-        indexed: false,
-        internalType: "struct Position",
-        name: "position",
-        type: "tuple",
-      },
-    ],
-    name: "OpenPosition",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "recipient",
-        type: "address",
-      },
       {
         components: [
           {
@@ -654,61 +316,50 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "oracleVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "recipient",
+            type: "address",
+          },
+          {
+            internalType: "enum LpAction",
+            name: "action",
+            type: "uint8",
+          },
+          {
+            internalType: "int16",
+            name: "tradingFeeRate",
+            type: "int16",
+          },
+        ],
         indexed: false,
-        internalType: "uint8",
-        name: "feeProtocolOld",
-        type: "uint8",
-      },
-      {
-        indexed: false,
-        internalType: "uint8",
-        name: "feeProtocolNew",
-        type: "uint8",
+        internalType: "struct LpReceipt[]",
+        name: "receipts",
+        type: "tuple[]",
       },
     ],
-    name: "SetFeeProtocol",
+    name: "RemoveLiquidityBatch",
     type: "event",
   },
   {
     anonymous: false,
     inputs: [
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "positionId",
-        type: "uint256",
-      },
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-    ],
-    name: "TransferProtocolFee",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "recipient",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "burnedCLBTokenAmount",
-        type: "uint256",
-      },
       {
         components: [
           {
@@ -747,8 +398,77 @@ const _abi = [
         name: "receipt",
         type: "tuple",
       },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "burnedCLBTokenAmount",
+        type: "uint256",
+      },
     ],
     name: "WithdrawLiquidity",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "oracleVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "recipient",
+            type: "address",
+          },
+          {
+            internalType: "enum LpAction",
+            name: "action",
+            type: "uint8",
+          },
+          {
+            internalType: "int16",
+            name: "tradingFeeRate",
+            type: "int16",
+          },
+        ],
+        indexed: false,
+        internalType: "struct LpReceipt[]",
+        name: "receipts",
+        type: "tuple[]",
+      },
+      {
+        indexed: false,
+        internalType: "uint256[]",
+        name: "amounts",
+        type: "uint256[]",
+      },
+      {
+        indexed: false,
+        internalType: "uint256[]",
+        name: "burnedCLBTokenAmounts",
+        type: "uint256[]",
+      },
+    ],
+    name: "WithdrawLiquidityBatch",
     type: "event",
   },
   {
@@ -805,7 +525,7 @@ const _abi = [
           },
         ],
         internalType: "struct LpReceipt",
-        name: "",
+        name: "receipt",
         type: "tuple",
       },
     ],
@@ -815,39 +535,67 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "positionId",
-        type: "uint256",
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
+        internalType: "int16[]",
+        name: "tradingFeeRates",
+        type: "int16[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "amounts",
+        type: "uint256[]",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
       },
     ],
-    name: "checkClaimPosition",
+    name: "addLiquidityBatch",
     outputs: [
       {
-        internalType: "bool",
-        name: "",
-        type: "bool",
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "oracleVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "recipient",
+            type: "address",
+          },
+          {
+            internalType: "enum LpAction",
+            name: "action",
+            type: "uint8",
+          },
+          {
+            internalType: "int16",
+            name: "tradingFeeRate",
+            type: "int16",
+          },
+        ],
+        internalType: "struct LpReceipt[]",
+        name: "receipts",
+        type: "tuple[]",
       },
     ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "positionId",
-        type: "uint256",
-      },
-    ],
-    name: "checkLiquidation",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "_liquidate",
-        type: "bool",
-      },
-    ],
-    stateMutability: "view",
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -871,14 +619,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "positionId",
-        type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "recipient",
-        type: "address",
+        internalType: "uint256[]",
+        name: "receiptIds",
+        type: "uint256[]",
       },
       {
         internalType: "bytes",
@@ -886,30 +629,7 @@ const _abi = [
         type: "bytes",
       },
     ],
-    name: "claimPosition",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "positionId",
-        type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "keeper",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "keeperFee",
-        type: "uint256",
-      },
-    ],
-    name: "claimPosition",
+    name: "claimLiquidityBatch",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -957,38 +677,12 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct ILiquidity.ClaimableLiquidity",
+        internalType: "struct IMarketLiquidity.ClaimableLiquidity",
         name: "",
         type: "tuple",
       },
     ],
     stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "clbToken",
-    outputs: [
-      {
-        internalType: "contract ICLBToken",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "positionId",
-        type: "uint256",
-      },
-    ],
-    name: "closePosition",
-    outputs: [],
-    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -1007,19 +701,6 @@ const _abi = [
     name: "distributeEarningToBins",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "factory",
-    outputs: [
-      {
-        internalType: "contract IChromaticMarketFactory",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
   {
@@ -1131,143 +812,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "uint256[]",
-        name: "positionIds",
-        type: "uint256[]",
-      },
-    ],
-    name: "getPositions",
-    outputs: [
-      {
-        components: [
-          {
-            internalType: "uint256",
-            name: "id",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "openVersion",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "closeVersion",
-            type: "uint256",
-          },
-          {
-            internalType: "int224",
-            name: "qty",
-            type: "int224",
-          },
-          {
-            internalType: "uint32",
-            name: "leverage",
-            type: "uint32",
-          },
-          {
-            internalType: "uint256",
-            name: "openTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "closeTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "takerMargin",
-            type: "uint256",
-          },
-          {
-            internalType: "address",
-            name: "owner",
-            type: "address",
-          },
-          {
-            components: [
-              {
-                internalType: "uint16",
-                name: "tradingFeeRate",
-                type: "uint16",
-              },
-              {
-                internalType: "uint256",
-                name: "amount",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct BinMargin[]",
-            name: "_binMargins",
-            type: "tuple[]",
-          },
-          {
-            internalType: "uint8",
-            name: "_feeProtocol",
-            type: "uint8",
-          },
-        ],
-        internalType: "struct Position[]",
-        name: "_positions",
-        type: "tuple[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "keeperFeePayer",
-    outputs: [
-      {
-        internalType: "contract IKeeperFeePayer",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "positionId",
-        type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "keeper",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "keeperFee",
-        type: "uint256",
-      },
-    ],
-    name: "liquidate",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "liquidator",
-    outputs: [
-      {
-        internalType: "contract IChromaticLiquidator",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [],
     name: "liquidityBinStatuses",
     outputs: [
@@ -1294,7 +838,7 @@ const _abi = [
             type: "int16",
           },
         ],
-        internalType: "struct ILiquidity.LiquidityBinStatus[]",
+        internalType: "struct IMarketLiquidity.LiquidityBinStatus[]",
         name: "",
         type: "tuple[]",
       },
@@ -1383,132 +927,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "int224",
-        name: "qty",
-        type: "int224",
-      },
-      {
-        internalType: "uint32",
-        name: "leverage",
-        type: "uint32",
-      },
-      {
-        internalType: "uint256",
-        name: "takerMargin",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "makerMargin",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "maxAllowableTradingFee",
-        type: "uint256",
-      },
-      {
-        internalType: "bytes",
-        name: "data",
-        type: "bytes",
-      },
-    ],
-    name: "openPosition",
-    outputs: [
-      {
-        components: [
-          {
-            internalType: "uint256",
-            name: "id",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "openVersion",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "closeVersion",
-            type: "uint256",
-          },
-          {
-            internalType: "int224",
-            name: "qty",
-            type: "int224",
-          },
-          {
-            internalType: "uint32",
-            name: "leverage",
-            type: "uint32",
-          },
-          {
-            internalType: "uint256",
-            name: "openTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "closeTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "takerMargin",
-            type: "uint256",
-          },
-          {
-            internalType: "address",
-            name: "owner",
-            type: "address",
-          },
-          {
-            components: [
-              {
-                internalType: "uint16",
-                name: "tradingFeeRate",
-                type: "uint16",
-              },
-              {
-                internalType: "uint256",
-                name: "amount",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct BinMargin[]",
-            name: "_binMargins",
-            type: "tuple[]",
-          },
-          {
-            internalType: "uint8",
-            name: "_feeProtocol",
-            type: "uint8",
-          },
-        ],
-        internalType: "struct Position",
-        name: "",
-        type: "tuple",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "oracleProvider",
-    outputs: [
-      {
-        internalType: "contract IOracleProvider",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "address",
         name: "recipient",
         type: "address",
@@ -1560,7 +978,7 @@ const _abi = [
           },
         ],
         internalType: "struct LpReceipt",
-        name: "",
+        name: "receipt",
         type: "tuple",
       },
     ],
@@ -1570,34 +988,67 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint8",
-        name: "feeProtocol",
-        type: "uint8",
-      },
-    ],
-    name: "setFeeProtocol",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "settle",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "settlementToken",
-    outputs: [
-      {
-        internalType: "contract IERC20Metadata",
-        name: "",
+        internalType: "address",
+        name: "recipient",
         type: "address",
       },
+      {
+        internalType: "int16[]",
+        name: "tradingFeeRates",
+        type: "int16[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "clbTokenAmounts",
+        type: "uint256[]",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
     ],
-    stateMutability: "view",
+    name: "removeLiquidityBatch",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "oracleVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "recipient",
+            type: "address",
+          },
+          {
+            internalType: "enum LpAction",
+            name: "action",
+            type: "uint8",
+          },
+          {
+            internalType: "int16",
+            name: "tradingFeeRate",
+            type: "int16",
+          },
+        ],
+        internalType: "struct LpReceipt[]",
+        name: "receipts",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -1620,19 +1071,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "vault",
-    outputs: [
-      {
-        internalType: "contract IChromaticVault",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "uint256",
@@ -1650,17 +1088,39 @@ const _abi = [
     stateMutability: "nonpayable",
     type: "function",
   },
+  {
+    inputs: [
+      {
+        internalType: "uint256[]",
+        name: "receiptIds",
+        type: "uint256[]",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+    ],
+    name: "withdrawLiquidityBatch",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
 ] as const;
 
-export class ChromaticMarket__factory {
+export class MarketLiquidityFacet__factory {
   static readonly abi = _abi;
-  static createInterface(): ChromaticMarketInterface {
-    return new utils.Interface(_abi) as ChromaticMarketInterface;
+  static createInterface(): MarketLiquidityFacetInterface {
+    return new Interface(_abi) as MarketLiquidityFacetInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
-  ): ChromaticMarket {
-    return new Contract(address, _abi, signerOrProvider) as ChromaticMarket;
+    runner?: ContractRunner | null
+  ): MarketLiquidityFacet {
+    return new Contract(
+      address,
+      _abi,
+      runner
+    ) as unknown as MarketLiquidityFacet;
   }
 }

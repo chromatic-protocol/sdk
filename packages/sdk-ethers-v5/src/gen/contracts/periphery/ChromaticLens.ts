@@ -46,7 +46,7 @@ export type LpReceiptStructOutput = [
   tradingFeeRate: number;
 };
 
-export declare namespace ILiquidity {
+export declare namespace IMarketLiquidity {
   export type ClaimableLiquidityStruct = {
     mintingTokenAmountRequested: PromiseOrValue<BigNumberish>;
     mintingCLBTokenAmount: PromiseOrValue<BigNumberish>;
@@ -233,7 +233,7 @@ export interface ChromaticLens extends BaseContract {
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       _oracleVersion: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[ILiquidity.ClaimableLiquidityStructOutput]>;
+    ): Promise<[IMarketLiquidity.ClaimableLiquidityStructOutput]>;
 
     /**
      * Retrieves the CLB token balances for the specified owner in the given Chromatic market.
@@ -253,7 +253,7 @@ export interface ChromaticLens extends BaseContract {
     liquidityBinStatuses(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<[ILiquidity.LiquidityBinStatusStructOutput[]]>;
+    ): Promise<[IMarketLiquidity.LiquidityBinStatusStructOutput[]]>;
 
     /**
      * Retrieves the LP receipts for the specified owner in the given Chromatic market.
@@ -294,7 +294,7 @@ export interface ChromaticLens extends BaseContract {
     tradingFeeRate: PromiseOrValue<BigNumberish>,
     _oracleVersion: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
-  ): Promise<ILiquidity.ClaimableLiquidityStructOutput>;
+  ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput>;
 
   /**
    * Retrieves the CLB token balances for the specified owner in the given Chromatic market.
@@ -314,7 +314,7 @@ export interface ChromaticLens extends BaseContract {
   liquidityBinStatuses(
     market: PromiseOrValue<string>,
     overrides?: CallOverrides
-  ): Promise<ILiquidity.LiquidityBinStatusStructOutput[]>;
+  ): Promise<IMarketLiquidity.LiquidityBinStatusStructOutput[]>;
 
   /**
    * Retrieves the LP receipts for the specified owner in the given Chromatic market.
@@ -355,7 +355,7 @@ export interface ChromaticLens extends BaseContract {
       tradingFeeRate: PromiseOrValue<BigNumberish>,
       _oracleVersion: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<ILiquidity.ClaimableLiquidityStructOutput>;
+    ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput>;
 
     /**
      * Retrieves the CLB token balances for the specified owner in the given Chromatic market.
@@ -375,7 +375,7 @@ export interface ChromaticLens extends BaseContract {
     liquidityBinStatuses(
       market: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<ILiquidity.LiquidityBinStatusStructOutput[]>;
+    ): Promise<IMarketLiquidity.LiquidityBinStatusStructOutput[]>;
 
     /**
      * Retrieves the LP receipts for the specified owner in the given Chromatic market.

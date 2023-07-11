@@ -21,7 +21,7 @@ import type {
   TypedLogDescription,
   TypedListener,
   TypedContractMethod,
-} from "../../common";
+} from "../../../../common";
 
 export type LpReceiptStruct = {
   id: BigNumberish;
@@ -48,57 +48,7 @@ export type LpReceiptStructOutput = [
   tradingFeeRate: bigint;
 };
 
-export type BinMarginStruct = {
-  tradingFeeRate: BigNumberish;
-  amount: BigNumberish;
-};
-
-export type BinMarginStructOutput = [tradingFeeRate: bigint, amount: bigint] & {
-  tradingFeeRate: bigint;
-  amount: bigint;
-};
-
-export type PositionStruct = {
-  id: BigNumberish;
-  openVersion: BigNumberish;
-  closeVersion: BigNumberish;
-  qty: BigNumberish;
-  leverage: BigNumberish;
-  openTimestamp: BigNumberish;
-  closeTimestamp: BigNumberish;
-  takerMargin: BigNumberish;
-  owner: AddressLike;
-  _binMargins: BinMarginStruct[];
-  _feeProtocol: BigNumberish;
-};
-
-export type PositionStructOutput = [
-  id: bigint,
-  openVersion: bigint,
-  closeVersion: bigint,
-  qty: bigint,
-  leverage: bigint,
-  openTimestamp: bigint,
-  closeTimestamp: bigint,
-  takerMargin: bigint,
-  owner: string,
-  _binMargins: BinMarginStructOutput[],
-  _feeProtocol: bigint
-] & {
-  id: bigint;
-  openVersion: bigint;
-  closeVersion: bigint;
-  qty: bigint;
-  leverage: bigint;
-  openTimestamp: bigint;
-  closeTimestamp: bigint;
-  takerMargin: bigint;
-  owner: string;
-  _binMargins: BinMarginStructOutput[];
-  _feeProtocol: bigint;
-};
-
-export declare namespace ILiquidity {
+export declare namespace IMarketLiquidity {
   export type ClaimableLiquidityStruct = {
     mintingTokenAmountRequested: BigNumberish;
     mintingCLBTokenAmount: BigNumberish;
@@ -141,54 +91,39 @@ export declare namespace ILiquidity {
   };
 }
 
-export interface ChromaticMarketInterface extends Interface {
+export interface MarketLiquidityFacetInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "addLiquidity"
-      | "checkClaimPosition"
-      | "checkLiquidation"
+      | "addLiquidityBatch"
       | "claimLiquidity"
-      | "claimPosition(uint256,address,bytes)"
-      | "claimPosition(uint256,address,uint256)"
+      | "claimLiquidityBatch"
       | "claimableLiquidity"
-      | "clbToken"
-      | "closePosition"
       | "distributeEarningToBins"
-      | "factory"
       | "getBinFreeLiquidity"
       | "getBinLiquidity"
       | "getBinValues"
       | "getLpReceipt"
-      | "getPositions"
-      | "keeperFeePayer"
-      | "liquidate"
-      | "liquidator"
       | "liquidityBinStatuses"
       | "onERC1155BatchReceived"
       | "onERC1155Received"
-      | "openPosition"
-      | "oracleProvider"
       | "removeLiquidity"
-      | "setFeeProtocol"
-      | "settle"
-      | "settlementToken"
+      | "removeLiquidityBatch"
       | "supportsInterface"
-      | "vault"
       | "withdrawLiquidity"
+      | "withdrawLiquidityBatch"
   ): FunctionFragment;
 
   getEvent(
     nameOrSignatureOrTopic:
       | "AddLiquidity"
+      | "AddLiquidityBatch"
       | "ClaimLiquidity"
-      | "ClaimPosition"
-      | "ClosePosition"
-      | "Liquidate"
-      | "OpenPosition"
+      | "ClaimLiquidityBatch"
       | "RemoveLiquidity"
-      | "SetFeeProtocol"
-      | "TransferProtocolFee"
+      | "RemoveLiquidityBatch"
       | "WithdrawLiquidity"
+      | "WithdrawLiquidityBatch"
   ): EventFragment;
 
   encodeFunctionData(
@@ -196,39 +131,25 @@ export interface ChromaticMarketInterface extends Interface {
     values: [AddressLike, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "checkClaimPosition",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "checkLiquidation",
-    values: [BigNumberish]
+    functionFragment: "addLiquidityBatch",
+    values: [AddressLike, BigNumberish[], BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "claimLiquidity",
     values: [BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "claimPosition(uint256,address,bytes)",
-    values: [BigNumberish, AddressLike, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "claimPosition(uint256,address,uint256)",
-    values: [BigNumberish, AddressLike, BigNumberish]
+    functionFragment: "claimLiquidityBatch",
+    values: [BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "claimableLiquidity",
     values: [BigNumberish, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "clbToken", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "closePosition",
-    values: [BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: "distributeEarningToBins",
     values: [BigNumberish, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "factory", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getBinFreeLiquidity",
     values: [BigNumberish]
@@ -244,22 +165,6 @@ export interface ChromaticMarketInterface extends Interface {
   encodeFunctionData(
     functionFragment: "getLpReceipt",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getPositions",
-    values: [BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "keeperFeePayer",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "liquidate",
-    values: [BigNumberish, AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "liquidator",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "liquidityBinStatuses",
@@ -280,41 +185,24 @@ export interface ChromaticMarketInterface extends Interface {
     values: [AddressLike, AddressLike, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "openPosition",
-    values: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BytesLike
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "oracleProvider",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "removeLiquidity",
     values: [AddressLike, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "setFeeProtocol",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(functionFragment: "settle", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "settlementToken",
-    values?: undefined
+    functionFragment: "removeLiquidityBatch",
+    values: [AddressLike, BigNumberish[], BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
-  encodeFunctionData(functionFragment: "vault", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "withdrawLiquidity",
     values: [BigNumberish, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawLiquidityBatch",
+    values: [BigNumberish[], BytesLike]
   ): string;
 
   decodeFunctionResult(
@@ -322,11 +210,7 @@ export interface ChromaticMarketInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "checkClaimPosition",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "checkLiquidation",
+    functionFragment: "addLiquidityBatch",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -334,27 +218,17 @@ export interface ChromaticMarketInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "claimPosition(uint256,address,bytes)",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "claimPosition(uint256,address,uint256)",
+    functionFragment: "claimLiquidityBatch",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "claimableLiquidity",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "clbToken", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "closePosition",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "distributeEarningToBins",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getBinFreeLiquidity",
     data: BytesLike
@@ -372,16 +246,6 @@ export interface ChromaticMarketInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getPositions",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "keeperFeePayer",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "liquidate", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "liquidator", data: BytesLike): Result;
-  decodeFunctionResult(
     functionFragment: "liquidityBinStatuses",
     data: BytesLike
   ): Result;
@@ -394,43 +258,44 @@ export interface ChromaticMarketInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "openPosition",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "oracleProvider",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "removeLiquidity",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setFeeProtocol",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "settle", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "settlementToken",
+    functionFragment: "removeLiquidityBatch",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "vault", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "withdrawLiquidity",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawLiquidityBatch",
     data: BytesLike
   ): Result;
 }
 
 export namespace AddLiquidityEvent {
-  export type InputTuple = [recipient: AddressLike, receipt: LpReceiptStruct];
-  export type OutputTuple = [recipient: string, receipt: LpReceiptStructOutput];
+  export type InputTuple = [receipt: LpReceiptStruct];
+  export type OutputTuple = [receipt: LpReceiptStructOutput];
   export interface OutputObject {
-    recipient: string;
     receipt: LpReceiptStructOutput;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace AddLiquidityBatchEvent {
+  export type InputTuple = [receipts: LpReceiptStruct[]];
+  export type OutputTuple = [receipts: LpReceiptStructOutput[]];
+  export interface OutputObject {
+    receipts: LpReceiptStructOutput[];
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -440,19 +305,16 @@ export namespace AddLiquidityEvent {
 
 export namespace ClaimLiquidityEvent {
   export type InputTuple = [
-    recipient: AddressLike,
-    clbTokenAmount: BigNumberish,
-    receipt: LpReceiptStruct
+    receipt: LpReceiptStruct,
+    clbTokenAmount: BigNumberish
   ];
   export type OutputTuple = [
-    recipient: string,
-    clbTokenAmount: bigint,
-    receipt: LpReceiptStructOutput
+    receipt: LpReceiptStructOutput,
+    clbTokenAmount: bigint
   ];
   export interface OutputObject {
-    recipient: string;
-    clbTokenAmount: bigint;
     receipt: LpReceiptStructOutput;
+    clbTokenAmount: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -460,72 +322,18 @@ export namespace ClaimLiquidityEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace ClaimPositionEvent {
+export namespace ClaimLiquidityBatchEvent {
   export type InputTuple = [
-    account: AddressLike,
-    pnl: BigNumberish,
-    interest: BigNumberish,
-    position: PositionStruct
+    receipts: LpReceiptStruct[],
+    clbTokenAmounts: BigNumberish[]
   ];
   export type OutputTuple = [
-    account: string,
-    pnl: bigint,
-    interest: bigint,
-    position: PositionStructOutput
+    receipts: LpReceiptStructOutput[],
+    clbTokenAmounts: bigint[]
   ];
   export interface OutputObject {
-    account: string;
-    pnl: bigint;
-    interest: bigint;
-    position: PositionStructOutput;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace ClosePositionEvent {
-  export type InputTuple = [account: AddressLike, position: PositionStruct];
-  export type OutputTuple = [account: string, position: PositionStructOutput];
-  export interface OutputObject {
-    account: string;
-    position: PositionStructOutput;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace LiquidateEvent {
-  export type InputTuple = [
-    account: AddressLike,
-    usedKeeperFee: BigNumberish,
-    position: PositionStruct
-  ];
-  export type OutputTuple = [
-    account: string,
-    usedKeeperFee: bigint,
-    position: PositionStructOutput
-  ];
-  export interface OutputObject {
-    account: string;
-    usedKeeperFee: bigint;
-    position: PositionStructOutput;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace OpenPositionEvent {
-  export type InputTuple = [account: AddressLike, position: PositionStruct];
-  export type OutputTuple = [account: string, position: PositionStructOutput];
-  export interface OutputObject {
-    account: string;
-    position: PositionStructOutput;
+    receipts: LpReceiptStructOutput[];
+    clbTokenAmounts: bigint[];
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -534,10 +342,9 @@ export namespace OpenPositionEvent {
 }
 
 export namespace RemoveLiquidityEvent {
-  export type InputTuple = [recipient: AddressLike, receipt: LpReceiptStruct];
-  export type OutputTuple = [recipient: string, receipt: LpReceiptStructOutput];
+  export type InputTuple = [receipt: LpReceiptStruct];
+  export type OutputTuple = [receipt: LpReceiptStructOutput];
   export interface OutputObject {
-    recipient: string;
     receipt: LpReceiptStructOutput;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
@@ -546,28 +353,11 @@ export namespace RemoveLiquidityEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace SetFeeProtocolEvent {
-  export type InputTuple = [
-    feeProtocolOld: BigNumberish,
-    feeProtocolNew: BigNumberish
-  ];
-  export type OutputTuple = [feeProtocolOld: bigint, feeProtocolNew: bigint];
+export namespace RemoveLiquidityBatchEvent {
+  export type InputTuple = [receipts: LpReceiptStruct[]];
+  export type OutputTuple = [receipts: LpReceiptStructOutput[]];
   export interface OutputObject {
-    feeProtocolOld: bigint;
-    feeProtocolNew: bigint;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace TransferProtocolFeeEvent {
-  export type InputTuple = [positionId: BigNumberish, amount: BigNumberish];
-  export type OutputTuple = [positionId: bigint, amount: bigint];
-  export interface OutputObject {
-    positionId: bigint;
-    amount: bigint;
+    receipts: LpReceiptStructOutput[];
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -577,22 +367,19 @@ export namespace TransferProtocolFeeEvent {
 
 export namespace WithdrawLiquidityEvent {
   export type InputTuple = [
-    recipient: AddressLike,
+    receipt: LpReceiptStruct,
     amount: BigNumberish,
-    burnedCLBTokenAmount: BigNumberish,
-    receipt: LpReceiptStruct
+    burnedCLBTokenAmount: BigNumberish
   ];
   export type OutputTuple = [
-    recipient: string,
+    receipt: LpReceiptStructOutput,
     amount: bigint,
-    burnedCLBTokenAmount: bigint,
-    receipt: LpReceiptStructOutput
+    burnedCLBTokenAmount: bigint
   ];
   export interface OutputObject {
-    recipient: string;
+    receipt: LpReceiptStructOutput;
     amount: bigint;
     burnedCLBTokenAmount: bigint;
-    receipt: LpReceiptStructOutput;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -600,11 +387,33 @@ export namespace WithdrawLiquidityEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface ChromaticMarket extends BaseContract {
-  connect(runner?: ContractRunner | null): ChromaticMarket;
+export namespace WithdrawLiquidityBatchEvent {
+  export type InputTuple = [
+    receipts: LpReceiptStruct[],
+    amounts: BigNumberish[],
+    burnedCLBTokenAmounts: BigNumberish[]
+  ];
+  export type OutputTuple = [
+    receipts: LpReceiptStructOutput[],
+    amounts: bigint[],
+    burnedCLBTokenAmounts: bigint[]
+  ];
+  export interface OutputObject {
+    receipts: LpReceiptStructOutput[];
+    amounts: bigint[];
+    burnedCLBTokenAmounts: bigint[];
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export interface MarketLiquidityFacet extends BaseContract {
+  connect(runner?: ContractRunner | null): MarketLiquidityFacet;
   waitForDeployment(): Promise<this>;
 
-  interface: ChromaticMarketInterface;
+  interface: MarketLiquidityFacetInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -656,23 +465,21 @@ export interface ChromaticMarket extends BaseContract {
   >;
 
   /**
-   * Checks if a position is eligible for claim.
-   * @param positionId The ID of the position to check.
+   * Adds liquidity to multiple liquidity bins of the market in a batch.
+   * @param amounts An array of amounts to add as liquidity for each bin.
+   * @param data Additional data for the liquidity callback.
+   * @param recipient The address of the recipient for each liquidity bin.
+   * @param tradingFeeRates An array of fee rates for each liquidity bin.
    */
-  checkClaimPosition: TypedContractMethod<
-    [positionId: BigNumberish],
-    [boolean],
-    "view"
-  >;
-
-  /**
-   * Checks if a position is eligible for liquidation.
-   * @param positionId The ID of the position to check.
-   */
-  checkLiquidation: TypedContractMethod<
-    [positionId: BigNumberish],
-    [boolean],
-    "view"
+  addLiquidityBatch: TypedContractMethod<
+    [
+      recipient: AddressLike,
+      tradingFeeRates: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike
+    ],
+    [LpReceiptStructOutput[]],
+    "nonpayable"
   >;
 
   /**
@@ -687,25 +494,12 @@ export interface ChromaticMarket extends BaseContract {
   >;
 
   /**
-   * Claims a closed position in the market.
-   * @param data Additional data for the claim callback.
-   * @param positionId The ID of the position to claim.
-   * @param recipient The address of the recipient of the claimed position.
+   * Claims liquidity from a liquidity receipt.
+   * @param data Additional data for the liquidity callback.
+   * @param receiptIds The array of the liquidity receipt IDs.
    */
-  "claimPosition(uint256,address,bytes)": TypedContractMethod<
-    [positionId: BigNumberish, recipient: AddressLike, data: BytesLike],
-    [void],
-    "nonpayable"
-  >;
-
-  /**
-   * Claims a closed position on behalf of a keeper.
-   * @param keeper The address of the keeper claiming the position.
-   * @param keeperFee The native token amount of the keeper's fee.
-   * @param positionId The ID of the position to claim.
-   */
-  "claimPosition(uint256,address,uint256)": TypedContractMethod<
-    [positionId: BigNumberish, keeper: AddressLike, keeperFee: BigNumberish],
+  claimLiquidityBatch: TypedContractMethod<
+    [receiptIds: BigNumberish[], data: BytesLike],
     [void],
     "nonpayable"
   >;
@@ -717,20 +511,8 @@ export interface ChromaticMarket extends BaseContract {
    */
   claimableLiquidity: TypedContractMethod<
     [tradingFeeRate: BigNumberish, oracleVersion: BigNumberish],
-    [ILiquidity.ClaimableLiquidityStructOutput],
+    [IMarketLiquidity.ClaimableLiquidityStructOutput],
     "view"
-  >;
-
-  clbToken: TypedContractMethod<[], [string], "view">;
-
-  /**
-   * Closes a position in the market.
-   * @param positionId The ID of the position to close.
-   */
-  closePosition: TypedContractMethod<
-    [positionId: BigNumberish],
-    [void],
-    "nonpayable"
   >;
 
   /**
@@ -743,8 +525,6 @@ export interface ChromaticMarket extends BaseContract {
     [void],
     "nonpayable"
   >;
-
-  factory: TypedContractMethod<[], [string], "view">;
 
   /**
    * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
@@ -787,37 +567,11 @@ export interface ChromaticMarket extends BaseContract {
   >;
 
   /**
-   * Retrieves multiple positions by their IDs.
-   * @param positionIds The IDs of the positions to retrieve.
-   */
-  getPositions: TypedContractMethod<
-    [positionIds: BigNumberish[]],
-    [PositionStructOutput[]],
-    "view"
-  >;
-
-  keeperFeePayer: TypedContractMethod<[], [string], "view">;
-
-  /**
-   * Liquidates a position.
-   * @param keeper The address of the keeper performing the liquidation.
-   * @param keeperFee The native token amount of the keeper's fee.
-   * @param positionId The ID of the position to liquidate.
-   */
-  liquidate: TypedContractMethod<
-    [positionId: BigNumberish, keeper: AddressLike, keeperFee: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
-
-  liquidator: TypedContractMethod<[], [string], "view">;
-
-  /**
    * Retrieves the liquidity bin statuses for the caller's liquidity pool.
    */
   liquidityBinStatuses: TypedContractMethod<
     [],
-    [ILiquidity.LiquidityBinStatusStructOutput[]],
+    [IMarketLiquidity.LiquidityBinStatusStructOutput[]],
     "view"
   >;
 
@@ -862,30 +616,6 @@ export interface ChromaticMarket extends BaseContract {
   >;
 
   /**
-   * Opens a new position in the market.
-   * @param data Additional data for the position callback.
-   * @param leverage The leverage of the position in basis points.
-   * @param makerMargin The margin amount provided by the maker.
-   * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
-   * @param qty The quantity of the position.
-   * @param takerMargin The margin amount provided by the taker.
-   */
-  openPosition: TypedContractMethod<
-    [
-      qty: BigNumberish,
-      leverage: BigNumberish,
-      takerMargin: BigNumberish,
-      makerMargin: BigNumberish,
-      maxAllowableTradingFee: BigNumberish,
-      data: BytesLike
-    ],
-    [PositionStructOutput],
-    "nonpayable"
-  >;
-
-  oracleProvider: TypedContractMethod<[], [string], "view">;
-
-  /**
    * Removes liquidity from the market.
    * @param data Additional data for the liquidity callback.
    * @param recipient The address to receive the removed liquidity.
@@ -898,22 +628,22 @@ export interface ChromaticMarket extends BaseContract {
   >;
 
   /**
-   * Set the denominator of the protocol's % share of the fees
-   * @param feeProtocol new protocol fee for the market
+   * Removes liquidity from the market.
+   * @param clbTokenAmounts An array of clb token amounts to remove as liquidity for each bin.
+   * @param data Additional data for the liquidity callback.
+   * @param recipient The address to receive the removed liquidity.
+   * @param tradingFeeRates An array of fee rates for each liquidity bin.
    */
-  setFeeProtocol: TypedContractMethod<
-    [feeProtocol: BigNumberish],
-    [void],
+  removeLiquidityBatch: TypedContractMethod<
+    [
+      recipient: AddressLike,
+      tradingFeeRates: BigNumberish[],
+      clbTokenAmounts: BigNumberish[],
+      data: BytesLike
+    ],
+    [LpReceiptStructOutput[]],
     "nonpayable"
   >;
-
-  /**
-   * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
-   * Executes the settlement process for the Chromatic market.
-   */
-  settle: TypedContractMethod<[], [void], "nonpayable">;
-
-  settlementToken: TypedContractMethod<[], [string], "view">;
 
   /**
    * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
@@ -924,8 +654,6 @@ export interface ChromaticMarket extends BaseContract {
     "view"
   >;
 
-  vault: TypedContractMethod<[], [string], "view">;
-
   /**
    * Withdraws liquidity from a liquidity receipt.
    * @param data Additional data for the liquidity callback.
@@ -933,6 +661,17 @@ export interface ChromaticMarket extends BaseContract {
    */
   withdrawLiquidity: TypedContractMethod<
     [receiptId: BigNumberish, data: BytesLike],
+    [void],
+    "nonpayable"
+  >;
+
+  /**
+   * Withdraws liquidity from a liquidity receipt.
+   * @param data Additional data for the liquidity callback.
+   * @param receiptIds The array of the liquidity receipt IDs.
+   */
+  withdrawLiquidityBatch: TypedContractMethod<
+    [receiptIds: BigNumberish[], data: BytesLike],
     [void],
     "nonpayable"
   >;
@@ -949,11 +688,17 @@ export interface ChromaticMarket extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "checkClaimPosition"
-  ): TypedContractMethod<[positionId: BigNumberish], [boolean], "view">;
-  getFunction(
-    nameOrSignature: "checkLiquidation"
-  ): TypedContractMethod<[positionId: BigNumberish], [boolean], "view">;
+    nameOrSignature: "addLiquidityBatch"
+  ): TypedContractMethod<
+    [
+      recipient: AddressLike,
+      tradingFeeRates: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike
+    ],
+    [LpReceiptStructOutput[]],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "claimLiquidity"
   ): TypedContractMethod<
@@ -962,16 +707,9 @@ export interface ChromaticMarket extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "claimPosition(uint256,address,bytes)"
+    nameOrSignature: "claimLiquidityBatch"
   ): TypedContractMethod<
-    [positionId: BigNumberish, recipient: AddressLike, data: BytesLike],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "claimPosition(uint256,address,uint256)"
-  ): TypedContractMethod<
-    [positionId: BigNumberish, keeper: AddressLike, keeperFee: BigNumberish],
+    [receiptIds: BigNumberish[], data: BytesLike],
     [void],
     "nonpayable"
   >;
@@ -979,15 +717,9 @@ export interface ChromaticMarket extends BaseContract {
     nameOrSignature: "claimableLiquidity"
   ): TypedContractMethod<
     [tradingFeeRate: BigNumberish, oracleVersion: BigNumberish],
-    [ILiquidity.ClaimableLiquidityStructOutput],
+    [IMarketLiquidity.ClaimableLiquidityStructOutput],
     "view"
   >;
-  getFunction(
-    nameOrSignature: "clbToken"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "closePosition"
-  ): TypedContractMethod<[positionId: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "distributeEarningToBins"
   ): TypedContractMethod<
@@ -995,9 +727,6 @@ export interface ChromaticMarket extends BaseContract {
     [void],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "factory"
-  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "getBinFreeLiquidity"
   ): TypedContractMethod<[tradingFeeRate: BigNumberish], [bigint], "view">;
@@ -1015,30 +744,10 @@ export interface ChromaticMarket extends BaseContract {
     "view"
   >;
   getFunction(
-    nameOrSignature: "getPositions"
-  ): TypedContractMethod<
-    [positionIds: BigNumberish[]],
-    [PositionStructOutput[]],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "keeperFeePayer"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "liquidate"
-  ): TypedContractMethod<
-    [positionId: BigNumberish, keeper: AddressLike, keeperFee: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "liquidator"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
     nameOrSignature: "liquidityBinStatuses"
   ): TypedContractMethod<
     [],
-    [ILiquidity.LiquidityBinStatusStructOutput[]],
+    [IMarketLiquidity.LiquidityBinStatusStructOutput[]],
     "view"
   >;
   getFunction(
@@ -1068,23 +777,6 @@ export interface ChromaticMarket extends BaseContract {
     "view"
   >;
   getFunction(
-    nameOrSignature: "openPosition"
-  ): TypedContractMethod<
-    [
-      qty: BigNumberish,
-      leverage: BigNumberish,
-      takerMargin: BigNumberish,
-      makerMargin: BigNumberish,
-      maxAllowableTradingFee: BigNumberish,
-      data: BytesLike
-    ],
-    [PositionStructOutput],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "oracleProvider"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
     nameOrSignature: "removeLiquidity"
   ): TypedContractMethod<
     [recipient: AddressLike, tradingFeeRate: BigNumberish, data: BytesLike],
@@ -1092,24 +784,31 @@ export interface ChromaticMarket extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "setFeeProtocol"
-  ): TypedContractMethod<[feeProtocol: BigNumberish], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "settle"
-  ): TypedContractMethod<[], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "settlementToken"
-  ): TypedContractMethod<[], [string], "view">;
+    nameOrSignature: "removeLiquidityBatch"
+  ): TypedContractMethod<
+    [
+      recipient: AddressLike,
+      tradingFeeRates: BigNumberish[],
+      clbTokenAmounts: BigNumberish[],
+      data: BytesLike
+    ],
+    [LpReceiptStructOutput[]],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "supportsInterface"
   ): TypedContractMethod<[interfaceID: BytesLike], [boolean], "view">;
   getFunction(
-    nameOrSignature: "vault"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
     nameOrSignature: "withdrawLiquidity"
   ): TypedContractMethod<
     [receiptId: BigNumberish, data: BytesLike],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "withdrawLiquidityBatch"
+  ): TypedContractMethod<
+    [receiptIds: BigNumberish[], data: BytesLike],
     [void],
     "nonpayable"
   >;
@@ -1122,6 +821,13 @@ export interface ChromaticMarket extends BaseContract {
     AddLiquidityEvent.OutputObject
   >;
   getEvent(
+    key: "AddLiquidityBatch"
+  ): TypedContractEvent<
+    AddLiquidityBatchEvent.InputTuple,
+    AddLiquidityBatchEvent.OutputTuple,
+    AddLiquidityBatchEvent.OutputObject
+  >;
+  getEvent(
     key: "ClaimLiquidity"
   ): TypedContractEvent<
     ClaimLiquidityEvent.InputTuple,
@@ -1129,32 +835,11 @@ export interface ChromaticMarket extends BaseContract {
     ClaimLiquidityEvent.OutputObject
   >;
   getEvent(
-    key: "ClaimPosition"
+    key: "ClaimLiquidityBatch"
   ): TypedContractEvent<
-    ClaimPositionEvent.InputTuple,
-    ClaimPositionEvent.OutputTuple,
-    ClaimPositionEvent.OutputObject
-  >;
-  getEvent(
-    key: "ClosePosition"
-  ): TypedContractEvent<
-    ClosePositionEvent.InputTuple,
-    ClosePositionEvent.OutputTuple,
-    ClosePositionEvent.OutputObject
-  >;
-  getEvent(
-    key: "Liquidate"
-  ): TypedContractEvent<
-    LiquidateEvent.InputTuple,
-    LiquidateEvent.OutputTuple,
-    LiquidateEvent.OutputObject
-  >;
-  getEvent(
-    key: "OpenPosition"
-  ): TypedContractEvent<
-    OpenPositionEvent.InputTuple,
-    OpenPositionEvent.OutputTuple,
-    OpenPositionEvent.OutputObject
+    ClaimLiquidityBatchEvent.InputTuple,
+    ClaimLiquidityBatchEvent.OutputTuple,
+    ClaimLiquidityBatchEvent.OutputObject
   >;
   getEvent(
     key: "RemoveLiquidity"
@@ -1164,18 +849,11 @@ export interface ChromaticMarket extends BaseContract {
     RemoveLiquidityEvent.OutputObject
   >;
   getEvent(
-    key: "SetFeeProtocol"
+    key: "RemoveLiquidityBatch"
   ): TypedContractEvent<
-    SetFeeProtocolEvent.InputTuple,
-    SetFeeProtocolEvent.OutputTuple,
-    SetFeeProtocolEvent.OutputObject
-  >;
-  getEvent(
-    key: "TransferProtocolFee"
-  ): TypedContractEvent<
-    TransferProtocolFeeEvent.InputTuple,
-    TransferProtocolFeeEvent.OutputTuple,
-    TransferProtocolFeeEvent.OutputObject
+    RemoveLiquidityBatchEvent.InputTuple,
+    RemoveLiquidityBatchEvent.OutputTuple,
+    RemoveLiquidityBatchEvent.OutputObject
   >;
   getEvent(
     key: "WithdrawLiquidity"
@@ -1184,9 +862,16 @@ export interface ChromaticMarket extends BaseContract {
     WithdrawLiquidityEvent.OutputTuple,
     WithdrawLiquidityEvent.OutputObject
   >;
+  getEvent(
+    key: "WithdrawLiquidityBatch"
+  ): TypedContractEvent<
+    WithdrawLiquidityBatchEvent.InputTuple,
+    WithdrawLiquidityBatchEvent.OutputTuple,
+    WithdrawLiquidityBatchEvent.OutputObject
+  >;
 
   filters: {
-    "AddLiquidity(address,tuple)": TypedContractEvent<
+    "AddLiquidity(tuple)": TypedContractEvent<
       AddLiquidityEvent.InputTuple,
       AddLiquidityEvent.OutputTuple,
       AddLiquidityEvent.OutputObject
@@ -1197,7 +882,18 @@ export interface ChromaticMarket extends BaseContract {
       AddLiquidityEvent.OutputObject
     >;
 
-    "ClaimLiquidity(address,uint256,tuple)": TypedContractEvent<
+    "AddLiquidityBatch(tuple[])": TypedContractEvent<
+      AddLiquidityBatchEvent.InputTuple,
+      AddLiquidityBatchEvent.OutputTuple,
+      AddLiquidityBatchEvent.OutputObject
+    >;
+    AddLiquidityBatch: TypedContractEvent<
+      AddLiquidityBatchEvent.InputTuple,
+      AddLiquidityBatchEvent.OutputTuple,
+      AddLiquidityBatchEvent.OutputObject
+    >;
+
+    "ClaimLiquidity(tuple,uint256)": TypedContractEvent<
       ClaimLiquidityEvent.InputTuple,
       ClaimLiquidityEvent.OutputTuple,
       ClaimLiquidityEvent.OutputObject
@@ -1208,51 +904,18 @@ export interface ChromaticMarket extends BaseContract {
       ClaimLiquidityEvent.OutputObject
     >;
 
-    "ClaimPosition(address,int256,uint256,tuple)": TypedContractEvent<
-      ClaimPositionEvent.InputTuple,
-      ClaimPositionEvent.OutputTuple,
-      ClaimPositionEvent.OutputObject
+    "ClaimLiquidityBatch(tuple[],uint256[])": TypedContractEvent<
+      ClaimLiquidityBatchEvent.InputTuple,
+      ClaimLiquidityBatchEvent.OutputTuple,
+      ClaimLiquidityBatchEvent.OutputObject
     >;
-    ClaimPosition: TypedContractEvent<
-      ClaimPositionEvent.InputTuple,
-      ClaimPositionEvent.OutputTuple,
-      ClaimPositionEvent.OutputObject
-    >;
-
-    "ClosePosition(address,tuple)": TypedContractEvent<
-      ClosePositionEvent.InputTuple,
-      ClosePositionEvent.OutputTuple,
-      ClosePositionEvent.OutputObject
-    >;
-    ClosePosition: TypedContractEvent<
-      ClosePositionEvent.InputTuple,
-      ClosePositionEvent.OutputTuple,
-      ClosePositionEvent.OutputObject
+    ClaimLiquidityBatch: TypedContractEvent<
+      ClaimLiquidityBatchEvent.InputTuple,
+      ClaimLiquidityBatchEvent.OutputTuple,
+      ClaimLiquidityBatchEvent.OutputObject
     >;
 
-    "Liquidate(address,uint256,tuple)": TypedContractEvent<
-      LiquidateEvent.InputTuple,
-      LiquidateEvent.OutputTuple,
-      LiquidateEvent.OutputObject
-    >;
-    Liquidate: TypedContractEvent<
-      LiquidateEvent.InputTuple,
-      LiquidateEvent.OutputTuple,
-      LiquidateEvent.OutputObject
-    >;
-
-    "OpenPosition(address,tuple)": TypedContractEvent<
-      OpenPositionEvent.InputTuple,
-      OpenPositionEvent.OutputTuple,
-      OpenPositionEvent.OutputObject
-    >;
-    OpenPosition: TypedContractEvent<
-      OpenPositionEvent.InputTuple,
-      OpenPositionEvent.OutputTuple,
-      OpenPositionEvent.OutputObject
-    >;
-
-    "RemoveLiquidity(address,tuple)": TypedContractEvent<
+    "RemoveLiquidity(tuple)": TypedContractEvent<
       RemoveLiquidityEvent.InputTuple,
       RemoveLiquidityEvent.OutputTuple,
       RemoveLiquidityEvent.OutputObject
@@ -1263,29 +926,18 @@ export interface ChromaticMarket extends BaseContract {
       RemoveLiquidityEvent.OutputObject
     >;
 
-    "SetFeeProtocol(uint8,uint8)": TypedContractEvent<
-      SetFeeProtocolEvent.InputTuple,
-      SetFeeProtocolEvent.OutputTuple,
-      SetFeeProtocolEvent.OutputObject
+    "RemoveLiquidityBatch(tuple[])": TypedContractEvent<
+      RemoveLiquidityBatchEvent.InputTuple,
+      RemoveLiquidityBatchEvent.OutputTuple,
+      RemoveLiquidityBatchEvent.OutputObject
     >;
-    SetFeeProtocol: TypedContractEvent<
-      SetFeeProtocolEvent.InputTuple,
-      SetFeeProtocolEvent.OutputTuple,
-      SetFeeProtocolEvent.OutputObject
-    >;
-
-    "TransferProtocolFee(uint256,uint256)": TypedContractEvent<
-      TransferProtocolFeeEvent.InputTuple,
-      TransferProtocolFeeEvent.OutputTuple,
-      TransferProtocolFeeEvent.OutputObject
-    >;
-    TransferProtocolFee: TypedContractEvent<
-      TransferProtocolFeeEvent.InputTuple,
-      TransferProtocolFeeEvent.OutputTuple,
-      TransferProtocolFeeEvent.OutputObject
+    RemoveLiquidityBatch: TypedContractEvent<
+      RemoveLiquidityBatchEvent.InputTuple,
+      RemoveLiquidityBatchEvent.OutputTuple,
+      RemoveLiquidityBatchEvent.OutputObject
     >;
 
-    "WithdrawLiquidity(address,uint256,uint256,tuple)": TypedContractEvent<
+    "WithdrawLiquidity(tuple,uint256,uint256)": TypedContractEvent<
       WithdrawLiquidityEvent.InputTuple,
       WithdrawLiquidityEvent.OutputTuple,
       WithdrawLiquidityEvent.OutputObject
@@ -1294,6 +946,17 @@ export interface ChromaticMarket extends BaseContract {
       WithdrawLiquidityEvent.InputTuple,
       WithdrawLiquidityEvent.OutputTuple,
       WithdrawLiquidityEvent.OutputObject
+    >;
+
+    "WithdrawLiquidityBatch(tuple[],uint256[],uint256[])": TypedContractEvent<
+      WithdrawLiquidityBatchEvent.InputTuple,
+      WithdrawLiquidityBatchEvent.OutputTuple,
+      WithdrawLiquidityBatchEvent.OutputObject
+    >;
+    WithdrawLiquidityBatch: TypedContractEvent<
+      WithdrawLiquidityBatchEvent.InputTuple,
+      WithdrawLiquidityBatchEvent.OutputTuple,
+      WithdrawLiquidityBatchEvent.OutputObject
     >;
   };
 }

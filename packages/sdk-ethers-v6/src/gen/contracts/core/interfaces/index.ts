@@ -3,3 +3,4 @@
 /* eslint-disable */
 import type * as factory from "./factory";
 export type { factory };
+export type { IChromaticMarket } from "./IChromaticMarket";

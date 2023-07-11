@@ -50,6 +50,7 @@ export class ChromaticMarketFactory {
    */
   async registeredSettlementTokens() {
     return await handleBytesError(async () => {
+      
       const totalRegisteredTokenAddrs =
         await this.contracts().marketFactory.registeredSettlementTokens();
       const promise = totalRegisteredTokenAddrs.map(async (address) => {

@@ -3,7 +3,7 @@ import type { Client } from "../Client";
 import {
   CLBToken,
   CLBToken__factory,
-  ChromaticMarket__factory,
+  IChromaticMarket__factory,
   IERC20,
   IERC20__factory,
   IOracleProvider,
@@ -28,7 +28,7 @@ export class ChromaticMarket {
   contracts() {
     return {
       market: (marketAddress: string) =>
-        ChromaticMarket__factory.connect(
+        IChromaticMarket__factory.connect(
           marketAddress,
           this._client.signer || this._client.provider
         ),

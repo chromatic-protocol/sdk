@@ -1,6 +1,5 @@
 import { ContractTransactionReceipt, Signer, ethers } from "ethers";
-import { ChromaticMarket__factory, IERC20__factory } from "../src/gen";
-import { LpReceiptStructOutput } from "../src/gen/contracts/core/ChromaticMarket";
+import { IChromaticMarket__factory, IERC20__factory } from "../src/gen";
 
 export const MNEMONIC_JUNK = "test test test test test test test test test test test junk";
 
@@ -41,18 +40,21 @@ export function getSigner(param?: GetSignerParam): ethers.Signer {
   if (param?.privateKey !== undefined) {
     return new ethers.Wallet(param.privateKey, provider);
   }
-
-  const account = ethers.HDNodeWallet.fromPhrase(
+  
+  const mnemonic = ethers.Mnemonic.fromPhrase(
     param?.mnemonic === undefined ? MNEMONIC_JUNK : param!.mnemonic!
-  ).derivePath(
+  );
+  const wallet = ethers.HDNodeWallet.fromMnemonic(
+    mnemonic,
     `m/44'/60'/0'/0/${param?.selectedAccount === undefined ? 0 : param!.selectedAccount!}`
   );
-  return new ethers.Wallet(account.signingKey, provider);
+ 
+  return new ethers.Wallet(wallet.privateKey, provider);
 }
 
 export function getDefaultProvider(): ethers.JsonRpcProvider {
-  return new ethers.JsonRpcProvider(); // "http://localhost:8545"; // default value
-  // return new ethers.providers.JsonRpcProvider('http://127.0.0.1:8545'); // "http://localhost:8545"; // default value
+  // return new ethers.JsonRpcProvider(); // "http://localhost:8545"; // default value
+  return new ethers.JsonRpcProvider("http://127.0.0.1:8545"); // "http://localhost:8545"; // default value
 }
 
 export async function wrapEth(param: WrapEthParam) {
@@ -176,7 +178,7 @@ export async function swapToUSDC(param: SwapToUSDCParam) {
 }
 
 export async function updatePrice(param: UpdatePriceParam) {
-  const market = ChromaticMarket__factory.connect(param.market, param.signer);
+  const market = IChromaticMarket__factory.connect(param.market, param.signer);
   const oracleProviderAddress = await market.oracleProvider();
   const oracleProvider = new ethers.Contract(
     oracleProviderAddress,
@@ -230,34 +232,4 @@ export async function waitTxMining(
 
 export async function wait(millseconds: number) {
   return new Promise((resolve) => setTimeout(resolve, millseconds));
-}
-
-export function parseLpReceipt(
-  marketAddress: string,
-  txReceipt: ContractTransactionReceipt
-): LpReceiptStructOutput {
-  const addLiquidityEvent = txReceipt.logs.filter((r) => r.address == marketAddress);
-  if (addLiquidityEvent.length < 1) {
-    throw Error("invaild receipt");
-  }
-
-  const parsedValue = ethers.AbiCoder.defaultAbiCoder().decode(
-    ["uint256", "uint256", "uint256", "address", "uint8", "int16"],
-    addLiquidityEvent[0].data
-  );
-
-  return {
-    0: parsedValue[0] as bigint,
-    1: parsedValue[1] as bigint,
-    2: parsedValue[2] as bigint,
-    3: parsedValue[3] as string,
-    4: parsedValue[4] as bigint,
-    5: parsedValue[5] as bigint,
-    id: parsedValue[0] as bigint,
-    oracleVersion: parsedValue[1] as bigint,
-    amount: parsedValue[2] as bigint,
-    recipient: parsedValue[3] as string,
-    action: parsedValue[4] as bigint,
-    tradingFeeRate: parsedValue[5] as bigint,
-  } as LpReceiptStructOutput;
 }

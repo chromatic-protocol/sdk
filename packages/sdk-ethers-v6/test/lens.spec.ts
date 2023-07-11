@@ -2,7 +2,6 @@ import { ethers } from "ethers";
 import { Client } from "../src/Client";
 import {
   getSigner,
-  parseLpReceipt,
   swapToUSDC,
   updatePrice,
   waitTxMining,
@@ -41,12 +40,10 @@ describe("lens sdk test", () => {
     const addLiqfn = () =>
       client.router().addLiquidities(market, [{ feeRate: 100, amount: usdcBalance / 2n }]);
     const txReceipt = await waitTxMining(addLiqfn);
-    const lpReceipt = parseLpReceipt(market, txReceipt);
-
-    console.log("lpReceipt", lpReceipt);
+    const lpReceiptIds = await client.router().contracts().router()["getLpReceiptIds(address)"](market)
 
     await updatePrice({ market, signer, price: 1000 });
-    await client.router().claimLiquidites(market, [lpReceipt.id]);
+    await client.router().claimLiquidites(market, [lpReceiptIds[lpReceiptIds.length - 1]]);
 
     const afterBins = await client.lens().ownedLiquidityBins(market, await signer.getAddress());
     console.log("beforeBins", beforeBins);

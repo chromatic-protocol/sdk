@@ -1,6 +1,6 @@
 import type { Client } from "../Client";
 import { ChromaticLens__factory, getDeployedAddress } from "../gen";
-import { ILiquidity } from "../gen/contracts/core/ChromaticMarket";
+import { IMarketLiquidity } from "../gen/contracts/core/interfaces/IChromaticMarket";
 import { decodeTokenId, encodeTokenId, handleBytesError } from "../utils/helpers";
 
 /**
@@ -173,7 +173,7 @@ export class ChromaticLens {
         .map((response) =>
           this.getContract().interface.decodeFunctionResult("claimableLiquidity", response)
         )
-        .flat() as ILiquidity.ClaimableLiquidityStructOutput[];
+        .flat() as IMarketLiquidity.ClaimableLiquidityStructOutput[];
 
       const results = decodedReponses.map((res, index) => {
         return {

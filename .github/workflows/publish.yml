@@ -145,7 +145,7 @@ jobs:
         yarn docs:sdk
         cp docs-repo/docs/sdk/reference/sdk-ethers-v6/_category_.yml site/docs/sdk/ 
         rm -rf docs-repo/docs/sdk/reference/sdk-ethers-v6/*
-        cp -r site/docs/sdk/* docs-repo/docs/sdk/reference/sdk-ethers-v5/
+        cp -r site/docs/sdk/* docs-repo/docs/sdk/reference/sdk-ethers-v6/
         cp src/gen/deployedAddress.ts docs-repo/docs/contracts/reference/
     - name: pull-request
       uses: peter-evans/create-pull-request@v5

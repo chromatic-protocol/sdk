@@ -228,6 +228,6 @@ describe("router sdk test", () => {
     // parsed in ethers
     await expect(
       async () => await client.marketFactory().currentInterestRate(await signer.getAddress())
-    ).rejects.toThrow("URT");
+    ).rejects.toThrow("call reverted with error: URT");
   }, 60000);
 });

@@ -45,16 +45,17 @@ export async function PromiseOnlySuccess<T>(values: Iterable<T | PromiseLike<T>>
   );
 }
 
-// TODO panic error
+
 export async function handleBytesError<T>(fn: () => Promise<T>, provider: Provider): Promise<T> {
   try {
     return await fn();
   } catch (e) {
-    /// exception with estimateGas
-    /// error code 3 : execution reverted
-    const revertMatch = (e as Error).message.match(/"error":{"code":3,"data":"([^"]*)"/);
-    if (revertMatch) {
-      throw Error(parseHexError(revertMatch[1]));
+    if(e.info && e.info.error.message && e.info.error.data){
+      throw Error(parseHexError(e.info.error.data));
+    }
+
+    if(e.revert && e.revert.args && e.revert.args.length > 0){
+      throw Error(`call reverted with error: ${e.revert.args[0]}`);
     }
 
     /// When gasLimit and gasPrice are set

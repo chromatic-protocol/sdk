@@ -10,5 +10,6 @@
     "ts-jest": "^29.1.0",
     "@types/jest": "^29.5.2",
     "typescript": "^5.1.6"
-  }
+  },
+  "license": "GPL-3.0-only"
 }

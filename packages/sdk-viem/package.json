@@ -1,6 +1,6 @@
 {
   "name": "@chromatic-protocol/sdk-viem",
-  "license": "GPLV3",
+  "license": "GPL-3.0-only",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts",

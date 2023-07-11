@@ -43,6 +43,7 @@ jobs:
         skip-on-empty: false
         version-file: packages/sdk-ethers-v5/package.json
         skip-tag: true
+        git-message: 'chore(release): sdk-ethers-v5@{version}'
         # skip-version-file: false
         # skip-commit: false
     - uses: actions/setup-node@v3
@@ -108,6 +109,7 @@ jobs:
         skip-on-empty: false
         version-file: packages/sdk-ethers-v6/package.json
         skip-tag: true
+        git-message: 'chore(release): sdk-ethers-v6@{version}'
         # skip-version-file: false
         # skip-commit: false
     - uses: actions/setup-node@v3
@@ -173,6 +175,7 @@ jobs:
         skip-on-empty: false
         version-file: packages/sdk-viem/package.json
         skip-tag: true
+        git-message: 'chore(release): sdk-viem@{version}'
         # skip-version-file: false
         # skip-commit: false
     - uses: actions/setup-node@v3

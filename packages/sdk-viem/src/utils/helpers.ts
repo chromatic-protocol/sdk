@@ -30,7 +30,7 @@ import {
 const DIRECTION_PRECISION = BigInt(10 ** 10);
 export function decodeTokenId(encodedId: bigint) {
   if (encodedId >= DIRECTION_PRECISION) {
-    return Number(BigInt(encodedId) - DIRECTION_PRECISION);
+    return -Number(BigInt(encodedId) - DIRECTION_PRECISION);
   } else {
     return Number(encodedId);
   }

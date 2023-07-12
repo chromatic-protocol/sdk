@@ -94,7 +94,6 @@ export class ChromaticLens {
       const totalLiquidityBins = await this.getContract().read.liquidityBinStatuses([
         marketAddress,
       ]);
-      const clbTokenAddress = await market.clbToken(marketAddress);
       const clbTokenContract = await market.contracts().clbToken(marketAddress);
       const tokenIds = totalLiquidityBins.map((bin) => encodeTokenId(bin.tradingFeeRate));
 

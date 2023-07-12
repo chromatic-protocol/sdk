@@ -1,10 +1,4 @@
-import {
-  Address,
-  decodeFunctionResult,
-  encodeFunctionData,
-  getContract,
-  zeroAddress
-} from "viem";
+import { Address, decodeFunctionResult, encodeFunctionData, getContract, zeroAddress } from "viem";
 import type { Client } from "../Client";
 import { chromaticLensABI, chromaticLensAddress } from "../gen";
 import {
@@ -88,7 +82,6 @@ export class ChromaticLens {
    * @returns A promise that resolves to an array of LiquidityBinResult.
    */
   async liquidityBins(marketAddress: Address) {
-    // : Promise<LiquidityBinResult[]> {
     return await handleBytesError(async () => {
       const market = this._client.market();
       const totalLiquidityBins = await this.getContract().read.liquidityBinStatuses([
@@ -102,7 +95,7 @@ export class ChromaticLens {
         return {
           tradingFeeRate: bin.tradingFeeRate,
           clbValue:
-            totalSupplies[index] == BigInt(0)
+            totalSupplies[index] == 0n
               ? 0
               : Number(bin.liquidity.toString()) / Number(totalSupplies[index].toString()),
           liquidity: bin.liquidity,
@@ -126,12 +119,12 @@ export class ChromaticLens {
       if (!ownerAddress) {
         checkWalletClient(this._client);
       }
-      //
+
       const [totalLiquidityBins, ownedLiquidities] = await Promise.all([
         lens.read.liquidityBinStatuses([marketAddress]),
         lens.read.clbBalanceOf([
           marketAddress,
-          ownerAddress ?? (await this._client.walletClient!.account!.address),
+          ownerAddress ?? this._client.walletClient!.account!.address,
         ]),
       ]);
 
@@ -150,16 +143,16 @@ export class ChromaticLens {
           clbBalance: ownedBin.balance,
           clbTotalSupply: ownedBin.totalSupply,
           clbValue:
-            ownedBin.totalSupply == BigInt(0)
+            ownedBin.totalSupply == 0n
               ? 0
-              : Number(ownedBin.binValue || 0) / Number(ownedBin.totalSupply),
+              : Number((ownedBin.binValue || 0n) / ownedBin.totalSupply),
           removableRate:
-            targetTotalLiqBin.liquidity == BigInt(0)
+            targetTotalLiqBin.liquidity == 0n
               ? 0
-              : Number(targetTotalLiqBin.freeLiquidity || 0) / Number(targetTotalLiqBin.liquidity),
+              : Number((targetTotalLiqBin.freeLiquidity || 0n) / targetTotalLiqBin.liquidity),
         };
       });
-      return results.filter((bin) => bin.clbBalance > BigInt(0));
+      return results.filter((bin) => bin.clbBalance > 0n);
     });
   }
 

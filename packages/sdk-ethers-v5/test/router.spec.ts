@@ -42,7 +42,7 @@ describe("router sdk test", () => {
     const router = client.router();
 
     async function getLpReceiptIds() {
-      return client.router().contracts().router()["getLpReceiptIds(address)"](marketAddress)
+      return client.router().contracts().router()["getLpReceiptIds(address)"](marketAddress);
     }
 
     async function addAndClaimLiquidity(tradingFeeRate: number) {
@@ -50,7 +50,6 @@ describe("router sdk test", () => {
       const { outputAmount, usdcBalance } = await swapToUSDC({
         amount: ethers.utils.parseEther("10"),
         signer: signer,
-        weth9: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
         usdc: usdc,
         fee: 3000,
       });
@@ -62,13 +61,13 @@ describe("router sdk test", () => {
         router.addLiquidities(marketAddress, [{ feeRate: tradingFeeRate, amount: amount }])
       );
 
-
-      
-      const lpReceiptIds = await getLpReceiptIds()
+      const lpReceiptIds = await getLpReceiptIds();
 
       // claimLiquidity - router
       await updatePrice({ market: marketAddress, signer, price: 1000 });
-      await waitTxMining(() => router.claimLiquidites(marketAddress, [lpReceiptIds[lpReceiptIds.length - 1]]));
+      await waitTxMining(() =>
+        router.claimLiquidites(marketAddress, [lpReceiptIds[lpReceiptIds.length - 1]])
+      );
 
       // balance check - ClbToken
       const clbBalanceAfterAdd = await clbBalance(tradingFeeRate);
@@ -79,6 +78,7 @@ describe("router sdk test", () => {
     return {
       marketAddress,
       token: usdc,
+      tokenContract: IERC20__factory.connect(usdc, signer),
       signerAddress,
       router,
       clbBalance,
@@ -91,7 +91,8 @@ describe("router sdk test", () => {
   }
 
   test("add/remove Liquidity", async () => {
-    const { marketAddress, router, getLpReceiptIds, clbBalance, addAndClaimLiquidity } = await getFixture();
+    const { marketAddress, router, getLpReceiptIds, clbBalance, addAndClaimLiquidity } =
+      await getFixture();
 
     await updatePrice({ market: marketAddress, signer, price: 1000 });
     const tradingFeeRate = 100;
@@ -108,7 +109,9 @@ describe("router sdk test", () => {
 
     // withdrawLiquidity - router
     await updatePrice({ market: marketAddress, signer, price: 1000 });
-    await waitTxMining(() => router.withdrawLiquidities(marketAddress, [lpReceiptIds[lpReceiptIds.length - 1]]));
+    await waitTxMining(() =>
+      router.withdrawLiquidities(marketAddress, [lpReceiptIds[lpReceiptIds.length - 1]])
+    );
 
     // balance check - ClbToken
     expect((await clbBalance(tradingFeeRate)).lt(clbBalanceAfterAdd)).toEqual(true);
@@ -120,7 +123,7 @@ describe("router sdk test", () => {
       marketAddress,
       router,
       token,
-      clbBalance,
+      tokenContract,
       addAndClaimLiquidity,
       clbTokenAddress,
       getPositions,
@@ -128,7 +131,7 @@ describe("router sdk test", () => {
 
     await updatePrice({ market: marketAddress, signer, price: 1000 });
     const tradingFeeRate = 100;
-    const { clbBalanceAfterAdd, addAmount } = await addAndClaimLiquidity(tradingFeeRate);
+    await addAndClaimLiquidity(tradingFeeRate);
 
     let account = await client.account().getAccount();
     if (account === ethers.constants.AddressZero) {
@@ -138,14 +141,14 @@ describe("router sdk test", () => {
     }
     console.log("getAccount", account);
 
-    const usdcBalance = await IERC20__factory.connect(token, signer).balanceOf(signer.getAddress());
+    const usdcBalance = await tokenContract.balanceOf(signer.getAddress());
     console.log(usdcBalance);
     await waitTxMining(async () => {
-      const tx = await IERC20__factory.connect(token, signer).transfer(account, usdcBalance);
+      const tx = await tokenContract.transfer(account, usdcBalance);
       return tx.wait();
     });
 
-    const accountBalance = await IERC20__factory.connect(token, signer).balanceOf(account);
+    const accountBalance = await tokenContract.balanceOf(account);
     console.log("accountBalance", accountBalance);
 
     const bin100 = (await client.lens().liquidityBins(marketAddress)).filter(
@@ -197,9 +200,8 @@ describe("router sdk test", () => {
   // Time:        37.582 s, estimated 45 s
 
   test("revert msg handling", async () => {
-    const { marketAddress, router, token } = await getFixture();
+    const { marketAddress, router, tokenContract } = await getFixture();
 
-    const tokenContract = IERC20__factory.connect(token, signer);
 
     // require Long String message
     async function erc20TransferFromTx() {

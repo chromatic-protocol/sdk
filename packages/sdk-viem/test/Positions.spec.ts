@@ -9,14 +9,14 @@ type RecordStructOutput = [bigint, bigint] & {
 
 describe("postion sdk test", () => {
   jest.spyOn(ChromaticPosition.prototype, "getInterestRateRecords").mockImplementation(async () => {
-    return [{ annualRateBPS: BigInt(1000), beginTimestamp: BigInt(0) }] as RecordStructOutput[];
+    return [{ annualRateBPS: 1000n, beginTimestamp: 0n }] as RecordStructOutput[];
   });
 
   const client = testClient();
   const position = client.position();
 
   test("losscut stop price - long", async () => {
-    const openTimestamp = BigInt(1000000000);
+    const openTimestamp = 1000000000n;
     const takerMarginEther = 2;
     const makerMarginEther = 4;
     const qty = 10;
@@ -47,7 +47,7 @@ describe("postion sdk test", () => {
   });
 
   test("losscut stop price - short", async () => {
-    const openTimestamp = BigInt(1000000000);
+    const openTimestamp = 1000000000n;
     const takerMarginEther = 2;
     const makerMarginEther = 4;
     const qty = -10;
@@ -79,7 +79,7 @@ describe("postion sdk test", () => {
   });
 
   test("profit stop price - long", async () => {
-    const openTimestamp = BigInt(1000000000);
+    const openTimestamp = 1000000000n;
     const makerMarginEther = 2;
     const takerMarginEther = 4;
     const qty = 10;
@@ -107,7 +107,7 @@ describe("postion sdk test", () => {
   });
 
   test("profit stop price - short", async () => {
-    const openTimestamp = BigInt(1000000000);
+    const openTimestamp = 1000000000n;
     const makerMarginEther = 2;
     const takerMarginEther = 4;
     const qty = -10;
@@ -138,7 +138,7 @@ describe("postion sdk test", () => {
     const client = testClient();
     const tokens = await client.marketFactory().registeredSettlementTokens();
     const markets = await client.marketFactory().getMarkets(tokens[0].address);
-    const positions = await client.position().getPositions(markets[0].address, [BigInt(1)]);
+    const positions = await client.position().getPositions(markets[0].address, [1n]);
     console.log(positions);
   });
 });

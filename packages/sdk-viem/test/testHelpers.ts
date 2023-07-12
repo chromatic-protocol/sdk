@@ -1,19 +1,22 @@
-import { Address, createPublicClient, createWalletClient, getContract, http } from "viem";
+import { Address, WalletClient, createPublicClient, createWalletClient, getContract, http } from "viem";
 import { mnemonicToAccount } from "viem/accounts";
 import { hardhat } from "viem/chains";
 import { Client } from "../src/Client";
 import { ierc20ABI } from "../src/gen";
 import { MAX_UINT256 } from "../src/utils/helpers";
 
+export const MNEMONIC_JUNK = "test test test test test test test test test test test junk";
+export const ARBITRUM_GOERLI_WETH9 = "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3";
+export const ARBITRUM_GOERLI_SWAP_ROUTER = "0xF1596041557707B1bC0b3ffB34346c1D9Ce94E86";
+
+
 export interface WrapEthParam {
   client: Client;
-  weth9: Address;
   amount: bigint;
 }
 
 export interface SwapToUSDCParam {
   client: Client;
-  weth9: Address;
   usdc: Address;
   fee: number;
   amount: bigint;
@@ -53,7 +56,7 @@ export async function wrapEth(param: WrapEthParam) {
         type: "function",
       },
     ],
-    address: param.weth9,
+    address: ARBITRUM_GOERLI_WETH9,
     publicClient: param.client.publicClient,
     walletClient: param.client.walletClient,
   });
@@ -68,17 +71,16 @@ export async function wrapEth(param: WrapEthParam) {
 
 export async function swapToUSDC(param: SwapToUSDCParam) {
   const recipient = param.client.walletClient!.account!.address;
-  const ARBITRUM_GOERLI_SWAP_ROUTER = "0xF1596041557707B1bC0b3ffB34346c1D9Ce94E86";
 
   const WETH9 = getContract({
     abi: ierc20ABI,
-    address: param.weth9,
+    address: ARBITRUM_GOERLI_WETH9,
     publicClient: param.client.publicClient,
     walletClient: param.client.walletClient,
   });
 
   if ((await WETH9.read.balanceOf([recipient])) < param.amount) {
-    await wrapEth({ client: param.client, amount: param.amount, weth9: param.weth9 });
+    await wrapEth({ client: param.client, amount: param.amount });
   }
 
   if ((await WETH9.read.allowance([recipient, ARBITRUM_GOERLI_SWAP_ROUTER])) < param.amount) {
@@ -161,7 +163,7 @@ export async function swapToUSDC(param: SwapToUSDCParam) {
   const { request } = await uniswapRouter.simulate.exactInputSingle(
     [
       {
-        tokenIn: param.weth9,
+        tokenIn: ARBITRUM_GOERLI_WETH9,
         tokenOut: param.usdc,
         fee: param.fee,
         recipient: recipient,
@@ -171,11 +173,10 @@ export async function swapToUSDC(param: SwapToUSDCParam) {
         sqrtPriceLimitX96: 0,
       },
     ],
-    { account: param.client.walletClient!.account, value: BigInt(0) }
+    { account: param.client.walletClient!.account, value: 0n }
   );
 
-
-  const hash = await param.client.walletClient!.writeContract({ ...request, value: BigInt(0) });
+  const hash = await param.client.walletClient!.writeContract({ ...request, value: 0n });
   await param.client.publicClient!.waitForTransactionReceipt({ hash });
 
   return {

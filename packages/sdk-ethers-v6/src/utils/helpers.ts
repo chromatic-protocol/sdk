@@ -18,7 +18,7 @@ import {
 } from "../gen";
 
 import debug from "debug";
-const DIRECTION_PRECISION = BigInt(10) ** BigInt(10);
+const DIRECTION_PRECISION = 10n ** 10n;
 
 export const logger = debug("ChromaticSDK");
 

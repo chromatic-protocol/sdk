@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { Client } from "../src/Client";
 import { ChromaticPosition, PositionParam } from "../src/entities/ChromaticPosition";
 import { InterestRate } from "../src/gen/contracts/core/ChromaticMarketFactory";
-import { getSigner } from "./testHelpers";
+import { getDefaultProvider, getSigner } from "./testHelpers";
 
 const { formatEther } = ethers;
 function parseEther(value: string | number) {
@@ -16,11 +16,11 @@ describe("postion sdk test", () => {
 
   const position = new Client(
     "anvil",
-    ethers.getDefaultProvider("http://127.0.0.1:8545")
+    getDefaultProvider()
   ).position();
 
   test("losscut stop price - long", async () => {
-    const openTimestamp = BigInt(1000000000);
+    const openTimestamp = 1000000000n;
     const takerMarginEther = 2;
     const makerMarginEther = 4;
     const qty = 10;
@@ -28,7 +28,7 @@ describe("postion sdk test", () => {
     const positionParam: PositionParam = {
       takerMargin: parseEther(takerMarginEther), // 10% losscut ( 2 % ( 10 (qty) x 2 ) )
       makerMargin: parseEther(makerMarginEther), // 20% profitstop
-      qty: BigInt(qty) * BigInt(10 ** 4 /* qty decimal*/),
+      qty: BigInt(qty * 10 ** 4 /* qty decimal*/),
       leverage: BigInt(leverage * 10 ** 2),
       openTimestamp,
       claimTimestamp: BigInt(Number(openTimestamp) + 3600 * 24 * 36.5),
@@ -51,7 +51,7 @@ describe("postion sdk test", () => {
   });
 
   test("losscut stop price - short", async () => {
-    const openTimestamp = BigInt(1000000000);
+    const openTimestamp = 1000000000n;
     const takerMarginEther = 2;
     const makerMarginEther = 4;
     const qty = -10;
@@ -59,7 +59,7 @@ describe("postion sdk test", () => {
     const positionParam: PositionParam = {
       takerMargin: parseEther(takerMarginEther), // 10% losscut ( 2 % ( 10 (qty) x 2 ) )
       makerMargin: parseEther(makerMarginEther), // 20% profitstop
-      qty: BigInt(qty) * BigInt(10 ** 4 /* qty decimal*/),
+      qty: BigInt(qty * 10 ** 4 /* qty decimal*/),
       leverage: BigInt(leverage * 10 ** 2),
       openTimestamp,
       claimTimestamp: BigInt(Number(openTimestamp) + 3600 * 24 * 36.5),
@@ -83,7 +83,7 @@ describe("postion sdk test", () => {
   });
 
   test("profit stop price - long", async () => {
-    const openTimestamp = BigInt(1000000000);
+    const openTimestamp = 1000000000n;
     const makerMarginEther = 2;
     const takerMarginEther = 4;
     const qty = 10;
@@ -91,7 +91,7 @@ describe("postion sdk test", () => {
     const positionParam: PositionParam = {
       takerMargin: parseEther(takerMarginEther), // 10% losscut ( 2 % ( 10 (qty) x 2 ) )
       makerMargin: parseEther(makerMarginEther), // 20% profitstop
-      qty: BigInt(qty) * BigInt(10 ** 4 /* qty decimal*/),
+      qty: BigInt(qty * 10 ** 4 /* qty decimal*/),
       leverage: BigInt(leverage * 10 ** 2),
       openTimestamp,
       claimTimestamp: BigInt(Number(openTimestamp) + 3600 * 24 * 36.5),
@@ -111,7 +111,7 @@ describe("postion sdk test", () => {
   });
 
   test("profit stop price - short", async () => {
-    const openTimestamp = BigInt(1000000000);
+    const openTimestamp = 1000000000n;
     const makerMarginEther = 2;
     const takerMarginEther = 4;
     const qty = -10;
@@ -119,7 +119,7 @@ describe("postion sdk test", () => {
     const positionParam: PositionParam = {
       takerMargin: parseEther(takerMarginEther), // 10% losscut ( 2 % ( 10 (qty) x 2 ) )
       makerMargin: parseEther(makerMarginEther), // 20% profitstop
-      qty: BigInt(qty) * BigInt(10 ** 4 /* qty decimal*/),
+      qty: BigInt(qty * 10 ** 4 /* qty decimal*/),
       leverage: BigInt(leverage * 10 ** 2),
       openTimestamp,
       claimTimestamp: BigInt(Number(openTimestamp) + 3600 * 24 * 36.5),

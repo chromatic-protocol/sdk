@@ -27,7 +27,6 @@ describe("lens sdk test", () => {
     const {  usdcBalance } = await swapToUSDC({
       amount: parseEther("10"),
       client,
-      weth9: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
       usdc: token,
       // usdc: "0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892",
       fee: 3000,
@@ -35,7 +34,7 @@ describe("lens sdk test", () => {
 
     console.log("USDC balance", usdcBalance);
 
-    await client.router().addLiquidities(market, [{ feeRate: 100, amount: usdcBalance/ BigInt(2) }])
+    await client.router().addLiquidities(market, [{ feeRate: 100, amount: usdcBalance/ 2n }])
     const lpReceipts = await client.lens().lpReceipts(market)
 
     console.log("lpReceipts", lpReceipts);

@@ -49,7 +49,6 @@ describe("router sdk test", () => {
       const { outputAmount, usdcBalance } = await swapToUSDC({
         amount: ethers.parseEther("10"),
         signer: signer,
-        weth9: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
         usdc: usdc,
         fee: 3000,
       });
@@ -78,6 +77,7 @@ describe("router sdk test", () => {
     return {
       marketAddress,
       token: usdc,
+      tokenContract: IERC20__factory.connect(usdc, signer),
       signerAddress,
       router,
       clbBalance,
@@ -122,7 +122,7 @@ describe("router sdk test", () => {
       marketAddress,
       router,
       token,
-      clbBalance,
+      tokenContract,
       addAndClaimLiquidity,
       clbTokenAddress,
       getPositions,
@@ -140,14 +140,14 @@ describe("router sdk test", () => {
     }
     console.log("getAccount", account);
 
-    const usdcBalance = await IERC20__factory.connect(token, signer).balanceOf(signer.getAddress());
+    const usdcBalance = await tokenContract.balanceOf(signer.getAddress());
     console.log(usdcBalance);
     await waitTxMining(async () => {
-      const tx = await IERC20__factory.connect(token, signer).transfer(account, usdcBalance);
+      const tx = await tokenContract.transfer(account, usdcBalance);
       return tx.wait();
     });
 
-    const accountBalance = await IERC20__factory.connect(token, signer).balanceOf(account);
+    const accountBalance = await tokenContract.balanceOf(account);
     console.log("accountBalance", accountBalance);
 
     const bin100 = (await client.lens().liquidityBins(marketAddress)).filter(
@@ -157,8 +157,8 @@ describe("router sdk test", () => {
     const beforeOpenPositions = await getPositions();
     await waitTxMining(() =>
       router.openPosition(marketAddress, {
-        quantity: BigInt(10 ** 8),
-        leverage: BigInt(100), // x1
+        quantity: 10n ** 8n,
+        leverage: 100, // x1
         takerMargin: accountBalance / 3n,
         makerMargin: bin100[0].freeLiquidity / 2n,
         maxAllowableTradingFee: bin100[0].freeLiquidity / 2n / 10n,
@@ -191,9 +191,8 @@ describe("router sdk test", () => {
   // Time:        37.582 s, estimated 45 s
 
   test("revert msg handling", async () => {
-    const { marketAddress, router, token } = await getFixture();
+    const { marketAddress, router, tokenContract } = await getFixture();
 
-    const tokenContract = IERC20__factory.connect(token, signer);
 
     // require Long String message
     async function erc20TransferFromTx() {

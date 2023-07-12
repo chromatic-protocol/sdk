@@ -35,7 +35,8 @@
     "build:esm": "rm -rf ./dist/esm && tsc --build --force tsconfig.build.json",
     "build": "yarn build:cjs && yarn build:esm",
     "clean": "rm -rf docs dist",
-    "docs:sdk": "cd site && yarn install && yarn clear && yarn build"
+    "docs:sdk": "cd site && yarn install && yarn clear && yarn build",
+    "test": "jest --runInBand"
   },
   "repository": {
     "type": "git",

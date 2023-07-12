@@ -1,7 +1,23 @@
-import { ContractTransactionReceipt, FeeData, Signer, ethers } from "ethers";
+import { ContractTransactionReceipt, Signer, ethers } from "ethers";
 import { IChromaticMarket__factory, IERC20__factory } from "../src/gen";
 
 export const MNEMONIC_JUNK = "test test test test test test test test test test test junk";
+export const ARBITRUM_GOERLI_WETH9 = "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3";
+export const ARBITRUM_GOERLI_SWAP_ROUTER = "0xF1596041557707B1bC0b3ffB34346c1D9Ce94E86";
+export const WETH9 = new ethers.Contract(
+  ARBITRUM_GOERLI_WETH9,
+  [
+    {
+      inputs: [],
+      name: "deposit",
+      outputs: [],
+      stateMutability: "payable",
+      type: "function",
+    },
+    ...IERC20__factory.abi,
+  ],
+  getDefaultProvider()
+);
 
 export interface GetSignerParam {
   mnemonic?: string;
@@ -11,13 +27,11 @@ export interface GetSignerParam {
 
 export interface WrapEthParam {
   signer: Signer;
-  weth9: string;
   amount: bigint;
 }
 
 export interface SwapToUSDCParam {
   signer: Signer;
-  weth9: string;
   usdc: string;
   fee: number;
   amount: bigint;
@@ -59,21 +73,8 @@ export function getDefaultProvider(): ethers.JsonRpcProvider {
 
 export async function wrapEth(param: WrapEthParam) {
   const feeData = await param.signer.provider.getFeeData();
-  const weth9 = new ethers.Contract(
-    param.weth9,
-    [
-      {
-        inputs: [],
-        name: "deposit",
-        outputs: [],
-        stateMutability: "payable",
-        type: "function",
-      },
-    ],
-    param.signer
-  );
 
-  const tx = await weth9.deposit({
+  const tx = await (WETH9.connect(param.signer) as ethers.Contract).deposit({
     value: param.amount,
     maxFeePerGas: feeData.maxFeePerGas * 2n,
     maxPriorityFeePerGas: feeData.maxPriorityFeePerGas * 2n,
@@ -86,16 +87,14 @@ export async function wrapEth(param: WrapEthParam) {
 
 export async function swapToUSDC(param: SwapToUSDCParam) {
   const recipient = await param.signer.getAddress();
-  const ARBITRUM_GOERLI_SWAP_ROUTER = "0xF1596041557707B1bC0b3ffB34346c1D9Ce94E86";
 
-  const WETH9 = IERC20__factory.connect(param.weth9, param.signer);
   if ((await WETH9.balanceOf(recipient)) < param.amount) {
-    await wrapEth({ signer: param.signer, amount: param.amount, weth9: param.weth9 });
+    await wrapEth({ signer: param.signer, amount: param.amount });
   }
   // 0xa14b09d0
 
   if ((await WETH9.allowance(recipient, ARBITRUM_GOERLI_SWAP_ROUTER)) < param.amount) {
-    const approveTx = await IERC20__factory.connect(param.weth9, param.signer).approve(
+    const approveTx = await (WETH9.connect(param.signer) as ethers.Contract).approve(
       ARBITRUM_GOERLI_SWAP_ROUTER,
       ethers.MaxUint256
     );
@@ -171,7 +170,7 @@ export async function swapToUSDC(param: SwapToUSDCParam) {
   );
 
   const swapTx = await routerContract.exactInputSingle({
-    tokenIn: param.weth9,
+    tokenIn: ARBITRUM_GOERLI_WETH9,
     tokenOut: param.usdc,
     fee: param.fee,
     recipient: recipient,
@@ -183,7 +182,6 @@ export async function swapToUSDC(param: SwapToUSDCParam) {
 
   const receipt = await swapTx.wait();
   const usdcEvent = receipt.logs.find((log) => log.address == param.usdc);
-  console.log("usdcEvent", usdcEvent);
 
   return {
     outputAmount: BigInt(usdcEvent.data),

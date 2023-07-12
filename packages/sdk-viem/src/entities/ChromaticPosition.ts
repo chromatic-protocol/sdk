@@ -108,7 +108,7 @@ export class ChromaticPosition {
         return {
           ...position,
           _binMargins: [...position._binMargins],
-          makerMargin: position._binMargins.reduce((acc, bin) => acc + bin.amount, BigInt(0)),
+          makerMargin: position._binMargins.reduce((acc, bin) => acc + bin.amount, 0n),
           openPrice: oracleVersionData.find((oracle) => oracle.version == position.openVersion)
             ?.price,
           closePrice: oracleVersionData.find((oracle) => oracle.version == position.closeVersion)
@@ -156,7 +156,7 @@ export class ChromaticPosition {
     const filteredInterestFees = (await this.getInterestRateRecords(marketAddress))
       .filter((fee) => fee.beginTimestamp <= BigInt(to))
       .sort((a, b) => Number(b.beginTimestamp - a.beginTimestamp));
-    let totalInterestFee = BigInt(0);
+    let totalInterestFee = 0n;
     for (let fee of filteredInterestFees) {
       const from = BigInt(Math.max(Number(fee.beginTimestamp), Number(position.openTimestamp)));
       const period = to - from;
@@ -164,8 +164,8 @@ export class ChromaticPosition {
       const x = position.makerMargin;
       const y = fee.annualRateBPS * period;
       let calculatedInterestFee = (x * y) / denominator;
-      if ((x * y) % denominator > BigInt(0)) {
-        calculatedInterestFee = calculatedInterestFee + BigInt(1);
+      if ((x * y) % denominator > 0n) {
+        calculatedInterestFee = calculatedInterestFee + 1n;
       }
       totalInterestFee = totalInterestFee + calculatedInterestFee;
       if (fee.beginTimestamp <= position.openTimestamp) break;
@@ -192,9 +192,9 @@ export class ChromaticPosition {
     // : Promise<BigNumber> {
     const leveragedQty = position.qty * BigInt(position.leverage);
     let delta = exitPrice - entryPrice;
-    if (leveragedQty < 0) delta = delta * BigInt(-1);
+    if (leveragedQty < 0) delta = delta * -1n;
 
-    const absLeveragedQty = leveragedQty < 0 ? leveragedQty * BigInt(-1) : leveragedQty;
+    const absLeveragedQty = leveragedQty < 0 ? leveragedQty * -1n : leveragedQty;
     let pnl = (absLeveragedQty * delta) / entryPrice;
     if (options.includeInterestFee) {
       const interestFee = await this.getInterest(marketAddress, position);
@@ -258,7 +258,7 @@ export class ChromaticPosition {
       (entryPrice * BigInt(marginWithInterest * BigInt(pricePrecision))) /
       leveragedQty /
       BigInt(LIQUIDATION_PRICE_PRECISION) /
-      BigInt(10) ** BigInt(oraclePriceDecimals);
+      10n ** BigInt(oraclePriceDecimals);
     return delta;
   }
 

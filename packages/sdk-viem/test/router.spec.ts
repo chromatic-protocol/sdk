@@ -39,13 +39,12 @@ describe("router sdk test", () => {
       const { usdcBalance } = await swapToUSDC({
         amount: parseEther("10"),
         client: client,
-        weth9: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
         usdc: usdc,
         fee: 3000,
       });
 
       // add liquidity - router
-      const amount = usdcBalance / BigInt(2);
+      const amount = usdcBalance / 2n;
       const clbBalanceBeforeAdd = await clbBalance(tradingFeeRate);
       const addTxReceipt = await router.addLiquidities(market.address, [
         { feeRate: tradingFeeRate, amount: amount },
@@ -157,18 +156,18 @@ describe("router sdk test", () => {
     const beforeOpenPositions = await getPositions();
 
     const openTxReceipt = await router.openPosition(market.address, {
-      quantity: BigInt(10 ** 8),
+      quantity: 10n ** 8n,
       leverage: 100, // x1
-      takerMargin: accountBalance / BigInt(2),
-      makerMargin: bin100[0].freeLiquidity / BigInt(2),
-      maxAllowableTradingFee: bin100[0].freeLiquidity / BigInt(2),
+      takerMargin: accountBalance / 2n,
+      makerMargin: bin100[0].freeLiquidity / 2n,
+      maxAllowableTradingFee: bin100[0].freeLiquidity / 2n,
     });
 
     const afterOpenPositions = await getPositions();
     expect(beforeOpenPositions.length).toBeLessThan(afterOpenPositions.length);
 
     const positionBeforeClose = afterOpenPositions[afterOpenPositions.length - 1];
-    expect(positionBeforeClose.closeVersion).toEqual(BigInt(0));
+    expect(positionBeforeClose.closeVersion).toEqual(0n);
 
     await updatePrice({ market: market.address, client, price: 1100 });
 
@@ -179,7 +178,7 @@ describe("router sdk test", () => {
 
     const positions = await getPositions();
     const position = positions[positions.length - 1];
-    expect(position.closeVersion).toBeGreaterThan(BigInt(0));
+    expect(position.closeVersion).toBeGreaterThan(0n);
 
     await updatePrice({ market: market.address, client, price: 1200 });
 

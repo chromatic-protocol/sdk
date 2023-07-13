@@ -1,7 +1,13 @@
 import { Address, getContract } from "viem";
 import type { Client } from "../Client";
-import { iChromaticMarketABI, clbTokenABI, iOracleProviderABI, ierc20MetadataABI } from "../gen";
-import { Contract, handleBytesError } from "../utils/helpers";
+import { clbTokenABI, iChromaticMarketABI, iOracleProviderABI, ierc20MetadataABI } from "../gen";
+import { handleBytesError } from "../utils/helpers";
+import type {
+  ContractChromaticMarket,
+  ContractClbToken,
+  ContractIErc20Metadata,
+  ContractIOracleProvider,
+} from "./types";
 
 /**
  * Represents a Chromatic Market and provides methods to interact with it.
@@ -19,32 +25,28 @@ export class ChromaticMarket {
    */
   contracts() {
     return {
-      market: (marketAddress: Address): Contract<typeof iChromaticMarketABI> =>
+      market: (marketAddress: Address): ContractChromaticMarket =>
         getContract({
           address: marketAddress,
           abi: iChromaticMarketABI,
           publicClient: this._client.publicClient,
           walletClient: this._client.walletClient,
         }),
-      settlementToken: async (
-        marketAddress: Address
-      ): Promise<Contract<typeof ierc20MetadataABI>> =>
+      settlementToken: async (marketAddress: Address): Promise<ContractIErc20Metadata> =>
         getContract({
           address: await this.settlementToken(marketAddress),
           abi: ierc20MetadataABI,
           publicClient: this._client.publicClient,
           walletClient: this._client.walletClient,
         }),
-      clbToken: async (marketAddress: Address): Promise<Contract<typeof clbTokenABI>> =>
+      clbToken: async (marketAddress: Address): Promise<ContractClbToken> =>
         getContract({
           address: await this.clbToken(marketAddress),
           abi: clbTokenABI,
           publicClient: this._client.publicClient,
           walletClient: this._client.walletClient,
         }),
-      oracleProvider: async (
-        marketAddress: Address
-      ): Promise<Contract<typeof iOracleProviderABI>> =>
+      oracleProvider: async (marketAddress: Address): Promise<ContractIOracleProvider> =>
         getContract({
           address: await this.oracleProvider(marketAddress),
           abi: iOracleProviderABI,

@@ -1,14 +1,13 @@
-import { Address, decodeFunctionResult, encodeFunctionData, getContract, zeroAddress } from "viem";
+import { Address, getContract, zeroAddress } from "viem";
 import type { Client } from "../Client";
 import { chromaticLensABI, chromaticLensAddress } from "../gen";
 import {
-  Contract,
   checkWalletClient,
   decodeTokenId,
   encodeTokenId,
   handleBytesError,
 } from "../utils/helpers";
-
+import type { ContractChromaticLens } from "./types";
 /**
  * Represents the result of a liquidity bin.
  */
@@ -54,7 +53,7 @@ export class ChromaticLens {
    */
   constructor(private _client: Client) {}
 
-  private getContract(lensAddress?: Address): Contract<typeof chromaticLensABI> {
+  private getContract(lensAddress?: Address): ContractChromaticLens {
     return getContract({
       address:
         (chromaticLensAddress as Record<number, Address>)[

@@ -1,8 +1,4 @@
-import {
-  Address,
-  getContract,
-  zeroAddress
-} from "viem";
+import { Address, getContract, zeroAddress } from "viem";
 import { Client } from "../Client";
 import { chromaticRouterABI, chromaticRouterAddress } from "../gen";
 import { Contract, MAX_UINT256, checkClient, handleBytesError } from "../utils/helpers";
@@ -34,6 +30,9 @@ export interface RouterRemoveLiquidityParam {
   clbTokenAmount: bigint;
 }
 
+/** @ignore */
+export interface ContractChromaticRouter extends Contract<typeof chromaticRouterABI> {}
+
 /**
  * Represents the ChromaticRouter, which is used to interact with ChromaticRouter contracts.
  */
@@ -50,7 +49,7 @@ export class ChromaticRouter {
    */
   contracts() {
     return {
-      router: (): Contract<typeof chromaticRouterABI> =>
+      router: (): ContractChromaticRouter =>
         getContract({
           address:
             (chromaticRouterAddress as Record<number, Address>)[

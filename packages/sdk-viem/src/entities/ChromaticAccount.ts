@@ -1,8 +1,8 @@
 import { Address, getContract } from "viem";
 import { Client } from "../Client";
 import { chromaticAccountABI } from "../gen";
-import { Contract, PromiseOnlySuccess, checkClient, handleBytesError } from "../utils/helpers";
-
+import { PromiseOnlySuccess, checkClient, handleBytesError } from "../utils/helpers";
+import type { ContractChromaticAccount } from "./types";
 export interface TokenBalancesResult {
   token: string;
   balance: BigInt;
@@ -26,7 +26,7 @@ export class ChromaticAccount {
    */
   contracts() {
     return {
-      account: (address: Address): Contract<typeof chromaticAccountABI> =>
+      account: (address: Address): ContractChromaticAccount =>
         getContract({
           address,
           abi: chromaticAccountABI,

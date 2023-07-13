@@ -3,6 +3,8 @@ import { Client } from "../Client";
 import { chromaticAccountABI } from "../gen";
 import { PromiseOnlySuccess, checkClient, handleBytesError } from "../utils/helpers";
 import type { ContractChromaticAccount } from "./types";
+
+/** @ignore */
 export interface TokenBalancesResult {
   token: string;
   balance: BigInt;

@@ -75,7 +75,7 @@ const config = {
         // excludePrivate: true,
         // excludeInternal: true,
         // excludeProtected: true,
-        // excludeNotDocumented: true,
+        excludeNotDocumented: true,
         // excludeReferences: true,
       },
     ],

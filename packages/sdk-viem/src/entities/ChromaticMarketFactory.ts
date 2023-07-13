@@ -7,6 +7,8 @@ import {
 } from "../gen";
 import { PromiseOnlySuccess, handleBytesError } from "../utils/helpers";
 import type { ContractChromaticFactory, ContractIErc20Metadata } from "./types";
+
+/** @ignore */
 export interface SettlementToken {
   name: string;
   address: string;

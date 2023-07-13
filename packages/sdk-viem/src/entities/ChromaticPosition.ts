@@ -5,6 +5,7 @@ import { handleBytesError } from "../utils/helpers";
 
 type InterestParam = Pick<PositionParam, "makerMargin" | "claimTimestamp" | "openTimestamp">;
 
+/** @ignore */
 export interface IBinMargin {
   tradingFeeRate: number;
   amount: bigint;

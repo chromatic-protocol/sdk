@@ -130,7 +130,6 @@ export interface ChromaticLensInterface extends utils.Interface {
     "clbBalanceOf(address,address)": FunctionFragment;
     "liquidityBinStatuses(address)": FunctionFragment;
     "lpReceipts(address,address)": FunctionFragment;
-    "multicall(bytes[])": FunctionFragment;
     "oracleVersion(address,uint256)": FunctionFragment;
   };
 
@@ -140,7 +139,6 @@ export interface ChromaticLensInterface extends utils.Interface {
       | "clbBalanceOf"
       | "liquidityBinStatuses"
       | "lpReceipts"
-      | "multicall"
       | "oracleVersion"
   ): FunctionFragment;
 
@@ -165,10 +163,6 @@ export interface ChromaticLensInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
-    functionFragment: "multicall",
-    values: [PromiseOrValue<BytesLike>[]]
-  ): string;
-  encodeFunctionData(
     functionFragment: "oracleVersion",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
@@ -186,7 +180,6 @@ export interface ChromaticLensInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "lpReceipts", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "multicall", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "oracleVersion",
     data: BytesLike
@@ -266,11 +259,6 @@ export interface ChromaticLens extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[LpReceiptStructOutput[]] & { result: LpReceiptStructOutput[] }>;
 
-    multicall(
-      data: PromiseOrValue<BytesLike>[],
-      overrides?: CallOverrides
-    ): Promise<[string[]] & { results: string[] }>;
-
     /**
      * Retrieves the OracleVersion for the specified oracle version in the given Chromatic market.
      * @param market The address of the Chromatic market contract.
@@ -327,11 +315,6 @@ export interface ChromaticLens extends BaseContract {
     overrides?: CallOverrides
   ): Promise<LpReceiptStructOutput[]>;
 
-  multicall(
-    data: PromiseOrValue<BytesLike>[],
-    overrides?: CallOverrides
-  ): Promise<string[]>;
-
   /**
    * Retrieves the OracleVersion for the specified oracle version in the given Chromatic market.
    * @param market The address of the Chromatic market contract.
@@ -387,11 +370,6 @@ export interface ChromaticLens extends BaseContract {
       owner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput[]>;
-
-    multicall(
-      data: PromiseOrValue<BytesLike>[],
-      overrides?: CallOverrides
-    ): Promise<string[]>;
 
     /**
      * Retrieves the OracleVersion for the specified oracle version in the given Chromatic market.
@@ -452,11 +430,6 @@ export interface ChromaticLens extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    multicall(
-      data: PromiseOrValue<BytesLike>[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     /**
      * Retrieves the OracleVersion for the specified oracle version in the given Chromatic market.
      * @param market The address of the Chromatic market contract.
@@ -511,11 +484,6 @@ export interface ChromaticLens extends BaseContract {
     lpReceipts(
       market: PromiseOrValue<string>,
       owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    multicall(
-      data: PromiseOrValue<BytesLike>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

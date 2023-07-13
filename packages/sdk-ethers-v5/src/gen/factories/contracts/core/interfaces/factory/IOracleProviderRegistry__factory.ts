@@ -23,16 +23,6 @@ const _abi = [
         components: [
           {
             internalType: "uint32",
-            name: "minStopLossBPS",
-            type: "uint32",
-          },
-          {
-            internalType: "uint32",
-            name: "maxStopLossBPS",
-            type: "uint32",
-          },
-          {
-            internalType: "uint32",
             name: "minTakeProfitBPS",
             type: "uint32",
           },
@@ -100,31 +90,6 @@ const _abi = [
       {
         indexed: true,
         internalType: "uint32",
-        name: "minStopLossBPS",
-        type: "uint32",
-      },
-      {
-        indexed: true,
-        internalType: "uint32",
-        name: "maxStopLossBPS",
-        type: "uint32",
-      },
-    ],
-    name: "UpdateStopLossBPSRange",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "oracleProvider",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "uint32",
         name: "minTakeProfitBPS",
         type: "uint32",
       },
@@ -150,16 +115,6 @@ const _abi = [
     outputs: [
       {
         components: [
-          {
-            internalType: "uint32",
-            name: "minStopLossBPS",
-            type: "uint32",
-          },
-          {
-            internalType: "uint32",
-            name: "maxStopLossBPS",
-            type: "uint32",
-          },
           {
             internalType: "uint32",
             name: "minTakeProfitBPS",
@@ -212,16 +167,6 @@ const _abi = [
       },
       {
         components: [
-          {
-            internalType: "uint32",
-            name: "minStopLossBPS",
-            type: "uint32",
-          },
-          {
-            internalType: "uint32",
-            name: "maxStopLossBPS",
-            type: "uint32",
-          },
           {
             internalType: "uint32",
             name: "minTakeProfitBPS",
@@ -288,29 +233,6 @@ const _abi = [
       },
     ],
     name: "updateLeverageLevel",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "oracleProvider",
-        type: "address",
-      },
-      {
-        internalType: "uint32",
-        name: "minStopLossBPS",
-        type: "uint32",
-      },
-      {
-        internalType: "uint32",
-        name: "maxStopLossBPS",
-        type: "uint32",
-      },
-    ],
-    name: "updateStopLossBPSRange",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

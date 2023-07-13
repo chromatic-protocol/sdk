@@ -29,8 +29,6 @@ import type {
 
 export declare namespace IOracleProviderRegistry {
   export type OracleProviderPropertiesStruct = {
-    minStopLossBPS: PromiseOrValue<BigNumberish>;
-    maxStopLossBPS: PromiseOrValue<BigNumberish>;
     minTakeProfitBPS: PromiseOrValue<BigNumberish>;
     maxTakeProfitBPS: PromiseOrValue<BigNumberish>;
     leverageLevel: PromiseOrValue<BigNumberish>;
@@ -39,12 +37,8 @@ export declare namespace IOracleProviderRegistry {
   export type OracleProviderPropertiesStructOutput = [
     number,
     number,
-    number,
-    number,
     number
   ] & {
-    minStopLossBPS: number;
-    maxStopLossBPS: number;
     minTakeProfitBPS: number;
     maxTakeProfitBPS: number;
     leverageLevel: number;
@@ -85,7 +79,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "keeperFeePayer()": FunctionFragment;
     "liquidator()": FunctionFragment;
     "parameters()": FunctionFragment;
-    "registerOracleProvider(address,(uint32,uint32,uint32,uint32,uint8))": FunctionFragment;
+    "registerOracleProvider(address,(uint32,uint32,uint8))": FunctionFragment;
     "registerSettlementToken(address,uint256,uint256,uint256,uint256,uint24)": FunctionFragment;
     "registeredOracleProviders()": FunctionFragment;
     "registeredSettlementTokens()": FunctionFragment;
@@ -101,7 +95,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "unregisterOracleProvider(address)": FunctionFragment;
     "updateDao(address)": FunctionFragment;
     "updateLeverageLevel(address,uint8)": FunctionFragment;
-    "updateStopLossBPSRange(address,uint32,uint32)": FunctionFragment;
     "updateTakeProfitBPSRange(address,uint32,uint32)": FunctionFragment;
     "updateTreasury(address)": FunctionFragment;
     "vault()": FunctionFragment;
@@ -145,7 +138,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
       | "unregisterOracleProvider"
       | "updateDao"
       | "updateLeverageLevel"
-      | "updateStopLossBPSRange"
       | "updateTakeProfitBPSRange"
       | "updateTreasury"
       | "vault"
@@ -309,14 +301,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "updateStopLossBPSRange",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
-  ): string;
-  encodeFunctionData(
     functionFragment: "updateTakeProfitBPSRange",
     values: [
       PromiseOrValue<string>,
@@ -451,10 +435,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "updateStopLossBPSRange",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "updateTakeProfitBPSRange",
     data: BytesLike
   ): Result;
@@ -480,7 +460,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "SettlementTokenRegistered(address,uint256,uint256,uint256,uint256,uint24)": EventFragment;
     "UpdateDao(address)": EventFragment;
     "UpdateLeverageLevel(address,uint8)": EventFragment;
-    "UpdateStopLossBPSRange(address,uint32,uint32)": EventFragment;
     "UpdateTakeProfitBPSRange(address,uint32,uint32)": EventFragment;
     "UpdateTreasury(address)": EventFragment;
   };
@@ -504,7 +483,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "SettlementTokenRegistered"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UpdateDao"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UpdateLeverageLevel"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "UpdateStopLossBPSRange"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UpdateTakeProfitBPSRange"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UpdateTreasury"): EventFragment;
 }
@@ -677,19 +655,6 @@ export type UpdateLeverageLevelEvent = TypedEvent<
 
 export type UpdateLeverageLevelEventFilter =
   TypedEventFilter<UpdateLeverageLevelEvent>;
-
-export interface UpdateStopLossBPSRangeEventObject {
-  oracleProvider: string;
-  minStopLossBPS: number;
-  maxStopLossBPS: number;
-}
-export type UpdateStopLossBPSRangeEvent = TypedEvent<
-  [string, number, number],
-  UpdateStopLossBPSRangeEventObject
->;
-
-export type UpdateStopLossBPSRangeEventFilter =
-  TypedEventFilter<UpdateStopLossBPSRangeEvent>;
 
 export interface UpdateTakeProfitBPSRangeEventObject {
   oracleProvider: string;
@@ -1085,19 +1050,6 @@ export interface ChromaticMarketFactory extends BaseContract {
 
     /**
      * This function can only be called by the DAO and registered oracle providers.
-     * Updates the stop-loss basis points range of an oracle provider.
-     * @param maxStopLossBPS The new maximum stop-loss basis points.
-     * @param oracleProvider The address of the oracle provider@param minStopLossBPS The new minimum stop-loss basis points.
-     */
-    updateStopLossBPSRange(
-      oracleProvider: PromiseOrValue<string>,
-      minStopLossBPS: PromiseOrValue<BigNumberish>,
-      maxStopLossBPS: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    /**
-     * This function can only be called by the DAO and registered oracle providers.
      * Updates the take-profit basis points range of an oracle provider.
      * @param maxTakeProfitBPS The new maximum take-profit basis points.
      * @param minTakeProfitBPS The new minimum take-profit basis points.
@@ -1465,19 +1417,6 @@ export interface ChromaticMarketFactory extends BaseContract {
   updateLeverageLevel(
     oracleProvider: PromiseOrValue<string>,
     level: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  /**
-   * This function can only be called by the DAO and registered oracle providers.
-   * Updates the stop-loss basis points range of an oracle provider.
-   * @param maxStopLossBPS The new maximum stop-loss basis points.
-   * @param oracleProvider The address of the oracle provider@param minStopLossBPS The new minimum stop-loss basis points.
-   */
-  updateStopLossBPSRange(
-    oracleProvider: PromiseOrValue<string>,
-    minStopLossBPS: PromiseOrValue<BigNumberish>,
-    maxStopLossBPS: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1855,19 +1794,6 @@ export interface ChromaticMarketFactory extends BaseContract {
 
     /**
      * This function can only be called by the DAO and registered oracle providers.
-     * Updates the stop-loss basis points range of an oracle provider.
-     * @param maxStopLossBPS The new maximum stop-loss basis points.
-     * @param oracleProvider The address of the oracle provider@param minStopLossBPS The new minimum stop-loss basis points.
-     */
-    updateStopLossBPSRange(
-      oracleProvider: PromiseOrValue<string>,
-      minStopLossBPS: PromiseOrValue<BigNumberish>,
-      maxStopLossBPS: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    /**
-     * This function can only be called by the DAO and registered oracle providers.
      * Updates the take-profit basis points range of an oracle provider.
      * @param maxTakeProfitBPS The new maximum take-profit basis points.
      * @param minTakeProfitBPS The new minimum take-profit basis points.
@@ -2031,17 +1957,6 @@ export interface ChromaticMarketFactory extends BaseContract {
       oracleProvider?: PromiseOrValue<string> | null,
       level?: PromiseOrValue<BigNumberish> | null
     ): UpdateLeverageLevelEventFilter;
-
-    "UpdateStopLossBPSRange(address,uint32,uint32)"(
-      oracleProvider?: PromiseOrValue<string> | null,
-      minStopLossBPS?: PromiseOrValue<BigNumberish> | null,
-      maxStopLossBPS?: PromiseOrValue<BigNumberish> | null
-    ): UpdateStopLossBPSRangeEventFilter;
-    UpdateStopLossBPSRange(
-      oracleProvider?: PromiseOrValue<string> | null,
-      minStopLossBPS?: PromiseOrValue<BigNumberish> | null,
-      maxStopLossBPS?: PromiseOrValue<BigNumberish> | null
-    ): UpdateStopLossBPSRangeEventFilter;
 
     "UpdateTakeProfitBPSRange(address,uint32,uint32)"(
       oracleProvider?: PromiseOrValue<string> | null,
@@ -2398,19 +2313,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     updateLeverageLevel(
       oracleProvider: PromiseOrValue<string>,
       level: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    /**
-     * This function can only be called by the DAO and registered oracle providers.
-     * Updates the stop-loss basis points range of an oracle provider.
-     * @param maxStopLossBPS The new maximum stop-loss basis points.
-     * @param oracleProvider The address of the oracle provider@param minStopLossBPS The new minimum stop-loss basis points.
-     */
-    updateStopLossBPSRange(
-      oracleProvider: PromiseOrValue<string>,
-      minStopLossBPS: PromiseOrValue<BigNumberish>,
-      maxStopLossBPS: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -2784,19 +2686,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     updateLeverageLevel(
       oracleProvider: PromiseOrValue<string>,
       level: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * This function can only be called by the DAO and registered oracle providers.
-     * Updates the stop-loss basis points range of an oracle provider.
-     * @param maxStopLossBPS The new maximum stop-loss basis points.
-     * @param oracleProvider The address of the oracle provider@param minStopLossBPS The new minimum stop-loss basis points.
-     */
-    updateStopLossBPSRange(
-      oracleProvider: PromiseOrValue<string>,
-      minStopLossBPS: PromiseOrValue<BigNumberish>,
-      maxStopLossBPS: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -25,22 +25,16 @@ import type {
 
 export declare namespace IOracleProviderRegistry {
   export type OracleProviderPropertiesStruct = {
-    minStopLossBPS: BigNumberish;
-    maxStopLossBPS: BigNumberish;
     minTakeProfitBPS: BigNumberish;
     maxTakeProfitBPS: BigNumberish;
     leverageLevel: BigNumberish;
   };
 
   export type OracleProviderPropertiesStructOutput = [
-    minStopLossBPS: bigint,
-    maxStopLossBPS: bigint,
     minTakeProfitBPS: bigint,
     maxTakeProfitBPS: bigint,
     leverageLevel: bigint
   ] & {
-    minStopLossBPS: bigint;
-    maxStopLossBPS: bigint;
     minTakeProfitBPS: bigint;
     maxTakeProfitBPS: bigint;
     leverageLevel: bigint;
@@ -98,7 +92,6 @@ export interface ChromaticMarketFactoryInterface extends Interface {
       | "unregisterOracleProvider"
       | "updateDao"
       | "updateLeverageLevel"
-      | "updateStopLossBPSRange"
       | "updateTakeProfitBPSRange"
       | "updateTreasury"
       | "vault"
@@ -121,7 +114,6 @@ export interface ChromaticMarketFactoryInterface extends Interface {
       | "SettlementTokenRegistered"
       | "UpdateDao"
       | "UpdateLeverageLevel"
-      | "UpdateStopLossBPSRange"
       | "UpdateTakeProfitBPSRange"
       | "UpdateTreasury"
   ): EventFragment;
@@ -275,10 +267,6 @@ export interface ChromaticMarketFactoryInterface extends Interface {
     values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "updateStopLossBPSRange",
-    values: [AddressLike, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "updateTakeProfitBPSRange",
     values: [AddressLike, BigNumberish, BigNumberish]
   ): string;
@@ -406,10 +394,6 @@ export interface ChromaticMarketFactoryInterface extends Interface {
   decodeFunctionResult(functionFragment: "updateDao", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "updateLeverageLevel",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "updateStopLossBPSRange",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -663,28 +647,6 @@ export namespace UpdateLeverageLevelEvent {
   export interface OutputObject {
     oracleProvider: string;
     level: bigint;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace UpdateStopLossBPSRangeEvent {
-  export type InputTuple = [
-    oracleProvider: AddressLike,
-    minStopLossBPS: BigNumberish,
-    maxStopLossBPS: BigNumberish
-  ];
-  export type OutputTuple = [
-    oracleProvider: string,
-    minStopLossBPS: bigint,
-    maxStopLossBPS: bigint
-  ];
-  export interface OutputObject {
-    oracleProvider: string;
-    minStopLossBPS: bigint;
-    maxStopLossBPS: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -1130,22 +1092,6 @@ export interface ChromaticMarketFactory extends BaseContract {
 
   /**
    * This function can only be called by the DAO and registered oracle providers.
-   * Updates the stop-loss basis points range of an oracle provider.
-   * @param maxStopLossBPS The new maximum stop-loss basis points.
-   * @param oracleProvider The address of the oracle provider@param minStopLossBPS The new minimum stop-loss basis points.
-   */
-  updateStopLossBPSRange: TypedContractMethod<
-    [
-      oracleProvider: AddressLike,
-      minStopLossBPS: BigNumberish,
-      maxStopLossBPS: BigNumberish
-    ],
-    [void],
-    "nonpayable"
-  >;
-
-  /**
-   * This function can only be called by the DAO and registered oracle providers.
    * Updates the take-profit basis points range of an oracle provider.
    * @param maxTakeProfitBPS The new maximum take-profit basis points.
    * @param minTakeProfitBPS The new minimum take-profit basis points.
@@ -1365,17 +1311,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "updateStopLossBPSRange"
-  ): TypedContractMethod<
-    [
-      oracleProvider: AddressLike,
-      minStopLossBPS: BigNumberish,
-      maxStopLossBPS: BigNumberish
-    ],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
     nameOrSignature: "updateTakeProfitBPSRange"
   ): TypedContractMethod<
     [
@@ -1497,13 +1432,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     UpdateLeverageLevelEvent.InputTuple,
     UpdateLeverageLevelEvent.OutputTuple,
     UpdateLeverageLevelEvent.OutputObject
-  >;
-  getEvent(
-    key: "UpdateStopLossBPSRange"
-  ): TypedContractEvent<
-    UpdateStopLossBPSRangeEvent.InputTuple,
-    UpdateStopLossBPSRangeEvent.OutputTuple,
-    UpdateStopLossBPSRangeEvent.OutputObject
   >;
   getEvent(
     key: "UpdateTakeProfitBPSRange"
@@ -1684,17 +1612,6 @@ export interface ChromaticMarketFactory extends BaseContract {
       UpdateLeverageLevelEvent.InputTuple,
       UpdateLeverageLevelEvent.OutputTuple,
       UpdateLeverageLevelEvent.OutputObject
-    >;
-
-    "UpdateStopLossBPSRange(address,uint32,uint32)": TypedContractEvent<
-      UpdateStopLossBPSRangeEvent.InputTuple,
-      UpdateStopLossBPSRangeEvent.OutputTuple,
-      UpdateStopLossBPSRangeEvent.OutputObject
-    >;
-    UpdateStopLossBPSRange: TypedContractEvent<
-      UpdateStopLossBPSRangeEvent.InputTuple,
-      UpdateStopLossBPSRangeEvent.OutputTuple,
-      UpdateStopLossBPSRangeEvent.OutputObject
     >;
 
     "UpdateTakeProfitBPSRange(address,uint32,uint32)": TypedContractEvent<

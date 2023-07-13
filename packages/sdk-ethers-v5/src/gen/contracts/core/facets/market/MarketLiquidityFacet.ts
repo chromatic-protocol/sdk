@@ -468,6 +468,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
+     * Throws an `InvalidTransferedTokenAmount` error if the transferred amount does not match the sum of amounts param.
      * Adds liquidity to multiple liquidity bins of the market in a batch.
      * @param amounts An array of amounts to add as liquidity for each bin.
      * @param data Additional data for the liquidity callback.
@@ -483,7 +484,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * Claims liquidity from a liquidity receipt.
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
      * @param data Additional data for the liquidity callback.
      * @param receiptId The ID of the liquidity receipt.
      */
@@ -494,7 +495,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * Claims liquidity from a liquidity receipt.
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
      * @param data Additional data for the liquidity callback.
      * @param receiptIds The array of the liquidity receipt IDs.
      */
@@ -554,7 +555,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<[BigNumber[]]>;
 
     /**
-     * Retrieves the liquidity receipt with the given receipt ID.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
      * @param receiptId The ID of the liquidity receipt to retrieve.
      */
     getLpReceipt(
@@ -604,7 +605,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<[string]>;
 
     /**
-     * Removes liquidity from the market.
+     * This function is called by the liquidity provider to remove their liquidity from the market.      The liquidity provider must have previously added liquidity to the market.      Throws a `TooSmallAmount` error if the CLB tokne amount of liquidity to be removed is zero.
      * @param data Additional data for the liquidity callback.
      * @param recipient The address to receive the removed liquidity.
      * @param tradingFeeRate The trading fee rate for the liquidity.
@@ -617,7 +618,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * Removes liquidity from the market.
+     * Throws an `InvalidTransferedTokenAmount` error if the transferred CLB token amount does not match the expected amount (clbTokenAmounts param).
      * @param clbTokenAmounts An array of clb token amounts to remove as liquidity for each bin.
      * @param data Additional data for the liquidity callback.
      * @param recipient The address to receive the removed liquidity.
@@ -640,7 +641,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<[boolean]>;
 
     /**
-     * Withdraws liquidity from a liquidity receipt.
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `REMOVE_LIQUIDITY`.      Throws a `NotWithdrawableLpReceipt` error if the liquidity receipt is not withdrawable in the current oracle version.
      * @param data Additional data for the liquidity callback.
      * @param receiptId The ID of the liquidity receipt.
      */
@@ -651,7 +652,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * Withdraws liquidity from a liquidity receipt.
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `REMOVE_LIQUIDITY`.      Throws a `NotWithdrawableLpReceipt` error if the liquidity receipt is not withdrawable in the current oracle version.
      * @param data Additional data for the liquidity callback.
      * @param receiptIds The array of the liquidity receipt IDs.
      */
@@ -676,6 +677,7 @@ export interface MarketLiquidityFacet extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
+   * Throws an `InvalidTransferedTokenAmount` error if the transferred amount does not match the sum of amounts param.
    * Adds liquidity to multiple liquidity bins of the market in a batch.
    * @param amounts An array of amounts to add as liquidity for each bin.
    * @param data Additional data for the liquidity callback.
@@ -691,7 +693,7 @@ export interface MarketLiquidityFacet extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * Claims liquidity from a liquidity receipt.
+   * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
    * @param data Additional data for the liquidity callback.
    * @param receiptId The ID of the liquidity receipt.
    */
@@ -702,7 +704,7 @@ export interface MarketLiquidityFacet extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * Claims liquidity from a liquidity receipt.
+   * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
    * @param data Additional data for the liquidity callback.
    * @param receiptIds The array of the liquidity receipt IDs.
    */
@@ -762,7 +764,7 @@ export interface MarketLiquidityFacet extends BaseContract {
   ): Promise<BigNumber[]>;
 
   /**
-   * Retrieves the liquidity receipt with the given receipt ID.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
+   * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
    * @param receiptId The ID of the liquidity receipt to retrieve.
    */
   getLpReceipt(
@@ -812,7 +814,7 @@ export interface MarketLiquidityFacet extends BaseContract {
   ): Promise<string>;
 
   /**
-   * Removes liquidity from the market.
+   * This function is called by the liquidity provider to remove their liquidity from the market.      The liquidity provider must have previously added liquidity to the market.      Throws a `TooSmallAmount` error if the CLB tokne amount of liquidity to be removed is zero.
    * @param data Additional data for the liquidity callback.
    * @param recipient The address to receive the removed liquidity.
    * @param tradingFeeRate The trading fee rate for the liquidity.
@@ -825,7 +827,7 @@ export interface MarketLiquidityFacet extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * Removes liquidity from the market.
+   * Throws an `InvalidTransferedTokenAmount` error if the transferred CLB token amount does not match the expected amount (clbTokenAmounts param).
    * @param clbTokenAmounts An array of clb token amounts to remove as liquidity for each bin.
    * @param data Additional data for the liquidity callback.
    * @param recipient The address to receive the removed liquidity.
@@ -848,7 +850,7 @@ export interface MarketLiquidityFacet extends BaseContract {
   ): Promise<boolean>;
 
   /**
-   * Withdraws liquidity from a liquidity receipt.
+   * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `REMOVE_LIQUIDITY`.      Throws a `NotWithdrawableLpReceipt` error if the liquidity receipt is not withdrawable in the current oracle version.
    * @param data Additional data for the liquidity callback.
    * @param receiptId The ID of the liquidity receipt.
    */
@@ -859,7 +861,7 @@ export interface MarketLiquidityFacet extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * Withdraws liquidity from a liquidity receipt.
+   * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `REMOVE_LIQUIDITY`.      Throws a `NotWithdrawableLpReceipt` error if the liquidity receipt is not withdrawable in the current oracle version.
    * @param data Additional data for the liquidity callback.
    * @param receiptIds The array of the liquidity receipt IDs.
    */
@@ -884,6 +886,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<LpReceiptStructOutput>;
 
     /**
+     * Throws an `InvalidTransferedTokenAmount` error if the transferred amount does not match the sum of amounts param.
      * Adds liquidity to multiple liquidity bins of the market in a batch.
      * @param amounts An array of amounts to add as liquidity for each bin.
      * @param data Additional data for the liquidity callback.
@@ -899,7 +902,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<LpReceiptStructOutput[]>;
 
     /**
-     * Claims liquidity from a liquidity receipt.
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
      * @param data Additional data for the liquidity callback.
      * @param receiptId The ID of the liquidity receipt.
      */
@@ -910,7 +913,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<void>;
 
     /**
-     * Claims liquidity from a liquidity receipt.
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
      * @param data Additional data for the liquidity callback.
      * @param receiptIds The array of the liquidity receipt IDs.
      */
@@ -970,7 +973,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<BigNumber[]>;
 
     /**
-     * Retrieves the liquidity receipt with the given receipt ID.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
      * @param receiptId The ID of the liquidity receipt to retrieve.
      */
     getLpReceipt(
@@ -1020,7 +1023,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<string>;
 
     /**
-     * Removes liquidity from the market.
+     * This function is called by the liquidity provider to remove their liquidity from the market.      The liquidity provider must have previously added liquidity to the market.      Throws a `TooSmallAmount` error if the CLB tokne amount of liquidity to be removed is zero.
      * @param data Additional data for the liquidity callback.
      * @param recipient The address to receive the removed liquidity.
      * @param tradingFeeRate The trading fee rate for the liquidity.
@@ -1033,7 +1036,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<LpReceiptStructOutput>;
 
     /**
-     * Removes liquidity from the market.
+     * Throws an `InvalidTransferedTokenAmount` error if the transferred CLB token amount does not match the expected amount (clbTokenAmounts param).
      * @param clbTokenAmounts An array of clb token amounts to remove as liquidity for each bin.
      * @param data Additional data for the liquidity callback.
      * @param recipient The address to receive the removed liquidity.
@@ -1056,7 +1059,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<boolean>;
 
     /**
-     * Withdraws liquidity from a liquidity receipt.
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `REMOVE_LIQUIDITY`.      Throws a `NotWithdrawableLpReceipt` error if the liquidity receipt is not withdrawable in the current oracle version.
      * @param data Additional data for the liquidity callback.
      * @param receiptId The ID of the liquidity receipt.
      */
@@ -1067,7 +1070,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<void>;
 
     /**
-     * Withdraws liquidity from a liquidity receipt.
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `REMOVE_LIQUIDITY`.      Throws a `NotWithdrawableLpReceipt` error if the liquidity receipt is not withdrawable in the current oracle version.
      * @param data Additional data for the liquidity callback.
      * @param receiptIds The array of the liquidity receipt IDs.
      */
@@ -1149,6 +1152,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * Throws an `InvalidTransferedTokenAmount` error if the transferred amount does not match the sum of amounts param.
      * Adds liquidity to multiple liquidity bins of the market in a batch.
      * @param amounts An array of amounts to add as liquidity for each bin.
      * @param data Additional data for the liquidity callback.
@@ -1164,7 +1168,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Claims liquidity from a liquidity receipt.
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
      * @param data Additional data for the liquidity callback.
      * @param receiptId The ID of the liquidity receipt.
      */
@@ -1175,7 +1179,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Claims liquidity from a liquidity receipt.
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
      * @param data Additional data for the liquidity callback.
      * @param receiptIds The array of the liquidity receipt IDs.
      */
@@ -1235,7 +1239,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Retrieves the liquidity receipt with the given receipt ID.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
      * @param receiptId The ID of the liquidity receipt to retrieve.
      */
     getLpReceipt(
@@ -1283,7 +1287,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Removes liquidity from the market.
+     * This function is called by the liquidity provider to remove their liquidity from the market.      The liquidity provider must have previously added liquidity to the market.      Throws a `TooSmallAmount` error if the CLB tokne amount of liquidity to be removed is zero.
      * @param data Additional data for the liquidity callback.
      * @param recipient The address to receive the removed liquidity.
      * @param tradingFeeRate The trading fee rate for the liquidity.
@@ -1296,7 +1300,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Removes liquidity from the market.
+     * Throws an `InvalidTransferedTokenAmount` error if the transferred CLB token amount does not match the expected amount (clbTokenAmounts param).
      * @param clbTokenAmounts An array of clb token amounts to remove as liquidity for each bin.
      * @param data Additional data for the liquidity callback.
      * @param recipient The address to receive the removed liquidity.
@@ -1319,7 +1323,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Withdraws liquidity from a liquidity receipt.
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `REMOVE_LIQUIDITY`.      Throws a `NotWithdrawableLpReceipt` error if the liquidity receipt is not withdrawable in the current oracle version.
      * @param data Additional data for the liquidity callback.
      * @param receiptId The ID of the liquidity receipt.
      */
@@ -1330,7 +1334,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Withdraws liquidity from a liquidity receipt.
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `REMOVE_LIQUIDITY`.      Throws a `NotWithdrawableLpReceipt` error if the liquidity receipt is not withdrawable in the current oracle version.
      * @param data Additional data for the liquidity callback.
      * @param receiptIds The array of the liquidity receipt IDs.
      */
@@ -1356,6 +1360,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * Throws an `InvalidTransferedTokenAmount` error if the transferred amount does not match the sum of amounts param.
      * Adds liquidity to multiple liquidity bins of the market in a batch.
      * @param amounts An array of amounts to add as liquidity for each bin.
      * @param data Additional data for the liquidity callback.
@@ -1371,7 +1376,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Claims liquidity from a liquidity receipt.
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
      * @param data Additional data for the liquidity callback.
      * @param receiptId The ID of the liquidity receipt.
      */
@@ -1382,7 +1387,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Claims liquidity from a liquidity receipt.
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
      * @param data Additional data for the liquidity callback.
      * @param receiptIds The array of the liquidity receipt IDs.
      */
@@ -1442,7 +1447,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Retrieves the liquidity receipt with the given receipt ID.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
      * @param receiptId The ID of the liquidity receipt to retrieve.
      */
     getLpReceipt(
@@ -1492,7 +1497,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Removes liquidity from the market.
+     * This function is called by the liquidity provider to remove their liquidity from the market.      The liquidity provider must have previously added liquidity to the market.      Throws a `TooSmallAmount` error if the CLB tokne amount of liquidity to be removed is zero.
      * @param data Additional data for the liquidity callback.
      * @param recipient The address to receive the removed liquidity.
      * @param tradingFeeRate The trading fee rate for the liquidity.
@@ -1505,7 +1510,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Removes liquidity from the market.
+     * Throws an `InvalidTransferedTokenAmount` error if the transferred CLB token amount does not match the expected amount (clbTokenAmounts param).
      * @param clbTokenAmounts An array of clb token amounts to remove as liquidity for each bin.
      * @param data Additional data for the liquidity callback.
      * @param recipient The address to receive the removed liquidity.
@@ -1528,7 +1533,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Withdraws liquidity from a liquidity receipt.
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `REMOVE_LIQUIDITY`.      Throws a `NotWithdrawableLpReceipt` error if the liquidity receipt is not withdrawable in the current oracle version.
      * @param data Additional data for the liquidity callback.
      * @param receiptId The ID of the liquidity receipt.
      */
@@ -1539,7 +1544,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Withdraws liquidity from a liquidity receipt.
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `REMOVE_LIQUIDITY`.      Throws a `NotWithdrawableLpReceipt` error if the liquidity receipt is not withdrawable in the current oracle version.
      * @param data Additional data for the liquidity callback.
      * @param receiptIds The array of the liquidity receipt IDs.
      */

@@ -472,6 +472,7 @@ export interface ChromaticRouter extends BaseContract {
   >;
 
   /**
+   * This function allows the liquidity provider to claim their liquidity by calling the `claimLiquidity` function in the specified market contract.      Throws a `NotExistLpReceipt` error if the specified receipt ID does not exist for the liquidity provider in the given market.
    * Claims liquidity from a ChromaticMarket contract.
    * @param market The address of the ChromaticMarket contract.
    * @param receiptId The ID of the LP receipt.
@@ -671,6 +672,7 @@ export interface ChromaticRouter extends BaseContract {
   >;
 
   /**
+   * This function allows the liquidity provider to withdraw their liquidity by calling the `withdrawLiquidity` function in the specified market contract.      Throws a `NotExistLpReceipt` error if the specified receipt ID does not exist for the liquidity provider in the given market.
    * Withdraws liquidity from a ChromaticMarket contract.
    * @param market The address of the ChromaticMarket contract.
    * @param receiptId The ID of the LP receipt.

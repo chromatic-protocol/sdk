@@ -615,6 +615,7 @@ export interface ChromaticVault extends BaseContract {
   >;
 
   /**
+   * This function can only be called by the Chromatic factory contract or the DAO.      Throws an `ExistMakerEarningDistributionTask` error if a maker earning distribution task already exists for the token.
    * Creates a maker earning distribution task for a token.
    * @param token The address of the settlement token.
    */
@@ -625,6 +626,7 @@ export interface ChromaticVault extends BaseContract {
   >;
 
   /**
+   * This function can only be called by the Chromatic factory contract or the DAO.      Throws an `ExistMarketEarningDistributionTask` error if a market earning distribution task already exists for the market.
    * Creates a market earning distribution task for a market.
    * @param market The address of the market.
    */
@@ -657,6 +659,7 @@ export interface ChromaticVault extends BaseContract {
   >;
 
   /**
+   * Throws a `NotEnoughBalance` error if the loan amount exceeds the available balance.      Throws a `NotEnoughFeePaid` error if the fee has not been paid by the recipient. Requirements: - The loan amount must not exceed the available balance after considering pending deposits and withdrawals. - The fee for the flash loan must be paid by the recipient. - The total amount paid must be distributed between the taker pool and maker pool according to their balances. - The amount paid to the taker pool must be transferred to the DAO treasury address. - The amount paid to the maker pool must be added to the pending maker earnings. Emits a `FlashLoan` event with details of the flash loan execution.
    * Executes a flash loan.
    * @param amount The amount of the flash loan.
    * @param data Additional data for the flash loan.

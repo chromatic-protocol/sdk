@@ -238,7 +238,7 @@ export interface MarketLiquidateFacet extends BaseContract {
   >;
 
   /**
-   * Claims a closed position on behalf of a keeper.
+   * This function can only be called by the chromatic liquidator contract.      Throws a `NotExistPosition` error if the requested position does not exist.      Throws a `NotClaimablePosition` error if the position's close version is not in the past, indicating that it is not claimable.
    * @param keeper The address of the keeper claiming the position.
    * @param keeperFee The native token amount of the keeper's fee.
    * @param positionId The ID of the position to claim.
@@ -250,7 +250,7 @@ export interface MarketLiquidateFacet extends BaseContract {
   >;
 
   /**
-   * Liquidates a position.
+   * This function can only be called by the chromatic liquidator contract.      The liquidation process checks if the position should be liquidated based on its profitability.      If the position does not meet the liquidation criteria, the function returns without performing any action.      Throws a `NotExistPosition` error if the requested position does not exist.      Throws an `AlreadyClosedPosition` error if the position is already closed.
    * @param keeper The address of the keeper performing the liquidation.
    * @param keeperFee The native token amount of the keeper's fee.
    * @param positionId The ID of the position to liquidate.

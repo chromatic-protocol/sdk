@@ -131,7 +131,6 @@ export interface ChromaticLensInterface extends Interface {
       | "clbBalanceOf"
       | "liquidityBinStatuses"
       | "lpReceipts"
-      | "multicall"
       | "oracleVersion"
   ): FunctionFragment;
 
@@ -152,10 +151,6 @@ export interface ChromaticLensInterface extends Interface {
     values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "multicall",
-    values: [BytesLike[]]
-  ): string;
-  encodeFunctionData(
     functionFragment: "oracleVersion",
     values: [AddressLike, BigNumberish]
   ): string;
@@ -173,7 +168,6 @@ export interface ChromaticLensInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "lpReceipts", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "multicall", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "oracleVersion",
     data: BytesLike
@@ -271,8 +265,6 @@ export interface ChromaticLens extends BaseContract {
     "view"
   >;
 
-  multicall: TypedContractMethod<[data: BytesLike[]], [string[]], "view">;
-
   /**
    * Retrieves the OracleVersion for the specified oracle version in the given Chromatic market.
    * @param market The address of the Chromatic market contract.
@@ -320,9 +312,6 @@ export interface ChromaticLens extends BaseContract {
     [LpReceiptStructOutput[]],
     "view"
   >;
-  getFunction(
-    nameOrSignature: "multicall"
-  ): TypedContractMethod<[data: BytesLike[]], [string[]], "view">;
   getFunction(
     nameOrSignature: "oracleVersion"
   ): TypedContractMethod<

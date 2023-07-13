@@ -4,7 +4,7 @@ import {
   IERC20Metadata__factory,
   getDeployedAddress,
 } from "../gen";
-import { handleBytesError } from "../utils/helpers";
+import { PromiseOnlySuccess, handleBytesError } from "../utils/helpers";
 
 export interface SettlementToken {
   name: string;
@@ -50,7 +50,6 @@ export class ChromaticMarketFactory {
    */
   async registeredSettlementTokens() {
     return await handleBytesError(async () => {
-      
       const totalRegisteredTokenAddrs =
         await this.contracts().marketFactory.registeredSettlementTokens();
       const promise = totalRegisteredTokenAddrs.map(async (address) => {
@@ -65,16 +64,7 @@ export class ChromaticMarketFactory {
           decimals: await decimals(),
         } satisfies SettlementToken;
       });
-
-      const response = await Promise.allSettled(promise);
-      const fulfilled = response
-        .filter(
-          (result): result is PromiseFulfilledResult<SettlementToken> =>
-            result.status === "fulfilled"
-        )
-        .map(({ value }) => value);
-
-      return fulfilled;
+      return PromiseOnlySuccess(promise);
     }, this._client.provider);
   }
 
@@ -112,6 +102,17 @@ export class ChromaticMarketFactory {
           };
         })
       );
+    }, this._client.provider);
+  }
+
+  /**
+   * Retrieves the oracle provider properties for a specific oracle provider
+   * @param oracleProvider The address of the oracle provider
+   * @returns A Promise that resolves to an object containing the oracle properties
+   */
+  async getOracleProviderProperties(oracleProvider: string) {
+    return await handleBytesError(async () => {
+      return await this.contracts().marketFactory.getOracleProviderProperties(oracleProvider);
     }, this._client.provider);
   }
 }

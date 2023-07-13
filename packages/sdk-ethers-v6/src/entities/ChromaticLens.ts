@@ -160,33 +160,20 @@ export class ChromaticLens {
     params: { tradingFeeRate: number; oracleVersion: bigint }[]
   ): Promise<ClaimableLiquidityResult[]> {
     return await handleBytesError(async () => {
-      const multicallParam = params.map(({ tradingFeeRate, oracleVersion }) =>
-        this.getContract().interface.encodeFunctionData("claimableLiquidity", [
-          marketAddress,
-          tradingFeeRate,
-          oracleVersion,
-        ])
+      return await Promise.all(
+        params.map(async ({ tradingFeeRate, oracleVersion }) => {
+          const res = await this.getContract().claimableLiquidity(
+            marketAddress,
+            tradingFeeRate,
+            oracleVersion
+          );
+
+          return {
+            tradingFeeRate,
+            ...res,
+          };
+        })
       );
-
-      const encodedResponses = (await this.getContract().multicall(multicallParam)) as string[];
-      const decodedReponses = encodedResponses
-        .map((response) =>
-          this.getContract().interface.decodeFunctionResult("claimableLiquidity", response)
-        )
-        .flat() as IMarketLiquidity.ClaimableLiquidityStructOutput[];
-
-      const results = decodedReponses.map((res, index) => {
-        return {
-          tradingFeeRate: params[index].tradingFeeRate,
-          mintingTokenAmountRequested: res.mintingTokenAmountRequested,
-          mintingCLBTokenAmount: res.mintingCLBTokenAmount,
-          burningCLBTokenAmountRequested: res.burningCLBTokenAmountRequested,
-          burningCLBTokenAmount: res.burningCLBTokenAmount,
-          burningTokenAmount: res.burningTokenAmount,
-        };
-      });
-
-      return results;
     }, this._client.provider);
   }
 

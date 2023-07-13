@@ -102,11 +102,6 @@ const _abi = [
     type: "error",
   },
   {
-    inputs: [],
-    name: "ZeroTargetAmount",
-    type: "error",
-  },
-  {
     anonymous: false,
     inputs: [
       {

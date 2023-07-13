@@ -86,11 +86,6 @@ const _abi = [
     type: "error",
   },
   {
-    inputs: [],
-    name: "WrongTokenAddress",
-    type: "error",
-  },
-  {
     anonymous: false,
     inputs: [
       {

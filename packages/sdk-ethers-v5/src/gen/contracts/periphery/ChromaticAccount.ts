@@ -230,6 +230,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<[BigNumber]>;
 
     /**
+     * This function can only be called by the chromatic router contract.      Throws a `NotExistPosition` error if the position does not exist.
      * Claims the specified position in the specified market.
      * @param marketAddress The address of the market.
      * @param positionId The ID of the position to claim.
@@ -252,6 +253,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
+     * This function can only be called by the chromatic router contract.      Throws a `NotExistPosition` error if the position does not exist.
      * Closes the specified position in the specified market.
      * @param marketAddress The address of the market.
      * @param positionId The ID of the position to close.
@@ -283,6 +285,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<[boolean]>;
 
     /**
+     * Throws an `AlreadyInitialized` error if the account has already been initialized.
      * Initializes the account with the specified owner, router, and market factory addresses.
      * @param _marketFactory The address of the market factory contract.
      * @param _owner The address of the account owner.
@@ -296,6 +299,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
+     * This function can only be called by the chromatic router contract.
      * Opens a new position in the specified market.
      * @param leverage The leverage of the position.
      * @param makerMargin The margin required for the maker.
@@ -315,6 +319,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
+     * Transfers the required margin from the account to the specified vault.      Throws a `NotEnoughBalance` error if the account does not have enough balance of the settlement token.
      * Callback function called after opening a position.
      * @param data Additional data related to the callback.
      * @param marginRequired The amount of margin required for the position.
@@ -330,6 +335,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
+     * This function can only be called by owner.      Throws a `NotEnoughBalance` error if the account does not have enough balance of the specified token.
      * Withdraws the specified amount of tokens from the account.
      * @param amount The amount of tokens to withdraw.
      * @param token The address of the token to withdraw.
@@ -351,6 +357,7 @@ export interface ChromaticAccount extends BaseContract {
   ): Promise<BigNumber>;
 
   /**
+   * This function can only be called by the chromatic router contract.      Throws a `NotExistPosition` error if the position does not exist.
    * Claims the specified position in the specified market.
    * @param marketAddress The address of the market.
    * @param positionId The ID of the position to claim.
@@ -373,6 +380,7 @@ export interface ChromaticAccount extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
+   * This function can only be called by the chromatic router contract.      Throws a `NotExistPosition` error if the position does not exist.
    * Closes the specified position in the specified market.
    * @param marketAddress The address of the market.
    * @param positionId The ID of the position to close.
@@ -404,6 +412,7 @@ export interface ChromaticAccount extends BaseContract {
   ): Promise<boolean>;
 
   /**
+   * Throws an `AlreadyInitialized` error if the account has already been initialized.
    * Initializes the account with the specified owner, router, and market factory addresses.
    * @param _marketFactory The address of the market factory contract.
    * @param _owner The address of the account owner.
@@ -417,6 +426,7 @@ export interface ChromaticAccount extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
+   * This function can only be called by the chromatic router contract.
    * Opens a new position in the specified market.
    * @param leverage The leverage of the position.
    * @param makerMargin The margin required for the maker.
@@ -436,6 +446,7 @@ export interface ChromaticAccount extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
+   * Transfers the required margin from the account to the specified vault.      Throws a `NotEnoughBalance` error if the account does not have enough balance of the settlement token.
    * Callback function called after opening a position.
    * @param data Additional data related to the callback.
    * @param marginRequired The amount of margin required for the position.
@@ -451,6 +462,7 @@ export interface ChromaticAccount extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
+   * This function can only be called by owner.      Throws a `NotEnoughBalance` error if the account does not have enough balance of the specified token.
    * Withdraws the specified amount of tokens from the account.
    * @param amount The amount of tokens to withdraw.
    * @param token The address of the token to withdraw.
@@ -472,6 +484,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * This function can only be called by the chromatic router contract.      Throws a `NotExistPosition` error if the position does not exist.
      * Claims the specified position in the specified market.
      * @param marketAddress The address of the market.
      * @param positionId The ID of the position to claim.
@@ -494,6 +507,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<void>;
 
     /**
+     * This function can only be called by the chromatic router contract.      Throws a `NotExistPosition` error if the position does not exist.
      * Closes the specified position in the specified market.
      * @param marketAddress The address of the market.
      * @param positionId The ID of the position to close.
@@ -525,6 +539,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<boolean>;
 
     /**
+     * Throws an `AlreadyInitialized` error if the account has already been initialized.
      * Initializes the account with the specified owner, router, and market factory addresses.
      * @param _marketFactory The address of the market factory contract.
      * @param _owner The address of the account owner.
@@ -538,6 +553,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<void>;
 
     /**
+     * This function can only be called by the chromatic router contract.
      * Opens a new position in the specified market.
      * @param leverage The leverage of the position.
      * @param makerMargin The margin required for the maker.
@@ -557,6 +573,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<PositionStructOutput>;
 
     /**
+     * Transfers the required margin from the account to the specified vault.      Throws a `NotEnoughBalance` error if the account does not have enough balance of the settlement token.
      * Callback function called after opening a position.
      * @param data Additional data related to the callback.
      * @param marginRequired The amount of margin required for the position.
@@ -572,6 +589,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<void>;
 
     /**
+     * This function can only be called by owner.      Throws a `NotEnoughBalance` error if the account does not have enough balance of the specified token.
      * Withdraws the specified amount of tokens from the account.
      * @param amount The amount of tokens to withdraw.
      * @param token The address of the token to withdraw.
@@ -596,6 +614,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * This function can only be called by the chromatic router contract.      Throws a `NotExistPosition` error if the position does not exist.
      * Claims the specified position in the specified market.
      * @param marketAddress The address of the market.
      * @param positionId The ID of the position to claim.
@@ -618,6 +637,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * This function can only be called by the chromatic router contract.      Throws a `NotExistPosition` error if the position does not exist.
      * Closes the specified position in the specified market.
      * @param marketAddress The address of the market.
      * @param positionId The ID of the position to close.
@@ -649,6 +669,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * Throws an `AlreadyInitialized` error if the account has already been initialized.
      * Initializes the account with the specified owner, router, and market factory addresses.
      * @param _marketFactory The address of the market factory contract.
      * @param _owner The address of the account owner.
@@ -662,6 +683,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * This function can only be called by the chromatic router contract.
      * Opens a new position in the specified market.
      * @param leverage The leverage of the position.
      * @param makerMargin The margin required for the maker.
@@ -681,6 +703,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * Transfers the required margin from the account to the specified vault.      Throws a `NotEnoughBalance` error if the account does not have enough balance of the settlement token.
      * Callback function called after opening a position.
      * @param data Additional data related to the callback.
      * @param marginRequired The amount of margin required for the position.
@@ -696,6 +719,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * This function can only be called by owner.      Throws a `NotEnoughBalance` error if the account does not have enough balance of the specified token.
      * Withdraws the specified amount of tokens from the account.
      * @param amount The amount of tokens to withdraw.
      * @param token The address of the token to withdraw.
@@ -718,6 +742,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * This function can only be called by the chromatic router contract.      Throws a `NotExistPosition` error if the position does not exist.
      * Claims the specified position in the specified market.
      * @param marketAddress The address of the market.
      * @param positionId The ID of the position to claim.
@@ -740,6 +765,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * This function can only be called by the chromatic router contract.      Throws a `NotExistPosition` error if the position does not exist.
      * Closes the specified position in the specified market.
      * @param marketAddress The address of the market.
      * @param positionId The ID of the position to close.
@@ -771,6 +797,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * Throws an `AlreadyInitialized` error if the account has already been initialized.
      * Initializes the account with the specified owner, router, and market factory addresses.
      * @param _marketFactory The address of the market factory contract.
      * @param _owner The address of the account owner.
@@ -784,6 +811,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * This function can only be called by the chromatic router contract.
      * Opens a new position in the specified market.
      * @param leverage The leverage of the position.
      * @param makerMargin The margin required for the maker.
@@ -803,6 +831,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * Transfers the required margin from the account to the specified vault.      Throws a `NotEnoughBalance` error if the account does not have enough balance of the settlement token.
      * Callback function called after opening a position.
      * @param data Additional data related to the callback.
      * @param marginRequired The amount of margin required for the position.
@@ -818,6 +847,7 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * This function can only be called by owner.      Throws a `NotEnoughBalance` error if the account does not have enough balance of the specified token.
      * Withdraws the specified amount of tokens from the account.
      * @param amount The amount of tokens to withdraw.
      * @param token The address of the token to withdraw.

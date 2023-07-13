@@ -736,6 +736,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<[BigNumber]>;
 
     /**
+     * This function creates a new market using the specified oracle provider and settlement token addresses.      Throws a `NotRegisteredSettlementToken` error if the settlement token is not registered.      Throws an `ExistMarket` error if the market already exists for the given oracle provider and settlement token.
      * Creates a new market associated with an oracle provider and settlement token.
      * @param oracleProvider The address of the oracle provider.
      * @param settlementToken The address of the settlement token.
@@ -958,7 +959,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * This function can only be called by the DAO address.
+     * This function can only be called by the DAO address.      Throws an `AlreadySetKeeperFeePayer` error if the keeper fee payer address has already been set.
      * Sets the keeper fee payer address.
      * @param keeperFeePayer The keeper fee payer address.
      */
@@ -968,7 +969,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * This function can only be called by the DAO address.
+     * This function can only be called by the DAO address.      Throws an `AlreadySetLiquidator` error if the liquidator address has already been set.
      * Sets the liquidator address.
      * @param liquidator The liquidator address.
      */
@@ -1002,7 +1003,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * This function can only be called by the DAO address.
+     * This function can only be called by the DAO address.      Throws an `AlreadySetVault` error if the vault address has already been set.
      * Sets the vault address.
      * @param vault The vault address.
      */
@@ -1108,6 +1109,7 @@ export interface ChromaticMarketFactory extends BaseContract {
   ): Promise<BigNumber>;
 
   /**
+   * This function creates a new market using the specified oracle provider and settlement token addresses.      Throws a `NotRegisteredSettlementToken` error if the settlement token is not registered.      Throws an `ExistMarket` error if the market already exists for the given oracle provider and settlement token.
    * Creates a new market associated with an oracle provider and settlement token.
    * @param oracleProvider The address of the oracle provider.
    * @param settlementToken The address of the settlement token.
@@ -1330,7 +1332,7 @@ export interface ChromaticMarketFactory extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * This function can only be called by the DAO address.
+   * This function can only be called by the DAO address.      Throws an `AlreadySetKeeperFeePayer` error if the keeper fee payer address has already been set.
    * Sets the keeper fee payer address.
    * @param keeperFeePayer The keeper fee payer address.
    */
@@ -1340,7 +1342,7 @@ export interface ChromaticMarketFactory extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * This function can only be called by the DAO address.
+   * This function can only be called by the DAO address.      Throws an `AlreadySetLiquidator` error if the liquidator address has already been set.
    * Sets the liquidator address.
    * @param liquidator The liquidator address.
    */
@@ -1374,7 +1376,7 @@ export interface ChromaticMarketFactory extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * This function can only be called by the DAO address.
+   * This function can only be called by the DAO address.      Throws an `AlreadySetVault` error if the vault address has already been set.
    * Sets the vault address.
    * @param vault The vault address.
    */
@@ -1480,6 +1482,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * This function creates a new market using the specified oracle provider and settlement token addresses.      Throws a `NotRegisteredSettlementToken` error if the settlement token is not registered.      Throws an `ExistMarket` error if the market already exists for the given oracle provider and settlement token.
      * Creates a new market associated with an oracle provider and settlement token.
      * @param oracleProvider The address of the oracle provider.
      * @param settlementToken The address of the settlement token.
@@ -1702,7 +1705,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<void>;
 
     /**
-     * This function can only be called by the DAO address.
+     * This function can only be called by the DAO address.      Throws an `AlreadySetKeeperFeePayer` error if the keeper fee payer address has already been set.
      * Sets the keeper fee payer address.
      * @param keeperFeePayer The keeper fee payer address.
      */
@@ -1712,7 +1715,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<void>;
 
     /**
-     * This function can only be called by the DAO address.
+     * This function can only be called by the DAO address.      Throws an `AlreadySetLiquidator` error if the liquidator address has already been set.
      * Sets the liquidator address.
      * @param liquidator The liquidator address.
      */
@@ -1746,7 +1749,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<void>;
 
     /**
-     * This function can only be called by the DAO address.
+     * This function can only be called by the DAO address.      Throws an `AlreadySetVault` error if the vault address has already been set.
      * Sets the vault address.
      * @param vault The vault address.
      */
@@ -2008,6 +2011,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * This function creates a new market using the specified oracle provider and settlement token addresses.      Throws a `NotRegisteredSettlementToken` error if the settlement token is not registered.      Throws an `ExistMarket` error if the market already exists for the given oracle provider and settlement token.
      * Creates a new market associated with an oracle provider and settlement token.
      * @param oracleProvider The address of the oracle provider.
      * @param settlementToken The address of the settlement token.
@@ -2226,7 +2230,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * This function can only be called by the DAO address.
+     * This function can only be called by the DAO address.      Throws an `AlreadySetKeeperFeePayer` error if the keeper fee payer address has already been set.
      * Sets the keeper fee payer address.
      * @param keeperFeePayer The keeper fee payer address.
      */
@@ -2236,7 +2240,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * This function can only be called by the DAO address.
+     * This function can only be called by the DAO address.      Throws an `AlreadySetLiquidator` error if the liquidator address has already been set.
      * Sets the liquidator address.
      * @param liquidator The liquidator address.
      */
@@ -2270,7 +2274,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * This function can only be called by the DAO address.
+     * This function can only be called by the DAO address.      Throws an `AlreadySetVault` error if the vault address has already been set.
      * Sets the vault address.
      * @param vault The vault address.
      */
@@ -2377,6 +2381,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * This function creates a new market using the specified oracle provider and settlement token addresses.      Throws a `NotRegisteredSettlementToken` error if the settlement token is not registered.      Throws an `ExistMarket` error if the market already exists for the given oracle provider and settlement token.
      * Creates a new market associated with an oracle provider and settlement token.
      * @param oracleProvider The address of the oracle provider.
      * @param settlementToken The address of the settlement token.
@@ -2599,7 +2604,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * This function can only be called by the DAO address.
+     * This function can only be called by the DAO address.      Throws an `AlreadySetKeeperFeePayer` error if the keeper fee payer address has already been set.
      * Sets the keeper fee payer address.
      * @param keeperFeePayer The keeper fee payer address.
      */
@@ -2609,7 +2614,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * This function can only be called by the DAO address.
+     * This function can only be called by the DAO address.      Throws an `AlreadySetLiquidator` error if the liquidator address has already been set.
      * Sets the liquidator address.
      * @param liquidator The liquidator address.
      */
@@ -2643,7 +2648,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * This function can only be called by the DAO address.
+     * This function can only be called by the DAO address.      Throws an `AlreadySetVault` error if the vault address has already been set.
      * Sets the vault address.
      * @param vault The vault address.
      */

@@ -32,6 +32,11 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "ExistMakerEarningDistributionTask",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "ExistMarketEarningDistributionTask",
     type: "error",
   },

@@ -113,4 +113,15 @@ export class ChromaticMarketFactory {
       );
     });
   }
+
+  /**
+   * Retrieves the oracle provider properties for a specific oracle provider
+   * @param oracleProvider The address of the oracle provider
+   * @returns A Promise that resolves to an object containing the oracle properties
+   */
+  async getOracleProviderProperties(oracleProvider: Address) {
+    return await handleBytesError(async () => {
+      return await this.factoryContract().read.getOracleProviderProperties([oracleProvider]);
+    });
+  }
 }

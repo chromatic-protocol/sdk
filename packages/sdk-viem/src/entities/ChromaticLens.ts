@@ -167,32 +167,20 @@ export class ChromaticLens {
     params: { tradingFeeRate: number; oracleVersion: bigint }[]
   ) {
     return await handleBytesError(async () => {
-      const multicallParam = params.map(({ tradingFeeRate, oracleVersion }) =>
-        encodeFunctionData({
-          abi: chromaticLensABI,
-          functionName: "claimableLiquidity",
-          args: [marketAddress, tradingFeeRate, oracleVersion],
+      return await Promise.all(
+        params.map(async ({ tradingFeeRate, oracleVersion }) => {
+          const res = await this.getContract().read.claimableLiquidity([
+            marketAddress,
+            tradingFeeRate,
+            oracleVersion,
+          ]);
+
+          return {
+            tradingFeeRate,
+            ...res,
+          };
         })
       );
-      const encodedResponses = await this.contracts().lens.read.multicall([multicallParam]);
-      const decodedReponses = encodedResponses.map((response) =>
-        decodeFunctionResult({
-          abi: chromaticLensABI,
-          functionName: "claimableLiquidity",
-          data: response,
-        })
-      );
-      const results = decodedReponses.map((res, index) => {
-        return {
-          tradingFeeRate: params[index].tradingFeeRate,
-          mintingTokenAmountRequested: res.mintingTokenAmountRequested,
-          mintingCLBTokenAmount: res.mintingCLBTokenAmount,
-          burningCLBTokenAmountRequested: res.burningCLBTokenAmountRequested,
-          burningCLBTokenAmount: res.burningCLBTokenAmount,
-          burningTokenAmount: res.burningTokenAmount,
-        };
-      });
-      return results;
     });
   }
 

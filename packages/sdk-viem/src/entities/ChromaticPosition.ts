@@ -1,7 +1,6 @@
-import { Address, decodeFunctionResult, encodeFunctionData } from "viem";
+import { Address } from "viem";
 import { Client } from "../Client";
 import { LIQUIDATION_PRICE_PRECISION, QTY_LEVERAGE_PRECISION } from "../constants";
-import { chromaticLensABI } from "../gen";
 import { handleBytesError } from "../utils/helpers";
 
 type InterestParam = Pick<PositionParam, "makerMargin" | "claimTimestamp" | "openTimestamp">;
@@ -88,22 +87,12 @@ export class ChromaticPosition {
         positions.map((position) => [position.openVersion, position.closeVersion]).flat()
       );
 
-      const multicallParam = [...oracleVersions].map((version) =>
-        encodeFunctionData({
-          abi: chromaticLensABI,
-          functionName: "oracleVersion",
-          args: [marketAddress, version],
-        })
+      const oracleVersionData = await Promise.all(
+        [...oracleVersions].map((version) =>
+          lensContract.read.oracleVersion([marketAddress, version])
+        )
       );
 
-      const encodedResponses = await lensContract.read.multicall([multicallParam]);
-      const oracleVersionData = encodedResponses.map((response) =>
-        decodeFunctionResult({
-          abi: chromaticLensABI,
-          functionName: "oracleVersion",
-          data: response,
-        })
-      );
       return positions.map((position) => {
         return {
           ...position,

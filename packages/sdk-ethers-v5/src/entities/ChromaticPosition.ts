@@ -1,9 +1,11 @@
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import { Client } from "../Client";
 import { LIQUIDATION_PRICE_PRECISION, QTY_LEVERAGE_PRECISION } from "../constants";
-import { IOracleProvider } from "../gen";
-import { BinMarginStructOutput, PositionStructOutput } from "../gen/contracts/core/interfaces/IChromaticMarket";
 import { InterestRate } from "../gen/contracts/core/ChromaticMarketFactory";
+import {
+  BinMarginStructOutput,
+  PositionStructOutput,
+} from "../gen/contracts/core/interfaces/IChromaticMarket";
 import { handleBytesError, logger } from "../utils/helpers";
 
 type InterestParam = Pick<PositionParam, "makerMargin" | "claimTimestamp" | "openTimestamp">;
@@ -81,14 +83,9 @@ export class ChromaticPosition {
         positions.map((position) => [position.openVersion, position.closeVersion]).flat()
       );
 
-      const multicallParam = [...oracleVersions].map((version) =>
-        lensContract.interface.encodeFunctionData("oracleVersion", [marketAddress, version])
+      const oracleVersionData = await Promise.all(
+        [...oracleVersions].map((version) => lensContract.oracleVersion(marketAddress, version))
       );
-
-      const encodedResponses = (await lensContract.multicall(multicallParam)) as string[];
-      const oracleVersionData = encodedResponses
-        .map((response) => lensContract.interface.decodeFunctionResult("oracleVersion", response))
-        .flat() as IOracleProvider.OracleVersionStructOutput[];
       logger("oracleVersionData", oracleVersionData);
 
       return positions.map((position) => {

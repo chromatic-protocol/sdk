@@ -1,4 +1,4 @@
-import { PublicClient, WalletClient } from "viem";
+import type { PublicClient as PublicClientType, WalletClient as WalletClientType } from "viem";
 import {
   ChromaticAccount,
   ChromaticLens,
@@ -7,6 +7,12 @@ import {
   ChromaticPosition,
   ChromaticRouter,
 } from "./entities";
+
+/** @ignore */
+export interface WalletClient extends WalletClientType {}
+
+/** @ignore */
+export interface PublicClient extends PublicClientType {}
 
 export class Client {
   public walletClient: WalletClient | undefined;

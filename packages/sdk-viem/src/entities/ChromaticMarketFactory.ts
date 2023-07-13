@@ -5,8 +5,10 @@ import {
   chromaticMarketFactoryAddress,
   ierc20MetadataABI,
 } from "../gen";
-import { Contract, PromiseOnlySuccess, handleBytesError } from "../utils/helpers";
+import { PromiseOnlySuccess, handleBytesError } from "../utils/helpers";
+import type { ContractChromaticFactory, ContractIErc20Metadata } from "./types";
 
+/** @ignore */
 export interface SettlementToken {
   name: string;
   address: string;
@@ -28,7 +30,7 @@ export class ChromaticMarketFactory {
    * @param addressOrName The address or name of the Chromatic Market Factory contract.
    * @returns The Chromatic Market Factory contract instance.
    */
-  private factoryContract(address?: Address): Contract<typeof chromaticMarketFactoryABI> {
+  private factoryContract(address?: Address): ContractChromaticFactory {
     const deployedMarketFactoryAddress = (chromaticMarketFactoryAddress as Record<number, Address>)[
       this._client.publicClient?.chain?.id || 0
     ];
@@ -47,7 +49,7 @@ export class ChromaticMarketFactory {
   contracts() {
     return {
       marketFactory: this.factoryContract(),
-      IERC20Meta: (address: Address): Contract<typeof ierc20MetadataABI> =>
+      IERC20Meta: (address: Address): ContractIErc20Metadata =>
         getContract({
           abi: ierc20MetadataABI,
           address,

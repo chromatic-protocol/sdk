@@ -101,8 +101,10 @@ export class ChromaticPosition {
           makerMargin: position._binMargins.reduce((acc, bin) => acc + bin.amount, 0n),
           openPrice: oracleVersionData.find((oracle) => oracle.version == position.openVersion)
             ?.price,
-          closePrice: oracleVersionData.find((oracle) => oracle.version == position.closeVersion)
-            ?.price,
+          closePrice:
+            position.closeVersion === 0n
+              ? null
+              : oracleVersionData.find((oracle) => oracle.version == position.closeVersion)?.price,
         } as IPosition;
       });
     });

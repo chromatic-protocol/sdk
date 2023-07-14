@@ -97,8 +97,9 @@ export class ChromaticPosition {
           ),
           openPrice: oracleVersionData.find((oracle) => oracle.version?.eq(position.openVersion))
             ?.price,
-          closePrice: oracleVersionData.find((oracle) => oracle.version?.eq(position.closeVersion))
-            ?.price,
+          closePrice: position.closeVersion.eq(0)
+            ? null
+            : oracleVersionData.find((oracle) => oracle.version?.eq(position.closeVersion))?.price,
         } as IPosition;
       });
     }, this._client.provider);

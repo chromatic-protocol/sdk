@@ -169,6 +169,7 @@ export class ChromaticPosition {
    * @param entryPrice The entry price of the position.
    * @param exitPrice The exit price of the position.
    * @param position The position parameters.
+   * @param tokenDecimals The decimals of the settlement token.
    * @param options Optional parameters for PNL calculation.
    * @returns A promise that resolves to the PNL value.
    */
@@ -177,12 +178,12 @@ export class ChromaticPosition {
     entryPrice: BigNumber,
     exitPrice: BigNumber,
     position: PositionParam,
-    tokenDecimal: number,
+    tokenDecimals: number,
     options: { includeInterestFee: boolean } = { includeInterestFee: true }
   ): Promise<BigNumber> {
     const leveragedQty = position.qty
       .mul(position.leverage)
-      .mul(10 ** tokenDecimal)
+      .mul(10 ** tokenDecimals)
       .div(QTY_LEVERAGE_PRECISION);
     let delta = exitPrice.sub(entryPrice);
     let pnl = leveragedQty.mul(delta).div(entryPrice);

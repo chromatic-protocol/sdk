@@ -1,4 +1,3 @@
-//TODO use chain id insteadof string name
 export const QTY_DECIMALS = 4;
 export const LEVERAGE_DECIMALS = 2;
 export const QTY_LEVERAGE_DECIMALS = QTY_DECIMALS + LEVERAGE_DECIMALS;

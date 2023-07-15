@@ -51,7 +51,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "NotEnoughMarginTransfered",
+    name: "NotEnoughMarginTransferred",
     type: "error",
   },
   {

@@ -22,7 +22,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "InvalidTransferedTokenAmount",
+    name: "InvalidTransferredTokenAmount",
     type: "error",
   },
   {

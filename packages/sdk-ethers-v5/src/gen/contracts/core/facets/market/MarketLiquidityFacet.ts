@@ -468,7 +468,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * Throws an `InvalidTransferedTokenAmount` error if the transferred amount does not match the sum of amounts param.
+     * Throws an `InvalidTransferredTokenAmount` error if the transferred amount does not match the sum of amounts param.
      * Adds liquidity to multiple liquidity bins of the market in a batch.
      * @param amounts An array of amounts to add as liquidity for each bin.
      * @param data Additional data for the liquidity callback.
@@ -618,7 +618,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * Throws an `InvalidTransferedTokenAmount` error if the transferred CLB token amount does not match the expected amount (clbTokenAmounts param).
+     * Throws an `InvalidTransferredTokenAmount` error if the transferred CLB token amount does not match the expected amount (clbTokenAmounts param).
      * @param clbTokenAmounts An array of clb token amounts to remove as liquidity for each bin.
      * @param data Additional data for the liquidity callback.
      * @param recipient The address to receive the removed liquidity.
@@ -677,7 +677,7 @@ export interface MarketLiquidityFacet extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * Throws an `InvalidTransferedTokenAmount` error if the transferred amount does not match the sum of amounts param.
+   * Throws an `InvalidTransferredTokenAmount` error if the transferred amount does not match the sum of amounts param.
    * Adds liquidity to multiple liquidity bins of the market in a batch.
    * @param amounts An array of amounts to add as liquidity for each bin.
    * @param data Additional data for the liquidity callback.
@@ -827,7 +827,7 @@ export interface MarketLiquidityFacet extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * Throws an `InvalidTransferedTokenAmount` error if the transferred CLB token amount does not match the expected amount (clbTokenAmounts param).
+   * Throws an `InvalidTransferredTokenAmount` error if the transferred CLB token amount does not match the expected amount (clbTokenAmounts param).
    * @param clbTokenAmounts An array of clb token amounts to remove as liquidity for each bin.
    * @param data Additional data for the liquidity callback.
    * @param recipient The address to receive the removed liquidity.
@@ -886,7 +886,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<LpReceiptStructOutput>;
 
     /**
-     * Throws an `InvalidTransferedTokenAmount` error if the transferred amount does not match the sum of amounts param.
+     * Throws an `InvalidTransferredTokenAmount` error if the transferred amount does not match the sum of amounts param.
      * Adds liquidity to multiple liquidity bins of the market in a batch.
      * @param amounts An array of amounts to add as liquidity for each bin.
      * @param data Additional data for the liquidity callback.
@@ -1036,7 +1036,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<LpReceiptStructOutput>;
 
     /**
-     * Throws an `InvalidTransferedTokenAmount` error if the transferred CLB token amount does not match the expected amount (clbTokenAmounts param).
+     * Throws an `InvalidTransferredTokenAmount` error if the transferred CLB token amount does not match the expected amount (clbTokenAmounts param).
      * @param clbTokenAmounts An array of clb token amounts to remove as liquidity for each bin.
      * @param data Additional data for the liquidity callback.
      * @param recipient The address to receive the removed liquidity.
@@ -1152,7 +1152,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Throws an `InvalidTransferedTokenAmount` error if the transferred amount does not match the sum of amounts param.
+     * Throws an `InvalidTransferredTokenAmount` error if the transferred amount does not match the sum of amounts param.
      * Adds liquidity to multiple liquidity bins of the market in a batch.
      * @param amounts An array of amounts to add as liquidity for each bin.
      * @param data Additional data for the liquidity callback.
@@ -1300,7 +1300,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Throws an `InvalidTransferedTokenAmount` error if the transferred CLB token amount does not match the expected amount (clbTokenAmounts param).
+     * Throws an `InvalidTransferredTokenAmount` error if the transferred CLB token amount does not match the expected amount (clbTokenAmounts param).
      * @param clbTokenAmounts An array of clb token amounts to remove as liquidity for each bin.
      * @param data Additional data for the liquidity callback.
      * @param recipient The address to receive the removed liquidity.
@@ -1360,7 +1360,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Throws an `InvalidTransferedTokenAmount` error if the transferred amount does not match the sum of amounts param.
+     * Throws an `InvalidTransferredTokenAmount` error if the transferred amount does not match the sum of amounts param.
      * Adds liquidity to multiple liquidity bins of the market in a batch.
      * @param amounts An array of amounts to add as liquidity for each bin.
      * @param data Additional data for the liquidity callback.
@@ -1510,7 +1510,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Throws an `InvalidTransferedTokenAmount` error if the transferred CLB token amount does not match the expected amount (clbTokenAmounts param).
+     * Throws an `InvalidTransferredTokenAmount` error if the transferred CLB token amount does not match the expected amount (clbTokenAmounts param).
      * @param clbTokenAmounts An array of clb token amounts to remove as liquidity for each bin.
      * @param data Additional data for the liquidity callback.
      * @param recipient The address to receive the removed liquidity.

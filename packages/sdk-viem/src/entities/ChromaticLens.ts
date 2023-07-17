@@ -144,11 +144,11 @@ export class ChromaticLens {
           clbValue:
             ownedBin.totalSupply == 0n
               ? 0
-              : Number((ownedBin.binValue || 0n) / ownedBin.totalSupply),
+              : Number(ownedBin.binValue || 0n) / Number(ownedBin.totalSupply),
           removableRate:
             targetTotalLiqBin.liquidity == 0n
               ? 0
-              : Number((targetTotalLiqBin.freeLiquidity || 0n) / targetTotalLiqBin.liquidity),
+              : Number(targetTotalLiqBin.freeLiquidity || 0n) / Number(targetTotalLiqBin.liquidity),
         };
       });
       return results.filter((bin) => bin.clbBalance > 0n);

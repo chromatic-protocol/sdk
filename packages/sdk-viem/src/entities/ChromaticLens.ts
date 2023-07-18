@@ -149,7 +149,7 @@ export class ChromaticLens {
           clbTotalSupply: ownedBin.totalSupply,
           clbValue:
             ownedBin.totalSupply == 0n
-              ? 0
+              ? 0n
               : ((ownedBin.binValue || 0n) * 10n ** BigInt(clbTokenDecimals)) /
                 ownedBin.totalSupply,
           removableRate:

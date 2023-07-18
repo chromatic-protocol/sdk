@@ -3,7 +3,6 @@
 /* eslint-disable */
 import { Signer, utils, Contract, ContractFactory, Overrides } from "ethers";
 import type { Provider, TransactionRequest } from "@ethersproject/providers";
-import type { PromiseOrValue } from "../../../common";
 import type {
   ChromaticRouter,
   ChromaticRouterInterface,
@@ -837,8 +836,8 @@ export class ChromaticRouter__factory extends ContractFactory {
   }
 
   override deploy(
-    _marketFactory: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _marketFactory: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ChromaticRouter> {
     return super.deploy(
       _marketFactory,
@@ -846,8 +845,8 @@ export class ChromaticRouter__factory extends ContractFactory {
     ) as Promise<ChromaticRouter>;
   }
   override getDeployTransaction(
-    _marketFactory: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _marketFactory: string,
+    overrides?: Overrides & { from?: string }
   ): TransactionRequest {
     return super.getDeployTransaction(_marketFactory, overrides || {});
   }

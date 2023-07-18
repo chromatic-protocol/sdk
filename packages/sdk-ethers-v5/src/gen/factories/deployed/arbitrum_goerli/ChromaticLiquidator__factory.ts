@@ -3,7 +3,6 @@
 /* eslint-disable */
 import { Signer, utils, Contract, ContractFactory, Overrides } from "ethers";
 import type { Provider, TransactionRequest } from "@ethersproject/providers";
-import type { PromiseOrValue } from "../../../common";
 import type {
   ChromaticLiquidator,
   ChromaticLiquidatorInterface,
@@ -314,10 +313,10 @@ export class ChromaticLiquidator__factory extends ContractFactory {
   }
 
   override deploy(
-    _factory: PromiseOrValue<string>,
-    _automate: PromiseOrValue<string>,
-    opsProxyFactory: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _factory: string,
+    _automate: string,
+    opsProxyFactory: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ChromaticLiquidator> {
     return super.deploy(
       _factory,
@@ -327,10 +326,10 @@ export class ChromaticLiquidator__factory extends ContractFactory {
     ) as Promise<ChromaticLiquidator>;
   }
   override getDeployTransaction(
-    _factory: PromiseOrValue<string>,
-    _automate: PromiseOrValue<string>,
-    opsProxyFactory: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _factory: string,
+    _automate: string,
+    opsProxyFactory: string,
+    overrides?: Overrides & { from?: string }
   ): TransactionRequest {
     return super.getDeployTransaction(
       _factory,

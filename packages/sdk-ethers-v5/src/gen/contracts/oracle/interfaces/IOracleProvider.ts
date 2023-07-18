@@ -20,14 +20,13 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "../../../common";
 
 export declare namespace IOracleProvider {
   export type OracleVersionStruct = {
-    version: PromiseOrValue<BigNumberish>;
-    timestamp: PromiseOrValue<BigNumberish>;
-    price: PromiseOrValue<BigNumberish>;
+    version: BigNumberish;
+    timestamp: BigNumberish;
+    price: BigNumberish;
   };
 
   export type OracleVersionStructOutput = [BigNumber, BigNumber, BigNumber] & {
@@ -55,7 +54,7 @@ export interface IOracleProviderInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "atVersion",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "currentVersion",
@@ -113,7 +112,7 @@ export interface IOracleProvider extends BaseContract {
      * @param version The version of which to lookup
      */
     atVersion(
-      version: PromiseOrValue<BigNumberish>,
+      version: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[IOracleProvider.OracleVersionStructOutput]>;
 
@@ -134,7 +133,7 @@ export interface IOracleProvider extends BaseContract {
      * Checks for a new price and updates the internal phase annotation state accordingly
      */
     sync(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
   };
 
@@ -143,7 +142,7 @@ export interface IOracleProvider extends BaseContract {
    * @param version The version of which to lookup
    */
   atVersion(
-    version: PromiseOrValue<BigNumberish>,
+    version: BigNumberish,
     overrides?: CallOverrides
   ): Promise<IOracleProvider.OracleVersionStructOutput>;
 
@@ -163,9 +162,7 @@ export interface IOracleProvider extends BaseContract {
    * `sync` is expected to be called soon after a phase update occurs in the underlying proxy.      Phase updates should be detected using off-chain mechanism and should trigger a `sync` call      This is feasible in the short term due to how infrequent phase updates are, but phase update      and roundCount detection should eventually be implemented at the contract level.      Reverts if there is more than 1 phase to update in a single sync because we currently cannot      determine the startingRoundId for the intermediary phase.
    * Checks for a new price and updates the internal phase annotation state accordingly
    */
-  sync(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  sync(overrides?: Overrides & { from?: string }): Promise<ContractTransaction>;
 
   callStatic: {
     /**
@@ -173,7 +170,7 @@ export interface IOracleProvider extends BaseContract {
      * @param version The version of which to lookup
      */
     atVersion(
-      version: PromiseOrValue<BigNumberish>,
+      version: BigNumberish,
       overrides?: CallOverrides
     ): Promise<IOracleProvider.OracleVersionStructOutput>;
 
@@ -206,7 +203,7 @@ export interface IOracleProvider extends BaseContract {
      * @param version The version of which to lookup
      */
     atVersion(
-      version: PromiseOrValue<BigNumberish>,
+      version: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -224,9 +221,7 @@ export interface IOracleProvider extends BaseContract {
      * `sync` is expected to be called soon after a phase update occurs in the underlying proxy.      Phase updates should be detected using off-chain mechanism and should trigger a `sync` call      This is feasible in the short term due to how infrequent phase updates are, but phase update      and roundCount detection should eventually be implemented at the contract level.      Reverts if there is more than 1 phase to update in a single sync because we currently cannot      determine the startingRoundId for the intermediary phase.
      * Checks for a new price and updates the internal phase annotation state accordingly
      */
-    sync(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    sync(overrides?: Overrides & { from?: string }): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -235,7 +230,7 @@ export interface IOracleProvider extends BaseContract {
      * @param version The version of which to lookup
      */
     atVersion(
-      version: PromiseOrValue<BigNumberish>,
+      version: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -254,7 +249,7 @@ export interface IOracleProvider extends BaseContract {
      * Checks for a new price and updates the internal phase annotation state accordingly
      */
     sync(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
   };
 }

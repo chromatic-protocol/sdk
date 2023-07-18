@@ -19,7 +19,6 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "../../../../common";
 
 export interface MarketSettleFacetInterface extends utils.Interface {
@@ -68,7 +67,7 @@ export interface MarketSettleFacet extends BaseContract {
      * Executes the settlement process for the Chromatic market.
      */
     settle(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
   };
 
@@ -77,7 +76,7 @@ export interface MarketSettleFacet extends BaseContract {
    * Executes the settlement process for the Chromatic market.
    */
   settle(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   callStatic: {
@@ -95,9 +94,7 @@ export interface MarketSettleFacet extends BaseContract {
      * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
      * Executes the settlement process for the Chromatic market.
      */
-    settle(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    settle(overrides?: Overrides & { from?: string }): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -106,7 +103,7 @@ export interface MarketSettleFacet extends BaseContract {
      * Executes the settlement process for the Chromatic market.
      */
     settle(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
   };
 }

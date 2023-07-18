@@ -24,7 +24,6 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "../../common";
 
 export interface ChromaticLiquidatorMockInterface extends utils.Interface {
@@ -68,11 +67,11 @@ export interface ChromaticLiquidatorMockInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "automate", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "cancelClaimPositionTask",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "cancelLiquidationTask",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "claimInterval",
@@ -80,15 +79,15 @@ export interface ChromaticLiquidatorMockInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "claimPosition",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "createClaimPositionTask",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "createLiquidationTask",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "dedicatedMsgSender",
@@ -96,15 +95,11 @@ export interface ChromaticLiquidatorMockInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "liquidate(address,uint256,uint256)",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "liquidate(address,uint256)",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "liquidationInterval",
@@ -112,19 +107,19 @@ export interface ChromaticLiquidatorMockInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "resolveClaimPosition",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "resolveLiquidation",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "updateClaimInterval",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "updateLiquidationInterval",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
 
   decodeFunctionResult(functionFragment: "automate", data: BytesLike): Result;
@@ -251,8 +246,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position for which to cancel the claim position task.
      */
     cancelClaimPositionTask(
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -261,8 +256,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position for which to cancel the liquidation task.
      */
     cancelLiquidationTask(
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     claimInterval(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -273,9 +268,9 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be claimed.
      */
     claimPosition(
-      market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -284,8 +279,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be claimed.
      */
     createClaimPositionTask(
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -294,17 +289,17 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be liquidated.
      */
     createLiquidationTask(
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     dedicatedMsgSender(overrides?: CallOverrides): Promise<[string]>;
 
     "liquidate(address,uint256,uint256)"(
-      market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      fee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      positionId: BigNumberish,
+      fee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -313,9 +308,9 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be liquidated.
      */
     "liquidate(address,uint256)"(
-      market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     liquidationInterval(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -327,8 +322,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be claimed.
      */
     resolveClaimPosition(
-      _market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
+      _market: string,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
 
@@ -339,8 +334,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be liquidated.
      */
     resolveLiquidation(
-      _market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
+      _market: string,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
 
@@ -350,8 +345,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param interval The new claim task interval.
      */
     updateClaimInterval(
-      interval: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      interval: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -360,8 +355,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param interval The new liquidation task interval.
      */
     updateLiquidationInterval(
-      interval: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      interval: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
   };
 
@@ -373,8 +368,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
    * @param positionId The ID of the position for which to cancel the claim position task.
    */
   cancelClaimPositionTask(
-    positionId: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    positionId: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -383,8 +378,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
    * @param positionId The ID of the position for which to cancel the liquidation task.
    */
   cancelLiquidationTask(
-    positionId: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    positionId: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   claimInterval(overrides?: CallOverrides): Promise<BigNumber>;
@@ -395,9 +390,9 @@ export interface ChromaticLiquidatorMock extends BaseContract {
    * @param positionId The ID of the position to be claimed.
    */
   claimPosition(
-    market: PromiseOrValue<string>,
-    positionId: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    market: string,
+    positionId: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -406,8 +401,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
    * @param positionId The ID of the position to be claimed.
    */
   createClaimPositionTask(
-    positionId: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    positionId: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -416,17 +411,17 @@ export interface ChromaticLiquidatorMock extends BaseContract {
    * @param positionId The ID of the position to be liquidated.
    */
   createLiquidationTask(
-    positionId: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    positionId: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   dedicatedMsgSender(overrides?: CallOverrides): Promise<string>;
 
   "liquidate(address,uint256,uint256)"(
-    market: PromiseOrValue<string>,
-    positionId: PromiseOrValue<BigNumberish>,
-    fee: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    market: string,
+    positionId: BigNumberish,
+    fee: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -435,9 +430,9 @@ export interface ChromaticLiquidatorMock extends BaseContract {
    * @param positionId The ID of the position to be liquidated.
    */
   "liquidate(address,uint256)"(
-    market: PromiseOrValue<string>,
-    positionId: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    market: string,
+    positionId: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   liquidationInterval(overrides?: CallOverrides): Promise<BigNumber>;
@@ -449,8 +444,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
    * @param positionId The ID of the position to be claimed.
    */
   resolveClaimPosition(
-    _market: PromiseOrValue<string>,
-    positionId: PromiseOrValue<BigNumberish>,
+    _market: string,
+    positionId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
 
@@ -461,8 +456,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
    * @param positionId The ID of the position to be liquidated.
    */
   resolveLiquidation(
-    _market: PromiseOrValue<string>,
-    positionId: PromiseOrValue<BigNumberish>,
+    _market: string,
+    positionId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
 
@@ -472,8 +467,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
    * @param interval The new claim task interval.
    */
   updateClaimInterval(
-    interval: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    interval: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -482,8 +477,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
    * @param interval The new liquidation task interval.
    */
   updateLiquidationInterval(
-    interval: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    interval: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   callStatic: {
@@ -495,7 +490,7 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position for which to cancel the claim position task.
      */
     cancelClaimPositionTask(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -505,7 +500,7 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position for which to cancel the liquidation task.
      */
     cancelLiquidationTask(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -517,8 +512,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be claimed.
      */
     claimPosition(
-      market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
+      market: string,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -528,7 +523,7 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be claimed.
      */
     createClaimPositionTask(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -538,16 +533,16 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be liquidated.
      */
     createLiquidationTask(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     dedicatedMsgSender(overrides?: CallOverrides): Promise<string>;
 
     "liquidate(address,uint256,uint256)"(
-      market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      fee: PromiseOrValue<BigNumberish>,
+      market: string,
+      positionId: BigNumberish,
+      fee: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -557,8 +552,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be liquidated.
      */
     "liquidate(address,uint256)"(
-      market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
+      market: string,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -571,8 +566,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be claimed.
      */
     resolveClaimPosition(
-      _market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
+      _market: string,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
 
@@ -583,8 +578,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be liquidated.
      */
     resolveLiquidation(
-      _market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
+      _market: string,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
 
@@ -594,7 +589,7 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param interval The new claim task interval.
      */
     updateClaimInterval(
-      interval: PromiseOrValue<BigNumberish>,
+      interval: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -604,24 +599,24 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param interval The new liquidation task interval.
      */
     updateLiquidationInterval(
-      interval: PromiseOrValue<BigNumberish>,
+      interval: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
   };
 
   filters: {
     "UpdateClaimInterval(uint256)"(
-      interval?: PromiseOrValue<BigNumberish> | null
+      interval?: BigNumberish | null
     ): UpdateClaimIntervalEventFilter;
     UpdateClaimInterval(
-      interval?: PromiseOrValue<BigNumberish> | null
+      interval?: BigNumberish | null
     ): UpdateClaimIntervalEventFilter;
 
     "UpdateLiquidationInterval(uint256)"(
-      interval?: PromiseOrValue<BigNumberish> | null
+      interval?: BigNumberish | null
     ): UpdateLiquidationIntervalEventFilter;
     UpdateLiquidationInterval(
-      interval?: PromiseOrValue<BigNumberish> | null
+      interval?: BigNumberish | null
     ): UpdateLiquidationIntervalEventFilter;
   };
 
@@ -634,8 +629,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position for which to cancel the claim position task.
      */
     cancelClaimPositionTask(
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -644,8 +639,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position for which to cancel the liquidation task.
      */
     cancelLiquidationTask(
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     claimInterval(overrides?: CallOverrides): Promise<BigNumber>;
@@ -656,9 +651,9 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be claimed.
      */
     claimPosition(
-      market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -667,8 +662,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be claimed.
      */
     createClaimPositionTask(
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -677,17 +672,17 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be liquidated.
      */
     createLiquidationTask(
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     dedicatedMsgSender(overrides?: CallOverrides): Promise<BigNumber>;
 
     "liquidate(address,uint256,uint256)"(
-      market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      fee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      positionId: BigNumberish,
+      fee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -696,9 +691,9 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be liquidated.
      */
     "liquidate(address,uint256)"(
-      market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     liquidationInterval(overrides?: CallOverrides): Promise<BigNumber>;
@@ -710,8 +705,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be claimed.
      */
     resolveClaimPosition(
-      _market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
+      _market: string,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -722,8 +717,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be liquidated.
      */
     resolveLiquidation(
-      _market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
+      _market: string,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -733,8 +728,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param interval The new claim task interval.
      */
     updateClaimInterval(
-      interval: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      interval: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -743,8 +738,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param interval The new liquidation task interval.
      */
     updateLiquidationInterval(
-      interval: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      interval: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
   };
 
@@ -757,8 +752,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position for which to cancel the claim position task.
      */
     cancelClaimPositionTask(
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -767,8 +762,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position for which to cancel the liquidation task.
      */
     cancelLiquidationTask(
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     claimInterval(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -779,9 +774,9 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be claimed.
      */
     claimPosition(
-      market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -790,8 +785,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be claimed.
      */
     createClaimPositionTask(
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -800,8 +795,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be liquidated.
      */
     createLiquidationTask(
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     dedicatedMsgSender(
@@ -809,10 +804,10 @@ export interface ChromaticLiquidatorMock extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     "liquidate(address,uint256,uint256)"(
-      market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      fee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      positionId: BigNumberish,
+      fee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -821,9 +816,9 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be liquidated.
      */
     "liquidate(address,uint256)"(
-      market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     liquidationInterval(
@@ -837,8 +832,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be claimed.
      */
     resolveClaimPosition(
-      _market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
+      _market: string,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -849,8 +844,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param positionId The ID of the position to be liquidated.
      */
     resolveLiquidation(
-      _market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
+      _market: string,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -860,8 +855,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param interval The new claim task interval.
      */
     updateClaimInterval(
-      interval: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      interval: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -870,8 +865,8 @@ export interface ChromaticLiquidatorMock extends BaseContract {
      * @param interval The new liquidation task interval.
      */
     updateLiquidationInterval(
-      interval: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      interval: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
   };
 }

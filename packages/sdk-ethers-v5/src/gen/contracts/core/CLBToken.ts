@@ -24,7 +24,6 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "../../common";
 
 export interface CLBTokenInterface extends utils.Interface {
@@ -73,91 +72,61 @@ export interface CLBTokenInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "balanceOf",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "balanceOfBatch",
-    values: [PromiseOrValue<string>[], PromiseOrValue<BigNumberish>[]]
+    values: [string[], BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "burn",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "description",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "exists",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "image",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
+  encodeFunctionData(functionFragment: "image", values: [BigNumberish]): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [string, string]
   ): string;
   encodeFunctionData(functionFragment: "market", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "mint",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, BigNumberish, BigNumberish, BytesLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "name",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
+  encodeFunctionData(functionFragment: "name", values: [BigNumberish]): string;
   encodeFunctionData(
     functionFragment: "safeBatchTransferFrom",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, string, BigNumberish[], BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, string, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "setApprovalForAll",
-    values: [PromiseOrValue<string>, PromiseOrValue<boolean>]
+    values: [string, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
-    values: [PromiseOrValue<BytesLike>]
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "totalSupplyBatch",
-    values: [PromiseOrValue<BigNumberish>[]]
+    values: [BigNumberish[]]
   ): string;
-  encodeFunctionData(
-    functionFragment: "uri",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
+  encodeFunctionData(functionFragment: "uri", values: [BigNumberish]): string;
 
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
@@ -297,8 +266,8 @@ export interface CLBToken extends BaseContract {
      * See {IERC1155-balanceOf}. Requirements: - `account` cannot be the zero address.
      */
     balanceOf(
-      account: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
+      account: string,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -306,8 +275,8 @@ export interface CLBToken extends BaseContract {
      * See {IERC1155-balanceOfBatch}. Requirements: - `accounts` and `ids` must have the same length.
      */
     balanceOfBatch(
-      accounts: PromiseOrValue<string>[],
-      ids: PromiseOrValue<BigNumberish>[],
+      accounts: string[],
+      ids: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
 
@@ -318,10 +287,10 @@ export interface CLBToken extends BaseContract {
      * @param id The token ID to burn.
      */
     burn(
-      from: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      from: string,
+      id: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -333,34 +302,25 @@ export interface CLBToken extends BaseContract {
      * Retrieves the description of a token.
      * @param id The token ID for which to retrieve the description.
      */
-    description(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+    description(id: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
 
     /**
      * Indicates whether any token exist with a given id, or not.
      */
-    exists(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    exists(id: BigNumberish, overrides?: CallOverrides): Promise<[boolean]>;
 
     /**
      * Retrieves the image URI of a token.
      * @param id The token ID for which to retrieve the image URI.
      */
-    image(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+    image(id: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
 
     /**
      * See {IERC1155-isApprovedForAll}.
      */
     isApprovedForAll(
-      account: PromiseOrValue<string>,
-      operator: PromiseOrValue<string>,
+      account: string,
+      operator: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -374,60 +334,57 @@ export interface CLBToken extends BaseContract {
      * @param to The address to which the minted tokens will be assigned.
      */
     mint(
-      to: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      to: string,
+      id: BigNumberish,
+      amount: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * Retrieves the name of a token.
      * @param id The token ID for which to retrieve the name.
      */
-    name(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+    name(id: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
 
     /**
      * See {IERC1155-safeBatchTransferFrom}.
      */
     safeBatchTransferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      ids: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      from: string,
+      to: string,
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * See {IERC1155-safeTransferFrom}.
      */
     safeTransferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      from: string,
+      to: string,
+      id: BigNumberish,
+      amount: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * See {IERC1155-setApprovalForAll}.
      */
     setApprovalForAll(
-      operator: PromiseOrValue<string>,
-      approved: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      operator: string,
+      approved: boolean,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * See {IERC165-supportsInterface}.
      */
     supportsInterface(
-      interfaceId: PromiseOrValue<BytesLike>,
+      interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -436,7 +393,7 @@ export interface CLBToken extends BaseContract {
      * @param id The token ID for which to retrieve the total supply.
      */
     totalSupply(
-      id: PromiseOrValue<BigNumberish>,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -445,25 +402,22 @@ export interface CLBToken extends BaseContract {
      * @param ids The token IDs for which to retrieve the total supply.
      */
     totalSupplyBatch(
-      ids: PromiseOrValue<BigNumberish>[],
+      ids: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
 
     /**
      * Returns the URI for token type `id`. If the `\{id\}` substring is present in the URI, it must be replaced by clients with the actual token type ID.
      */
-    uri(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+    uri(id: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
   };
 
   /**
    * See {IERC1155-balanceOf}. Requirements: - `account` cannot be the zero address.
    */
   balanceOf(
-    account: PromiseOrValue<string>,
-    id: PromiseOrValue<BigNumberish>,
+    account: string,
+    id: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -471,8 +425,8 @@ export interface CLBToken extends BaseContract {
    * See {IERC1155-balanceOfBatch}. Requirements: - `accounts` and `ids` must have the same length.
    */
   balanceOfBatch(
-    accounts: PromiseOrValue<string>[],
-    ids: PromiseOrValue<BigNumberish>[],
+    accounts: string[],
+    ids: BigNumberish[],
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
@@ -483,10 +437,10 @@ export interface CLBToken extends BaseContract {
    * @param id The token ID to burn.
    */
   burn(
-    from: PromiseOrValue<string>,
-    id: PromiseOrValue<BigNumberish>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    from: string,
+    id: BigNumberish,
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -498,34 +452,25 @@ export interface CLBToken extends BaseContract {
    * Retrieves the description of a token.
    * @param id The token ID for which to retrieve the description.
    */
-  description(
-    id: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<string>;
+  description(id: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   /**
    * Indicates whether any token exist with a given id, or not.
    */
-  exists(
-    id: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
+  exists(id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
   /**
    * Retrieves the image URI of a token.
    * @param id The token ID for which to retrieve the image URI.
    */
-  image(
-    id: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<string>;
+  image(id: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   /**
    * See {IERC1155-isApprovedForAll}.
    */
   isApprovedForAll(
-    account: PromiseOrValue<string>,
-    operator: PromiseOrValue<string>,
+    account: string,
+    operator: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -539,60 +484,57 @@ export interface CLBToken extends BaseContract {
    * @param to The address to which the minted tokens will be assigned.
    */
   mint(
-    to: PromiseOrValue<string>,
-    id: PromiseOrValue<BigNumberish>,
-    amount: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    to: string,
+    id: BigNumberish,
+    amount: BigNumberish,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * Retrieves the name of a token.
    * @param id The token ID for which to retrieve the name.
    */
-  name(
-    id: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<string>;
+  name(id: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   /**
    * See {IERC1155-safeBatchTransferFrom}.
    */
   safeBatchTransferFrom(
-    from: PromiseOrValue<string>,
-    to: PromiseOrValue<string>,
-    ids: PromiseOrValue<BigNumberish>[],
-    amounts: PromiseOrValue<BigNumberish>[],
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    from: string,
+    to: string,
+    ids: BigNumberish[],
+    amounts: BigNumberish[],
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * See {IERC1155-safeTransferFrom}.
    */
   safeTransferFrom(
-    from: PromiseOrValue<string>,
-    to: PromiseOrValue<string>,
-    id: PromiseOrValue<BigNumberish>,
-    amount: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    from: string,
+    to: string,
+    id: BigNumberish,
+    amount: BigNumberish,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * See {IERC1155-setApprovalForAll}.
    */
   setApprovalForAll(
-    operator: PromiseOrValue<string>,
-    approved: PromiseOrValue<boolean>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    operator: string,
+    approved: boolean,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * See {IERC165-supportsInterface}.
    */
   supportsInterface(
-    interfaceId: PromiseOrValue<BytesLike>,
+    interfaceId: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -600,35 +542,29 @@ export interface CLBToken extends BaseContract {
    * Total amount of tokens in with a given id.
    * @param id The token ID for which to retrieve the total supply.
    */
-  totalSupply(
-    id: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  totalSupply(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
   /**
    * Total amounts of tokens in with the given ids.
    * @param ids The token IDs for which to retrieve the total supply.
    */
   totalSupplyBatch(
-    ids: PromiseOrValue<BigNumberish>[],
+    ids: BigNumberish[],
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
   /**
    * Returns the URI for token type `id`. If the `\{id\}` substring is present in the URI, it must be replaced by clients with the actual token type ID.
    */
-  uri(
-    id: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<string>;
+  uri(id: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
     /**
      * See {IERC1155-balanceOf}. Requirements: - `account` cannot be the zero address.
      */
     balanceOf(
-      account: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
+      account: string,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -636,8 +572,8 @@ export interface CLBToken extends BaseContract {
      * See {IERC1155-balanceOfBatch}. Requirements: - `accounts` and `ids` must have the same length.
      */
     balanceOfBatch(
-      accounts: PromiseOrValue<string>[],
-      ids: PromiseOrValue<BigNumberish>[],
+      accounts: string[],
+      ids: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
@@ -648,9 +584,9 @@ export interface CLBToken extends BaseContract {
      * @param id The token ID to burn.
      */
     burn(
-      from: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
+      from: string,
+      id: BigNumberish,
+      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -663,34 +599,25 @@ export interface CLBToken extends BaseContract {
      * Retrieves the description of a token.
      * @param id The token ID for which to retrieve the description.
      */
-    description(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<string>;
+    description(id: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     /**
      * Indicates whether any token exist with a given id, or not.
      */
-    exists(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+    exists(id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
     /**
      * Retrieves the image URI of a token.
      * @param id The token ID for which to retrieve the image URI.
      */
-    image(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<string>;
+    image(id: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     /**
      * See {IERC1155-isApprovedForAll}.
      */
     isApprovedForAll(
-      account: PromiseOrValue<string>,
-      operator: PromiseOrValue<string>,
+      account: string,
+      operator: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -704,10 +631,10 @@ export interface CLBToken extends BaseContract {
      * @param to The address to which the minted tokens will be assigned.
      */
     mint(
-      to: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      to: string,
+      id: BigNumberish,
+      amount: BigNumberish,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -715,20 +642,17 @@ export interface CLBToken extends BaseContract {
      * Retrieves the name of a token.
      * @param id The token ID for which to retrieve the name.
      */
-    name(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<string>;
+    name(id: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     /**
      * See {IERC1155-safeBatchTransferFrom}.
      */
     safeBatchTransferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      ids: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
+      from: string,
+      to: string,
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -736,11 +660,11 @@ export interface CLBToken extends BaseContract {
      * See {IERC1155-safeTransferFrom}.
      */
     safeTransferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      from: string,
+      to: string,
+      id: BigNumberish,
+      amount: BigNumberish,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -748,8 +672,8 @@ export interface CLBToken extends BaseContract {
      * See {IERC1155-setApprovalForAll}.
      */
     setApprovalForAll(
-      operator: PromiseOrValue<string>,
-      approved: PromiseOrValue<boolean>,
+      operator: string,
+      approved: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -757,7 +681,7 @@ export interface CLBToken extends BaseContract {
      * See {IERC165-supportsInterface}.
      */
     supportsInterface(
-      interfaceId: PromiseOrValue<BytesLike>,
+      interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -766,7 +690,7 @@ export interface CLBToken extends BaseContract {
      * @param id The token ID for which to retrieve the total supply.
      */
     totalSupply(
-      id: PromiseOrValue<BigNumberish>,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -775,66 +699,63 @@ export interface CLBToken extends BaseContract {
      * @param ids The token IDs for which to retrieve the total supply.
      */
     totalSupplyBatch(
-      ids: PromiseOrValue<BigNumberish>[],
+      ids: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
     /**
      * Returns the URI for token type `id`. If the `\{id\}` substring is present in the URI, it must be replaced by clients with the actual token type ID.
      */
-    uri(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<string>;
+    uri(id: BigNumberish, overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
     "ApprovalForAll(address,address,bool)"(
-      account?: PromiseOrValue<string> | null,
-      operator?: PromiseOrValue<string> | null,
+      account?: string | null,
+      operator?: string | null,
       approved?: null
     ): ApprovalForAllEventFilter;
     ApprovalForAll(
-      account?: PromiseOrValue<string> | null,
-      operator?: PromiseOrValue<string> | null,
+      account?: string | null,
+      operator?: string | null,
       approved?: null
     ): ApprovalForAllEventFilter;
 
     "TransferBatch(address,address,address,uint256[],uint256[])"(
-      operator?: PromiseOrValue<string> | null,
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
+      operator?: string | null,
+      from?: string | null,
+      to?: string | null,
       ids?: null,
       values?: null
     ): TransferBatchEventFilter;
     TransferBatch(
-      operator?: PromiseOrValue<string> | null,
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
+      operator?: string | null,
+      from?: string | null,
+      to?: string | null,
       ids?: null,
       values?: null
     ): TransferBatchEventFilter;
 
     "TransferSingle(address,address,address,uint256,uint256)"(
-      operator?: PromiseOrValue<string> | null,
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
+      operator?: string | null,
+      from?: string | null,
+      to?: string | null,
       id?: null,
       value?: null
     ): TransferSingleEventFilter;
     TransferSingle(
-      operator?: PromiseOrValue<string> | null,
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
+      operator?: string | null,
+      from?: string | null,
+      to?: string | null,
       id?: null,
       value?: null
     ): TransferSingleEventFilter;
 
     "URI(string,uint256)"(
       value?: null,
-      id?: PromiseOrValue<BigNumberish> | null
+      id?: BigNumberish | null
     ): URIEventFilter;
-    URI(value?: null, id?: PromiseOrValue<BigNumberish> | null): URIEventFilter;
+    URI(value?: null, id?: BigNumberish | null): URIEventFilter;
   };
 
   estimateGas: {
@@ -842,8 +763,8 @@ export interface CLBToken extends BaseContract {
      * See {IERC1155-balanceOf}. Requirements: - `account` cannot be the zero address.
      */
     balanceOf(
-      account: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
+      account: string,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -851,8 +772,8 @@ export interface CLBToken extends BaseContract {
      * See {IERC1155-balanceOfBatch}. Requirements: - `accounts` and `ids` must have the same length.
      */
     balanceOfBatch(
-      accounts: PromiseOrValue<string>[],
-      ids: PromiseOrValue<BigNumberish>[],
+      accounts: string[],
+      ids: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -863,10 +784,10 @@ export interface CLBToken extends BaseContract {
      * @param id The token ID to burn.
      */
     burn(
-      from: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      from: string,
+      id: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -879,33 +800,27 @@ export interface CLBToken extends BaseContract {
      * @param id The token ID for which to retrieve the description.
      */
     description(
-      id: PromiseOrValue<BigNumberish>,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     /**
      * Indicates whether any token exist with a given id, or not.
      */
-    exists(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    exists(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * Retrieves the image URI of a token.
      * @param id The token ID for which to retrieve the image URI.
      */
-    image(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    image(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * See {IERC1155-isApprovedForAll}.
      */
     isApprovedForAll(
-      account: PromiseOrValue<string>,
-      operator: PromiseOrValue<string>,
+      account: string,
+      operator: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -919,60 +834,57 @@ export interface CLBToken extends BaseContract {
      * @param to The address to which the minted tokens will be assigned.
      */
     mint(
-      to: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      to: string,
+      id: BigNumberish,
+      amount: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * Retrieves the name of a token.
      * @param id The token ID for which to retrieve the name.
      */
-    name(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    name(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * See {IERC1155-safeBatchTransferFrom}.
      */
     safeBatchTransferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      ids: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      from: string,
+      to: string,
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * See {IERC1155-safeTransferFrom}.
      */
     safeTransferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      from: string,
+      to: string,
+      id: BigNumberish,
+      amount: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * See {IERC1155-setApprovalForAll}.
      */
     setApprovalForAll(
-      operator: PromiseOrValue<string>,
-      approved: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      operator: string,
+      approved: boolean,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * See {IERC165-supportsInterface}.
      */
     supportsInterface(
-      interfaceId: PromiseOrValue<BytesLike>,
+      interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -981,7 +893,7 @@ export interface CLBToken extends BaseContract {
      * @param id The token ID for which to retrieve the total supply.
      */
     totalSupply(
-      id: PromiseOrValue<BigNumberish>,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -990,17 +902,14 @@ export interface CLBToken extends BaseContract {
      * @param ids The token IDs for which to retrieve the total supply.
      */
     totalSupplyBatch(
-      ids: PromiseOrValue<BigNumberish>[],
+      ids: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     /**
      * Returns the URI for token type `id`. If the `\{id\}` substring is present in the URI, it must be replaced by clients with the actual token type ID.
      */
-    uri(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    uri(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -1008,8 +917,8 @@ export interface CLBToken extends BaseContract {
      * See {IERC1155-balanceOf}. Requirements: - `account` cannot be the zero address.
      */
     balanceOf(
-      account: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
+      account: string,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1017,8 +926,8 @@ export interface CLBToken extends BaseContract {
      * See {IERC1155-balanceOfBatch}. Requirements: - `accounts` and `ids` must have the same length.
      */
     balanceOfBatch(
-      accounts: PromiseOrValue<string>[],
-      ids: PromiseOrValue<BigNumberish>[],
+      accounts: string[],
+      ids: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1029,10 +938,10 @@ export interface CLBToken extends BaseContract {
      * @param id The token ID to burn.
      */
     burn(
-      from: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      from: string,
+      id: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1045,7 +954,7 @@ export interface CLBToken extends BaseContract {
      * @param id The token ID for which to retrieve the description.
      */
     description(
-      id: PromiseOrValue<BigNumberish>,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1053,7 +962,7 @@ export interface CLBToken extends BaseContract {
      * Indicates whether any token exist with a given id, or not.
      */
     exists(
-      id: PromiseOrValue<BigNumberish>,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1062,7 +971,7 @@ export interface CLBToken extends BaseContract {
      * @param id The token ID for which to retrieve the image URI.
      */
     image(
-      id: PromiseOrValue<BigNumberish>,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1070,8 +979,8 @@ export interface CLBToken extends BaseContract {
      * See {IERC1155-isApprovedForAll}.
      */
     isApprovedForAll(
-      account: PromiseOrValue<string>,
-      operator: PromiseOrValue<string>,
+      account: string,
+      operator: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1085,11 +994,11 @@ export interface CLBToken extends BaseContract {
      * @param to The address to which the minted tokens will be assigned.
      */
     mint(
-      to: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      to: string,
+      id: BigNumberish,
+      amount: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1097,7 +1006,7 @@ export interface CLBToken extends BaseContract {
      * @param id The token ID for which to retrieve the name.
      */
     name(
-      id: PromiseOrValue<BigNumberish>,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1105,40 +1014,40 @@ export interface CLBToken extends BaseContract {
      * See {IERC1155-safeBatchTransferFrom}.
      */
     safeBatchTransferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      ids: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      from: string,
+      to: string,
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      * See {IERC1155-safeTransferFrom}.
      */
     safeTransferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      from: string,
+      to: string,
+      id: BigNumberish,
+      amount: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      * See {IERC1155-setApprovalForAll}.
      */
     setApprovalForAll(
-      operator: PromiseOrValue<string>,
-      approved: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      operator: string,
+      approved: boolean,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      * See {IERC165-supportsInterface}.
      */
     supportsInterface(
-      interfaceId: PromiseOrValue<BytesLike>,
+      interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1147,7 +1056,7 @@ export interface CLBToken extends BaseContract {
      * @param id The token ID for which to retrieve the total supply.
      */
     totalSupply(
-      id: PromiseOrValue<BigNumberish>,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1156,7 +1065,7 @@ export interface CLBToken extends BaseContract {
      * @param ids The token IDs for which to retrieve the total supply.
      */
     totalSupplyBatch(
-      ids: PromiseOrValue<BigNumberish>[],
+      ids: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1164,7 +1073,7 @@ export interface CLBToken extends BaseContract {
      * Returns the URI for token type `id`. If the `\{id\}` substring is present in the URI, it must be replaced by clients with the actual token type ID.
      */
     uri(
-      id: PromiseOrValue<BigNumberish>,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

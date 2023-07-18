@@ -18,16 +18,15 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "../../common";
 
 export type LpReceiptStruct = {
-  id: PromiseOrValue<BigNumberish>;
-  oracleVersion: PromiseOrValue<BigNumberish>;
-  amount: PromiseOrValue<BigNumberish>;
-  recipient: PromiseOrValue<string>;
-  action: PromiseOrValue<BigNumberish>;
-  tradingFeeRate: PromiseOrValue<BigNumberish>;
+  id: BigNumberish;
+  oracleVersion: BigNumberish;
+  amount: BigNumberish;
+  recipient: string;
+  action: BigNumberish;
+  tradingFeeRate: BigNumberish;
 };
 
 export type LpReceiptStructOutput = [
@@ -48,11 +47,11 @@ export type LpReceiptStructOutput = [
 
 export declare namespace IMarketLiquidity {
   export type ClaimableLiquidityStruct = {
-    mintingTokenAmountRequested: PromiseOrValue<BigNumberish>;
-    mintingCLBTokenAmount: PromiseOrValue<BigNumberish>;
-    burningCLBTokenAmountRequested: PromiseOrValue<BigNumberish>;
-    burningCLBTokenAmount: PromiseOrValue<BigNumberish>;
-    burningTokenAmount: PromiseOrValue<BigNumberish>;
+    mintingTokenAmountRequested: BigNumberish;
+    mintingCLBTokenAmount: BigNumberish;
+    burningCLBTokenAmountRequested: BigNumberish;
+    burningCLBTokenAmount: BigNumberish;
+    burningTokenAmount: BigNumberish;
   };
 
   export type ClaimableLiquidityStructOutput = [
@@ -70,10 +69,10 @@ export declare namespace IMarketLiquidity {
   };
 
   export type LiquidityBinStatusStruct = {
-    liquidity: PromiseOrValue<BigNumberish>;
-    freeLiquidity: PromiseOrValue<BigNumberish>;
-    binValue: PromiseOrValue<BigNumberish>;
-    tradingFeeRate: PromiseOrValue<BigNumberish>;
+    liquidity: BigNumberish;
+    freeLiquidity: BigNumberish;
+    binValue: BigNumberish;
+    tradingFeeRate: BigNumberish;
   };
 
   export type LiquidityBinStatusStructOutput = [
@@ -91,10 +90,10 @@ export declare namespace IMarketLiquidity {
 
 export declare namespace ChromaticLens {
   export type CLBBalanceStruct = {
-    tokenId: PromiseOrValue<BigNumberish>;
-    balance: PromiseOrValue<BigNumberish>;
-    totalSupply: PromiseOrValue<BigNumberish>;
-    binValue: PromiseOrValue<BigNumberish>;
+    tokenId: BigNumberish;
+    balance: BigNumberish;
+    totalSupply: BigNumberish;
+    binValue: BigNumberish;
   };
 
   export type CLBBalanceStructOutput = [
@@ -112,9 +111,9 @@ export declare namespace ChromaticLens {
 
 export declare namespace IOracleProvider {
   export type OracleVersionStruct = {
-    version: PromiseOrValue<BigNumberish>;
-    timestamp: PromiseOrValue<BigNumberish>;
-    price: PromiseOrValue<BigNumberish>;
+    version: BigNumberish;
+    timestamp: BigNumberish;
+    price: BigNumberish;
   };
 
   export type OracleVersionStructOutput = [BigNumber, BigNumber, BigNumber] & {
@@ -144,27 +143,23 @@ export interface ChromaticLensInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "claimableLiquidity",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "clbBalanceOf",
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "liquidityBinStatuses",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "lpReceipts",
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "oracleVersion",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
 
   decodeFunctionResult(
@@ -222,9 +217,9 @@ export interface ChromaticLens extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
      */
     claimableLiquidity(
-      market: PromiseOrValue<string>,
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      _oracleVersion: PromiseOrValue<BigNumberish>,
+      market: string,
+      tradingFeeRate: BigNumberish,
+      _oracleVersion: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[IMarketLiquidity.ClaimableLiquidityStructOutput]>;
 
@@ -234,8 +229,8 @@ export interface ChromaticLens extends BaseContract {
      * @param owner The address of the CLB token owner.
      */
     clbBalanceOf(
-      market: PromiseOrValue<string>,
-      owner: PromiseOrValue<string>,
+      market: string,
+      owner: string,
       overrides?: CallOverrides
     ): Promise<[ChromaticLens.CLBBalanceStructOutput[]]>;
 
@@ -244,7 +239,7 @@ export interface ChromaticLens extends BaseContract {
      * @param market The Chromatic Market contract for which liquidity bin statuses are retrieved.
      */
     liquidityBinStatuses(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<[IMarketLiquidity.LiquidityBinStatusStructOutput[]]>;
 
@@ -254,8 +249,8 @@ export interface ChromaticLens extends BaseContract {
      * @param owner The address of the LP token owner.
      */
     lpReceipts(
-      market: PromiseOrValue<string>,
-      owner: PromiseOrValue<string>,
+      market: string,
+      owner: string,
       overrides?: CallOverrides
     ): Promise<[LpReceiptStructOutput[]] & { result: LpReceiptStructOutput[] }>;
 
@@ -265,8 +260,8 @@ export interface ChromaticLens extends BaseContract {
      * @param version An oracle versions.
      */
     oracleVersion(
-      market: PromiseOrValue<string>,
-      version: PromiseOrValue<BigNumberish>,
+      market: string,
+      version: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[IOracleProvider.OracleVersionStructOutput]>;
   };
@@ -278,9 +273,9 @@ export interface ChromaticLens extends BaseContract {
    * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
    */
   claimableLiquidity(
-    market: PromiseOrValue<string>,
-    tradingFeeRate: PromiseOrValue<BigNumberish>,
-    _oracleVersion: PromiseOrValue<BigNumberish>,
+    market: string,
+    tradingFeeRate: BigNumberish,
+    _oracleVersion: BigNumberish,
     overrides?: CallOverrides
   ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput>;
 
@@ -290,8 +285,8 @@ export interface ChromaticLens extends BaseContract {
    * @param owner The address of the CLB token owner.
    */
   clbBalanceOf(
-    market: PromiseOrValue<string>,
-    owner: PromiseOrValue<string>,
+    market: string,
+    owner: string,
     overrides?: CallOverrides
   ): Promise<ChromaticLens.CLBBalanceStructOutput[]>;
 
@@ -300,7 +295,7 @@ export interface ChromaticLens extends BaseContract {
    * @param market The Chromatic Market contract for which liquidity bin statuses are retrieved.
    */
   liquidityBinStatuses(
-    market: PromiseOrValue<string>,
+    market: string,
     overrides?: CallOverrides
   ): Promise<IMarketLiquidity.LiquidityBinStatusStructOutput[]>;
 
@@ -310,8 +305,8 @@ export interface ChromaticLens extends BaseContract {
    * @param owner The address of the LP token owner.
    */
   lpReceipts(
-    market: PromiseOrValue<string>,
-    owner: PromiseOrValue<string>,
+    market: string,
+    owner: string,
     overrides?: CallOverrides
   ): Promise<LpReceiptStructOutput[]>;
 
@@ -321,8 +316,8 @@ export interface ChromaticLens extends BaseContract {
    * @param version An oracle versions.
    */
   oracleVersion(
-    market: PromiseOrValue<string>,
-    version: PromiseOrValue<BigNumberish>,
+    market: string,
+    version: BigNumberish,
     overrides?: CallOverrides
   ): Promise<IOracleProvider.OracleVersionStructOutput>;
 
@@ -334,9 +329,9 @@ export interface ChromaticLens extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
      */
     claimableLiquidity(
-      market: PromiseOrValue<string>,
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      _oracleVersion: PromiseOrValue<BigNumberish>,
+      market: string,
+      tradingFeeRate: BigNumberish,
+      _oracleVersion: BigNumberish,
       overrides?: CallOverrides
     ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput>;
 
@@ -346,8 +341,8 @@ export interface ChromaticLens extends BaseContract {
      * @param owner The address of the CLB token owner.
      */
     clbBalanceOf(
-      market: PromiseOrValue<string>,
-      owner: PromiseOrValue<string>,
+      market: string,
+      owner: string,
       overrides?: CallOverrides
     ): Promise<ChromaticLens.CLBBalanceStructOutput[]>;
 
@@ -356,7 +351,7 @@ export interface ChromaticLens extends BaseContract {
      * @param market The Chromatic Market contract for which liquidity bin statuses are retrieved.
      */
     liquidityBinStatuses(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<IMarketLiquidity.LiquidityBinStatusStructOutput[]>;
 
@@ -366,8 +361,8 @@ export interface ChromaticLens extends BaseContract {
      * @param owner The address of the LP token owner.
      */
     lpReceipts(
-      market: PromiseOrValue<string>,
-      owner: PromiseOrValue<string>,
+      market: string,
+      owner: string,
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput[]>;
 
@@ -377,8 +372,8 @@ export interface ChromaticLens extends BaseContract {
      * @param version An oracle versions.
      */
     oracleVersion(
-      market: PromiseOrValue<string>,
-      version: PromiseOrValue<BigNumberish>,
+      market: string,
+      version: BigNumberish,
       overrides?: CallOverrides
     ): Promise<IOracleProvider.OracleVersionStructOutput>;
   };
@@ -393,9 +388,9 @@ export interface ChromaticLens extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
      */
     claimableLiquidity(
-      market: PromiseOrValue<string>,
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      _oracleVersion: PromiseOrValue<BigNumberish>,
+      market: string,
+      tradingFeeRate: BigNumberish,
+      _oracleVersion: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -405,8 +400,8 @@ export interface ChromaticLens extends BaseContract {
      * @param owner The address of the CLB token owner.
      */
     clbBalanceOf(
-      market: PromiseOrValue<string>,
-      owner: PromiseOrValue<string>,
+      market: string,
+      owner: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -415,7 +410,7 @@ export interface ChromaticLens extends BaseContract {
      * @param market The Chromatic Market contract for which liquidity bin statuses are retrieved.
      */
     liquidityBinStatuses(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -425,8 +420,8 @@ export interface ChromaticLens extends BaseContract {
      * @param owner The address of the LP token owner.
      */
     lpReceipts(
-      market: PromiseOrValue<string>,
-      owner: PromiseOrValue<string>,
+      market: string,
+      owner: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -436,8 +431,8 @@ export interface ChromaticLens extends BaseContract {
      * @param version An oracle versions.
      */
     oracleVersion(
-      market: PromiseOrValue<string>,
-      version: PromiseOrValue<BigNumberish>,
+      market: string,
+      version: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -450,9 +445,9 @@ export interface ChromaticLens extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
      */
     claimableLiquidity(
-      market: PromiseOrValue<string>,
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      _oracleVersion: PromiseOrValue<BigNumberish>,
+      market: string,
+      tradingFeeRate: BigNumberish,
+      _oracleVersion: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -462,8 +457,8 @@ export interface ChromaticLens extends BaseContract {
      * @param owner The address of the CLB token owner.
      */
     clbBalanceOf(
-      market: PromiseOrValue<string>,
-      owner: PromiseOrValue<string>,
+      market: string,
+      owner: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -472,7 +467,7 @@ export interface ChromaticLens extends BaseContract {
      * @param market The Chromatic Market contract for which liquidity bin statuses are retrieved.
      */
     liquidityBinStatuses(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -482,8 +477,8 @@ export interface ChromaticLens extends BaseContract {
      * @param owner The address of the LP token owner.
      */
     lpReceipts(
-      market: PromiseOrValue<string>,
-      owner: PromiseOrValue<string>,
+      market: string,
+      owner: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -493,8 +488,8 @@ export interface ChromaticLens extends BaseContract {
      * @param version An oracle versions.
      */
     oracleVersion(
-      market: PromiseOrValue<string>,
-      version: PromiseOrValue<BigNumberish>,
+      market: string,
+      version: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

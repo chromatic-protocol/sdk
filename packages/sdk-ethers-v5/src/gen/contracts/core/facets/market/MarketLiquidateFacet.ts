@@ -24,12 +24,11 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "../../../../common";
 
 export type BinMarginStruct = {
-  tradingFeeRate: PromiseOrValue<BigNumberish>;
-  amount: PromiseOrValue<BigNumberish>;
+  tradingFeeRate: BigNumberish;
+  amount: BigNumberish;
 };
 
 export type BinMarginStructOutput = [number, BigNumber] & {
@@ -38,17 +37,17 @@ export type BinMarginStructOutput = [number, BigNumber] & {
 };
 
 export type PositionStruct = {
-  id: PromiseOrValue<BigNumberish>;
-  openVersion: PromiseOrValue<BigNumberish>;
-  closeVersion: PromiseOrValue<BigNumberish>;
-  qty: PromiseOrValue<BigNumberish>;
-  leverage: PromiseOrValue<BigNumberish>;
-  openTimestamp: PromiseOrValue<BigNumberish>;
-  closeTimestamp: PromiseOrValue<BigNumberish>;
-  takerMargin: PromiseOrValue<BigNumberish>;
-  owner: PromiseOrValue<string>;
+  id: BigNumberish;
+  openVersion: BigNumberish;
+  closeVersion: BigNumberish;
+  qty: BigNumberish;
+  leverage: BigNumberish;
+  openTimestamp: BigNumberish;
+  closeTimestamp: BigNumberish;
+  takerMargin: BigNumberish;
+  owner: string;
   _binMargins: BinMarginStruct[];
-  _feeProtocol: PromiseOrValue<BigNumberish>;
+  _feeProtocol: BigNumberish;
 };
 
 export type PositionStructOutput = [
@@ -95,27 +94,19 @@ export interface MarketLiquidateFacetInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "checkClaimPosition",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "checkLiquidation",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "claimPosition",
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [BigNumberish, string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "liquidate",
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [BigNumberish, string, BigNumberish]
   ): string;
 
   decodeFunctionResult(
@@ -133,8 +124,8 @@ export interface MarketLiquidateFacetInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "liquidate", data: BytesLike): Result;
 
   events: {
-    "ClaimPositionByKeeper(address,int256,uint256,uint256,tuple)": EventFragment;
-    "Liquidate(address,int256,uint256,uint256,tuple)": EventFragment;
+    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ClaimPositionByKeeper"): EventFragment;
@@ -202,7 +193,7 @@ export interface MarketLiquidateFacet extends BaseContract {
      * @param positionId The ID of the position to check.
      */
     checkClaimPosition(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -211,7 +202,7 @@ export interface MarketLiquidateFacet extends BaseContract {
      * @param positionId The ID of the position to check.
      */
     checkLiquidation(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean] & { _liquidate: boolean }>;
 
@@ -222,10 +213,10 @@ export interface MarketLiquidateFacet extends BaseContract {
      * @param positionId The ID of the position to claim.
      */
     claimPosition(
-      positionId: PromiseOrValue<BigNumberish>,
-      keeper: PromiseOrValue<string>,
-      keeperFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      keeper: string,
+      keeperFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -235,10 +226,10 @@ export interface MarketLiquidateFacet extends BaseContract {
      * @param positionId The ID of the position to liquidate.
      */
     liquidate(
-      positionId: PromiseOrValue<BigNumberish>,
-      keeper: PromiseOrValue<string>,
-      keeperFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      keeper: string,
+      keeperFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
   };
 
@@ -247,7 +238,7 @@ export interface MarketLiquidateFacet extends BaseContract {
    * @param positionId The ID of the position to check.
    */
   checkClaimPosition(
-    positionId: PromiseOrValue<BigNumberish>,
+    positionId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -256,7 +247,7 @@ export interface MarketLiquidateFacet extends BaseContract {
    * @param positionId The ID of the position to check.
    */
   checkLiquidation(
-    positionId: PromiseOrValue<BigNumberish>,
+    positionId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -267,10 +258,10 @@ export interface MarketLiquidateFacet extends BaseContract {
    * @param positionId The ID of the position to claim.
    */
   claimPosition(
-    positionId: PromiseOrValue<BigNumberish>,
-    keeper: PromiseOrValue<string>,
-    keeperFee: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    positionId: BigNumberish,
+    keeper: string,
+    keeperFee: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -280,10 +271,10 @@ export interface MarketLiquidateFacet extends BaseContract {
    * @param positionId The ID of the position to liquidate.
    */
   liquidate(
-    positionId: PromiseOrValue<BigNumberish>,
-    keeper: PromiseOrValue<string>,
-    keeperFee: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    positionId: BigNumberish,
+    keeper: string,
+    keeperFee: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   callStatic: {
@@ -292,7 +283,7 @@ export interface MarketLiquidateFacet extends BaseContract {
      * @param positionId The ID of the position to check.
      */
     checkClaimPosition(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -301,7 +292,7 @@ export interface MarketLiquidateFacet extends BaseContract {
      * @param positionId The ID of the position to check.
      */
     checkLiquidation(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -312,9 +303,9 @@ export interface MarketLiquidateFacet extends BaseContract {
      * @param positionId The ID of the position to claim.
      */
     claimPosition(
-      positionId: PromiseOrValue<BigNumberish>,
-      keeper: PromiseOrValue<string>,
-      keeperFee: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
+      keeper: string,
+      keeperFee: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -325,40 +316,40 @@ export interface MarketLiquidateFacet extends BaseContract {
      * @param positionId The ID of the position to liquidate.
      */
     liquidate(
-      positionId: PromiseOrValue<BigNumberish>,
-      keeper: PromiseOrValue<string>,
-      keeperFee: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
+      keeper: string,
+      keeperFee: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
   };
 
   filters: {
-    "ClaimPositionByKeeper(address,int256,uint256,uint256,tuple)"(
-      account?: PromiseOrValue<string> | null,
-      pnl?: PromiseOrValue<BigNumberish> | null,
-      interest?: PromiseOrValue<BigNumberish> | null,
+    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
       usedKeeperFee?: null,
       position?: null
     ): ClaimPositionByKeeperEventFilter;
     ClaimPositionByKeeper(
-      account?: PromiseOrValue<string> | null,
-      pnl?: PromiseOrValue<BigNumberish> | null,
-      interest?: PromiseOrValue<BigNumberish> | null,
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
       usedKeeperFee?: null,
       position?: null
     ): ClaimPositionByKeeperEventFilter;
 
-    "Liquidate(address,int256,uint256,uint256,tuple)"(
-      account?: PromiseOrValue<string> | null,
-      pnl?: PromiseOrValue<BigNumberish> | null,
-      interest?: PromiseOrValue<BigNumberish> | null,
+    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
       usedKeeperFee?: null,
       position?: null
     ): LiquidateEventFilter;
     Liquidate(
-      account?: PromiseOrValue<string> | null,
-      pnl?: PromiseOrValue<BigNumberish> | null,
-      interest?: PromiseOrValue<BigNumberish> | null,
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
       usedKeeperFee?: null,
       position?: null
     ): LiquidateEventFilter;
@@ -370,7 +361,7 @@ export interface MarketLiquidateFacet extends BaseContract {
      * @param positionId The ID of the position to check.
      */
     checkClaimPosition(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -379,7 +370,7 @@ export interface MarketLiquidateFacet extends BaseContract {
      * @param positionId The ID of the position to check.
      */
     checkLiquidation(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -390,10 +381,10 @@ export interface MarketLiquidateFacet extends BaseContract {
      * @param positionId The ID of the position to claim.
      */
     claimPosition(
-      positionId: PromiseOrValue<BigNumberish>,
-      keeper: PromiseOrValue<string>,
-      keeperFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      keeper: string,
+      keeperFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -403,10 +394,10 @@ export interface MarketLiquidateFacet extends BaseContract {
      * @param positionId The ID of the position to liquidate.
      */
     liquidate(
-      positionId: PromiseOrValue<BigNumberish>,
-      keeper: PromiseOrValue<string>,
-      keeperFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      keeper: string,
+      keeperFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
   };
 
@@ -416,7 +407,7 @@ export interface MarketLiquidateFacet extends BaseContract {
      * @param positionId The ID of the position to check.
      */
     checkClaimPosition(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -425,7 +416,7 @@ export interface MarketLiquidateFacet extends BaseContract {
      * @param positionId The ID of the position to check.
      */
     checkLiquidation(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -436,10 +427,10 @@ export interface MarketLiquidateFacet extends BaseContract {
      * @param positionId The ID of the position to claim.
      */
     claimPosition(
-      positionId: PromiseOrValue<BigNumberish>,
-      keeper: PromiseOrValue<string>,
-      keeperFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      keeper: string,
+      keeperFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -449,10 +440,10 @@ export interface MarketLiquidateFacet extends BaseContract {
      * @param positionId The ID of the position to liquidate.
      */
     liquidate(
-      positionId: PromiseOrValue<BigNumberish>,
-      keeper: PromiseOrValue<string>,
-      keeperFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      keeper: string,
+      keeperFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
   };
 }

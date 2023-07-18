@@ -193,7 +193,7 @@ export class ChromaticLens {
     return await handleBytesError(async () => {
       return await this.getContract().lpReceipts(
         marketAddress,
-        owner === undefined ? this._client.signer.getAddress() : owner!
+        owner === undefined ? await this._client.signer.getAddress() : owner!
       );
     }, this._client.provider);
   }

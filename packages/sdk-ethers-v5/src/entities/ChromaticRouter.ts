@@ -163,7 +163,7 @@ export class ChromaticRouter {
           marketAddress,
           param.feeRate,
           param.amount,
-          receipient || this._client.signer.getAddress()
+          receipient || await this._client.signer.getAddress()
         );
       return await tx.wait();
     }, this._client.provider);
@@ -222,7 +222,7 @@ export class ChromaticRouter {
           marketAddress,
           BigNumber.from(param.feeRate),
           BigNumber.from(param.clbTokenAmount),
-          param.receipient || this._client.signer.getAddress()
+          param.receipient || await this._client.signer.getAddress()
         );
       return await tx.wait();
     }, this._client.provider);

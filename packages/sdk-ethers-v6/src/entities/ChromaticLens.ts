@@ -8,7 +8,7 @@ import { decodeTokenId, encodeTokenId, handleBytesError } from "../utils/helpers
  */
 export interface LiquidityBinResult {
   tradingFeeRate: bigint;
-  clbValue: number;
+  clbValue: bigint;
   liquidity: bigint;
   freeLiquidity: bigint;
 }
@@ -22,7 +22,7 @@ export interface OwnedLiquidityBinResult {
   freeLiquidity: bigint;
   clbBalance: bigint;
   clbTotalSupply: bigint;
-  clbValue: number;
+  clbValue: bigint;
   removableRate: number;
 }
 
@@ -76,15 +76,18 @@ export class ChromaticLens {
       const clbToken = await this._client.market().clbToken(marketAddress);
       const tokenIds = totalLiquidityBins.map((bin) => encodeTokenId(Number(bin.tradingFeeRate)));
 
-      const totalSupplies = await clbToken.totalSupplyBatch(tokenIds);
+      const [totalSupplies, clbTokenDecimals] = await Promise.all([
+        clbToken.totalSupplyBatch(tokenIds),
+        clbToken.decimals(),
+      ]);
 
       return totalLiquidityBins.map((bin, index) => {
         return {
           tradingFeeRate: bin.tradingFeeRate,
           clbValue:
             totalSupplies[index] == 0n
-              ? 0
-              : Number(bin.liquidity.toString()) / Number(totalSupplies[index].toString()),
+              ? 0n
+              : (bin.liquidity * 10n ** clbTokenDecimals) / totalSupplies[index],
           liquidity: bin.liquidity,
           clbTokenTotalSupply: totalSupplies[index],
           freeLiquidity: bin.freeLiquidity,
@@ -109,12 +112,15 @@ export class ChromaticLens {
       }
 
       //
-
-      const totalLiquidityBins = await this.getContract().liquidityBinStatuses(marketAddress);
-      const ownedLiquidities = await this.getContract().clbBalanceOf(
-        marketAddress,
-        ownerAddress ?? (await this._client.signer.getAddress())
-      );
+      const clbToken = await this._client.market().clbToken(marketAddress);
+      const [clbTokenDecimals, totalLiquidityBins, ownedLiquidities] = await Promise.all([
+        clbToken.decimals(),
+        this.getContract().liquidityBinStatuses(marketAddress),
+        this.getContract().clbBalanceOf(
+          marketAddress,
+          ownerAddress ?? (await this._client.signer.getAddress())
+        ),
+      ]);
 
       // tokenId parsing then get tradingFee
       // data merge mapping by tradingFee
@@ -135,8 +141,8 @@ export class ChromaticLens {
           clbTotalSupply: ownedBin.totalSupply,
           clbValue:
             ownedBin.totalSupply == 0n
-              ? 0
-              : Number(ownedBin.binValue.toString() || 0) / Number(ownedBin.totalSupply.toString()),
+              ? 0n
+              : ((ownedBin.binValue || 0n) * 10n ** clbTokenDecimals) / ownedBin.totalSupply,
           removableRate:
             targetTotalLiqBin.liquidity == 0n
               ? 0

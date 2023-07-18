@@ -141,7 +141,7 @@ describe("router sdk test", () => {
     }
     console.log("getAccount", account);
 
-    const usdcBalance = await tokenContract.balanceOf(signer.getAddress());
+    const usdcBalance = await tokenContract.balanceOf(await signer.getAddress());
     console.log(usdcBalance);
     await waitTxMining(async () => {
       const tx = await tokenContract.transfer(account, usdcBalance);

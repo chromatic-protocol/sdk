@@ -24,16 +24,15 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "../../common";
 
 export type LpReceiptStruct = {
-  id: PromiseOrValue<BigNumberish>;
-  oracleVersion: PromiseOrValue<BigNumberish>;
-  amount: PromiseOrValue<BigNumberish>;
-  recipient: PromiseOrValue<string>;
-  action: PromiseOrValue<BigNumberish>;
-  tradingFeeRate: PromiseOrValue<BigNumberish>;
+  id: BigNumberish;
+  oracleVersion: BigNumberish;
+  amount: BigNumberish;
+  recipient: string;
+  action: BigNumberish;
+  tradingFeeRate: BigNumberish;
 };
 
 export type LpReceiptStructOutput = [
@@ -53,8 +52,8 @@ export type LpReceiptStructOutput = [
 };
 
 export type BinMarginStruct = {
-  tradingFeeRate: PromiseOrValue<BigNumberish>;
-  amount: PromiseOrValue<BigNumberish>;
+  tradingFeeRate: BigNumberish;
+  amount: BigNumberish;
 };
 
 export type BinMarginStructOutput = [number, BigNumber] & {
@@ -63,17 +62,17 @@ export type BinMarginStructOutput = [number, BigNumber] & {
 };
 
 export type PositionStruct = {
-  id: PromiseOrValue<BigNumberish>;
-  openVersion: PromiseOrValue<BigNumberish>;
-  closeVersion: PromiseOrValue<BigNumberish>;
-  qty: PromiseOrValue<BigNumberish>;
-  leverage: PromiseOrValue<BigNumberish>;
-  openTimestamp: PromiseOrValue<BigNumberish>;
-  closeTimestamp: PromiseOrValue<BigNumberish>;
-  takerMargin: PromiseOrValue<BigNumberish>;
-  owner: PromiseOrValue<string>;
+  id: BigNumberish;
+  openVersion: BigNumberish;
+  closeVersion: BigNumberish;
+  qty: BigNumberish;
+  leverage: BigNumberish;
+  openTimestamp: BigNumberish;
+  closeTimestamp: BigNumberish;
+  takerMargin: BigNumberish;
+  owner: string;
   _binMargins: BinMarginStruct[];
-  _feeProtocol: PromiseOrValue<BigNumberish>;
+  _feeProtocol: BigNumberish;
 };
 
 export type PositionStructOutput = [
@@ -164,61 +163,43 @@ export interface ChromaticRouterInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "addLiquidity",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>
-    ]
+    values: [string, BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "addLiquidityBatch",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[]
-    ]
+    values: [string, string, BigNumberish[], BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "addLiquidityBatchCallback",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, string, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "addLiquidityCallback",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, string, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "claimLiquidity",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "claimLiquidityBatch",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>[]]
+    values: [string, BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "claimLiquidityBatchCallback",
-    values: [PromiseOrValue<BigNumberish>[], PromiseOrValue<BytesLike>]
+    values: [BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "claimLiquidityCallback",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BytesLike>]
+    values: [BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "claimPosition",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "closePosition",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "createAccount",
@@ -230,57 +211,39 @@ export interface ChromaticRouterInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getLpReceiptIds(address,address)",
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "getLpReceiptIds(address)",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "openPosition",
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
     ]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "removeLiquidity",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>
-    ]
+    values: [string, BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "removeLiquidityBatch",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[]
-    ]
+    values: [string, string, BigNumberish[], BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "removeLiquidityBatchCallback",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "removeLiquidityCallback",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -288,23 +251,23 @@ export interface ChromaticRouterInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawLiquidity",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawLiquidityBatch",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>[]]
+    values: [string, BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawLiquidityBatchCallback",
-    values: [PromiseOrValue<BigNumberish>[], PromiseOrValue<BytesLike>]
+    values: [BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawLiquidityCallback",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BytesLike>]
+    values: [BigNumberish, BytesLike]
   ): string;
 
   decodeFunctionResult(
@@ -473,11 +436,11 @@ export interface ChromaticRouter extends BaseContract {
      * @param recipient The recipient address.
      */
     addLiquidity(
-      market: PromiseOrValue<string>,
-      feeRate: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      feeRate: BigNumberish,
+      amount: BigNumberish,
+      recipient: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -488,11 +451,11 @@ export interface ChromaticRouter extends BaseContract {
      * @param recipient The address of the recipient for each liquidity bin.
      */
     addLiquidityBatch(
-      market: PromiseOrValue<string>,
-      recipient: PromiseOrValue<string>,
-      feeRates: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      recipient: string,
+      feeRates: BigNumberish[],
+      amounts: BigNumberish[],
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -502,10 +465,10 @@ export interface ChromaticRouter extends BaseContract {
      * @param vault The address of the vault where the liquidity is added.
      */
     addLiquidityBatchCallback(
-      settlementToken: PromiseOrValue<string>,
-      vault: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      vault: string,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -515,10 +478,10 @@ export interface ChromaticRouter extends BaseContract {
      * @param vault The address of the vault where the liquidity is added.
      */
     addLiquidityCallback(
-      settlementToken: PromiseOrValue<string>,
-      vault: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      vault: string,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -527,9 +490,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptId The ID of the LP receipt.
      */
     claimLiquidity(
-      market: PromiseOrValue<string>,
-      receiptId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      receiptId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -538,9 +501,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptIds An array of LP receipt IDs to claim liquidity from.
      */
     claimLiquidityBatch(
-      market: PromiseOrValue<string>,
-      _receiptIds: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      _receiptIds: BigNumberish[],
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -549,9 +512,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     claimLiquidityBatchCallback(
-      _receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -560,9 +523,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptId The ID of the liquidity claim receipt.
      */
     claimLiquidityCallback(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -571,9 +534,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param positionId The ID of the position to claim.
      */
     claimPosition(
-      market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -582,9 +545,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param positionId The ID of the position to close.
      */
     closePosition(
-      market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -592,7 +555,7 @@ export interface ChromaticRouter extends BaseContract {
      * Creates a new user account.
      */
     createAccount(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -606,8 +569,8 @@ export interface ChromaticRouter extends BaseContract {
      * @param owner The address of the owner.
      */
     "getLpReceiptIds(address,address)"(
-      market: PromiseOrValue<string>,
-      owner: PromiseOrValue<string>,
+      market: string,
+      owner: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
 
@@ -616,7 +579,7 @@ export interface ChromaticRouter extends BaseContract {
      * @param market The address of the ChromaticMarket contract.
      */
     "getLpReceiptIds(address)"(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
 
@@ -630,13 +593,13 @@ export interface ChromaticRouter extends BaseContract {
      * @param takerMargin The margin amount for the taker.
      */
     openPosition(
-      market: PromiseOrValue<string>,
-      qty: PromiseOrValue<BigNumberish>,
-      leverage: PromiseOrValue<BigNumberish>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      makerMargin: PromiseOrValue<BigNumberish>,
-      maxAllowableTradingFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      qty: BigNumberish,
+      leverage: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -652,11 +615,11 @@ export interface ChromaticRouter extends BaseContract {
      * @param recipient The recipient address.
      */
     removeLiquidity(
-      market: PromiseOrValue<string>,
-      feeRate: PromiseOrValue<BigNumberish>,
-      clbTokenAmount: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      feeRate: BigNumberish,
+      clbTokenAmount: BigNumberish,
+      recipient: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -667,11 +630,11 @@ export interface ChromaticRouter extends BaseContract {
      * @param recipient The address of the recipient for each liquidity bin.
      */
     removeLiquidityBatch(
-      market: PromiseOrValue<string>,
-      recipient: PromiseOrValue<string>,
-      feeRates: PromiseOrValue<BigNumberish>[],
-      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      recipient: string,
+      feeRates: BigNumberish[],
+      clbTokenAmounts: BigNumberish[],
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -681,10 +644,10 @@ export interface ChromaticRouter extends BaseContract {
      * @param data Additional data associated with the liquidity removal.
      */
     removeLiquidityBatchCallback(
-      clbToken: PromiseOrValue<string>,
-      clbTokenIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      clbToken: string,
+      clbTokenIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -694,25 +657,25 @@ export interface ChromaticRouter extends BaseContract {
      * @param data Additional data associated with the liquidity removal.
      */
     removeLiquidityCallback(
-      clbToken: PromiseOrValue<string>,
-      clbTokenId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      clbToken: string,
+      clbTokenId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.
      */
     renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
     transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      newOwner: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -721,9 +684,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptId The ID of the LP receipt.
      */
     withdrawLiquidity(
-      market: PromiseOrValue<string>,
-      receiptId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      receiptId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -732,9 +695,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptIds An array of LP receipt IDs to withdraw liquidity from.
      */
     withdrawLiquidityBatch(
-      market: PromiseOrValue<string>,
-      _receiptIds: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      _receiptIds: BigNumberish[],
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -743,9 +706,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     withdrawLiquidityBatchCallback(
-      _receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -754,9 +717,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptId The ID of the liquidity withdrawal receipt.
      */
     withdrawLiquidityCallback(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
   };
 
@@ -768,11 +731,11 @@ export interface ChromaticRouter extends BaseContract {
    * @param recipient The recipient address.
    */
   addLiquidity(
-    market: PromiseOrValue<string>,
-    feeRate: PromiseOrValue<BigNumberish>,
-    amount: PromiseOrValue<BigNumberish>,
-    recipient: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    market: string,
+    feeRate: BigNumberish,
+    amount: BigNumberish,
+    recipient: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -783,11 +746,11 @@ export interface ChromaticRouter extends BaseContract {
    * @param recipient The address of the recipient for each liquidity bin.
    */
   addLiquidityBatch(
-    market: PromiseOrValue<string>,
-    recipient: PromiseOrValue<string>,
-    feeRates: PromiseOrValue<BigNumberish>[],
-    amounts: PromiseOrValue<BigNumberish>[],
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    market: string,
+    recipient: string,
+    feeRates: BigNumberish[],
+    amounts: BigNumberish[],
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -797,10 +760,10 @@ export interface ChromaticRouter extends BaseContract {
    * @param vault The address of the vault where the liquidity is added.
    */
   addLiquidityBatchCallback(
-    settlementToken: PromiseOrValue<string>,
-    vault: PromiseOrValue<string>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    settlementToken: string,
+    vault: string,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -810,10 +773,10 @@ export interface ChromaticRouter extends BaseContract {
    * @param vault The address of the vault where the liquidity is added.
    */
   addLiquidityCallback(
-    settlementToken: PromiseOrValue<string>,
-    vault: PromiseOrValue<string>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    settlementToken: string,
+    vault: string,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -822,9 +785,9 @@ export interface ChromaticRouter extends BaseContract {
    * @param receiptId The ID of the LP receipt.
    */
   claimLiquidity(
-    market: PromiseOrValue<string>,
-    receiptId: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    market: string,
+    receiptId: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -833,9 +796,9 @@ export interface ChromaticRouter extends BaseContract {
    * @param receiptIds An array of LP receipt IDs to claim liquidity from.
    */
   claimLiquidityBatch(
-    market: PromiseOrValue<string>,
-    _receiptIds: PromiseOrValue<BigNumberish>[],
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    market: string,
+    _receiptIds: BigNumberish[],
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -844,9 +807,9 @@ export interface ChromaticRouter extends BaseContract {
    * @param receiptIds The array of the liquidity receipt IDs.
    */
   claimLiquidityBatchCallback(
-    _receiptIds: PromiseOrValue<BigNumberish>[],
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _receiptIds: BigNumberish[],
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -855,9 +818,9 @@ export interface ChromaticRouter extends BaseContract {
    * @param receiptId The ID of the liquidity claim receipt.
    */
   claimLiquidityCallback(
-    receiptId: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    receiptId: BigNumberish,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -866,9 +829,9 @@ export interface ChromaticRouter extends BaseContract {
    * @param positionId The ID of the position to claim.
    */
   claimPosition(
-    market: PromiseOrValue<string>,
-    positionId: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    market: string,
+    positionId: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -877,9 +840,9 @@ export interface ChromaticRouter extends BaseContract {
    * @param positionId The ID of the position to close.
    */
   closePosition(
-    market: PromiseOrValue<string>,
-    positionId: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    market: string,
+    positionId: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -887,7 +850,7 @@ export interface ChromaticRouter extends BaseContract {
    * Creates a new user account.
    */
   createAccount(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -901,8 +864,8 @@ export interface ChromaticRouter extends BaseContract {
    * @param owner The address of the owner.
    */
   "getLpReceiptIds(address,address)"(
-    market: PromiseOrValue<string>,
-    owner: PromiseOrValue<string>,
+    market: string,
+    owner: string,
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
@@ -911,7 +874,7 @@ export interface ChromaticRouter extends BaseContract {
    * @param market The address of the ChromaticMarket contract.
    */
   "getLpReceiptIds(address)"(
-    market: PromiseOrValue<string>,
+    market: string,
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
@@ -925,13 +888,13 @@ export interface ChromaticRouter extends BaseContract {
    * @param takerMargin The margin amount for the taker.
    */
   openPosition(
-    market: PromiseOrValue<string>,
-    qty: PromiseOrValue<BigNumberish>,
-    leverage: PromiseOrValue<BigNumberish>,
-    takerMargin: PromiseOrValue<BigNumberish>,
-    makerMargin: PromiseOrValue<BigNumberish>,
-    maxAllowableTradingFee: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    market: string,
+    qty: BigNumberish,
+    leverage: BigNumberish,
+    takerMargin: BigNumberish,
+    makerMargin: BigNumberish,
+    maxAllowableTradingFee: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -947,11 +910,11 @@ export interface ChromaticRouter extends BaseContract {
    * @param recipient The recipient address.
    */
   removeLiquidity(
-    market: PromiseOrValue<string>,
-    feeRate: PromiseOrValue<BigNumberish>,
-    clbTokenAmount: PromiseOrValue<BigNumberish>,
-    recipient: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    market: string,
+    feeRate: BigNumberish,
+    clbTokenAmount: BigNumberish,
+    recipient: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -962,11 +925,11 @@ export interface ChromaticRouter extends BaseContract {
    * @param recipient The address of the recipient for each liquidity bin.
    */
   removeLiquidityBatch(
-    market: PromiseOrValue<string>,
-    recipient: PromiseOrValue<string>,
-    feeRates: PromiseOrValue<BigNumberish>[],
-    clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    market: string,
+    recipient: string,
+    feeRates: BigNumberish[],
+    clbTokenAmounts: BigNumberish[],
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -976,10 +939,10 @@ export interface ChromaticRouter extends BaseContract {
    * @param data Additional data associated with the liquidity removal.
    */
   removeLiquidityBatchCallback(
-    clbToken: PromiseOrValue<string>,
-    clbTokenIds: PromiseOrValue<BigNumberish>[],
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    clbToken: string,
+    clbTokenIds: BigNumberish[],
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -989,25 +952,25 @@ export interface ChromaticRouter extends BaseContract {
    * @param data Additional data associated with the liquidity removal.
    */
   removeLiquidityCallback(
-    clbToken: PromiseOrValue<string>,
-    clbTokenId: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    clbToken: string,
+    clbTokenId: BigNumberish,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.
    */
   renounceOwnership(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
    */
   transferOwnership(
-    newOwner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    newOwner: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1016,9 +979,9 @@ export interface ChromaticRouter extends BaseContract {
    * @param receiptId The ID of the LP receipt.
    */
   withdrawLiquidity(
-    market: PromiseOrValue<string>,
-    receiptId: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    market: string,
+    receiptId: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1027,9 +990,9 @@ export interface ChromaticRouter extends BaseContract {
    * @param receiptIds An array of LP receipt IDs to withdraw liquidity from.
    */
   withdrawLiquidityBatch(
-    market: PromiseOrValue<string>,
-    _receiptIds: PromiseOrValue<BigNumberish>[],
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    market: string,
+    _receiptIds: BigNumberish[],
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1038,9 +1001,9 @@ export interface ChromaticRouter extends BaseContract {
    * @param receiptIds The array of the liquidity receipt IDs.
    */
   withdrawLiquidityBatchCallback(
-    _receiptIds: PromiseOrValue<BigNumberish>[],
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _receiptIds: BigNumberish[],
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1049,9 +1012,9 @@ export interface ChromaticRouter extends BaseContract {
    * @param receiptId The ID of the liquidity withdrawal receipt.
    */
   withdrawLiquidityCallback(
-    receiptId: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    receiptId: BigNumberish,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   callStatic: {
@@ -1063,10 +1026,10 @@ export interface ChromaticRouter extends BaseContract {
      * @param recipient The recipient address.
      */
     addLiquidity(
-      market: PromiseOrValue<string>,
-      feeRate: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
+      market: string,
+      feeRate: BigNumberish,
+      amount: BigNumberish,
+      recipient: string,
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput>;
 
@@ -1078,10 +1041,10 @@ export interface ChromaticRouter extends BaseContract {
      * @param recipient The address of the recipient for each liquidity bin.
      */
     addLiquidityBatch(
-      market: PromiseOrValue<string>,
-      recipient: PromiseOrValue<string>,
-      feeRates: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
+      market: string,
+      recipient: string,
+      feeRates: BigNumberish[],
+      amounts: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput[]>;
 
@@ -1092,9 +1055,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param vault The address of the vault where the liquidity is added.
      */
     addLiquidityBatchCallback(
-      settlementToken: PromiseOrValue<string>,
-      vault: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
+      settlementToken: string,
+      vault: string,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1105,9 +1068,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param vault The address of the vault where the liquidity is added.
      */
     addLiquidityCallback(
-      settlementToken: PromiseOrValue<string>,
-      vault: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
+      settlementToken: string,
+      vault: string,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1117,8 +1080,8 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptId The ID of the LP receipt.
      */
     claimLiquidity(
-      market: PromiseOrValue<string>,
-      receiptId: PromiseOrValue<BigNumberish>,
+      market: string,
+      receiptId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1128,8 +1091,8 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptIds An array of LP receipt IDs to claim liquidity from.
      */
     claimLiquidityBatch(
-      market: PromiseOrValue<string>,
-      _receiptIds: PromiseOrValue<BigNumberish>[],
+      market: string,
+      _receiptIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1139,8 +1102,8 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     claimLiquidityBatchCallback(
-      _receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
+      _receiptIds: BigNumberish[],
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1150,8 +1113,8 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptId The ID of the liquidity claim receipt.
      */
     claimLiquidityCallback(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      receiptId: BigNumberish,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1161,8 +1124,8 @@ export interface ChromaticRouter extends BaseContract {
      * @param positionId The ID of the position to claim.
      */
     claimPosition(
-      market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
+      market: string,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1172,8 +1135,8 @@ export interface ChromaticRouter extends BaseContract {
      * @param positionId The ID of the position to close.
      */
     closePosition(
-      market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
+      market: string,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1194,8 +1157,8 @@ export interface ChromaticRouter extends BaseContract {
      * @param owner The address of the owner.
      */
     "getLpReceiptIds(address,address)"(
-      market: PromiseOrValue<string>,
-      owner: PromiseOrValue<string>,
+      market: string,
+      owner: string,
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
@@ -1204,7 +1167,7 @@ export interface ChromaticRouter extends BaseContract {
      * @param market The address of the ChromaticMarket contract.
      */
     "getLpReceiptIds(address)"(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
@@ -1218,12 +1181,12 @@ export interface ChromaticRouter extends BaseContract {
      * @param takerMargin The margin amount for the taker.
      */
     openPosition(
-      market: PromiseOrValue<string>,
-      qty: PromiseOrValue<BigNumberish>,
-      leverage: PromiseOrValue<BigNumberish>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      makerMargin: PromiseOrValue<BigNumberish>,
-      maxAllowableTradingFee: PromiseOrValue<BigNumberish>,
+      market: string,
+      qty: BigNumberish,
+      leverage: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PositionStructOutput>;
 
@@ -1240,10 +1203,10 @@ export interface ChromaticRouter extends BaseContract {
      * @param recipient The recipient address.
      */
     removeLiquidity(
-      market: PromiseOrValue<string>,
-      feeRate: PromiseOrValue<BigNumberish>,
-      clbTokenAmount: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
+      market: string,
+      feeRate: BigNumberish,
+      clbTokenAmount: BigNumberish,
+      recipient: string,
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput>;
 
@@ -1255,10 +1218,10 @@ export interface ChromaticRouter extends BaseContract {
      * @param recipient The address of the recipient for each liquidity bin.
      */
     removeLiquidityBatch(
-      market: PromiseOrValue<string>,
-      recipient: PromiseOrValue<string>,
-      feeRates: PromiseOrValue<BigNumberish>[],
-      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
+      market: string,
+      recipient: string,
+      feeRates: BigNumberish[],
+      clbTokenAmounts: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput[]>;
 
@@ -1269,9 +1232,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param data Additional data associated with the liquidity removal.
      */
     removeLiquidityBatchCallback(
-      clbToken: PromiseOrValue<string>,
-      clbTokenIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
+      clbToken: string,
+      clbTokenIds: BigNumberish[],
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1282,9 +1245,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param data Additional data associated with the liquidity removal.
      */
     removeLiquidityCallback(
-      clbToken: PromiseOrValue<string>,
-      clbTokenId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      clbToken: string,
+      clbTokenId: BigNumberish,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1297,7 +1260,7 @@ export interface ChromaticRouter extends BaseContract {
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
     transferOwnership(
-      newOwner: PromiseOrValue<string>,
+      newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1307,8 +1270,8 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptId The ID of the LP receipt.
      */
     withdrawLiquidity(
-      market: PromiseOrValue<string>,
-      receiptId: PromiseOrValue<BigNumberish>,
+      market: string,
+      receiptId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1318,8 +1281,8 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptIds An array of LP receipt IDs to withdraw liquidity from.
      */
     withdrawLiquidityBatch(
-      market: PromiseOrValue<string>,
-      _receiptIds: PromiseOrValue<BigNumberish>[],
+      market: string,
+      _receiptIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1329,8 +1292,8 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     withdrawLiquidityBatchCallback(
-      _receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
+      _receiptIds: BigNumberish[],
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1340,29 +1303,29 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptId The ID of the liquidity withdrawal receipt.
      */
     withdrawLiquidityCallback(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      receiptId: BigNumberish,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
   };
 
   filters: {
     "AccountCreated(address,address)"(
-      account?: PromiseOrValue<string> | null,
-      owner?: PromiseOrValue<string> | null
+      account?: string | null,
+      owner?: string | null
     ): AccountCreatedEventFilter;
     AccountCreated(
-      account?: PromiseOrValue<string> | null,
-      owner?: PromiseOrValue<string> | null
+      account?: string | null,
+      owner?: string | null
     ): AccountCreatedEventFilter;
 
     "OwnershipTransferred(address,address)"(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
+      previousOwner?: string | null,
+      newOwner?: string | null
     ): OwnershipTransferredEventFilter;
     OwnershipTransferred(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
+      previousOwner?: string | null,
+      newOwner?: string | null
     ): OwnershipTransferredEventFilter;
   };
 
@@ -1375,11 +1338,11 @@ export interface ChromaticRouter extends BaseContract {
      * @param recipient The recipient address.
      */
     addLiquidity(
-      market: PromiseOrValue<string>,
-      feeRate: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      feeRate: BigNumberish,
+      amount: BigNumberish,
+      recipient: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1390,11 +1353,11 @@ export interface ChromaticRouter extends BaseContract {
      * @param recipient The address of the recipient for each liquidity bin.
      */
     addLiquidityBatch(
-      market: PromiseOrValue<string>,
-      recipient: PromiseOrValue<string>,
-      feeRates: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      recipient: string,
+      feeRates: BigNumberish[],
+      amounts: BigNumberish[],
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1404,10 +1367,10 @@ export interface ChromaticRouter extends BaseContract {
      * @param vault The address of the vault where the liquidity is added.
      */
     addLiquidityBatchCallback(
-      settlementToken: PromiseOrValue<string>,
-      vault: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      vault: string,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1417,10 +1380,10 @@ export interface ChromaticRouter extends BaseContract {
      * @param vault The address of the vault where the liquidity is added.
      */
     addLiquidityCallback(
-      settlementToken: PromiseOrValue<string>,
-      vault: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      vault: string,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1429,9 +1392,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptId The ID of the LP receipt.
      */
     claimLiquidity(
-      market: PromiseOrValue<string>,
-      receiptId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      receiptId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1440,9 +1403,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptIds An array of LP receipt IDs to claim liquidity from.
      */
     claimLiquidityBatch(
-      market: PromiseOrValue<string>,
-      _receiptIds: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      _receiptIds: BigNumberish[],
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1451,9 +1414,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     claimLiquidityBatchCallback(
-      _receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1462,9 +1425,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptId The ID of the liquidity claim receipt.
      */
     claimLiquidityCallback(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1473,9 +1436,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param positionId The ID of the position to claim.
      */
     claimPosition(
-      market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1484,9 +1447,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param positionId The ID of the position to close.
      */
     closePosition(
-      market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1494,7 +1457,7 @@ export interface ChromaticRouter extends BaseContract {
      * Creates a new user account.
      */
     createAccount(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1508,8 +1471,8 @@ export interface ChromaticRouter extends BaseContract {
      * @param owner The address of the owner.
      */
     "getLpReceiptIds(address,address)"(
-      market: PromiseOrValue<string>,
-      owner: PromiseOrValue<string>,
+      market: string,
+      owner: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1518,7 +1481,7 @@ export interface ChromaticRouter extends BaseContract {
      * @param market The address of the ChromaticMarket contract.
      */
     "getLpReceiptIds(address)"(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1532,13 +1495,13 @@ export interface ChromaticRouter extends BaseContract {
      * @param takerMargin The margin amount for the taker.
      */
     openPosition(
-      market: PromiseOrValue<string>,
-      qty: PromiseOrValue<BigNumberish>,
-      leverage: PromiseOrValue<BigNumberish>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      makerMargin: PromiseOrValue<BigNumberish>,
-      maxAllowableTradingFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      qty: BigNumberish,
+      leverage: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1554,11 +1517,11 @@ export interface ChromaticRouter extends BaseContract {
      * @param recipient The recipient address.
      */
     removeLiquidity(
-      market: PromiseOrValue<string>,
-      feeRate: PromiseOrValue<BigNumberish>,
-      clbTokenAmount: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      feeRate: BigNumberish,
+      clbTokenAmount: BigNumberish,
+      recipient: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1569,11 +1532,11 @@ export interface ChromaticRouter extends BaseContract {
      * @param recipient The address of the recipient for each liquidity bin.
      */
     removeLiquidityBatch(
-      market: PromiseOrValue<string>,
-      recipient: PromiseOrValue<string>,
-      feeRates: PromiseOrValue<BigNumberish>[],
-      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      recipient: string,
+      feeRates: BigNumberish[],
+      clbTokenAmounts: BigNumberish[],
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1583,10 +1546,10 @@ export interface ChromaticRouter extends BaseContract {
      * @param data Additional data associated with the liquidity removal.
      */
     removeLiquidityBatchCallback(
-      clbToken: PromiseOrValue<string>,
-      clbTokenIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      clbToken: string,
+      clbTokenIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1596,25 +1559,25 @@ export interface ChromaticRouter extends BaseContract {
      * @param data Additional data associated with the liquidity removal.
      */
     removeLiquidityCallback(
-      clbToken: PromiseOrValue<string>,
-      clbTokenId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      clbToken: string,
+      clbTokenId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.
      */
     renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
     transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      newOwner: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1623,9 +1586,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptId The ID of the LP receipt.
      */
     withdrawLiquidity(
-      market: PromiseOrValue<string>,
-      receiptId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      receiptId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1634,9 +1597,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptIds An array of LP receipt IDs to withdraw liquidity from.
      */
     withdrawLiquidityBatch(
-      market: PromiseOrValue<string>,
-      _receiptIds: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      _receiptIds: BigNumberish[],
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1645,9 +1608,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     withdrawLiquidityBatchCallback(
-      _receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1656,9 +1619,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptId The ID of the liquidity withdrawal receipt.
      */
     withdrawLiquidityCallback(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
   };
 
@@ -1671,11 +1634,11 @@ export interface ChromaticRouter extends BaseContract {
      * @param recipient The recipient address.
      */
     addLiquidity(
-      market: PromiseOrValue<string>,
-      feeRate: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      feeRate: BigNumberish,
+      amount: BigNumberish,
+      recipient: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1686,11 +1649,11 @@ export interface ChromaticRouter extends BaseContract {
      * @param recipient The address of the recipient for each liquidity bin.
      */
     addLiquidityBatch(
-      market: PromiseOrValue<string>,
-      recipient: PromiseOrValue<string>,
-      feeRates: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      recipient: string,
+      feeRates: BigNumberish[],
+      amounts: BigNumberish[],
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1700,10 +1663,10 @@ export interface ChromaticRouter extends BaseContract {
      * @param vault The address of the vault where the liquidity is added.
      */
     addLiquidityBatchCallback(
-      settlementToken: PromiseOrValue<string>,
-      vault: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      vault: string,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1713,10 +1676,10 @@ export interface ChromaticRouter extends BaseContract {
      * @param vault The address of the vault where the liquidity is added.
      */
     addLiquidityCallback(
-      settlementToken: PromiseOrValue<string>,
-      vault: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      vault: string,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1725,9 +1688,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptId The ID of the LP receipt.
      */
     claimLiquidity(
-      market: PromiseOrValue<string>,
-      receiptId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      receiptId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1736,9 +1699,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptIds An array of LP receipt IDs to claim liquidity from.
      */
     claimLiquidityBatch(
-      market: PromiseOrValue<string>,
-      _receiptIds: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      _receiptIds: BigNumberish[],
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1747,9 +1710,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     claimLiquidityBatchCallback(
-      _receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1758,9 +1721,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptId The ID of the liquidity claim receipt.
      */
     claimLiquidityCallback(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1769,9 +1732,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param positionId The ID of the position to claim.
      */
     claimPosition(
-      market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1780,9 +1743,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param positionId The ID of the position to close.
      */
     closePosition(
-      market: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1790,7 +1753,7 @@ export interface ChromaticRouter extends BaseContract {
      * Creates a new user account.
      */
     createAccount(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1804,8 +1767,8 @@ export interface ChromaticRouter extends BaseContract {
      * @param owner The address of the owner.
      */
     "getLpReceiptIds(address,address)"(
-      market: PromiseOrValue<string>,
-      owner: PromiseOrValue<string>,
+      market: string,
+      owner: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1814,7 +1777,7 @@ export interface ChromaticRouter extends BaseContract {
      * @param market The address of the ChromaticMarket contract.
      */
     "getLpReceiptIds(address)"(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1828,13 +1791,13 @@ export interface ChromaticRouter extends BaseContract {
      * @param takerMargin The margin amount for the taker.
      */
     openPosition(
-      market: PromiseOrValue<string>,
-      qty: PromiseOrValue<BigNumberish>,
-      leverage: PromiseOrValue<BigNumberish>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      makerMargin: PromiseOrValue<BigNumberish>,
-      maxAllowableTradingFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      qty: BigNumberish,
+      leverage: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1850,11 +1813,11 @@ export interface ChromaticRouter extends BaseContract {
      * @param recipient The recipient address.
      */
     removeLiquidity(
-      market: PromiseOrValue<string>,
-      feeRate: PromiseOrValue<BigNumberish>,
-      clbTokenAmount: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      feeRate: BigNumberish,
+      clbTokenAmount: BigNumberish,
+      recipient: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1865,11 +1828,11 @@ export interface ChromaticRouter extends BaseContract {
      * @param recipient The address of the recipient for each liquidity bin.
      */
     removeLiquidityBatch(
-      market: PromiseOrValue<string>,
-      recipient: PromiseOrValue<string>,
-      feeRates: PromiseOrValue<BigNumberish>[],
-      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      recipient: string,
+      feeRates: BigNumberish[],
+      clbTokenAmounts: BigNumberish[],
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1879,10 +1842,10 @@ export interface ChromaticRouter extends BaseContract {
      * @param data Additional data associated with the liquidity removal.
      */
     removeLiquidityBatchCallback(
-      clbToken: PromiseOrValue<string>,
-      clbTokenIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      clbToken: string,
+      clbTokenIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1892,25 +1855,25 @@ export interface ChromaticRouter extends BaseContract {
      * @param data Additional data associated with the liquidity removal.
      */
     removeLiquidityCallback(
-      clbToken: PromiseOrValue<string>,
-      clbTokenId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      clbToken: string,
+      clbTokenId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.
      */
     renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
     transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      newOwner: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1919,9 +1882,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptId The ID of the LP receipt.
      */
     withdrawLiquidity(
-      market: PromiseOrValue<string>,
-      receiptId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      receiptId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1930,9 +1893,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptIds An array of LP receipt IDs to withdraw liquidity from.
      */
     withdrawLiquidityBatch(
-      market: PromiseOrValue<string>,
-      _receiptIds: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      _receiptIds: BigNumberish[],
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1941,9 +1904,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     withdrawLiquidityBatchCallback(
-      _receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1952,9 +1915,9 @@ export interface ChromaticRouter extends BaseContract {
      * @param receiptId The ID of the liquidity withdrawal receipt.
      */
     withdrawLiquidityCallback(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
   };
 }

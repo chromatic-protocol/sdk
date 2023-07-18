@@ -24,7 +24,6 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "../../common";
 
 export interface ChromaticVaultInterface extends utils.Interface {
@@ -94,19 +93,19 @@ export interface ChromaticVaultInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "automate", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "cancelMakerEarningDistributionTask",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "cancelMarketEarningDistributionTask",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "createMakerEarningDistributionTask",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "createMarketEarningDistributionTask",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "dedicatedMsgSender",
@@ -114,125 +113,91 @@ export interface ChromaticVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "distributeMakerEarning",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "distributeMarketEarning",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "flashLoan",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, BigNumberish, string, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "getPendingBinShare",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "makerBalances",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "makerEarningDistributionTaskIds",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "makerMarketBalances",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "marketEarningDistributionTaskIds",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "onAddLiquidity",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "onClaimPosition",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [string, BigNumberish, string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "onOpenPosition",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [string, BigNumberish, BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "onSettlePendingLiquidity",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "onWithdrawLiquidity",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "pendingDeposits",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "pendingMakerEarnings",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "pendingMarketEarnings",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "pendingWithdrawals",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "resolveMakerEarningDistribution",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "resolveMarketEarningDistribution",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "takerBalances",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "takerMarketBalances",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "transferKeeperFee",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [string, string, BigNumberish, BigNumberish]
   ): string;
 
   decodeFunctionResult(functionFragment: "automate", data: BytesLike): Result;
@@ -566,8 +531,8 @@ export interface ChromaticVault extends BaseContract {
      * @param token The address of the settlement token.
      */
     cancelMakerEarningDistributionTask(
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -575,8 +540,8 @@ export interface ChromaticVault extends BaseContract {
      * @param market The address of the market.
      */
     cancelMarketEarningDistributionTask(
-      market: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -584,8 +549,8 @@ export interface ChromaticVault extends BaseContract {
      * @param token The address of the settlement token.
      */
     createMakerEarningDistributionTask(
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -593,8 +558,8 @@ export interface ChromaticVault extends BaseContract {
      * @param market The address of the market.
      */
     createMarketEarningDistributionTask(
-      market: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     dedicatedMsgSender(overrides?: CallOverrides): Promise<[string]>;
@@ -604,8 +569,8 @@ export interface ChromaticVault extends BaseContract {
      * @param token The address of the settlement token.
      */
     distributeMakerEarning(
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -613,8 +578,8 @@ export interface ChromaticVault extends BaseContract {
      * @param market The address of the market.
      */
     distributeMarketEarning(
-      market: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -625,11 +590,11 @@ export interface ChromaticVault extends BaseContract {
      * @param token The address of the token for the flash loan.
      */
     flashLoan(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      amount: BigNumberish,
+      recipient: string,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -640,29 +605,29 @@ export interface ChromaticVault extends BaseContract {
      * @param settlementToken The settlement token address.
      */
     getPendingBinShare(
-      market: PromiseOrValue<string>,
-      settlementToken: PromiseOrValue<string>,
-      binBalance: PromiseOrValue<BigNumberish>,
+      market: string,
+      settlementToken: string,
+      binBalance: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
     makerBalances(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
     makerEarningDistributionTaskIds(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
     makerMarketBalances(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
     marketEarningDistributionTaskIds(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
@@ -673,9 +638,9 @@ export interface ChromaticVault extends BaseContract {
      * @param settlementToken The settlement token address.
      */
     onAddLiquidity(
-      settlementToken: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -688,12 +653,12 @@ export interface ChromaticVault extends BaseContract {
      * @param takerMargin The margin amount provided by the taker for the position.
      */
     onClaimPosition(
-      settlementToken: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      settlementAmount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      positionId: BigNumberish,
+      recipient: string,
+      takerMargin: BigNumberish,
+      settlementAmount: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -706,12 +671,12 @@ export interface ChromaticVault extends BaseContract {
      * @param tradingFee The trading fee associated with the position.
      */
     onOpenPosition(
-      settlementToken: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      tradingFee: PromiseOrValue<BigNumberish>,
-      protocolFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      positionId: BigNumberish,
+      takerMargin: BigNumberish,
+      tradingFee: BigNumberish,
+      protocolFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -722,10 +687,10 @@ export interface ChromaticVault extends BaseContract {
      * @param settlementToken The settlement token address.
      */
     onSettlePendingLiquidity(
-      settlementToken: PromiseOrValue<string>,
-      pendingDeposit: PromiseOrValue<BigNumberish>,
-      pendingWithdrawal: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      pendingDeposit: BigNumberish,
+      pendingWithdrawal: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -736,29 +701,29 @@ export interface ChromaticVault extends BaseContract {
      * @param settlementToken The settlement token address.
      */
     onWithdrawLiquidity(
-      settlementToken: PromiseOrValue<string>,
-      recipient: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      recipient: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     pendingDeposits(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
     pendingMakerEarnings(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
     pendingMarketEarnings(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
     pendingWithdrawals(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -767,7 +732,7 @@ export interface ChromaticVault extends BaseContract {
      * @param token The address of the settlement token.
      */
     resolveMakerEarningDistribution(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
 
@@ -776,17 +741,17 @@ export interface ChromaticVault extends BaseContract {
      * @param market The address of the market.
      */
     resolveMarketEarningDistribution(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
 
     takerBalances(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
     takerMarketBalances(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -799,11 +764,11 @@ export interface ChromaticVault extends BaseContract {
      * @param settlementToken The settlement token address.
      */
     transferKeeperFee(
-      settlementToken: PromiseOrValue<string>,
-      keeper: PromiseOrValue<string>,
-      fee: PromiseOrValue<BigNumberish>,
-      margin: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      keeper: string,
+      fee: BigNumberish,
+      margin: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
   };
 
@@ -814,8 +779,8 @@ export interface ChromaticVault extends BaseContract {
    * @param token The address of the settlement token.
    */
   cancelMakerEarningDistributionTask(
-    token: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    token: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -823,8 +788,8 @@ export interface ChromaticVault extends BaseContract {
    * @param market The address of the market.
    */
   cancelMarketEarningDistributionTask(
-    market: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    market: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -832,8 +797,8 @@ export interface ChromaticVault extends BaseContract {
    * @param token The address of the settlement token.
    */
   createMakerEarningDistributionTask(
-    token: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    token: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -841,8 +806,8 @@ export interface ChromaticVault extends BaseContract {
    * @param market The address of the market.
    */
   createMarketEarningDistributionTask(
-    market: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    market: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   dedicatedMsgSender(overrides?: CallOverrides): Promise<string>;
@@ -852,8 +817,8 @@ export interface ChromaticVault extends BaseContract {
    * @param token The address of the settlement token.
    */
   distributeMakerEarning(
-    token: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    token: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -861,8 +826,8 @@ export interface ChromaticVault extends BaseContract {
    * @param market The address of the market.
    */
   distributeMarketEarning(
-    market: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    market: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -873,11 +838,11 @@ export interface ChromaticVault extends BaseContract {
    * @param token The address of the token for the flash loan.
    */
   flashLoan(
-    token: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    recipient: PromiseOrValue<string>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    token: string,
+    amount: BigNumberish,
+    recipient: string,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -888,29 +853,26 @@ export interface ChromaticVault extends BaseContract {
    * @param settlementToken The settlement token address.
    */
   getPendingBinShare(
-    market: PromiseOrValue<string>,
-    settlementToken: PromiseOrValue<string>,
-    binBalance: PromiseOrValue<BigNumberish>,
+    market: string,
+    settlementToken: string,
+    binBalance: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  makerBalances(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  makerBalances(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   makerEarningDistributionTaskIds(
-    arg0: PromiseOrValue<string>,
+    arg0: string,
     overrides?: CallOverrides
   ): Promise<string>;
 
   makerMarketBalances(
-    arg0: PromiseOrValue<string>,
+    arg0: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   marketEarningDistributionTaskIds(
-    arg0: PromiseOrValue<string>,
+    arg0: string,
     overrides?: CallOverrides
   ): Promise<string>;
 
@@ -921,9 +883,9 @@ export interface ChromaticVault extends BaseContract {
    * @param settlementToken The settlement token address.
    */
   onAddLiquidity(
-    settlementToken: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    settlementToken: string,
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -936,12 +898,12 @@ export interface ChromaticVault extends BaseContract {
    * @param takerMargin The margin amount provided by the taker for the position.
    */
   onClaimPosition(
-    settlementToken: PromiseOrValue<string>,
-    positionId: PromiseOrValue<BigNumberish>,
-    recipient: PromiseOrValue<string>,
-    takerMargin: PromiseOrValue<BigNumberish>,
-    settlementAmount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    settlementToken: string,
+    positionId: BigNumberish,
+    recipient: string,
+    takerMargin: BigNumberish,
+    settlementAmount: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -954,12 +916,12 @@ export interface ChromaticVault extends BaseContract {
    * @param tradingFee The trading fee associated with the position.
    */
   onOpenPosition(
-    settlementToken: PromiseOrValue<string>,
-    positionId: PromiseOrValue<BigNumberish>,
-    takerMargin: PromiseOrValue<BigNumberish>,
-    tradingFee: PromiseOrValue<BigNumberish>,
-    protocolFee: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    settlementToken: string,
+    positionId: BigNumberish,
+    takerMargin: BigNumberish,
+    tradingFee: BigNumberish,
+    protocolFee: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -970,10 +932,10 @@ export interface ChromaticVault extends BaseContract {
    * @param settlementToken The settlement token address.
    */
   onSettlePendingLiquidity(
-    settlementToken: PromiseOrValue<string>,
-    pendingDeposit: PromiseOrValue<BigNumberish>,
-    pendingWithdrawal: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    settlementToken: string,
+    pendingDeposit: BigNumberish,
+    pendingWithdrawal: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -984,29 +946,26 @@ export interface ChromaticVault extends BaseContract {
    * @param settlementToken The settlement token address.
    */
   onWithdrawLiquidity(
-    settlementToken: PromiseOrValue<string>,
-    recipient: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    settlementToken: string,
+    recipient: string,
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
-  pendingDeposits(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  pendingDeposits(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   pendingMakerEarnings(
-    arg0: PromiseOrValue<string>,
+    arg0: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   pendingMarketEarnings(
-    arg0: PromiseOrValue<string>,
+    arg0: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   pendingWithdrawals(
-    arg0: PromiseOrValue<string>,
+    arg0: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -1015,7 +974,7 @@ export interface ChromaticVault extends BaseContract {
    * @param token The address of the settlement token.
    */
   resolveMakerEarningDistribution(
-    token: PromiseOrValue<string>,
+    token: string,
     overrides?: CallOverrides
   ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
 
@@ -1024,17 +983,14 @@ export interface ChromaticVault extends BaseContract {
    * @param market The address of the market.
    */
   resolveMarketEarningDistribution(
-    market: PromiseOrValue<string>,
+    market: string,
     overrides?: CallOverrides
   ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
 
-  takerBalances(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  takerBalances(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   takerMarketBalances(
-    arg0: PromiseOrValue<string>,
+    arg0: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -1047,11 +1003,11 @@ export interface ChromaticVault extends BaseContract {
    * @param settlementToken The settlement token address.
    */
   transferKeeperFee(
-    settlementToken: PromiseOrValue<string>,
-    keeper: PromiseOrValue<string>,
-    fee: PromiseOrValue<BigNumberish>,
-    margin: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    settlementToken: string,
+    keeper: string,
+    fee: BigNumberish,
+    margin: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   callStatic: {
@@ -1062,7 +1018,7 @@ export interface ChromaticVault extends BaseContract {
      * @param token The address of the settlement token.
      */
     cancelMakerEarningDistributionTask(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1071,7 +1027,7 @@ export interface ChromaticVault extends BaseContract {
      * @param market The address of the market.
      */
     cancelMarketEarningDistributionTask(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1080,7 +1036,7 @@ export interface ChromaticVault extends BaseContract {
      * @param token The address of the settlement token.
      */
     createMakerEarningDistributionTask(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1089,7 +1045,7 @@ export interface ChromaticVault extends BaseContract {
      * @param market The address of the market.
      */
     createMarketEarningDistributionTask(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1100,7 +1056,7 @@ export interface ChromaticVault extends BaseContract {
      * @param token The address of the settlement token.
      */
     distributeMakerEarning(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1109,7 +1065,7 @@ export interface ChromaticVault extends BaseContract {
      * @param market The address of the market.
      */
     distributeMarketEarning(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1121,10 +1077,10 @@ export interface ChromaticVault extends BaseContract {
      * @param token The address of the token for the flash loan.
      */
     flashLoan(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
+      token: string,
+      amount: BigNumberish,
+      recipient: string,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1136,29 +1092,26 @@ export interface ChromaticVault extends BaseContract {
      * @param settlementToken The settlement token address.
      */
     getPendingBinShare(
-      market: PromiseOrValue<string>,
-      settlementToken: PromiseOrValue<string>,
-      binBalance: PromiseOrValue<BigNumberish>,
+      market: string,
+      settlementToken: string,
+      binBalance: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    makerBalances(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    makerBalances(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     makerEarningDistributionTaskIds(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<string>;
 
     makerMarketBalances(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     marketEarningDistributionTaskIds(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -1169,8 +1122,8 @@ export interface ChromaticVault extends BaseContract {
      * @param settlementToken The settlement token address.
      */
     onAddLiquidity(
-      settlementToken: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
+      settlementToken: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1184,11 +1137,11 @@ export interface ChromaticVault extends BaseContract {
      * @param takerMargin The margin amount provided by the taker for the position.
      */
     onClaimPosition(
-      settlementToken: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      settlementAmount: PromiseOrValue<BigNumberish>,
+      settlementToken: string,
+      positionId: BigNumberish,
+      recipient: string,
+      takerMargin: BigNumberish,
+      settlementAmount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1202,11 +1155,11 @@ export interface ChromaticVault extends BaseContract {
      * @param tradingFee The trading fee associated with the position.
      */
     onOpenPosition(
-      settlementToken: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      tradingFee: PromiseOrValue<BigNumberish>,
-      protocolFee: PromiseOrValue<BigNumberish>,
+      settlementToken: string,
+      positionId: BigNumberish,
+      takerMargin: BigNumberish,
+      tradingFee: BigNumberish,
+      protocolFee: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1218,9 +1171,9 @@ export interface ChromaticVault extends BaseContract {
      * @param settlementToken The settlement token address.
      */
     onSettlePendingLiquidity(
-      settlementToken: PromiseOrValue<string>,
-      pendingDeposit: PromiseOrValue<BigNumberish>,
-      pendingWithdrawal: PromiseOrValue<BigNumberish>,
+      settlementToken: string,
+      pendingDeposit: BigNumberish,
+      pendingWithdrawal: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1232,29 +1185,29 @@ export interface ChromaticVault extends BaseContract {
      * @param settlementToken The settlement token address.
      */
     onWithdrawLiquidity(
-      settlementToken: PromiseOrValue<string>,
-      recipient: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
+      settlementToken: string,
+      recipient: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     pendingDeposits(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     pendingMakerEarnings(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     pendingMarketEarnings(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     pendingWithdrawals(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1263,7 +1216,7 @@ export interface ChromaticVault extends BaseContract {
      * @param token The address of the settlement token.
      */
     resolveMakerEarningDistribution(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
 
@@ -1272,17 +1225,14 @@ export interface ChromaticVault extends BaseContract {
      * @param market The address of the market.
      */
     resolveMarketEarningDistribution(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
 
-    takerBalances(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    takerBalances(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     takerMarketBalances(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1295,145 +1245,145 @@ export interface ChromaticVault extends BaseContract {
      * @param settlementToken The settlement token address.
      */
     transferKeeperFee(
-      settlementToken: PromiseOrValue<string>,
-      keeper: PromiseOrValue<string>,
-      fee: PromiseOrValue<BigNumberish>,
-      margin: PromiseOrValue<BigNumberish>,
+      settlementToken: string,
+      keeper: string,
+      fee: BigNumberish,
+      margin: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   filters: {
     "FlashLoan(address,address,uint256,uint256,uint256,uint256)"(
-      sender?: PromiseOrValue<string> | null,
-      recipient?: PromiseOrValue<string> | null,
-      amount?: PromiseOrValue<BigNumberish> | null,
+      sender?: string | null,
+      recipient?: string | null,
+      amount?: BigNumberish | null,
       paid?: null,
       paidToTakerPool?: null,
       paidToMakerPool?: null
     ): FlashLoanEventFilter;
     FlashLoan(
-      sender?: PromiseOrValue<string> | null,
-      recipient?: PromiseOrValue<string> | null,
-      amount?: PromiseOrValue<BigNumberish> | null,
+      sender?: string | null,
+      recipient?: string | null,
+      amount?: BigNumberish | null,
       paid?: null,
       paidToTakerPool?: null,
       paidToMakerPool?: null
     ): FlashLoanEventFilter;
 
     "MakerEarningDistributed(address,uint256,uint256)"(
-      token?: PromiseOrValue<string> | null,
-      earning?: PromiseOrValue<BigNumberish> | null,
-      usedKeeperFee?: PromiseOrValue<BigNumberish> | null
+      token?: string | null,
+      earning?: BigNumberish | null,
+      usedKeeperFee?: BigNumberish | null
     ): MakerEarningDistributedEventFilter;
     MakerEarningDistributed(
-      token?: PromiseOrValue<string> | null,
-      earning?: PromiseOrValue<BigNumberish> | null,
-      usedKeeperFee?: PromiseOrValue<BigNumberish> | null
+      token?: string | null,
+      earning?: BigNumberish | null,
+      usedKeeperFee?: BigNumberish | null
     ): MakerEarningDistributedEventFilter;
 
     "MarketEarningAccumulated(address,uint256)"(
-      market?: PromiseOrValue<string> | null,
+      market?: string | null,
       earning?: null
     ): MarketEarningAccumulatedEventFilter;
     MarketEarningAccumulated(
-      market?: PromiseOrValue<string> | null,
+      market?: string | null,
       earning?: null
     ): MarketEarningAccumulatedEventFilter;
 
     "MarketEarningDistributed(address,uint256,uint256,uint256)"(
-      market?: PromiseOrValue<string> | null,
-      earning?: PromiseOrValue<BigNumberish> | null,
-      usedKeeperFee?: PromiseOrValue<BigNumberish> | null,
+      market?: string | null,
+      earning?: BigNumberish | null,
+      usedKeeperFee?: BigNumberish | null,
       marketBalance?: null
     ): MarketEarningDistributedEventFilter;
     MarketEarningDistributed(
-      market?: PromiseOrValue<string> | null,
-      earning?: PromiseOrValue<BigNumberish> | null,
-      usedKeeperFee?: PromiseOrValue<BigNumberish> | null,
+      market?: string | null,
+      earning?: BigNumberish | null,
+      usedKeeperFee?: BigNumberish | null,
       marketBalance?: null
     ): MarketEarningDistributedEventFilter;
 
     "OnAddLiquidity(address,uint256)"(
-      market?: PromiseOrValue<string> | null,
-      amount?: PromiseOrValue<BigNumberish> | null
+      market?: string | null,
+      amount?: BigNumberish | null
     ): OnAddLiquidityEventFilter;
     OnAddLiquidity(
-      market?: PromiseOrValue<string> | null,
-      amount?: PromiseOrValue<BigNumberish> | null
+      market?: string | null,
+      amount?: BigNumberish | null
     ): OnAddLiquidityEventFilter;
 
     "OnClaimPosition(address,uint256,address,uint256,uint256)"(
-      market?: PromiseOrValue<string> | null,
-      positionId?: PromiseOrValue<BigNumberish> | null,
-      recipient?: PromiseOrValue<string> | null,
+      market?: string | null,
+      positionId?: BigNumberish | null,
+      recipient?: string | null,
       takerMargin?: null,
       settlementAmount?: null
     ): OnClaimPositionEventFilter;
     OnClaimPosition(
-      market?: PromiseOrValue<string> | null,
-      positionId?: PromiseOrValue<BigNumberish> | null,
-      recipient?: PromiseOrValue<string> | null,
+      market?: string | null,
+      positionId?: BigNumberish | null,
+      recipient?: string | null,
       takerMargin?: null,
       settlementAmount?: null
     ): OnClaimPositionEventFilter;
 
     "OnOpenPosition(address,uint256,uint256,uint256,uint256)"(
-      market?: PromiseOrValue<string> | null,
-      positionId?: PromiseOrValue<BigNumberish> | null,
-      takerMargin?: PromiseOrValue<BigNumberish> | null,
+      market?: string | null,
+      positionId?: BigNumberish | null,
+      takerMargin?: BigNumberish | null,
       tradingFee?: null,
       protocolFee?: null
     ): OnOpenPositionEventFilter;
     OnOpenPosition(
-      market?: PromiseOrValue<string> | null,
-      positionId?: PromiseOrValue<BigNumberish> | null,
-      takerMargin?: PromiseOrValue<BigNumberish> | null,
+      market?: string | null,
+      positionId?: BigNumberish | null,
+      takerMargin?: BigNumberish | null,
       tradingFee?: null,
       protocolFee?: null
     ): OnOpenPositionEventFilter;
 
     "OnSettlePendingLiquidity(address,uint256,uint256)"(
-      market?: PromiseOrValue<string> | null,
-      pendingDeposit?: PromiseOrValue<BigNumberish> | null,
-      pendingWithdrawal?: PromiseOrValue<BigNumberish> | null
+      market?: string | null,
+      pendingDeposit?: BigNumberish | null,
+      pendingWithdrawal?: BigNumberish | null
     ): OnSettlePendingLiquidityEventFilter;
     OnSettlePendingLiquidity(
-      market?: PromiseOrValue<string> | null,
-      pendingDeposit?: PromiseOrValue<BigNumberish> | null,
-      pendingWithdrawal?: PromiseOrValue<BigNumberish> | null
+      market?: string | null,
+      pendingDeposit?: BigNumberish | null,
+      pendingWithdrawal?: BigNumberish | null
     ): OnSettlePendingLiquidityEventFilter;
 
     "OnWithdrawLiquidity(address,uint256,address)"(
-      market?: PromiseOrValue<string> | null,
-      amount?: PromiseOrValue<BigNumberish> | null,
-      recipient?: PromiseOrValue<string> | null
+      market?: string | null,
+      amount?: BigNumberish | null,
+      recipient?: string | null
     ): OnWithdrawLiquidityEventFilter;
     OnWithdrawLiquidity(
-      market?: PromiseOrValue<string> | null,
-      amount?: PromiseOrValue<BigNumberish> | null,
-      recipient?: PromiseOrValue<string> | null
+      market?: string | null,
+      amount?: BigNumberish | null,
+      recipient?: string | null
     ): OnWithdrawLiquidityEventFilter;
 
     "TransferKeeperFee(uint256,uint256)"(
-      fee?: PromiseOrValue<BigNumberish> | null,
-      amount?: PromiseOrValue<BigNumberish> | null
+      fee?: BigNumberish | null,
+      amount?: BigNumberish | null
     ): TransferKeeperFee_uint256_uint256_EventFilter;
     "TransferKeeperFee(address,uint256,uint256)"(
-      market?: PromiseOrValue<string> | null,
-      fee?: PromiseOrValue<BigNumberish> | null,
-      amount?: PromiseOrValue<BigNumberish> | null
+      market?: string | null,
+      fee?: BigNumberish | null,
+      amount?: BigNumberish | null
     ): TransferKeeperFee_address_uint256_uint256_EventFilter;
 
     "TransferProtocolFee(address,uint256,uint256)"(
-      market?: PromiseOrValue<string> | null,
-      positionId?: PromiseOrValue<BigNumberish> | null,
-      amount?: PromiseOrValue<BigNumberish> | null
+      market?: string | null,
+      positionId?: BigNumberish | null,
+      amount?: BigNumberish | null
     ): TransferProtocolFeeEventFilter;
     TransferProtocolFee(
-      market?: PromiseOrValue<string> | null,
-      positionId?: PromiseOrValue<BigNumberish> | null,
-      amount?: PromiseOrValue<BigNumberish> | null
+      market?: string | null,
+      positionId?: BigNumberish | null,
+      amount?: BigNumberish | null
     ): TransferProtocolFeeEventFilter;
   };
 
@@ -1445,8 +1395,8 @@ export interface ChromaticVault extends BaseContract {
      * @param token The address of the settlement token.
      */
     cancelMakerEarningDistributionTask(
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1454,8 +1404,8 @@ export interface ChromaticVault extends BaseContract {
      * @param market The address of the market.
      */
     cancelMarketEarningDistributionTask(
-      market: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1463,8 +1413,8 @@ export interface ChromaticVault extends BaseContract {
      * @param token The address of the settlement token.
      */
     createMakerEarningDistributionTask(
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1472,8 +1422,8 @@ export interface ChromaticVault extends BaseContract {
      * @param market The address of the market.
      */
     createMarketEarningDistributionTask(
-      market: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     dedicatedMsgSender(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1483,8 +1433,8 @@ export interface ChromaticVault extends BaseContract {
      * @param token The address of the settlement token.
      */
     distributeMakerEarning(
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1492,8 +1442,8 @@ export interface ChromaticVault extends BaseContract {
      * @param market The address of the market.
      */
     distributeMarketEarning(
-      market: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1504,11 +1454,11 @@ export interface ChromaticVault extends BaseContract {
      * @param token The address of the token for the flash loan.
      */
     flashLoan(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      amount: BigNumberish,
+      recipient: string,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1519,29 +1469,26 @@ export interface ChromaticVault extends BaseContract {
      * @param settlementToken The settlement token address.
      */
     getPendingBinShare(
-      market: PromiseOrValue<string>,
-      settlementToken: PromiseOrValue<string>,
-      binBalance: PromiseOrValue<BigNumberish>,
+      market: string,
+      settlementToken: string,
+      binBalance: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    makerBalances(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    makerBalances(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     makerEarningDistributionTaskIds(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     makerMarketBalances(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     marketEarningDistributionTaskIds(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1552,9 +1499,9 @@ export interface ChromaticVault extends BaseContract {
      * @param settlementToken The settlement token address.
      */
     onAddLiquidity(
-      settlementToken: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1567,12 +1514,12 @@ export interface ChromaticVault extends BaseContract {
      * @param takerMargin The margin amount provided by the taker for the position.
      */
     onClaimPosition(
-      settlementToken: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      settlementAmount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      positionId: BigNumberish,
+      recipient: string,
+      takerMargin: BigNumberish,
+      settlementAmount: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1585,12 +1532,12 @@ export interface ChromaticVault extends BaseContract {
      * @param tradingFee The trading fee associated with the position.
      */
     onOpenPosition(
-      settlementToken: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      tradingFee: PromiseOrValue<BigNumberish>,
-      protocolFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      positionId: BigNumberish,
+      takerMargin: BigNumberish,
+      tradingFee: BigNumberish,
+      protocolFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1601,10 +1548,10 @@ export interface ChromaticVault extends BaseContract {
      * @param settlementToken The settlement token address.
      */
     onSettlePendingLiquidity(
-      settlementToken: PromiseOrValue<string>,
-      pendingDeposit: PromiseOrValue<BigNumberish>,
-      pendingWithdrawal: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      pendingDeposit: BigNumberish,
+      pendingWithdrawal: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1615,29 +1562,29 @@ export interface ChromaticVault extends BaseContract {
      * @param settlementToken The settlement token address.
      */
     onWithdrawLiquidity(
-      settlementToken: PromiseOrValue<string>,
-      recipient: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      recipient: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     pendingDeposits(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     pendingMakerEarnings(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     pendingMarketEarnings(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     pendingWithdrawals(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1646,7 +1593,7 @@ export interface ChromaticVault extends BaseContract {
      * @param token The address of the settlement token.
      */
     resolveMakerEarningDistribution(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1655,17 +1602,14 @@ export interface ChromaticVault extends BaseContract {
      * @param market The address of the market.
      */
     resolveMarketEarningDistribution(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    takerBalances(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    takerBalances(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     takerMarketBalances(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1678,11 +1622,11 @@ export interface ChromaticVault extends BaseContract {
      * @param settlementToken The settlement token address.
      */
     transferKeeperFee(
-      settlementToken: PromiseOrValue<string>,
-      keeper: PromiseOrValue<string>,
-      fee: PromiseOrValue<BigNumberish>,
-      margin: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      keeper: string,
+      fee: BigNumberish,
+      margin: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
   };
 
@@ -1694,8 +1638,8 @@ export interface ChromaticVault extends BaseContract {
      * @param token The address of the settlement token.
      */
     cancelMakerEarningDistributionTask(
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1703,8 +1647,8 @@ export interface ChromaticVault extends BaseContract {
      * @param market The address of the market.
      */
     cancelMarketEarningDistributionTask(
-      market: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1712,8 +1656,8 @@ export interface ChromaticVault extends BaseContract {
      * @param token The address of the settlement token.
      */
     createMakerEarningDistributionTask(
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1721,8 +1665,8 @@ export interface ChromaticVault extends BaseContract {
      * @param market The address of the market.
      */
     createMarketEarningDistributionTask(
-      market: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     dedicatedMsgSender(
@@ -1734,8 +1678,8 @@ export interface ChromaticVault extends BaseContract {
      * @param token The address of the settlement token.
      */
     distributeMakerEarning(
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1743,8 +1687,8 @@ export interface ChromaticVault extends BaseContract {
      * @param market The address of the market.
      */
     distributeMarketEarning(
-      market: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      market: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1755,11 +1699,11 @@ export interface ChromaticVault extends BaseContract {
      * @param token The address of the token for the flash loan.
      */
     flashLoan(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      amount: BigNumberish,
+      recipient: string,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1770,29 +1714,29 @@ export interface ChromaticVault extends BaseContract {
      * @param settlementToken The settlement token address.
      */
     getPendingBinShare(
-      market: PromiseOrValue<string>,
-      settlementToken: PromiseOrValue<string>,
-      binBalance: PromiseOrValue<BigNumberish>,
+      market: string,
+      settlementToken: string,
+      binBalance: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     makerBalances(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     makerEarningDistributionTaskIds(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     makerMarketBalances(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     marketEarningDistributionTaskIds(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1803,9 +1747,9 @@ export interface ChromaticVault extends BaseContract {
      * @param settlementToken The settlement token address.
      */
     onAddLiquidity(
-      settlementToken: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1818,12 +1762,12 @@ export interface ChromaticVault extends BaseContract {
      * @param takerMargin The margin amount provided by the taker for the position.
      */
     onClaimPosition(
-      settlementToken: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      settlementAmount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      positionId: BigNumberish,
+      recipient: string,
+      takerMargin: BigNumberish,
+      settlementAmount: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1836,12 +1780,12 @@ export interface ChromaticVault extends BaseContract {
      * @param tradingFee The trading fee associated with the position.
      */
     onOpenPosition(
-      settlementToken: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      tradingFee: PromiseOrValue<BigNumberish>,
-      protocolFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      positionId: BigNumberish,
+      takerMargin: BigNumberish,
+      tradingFee: BigNumberish,
+      protocolFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1852,10 +1796,10 @@ export interface ChromaticVault extends BaseContract {
      * @param settlementToken The settlement token address.
      */
     onSettlePendingLiquidity(
-      settlementToken: PromiseOrValue<string>,
-      pendingDeposit: PromiseOrValue<BigNumberish>,
-      pendingWithdrawal: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      pendingDeposit: BigNumberish,
+      pendingWithdrawal: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1866,29 +1810,29 @@ export interface ChromaticVault extends BaseContract {
      * @param settlementToken The settlement token address.
      */
     onWithdrawLiquidity(
-      settlementToken: PromiseOrValue<string>,
-      recipient: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      recipient: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     pendingDeposits(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     pendingMakerEarnings(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     pendingMarketEarnings(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     pendingWithdrawals(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1897,7 +1841,7 @@ export interface ChromaticVault extends BaseContract {
      * @param token The address of the settlement token.
      */
     resolveMakerEarningDistribution(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1906,17 +1850,17 @@ export interface ChromaticVault extends BaseContract {
      * @param market The address of the market.
      */
     resolveMarketEarningDistribution(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     takerBalances(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     takerMarketBalances(
-      arg0: PromiseOrValue<string>,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1929,11 +1873,11 @@ export interface ChromaticVault extends BaseContract {
      * @param settlementToken The settlement token address.
      */
     transferKeeperFee(
-      settlementToken: PromiseOrValue<string>,
-      keeper: PromiseOrValue<string>,
-      fee: PromiseOrValue<BigNumberish>,
-      margin: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      keeper: string,
+      fee: BigNumberish,
+      margin: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
   };
 }

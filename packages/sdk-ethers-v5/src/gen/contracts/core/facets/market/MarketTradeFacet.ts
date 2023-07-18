@@ -24,12 +24,11 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "../../../../common";
 
 export type BinMarginStruct = {
-  tradingFeeRate: PromiseOrValue<BigNumberish>;
-  amount: PromiseOrValue<BigNumberish>;
+  tradingFeeRate: BigNumberish;
+  amount: BigNumberish;
 };
 
 export type BinMarginStructOutput = [number, BigNumber] & {
@@ -38,17 +37,17 @@ export type BinMarginStructOutput = [number, BigNumber] & {
 };
 
 export type PositionStruct = {
-  id: PromiseOrValue<BigNumberish>;
-  openVersion: PromiseOrValue<BigNumberish>;
-  closeVersion: PromiseOrValue<BigNumberish>;
-  qty: PromiseOrValue<BigNumberish>;
-  leverage: PromiseOrValue<BigNumberish>;
-  openTimestamp: PromiseOrValue<BigNumberish>;
-  closeTimestamp: PromiseOrValue<BigNumberish>;
-  takerMargin: PromiseOrValue<BigNumberish>;
-  owner: PromiseOrValue<string>;
+  id: BigNumberish;
+  openVersion: BigNumberish;
+  closeVersion: BigNumberish;
+  qty: BigNumberish;
+  leverage: BigNumberish;
+  openTimestamp: BigNumberish;
+  closeTimestamp: BigNumberish;
+  takerMargin: BigNumberish;
+  owner: string;
   _binMargins: BinMarginStruct[];
-  _feeProtocol: PromiseOrValue<BigNumberish>;
+  _feeProtocol: BigNumberish;
 };
 
 export type PositionStructOutput = [
@@ -95,29 +94,25 @@ export interface MarketTradeFacetInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "claimPosition",
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [BigNumberish, string, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "closePosition",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getPositions",
-    values: [PromiseOrValue<BigNumberish>[]]
+    values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "openPosition",
     values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BytesLike
     ]
   ): string;
 
@@ -139,9 +134,9 @@ export interface MarketTradeFacetInterface extends utils.Interface {
   ): Result;
 
   events: {
-    "ClaimPosition(address,int256,uint256,tuple)": EventFragment;
-    "ClosePosition(address,tuple)": EventFragment;
-    "OpenPosition(address,tuple)": EventFragment;
+    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "ClosePosition(address,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "OpenPosition(address,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
     "TransferProtocolFee(uint256,uint256)": EventFragment;
   };
 
@@ -232,10 +227,10 @@ export interface MarketTradeFacet extends BaseContract {
      * @param recipient The address of the recipient of the claimed position.
      */
     claimPosition(
-      positionId: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      recipient: string,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -243,8 +238,8 @@ export interface MarketTradeFacet extends BaseContract {
      * @param positionId The ID of the position to close.
      */
     closePosition(
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -252,7 +247,7 @@ export interface MarketTradeFacet extends BaseContract {
      * @param positionIds The IDs of the positions to retrieve.
      */
     getPositions(
-      positionIds: PromiseOrValue<BigNumberish>[],
+      positionIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<
       [PositionStructOutput[]] & { _positions: PositionStructOutput[] }
@@ -268,13 +263,13 @@ export interface MarketTradeFacet extends BaseContract {
      * @param takerMargin The margin amount provided by the taker.
      */
     openPosition(
-      qty: PromiseOrValue<BigNumberish>,
-      leverage: PromiseOrValue<BigNumberish>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      makerMargin: PromiseOrValue<BigNumberish>,
-      maxAllowableTradingFee: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      qty: BigNumberish,
+      leverage: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
   };
 
@@ -285,10 +280,10 @@ export interface MarketTradeFacet extends BaseContract {
    * @param recipient The address of the recipient of the claimed position.
    */
   claimPosition(
-    positionId: PromiseOrValue<BigNumberish>,
-    recipient: PromiseOrValue<string>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    positionId: BigNumberish,
+    recipient: string,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -296,8 +291,8 @@ export interface MarketTradeFacet extends BaseContract {
    * @param positionId The ID of the position to close.
    */
   closePosition(
-    positionId: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    positionId: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -305,7 +300,7 @@ export interface MarketTradeFacet extends BaseContract {
    * @param positionIds The IDs of the positions to retrieve.
    */
   getPositions(
-    positionIds: PromiseOrValue<BigNumberish>[],
+    positionIds: BigNumberish[],
     overrides?: CallOverrides
   ): Promise<PositionStructOutput[]>;
 
@@ -319,13 +314,13 @@ export interface MarketTradeFacet extends BaseContract {
    * @param takerMargin The margin amount provided by the taker.
    */
   openPosition(
-    qty: PromiseOrValue<BigNumberish>,
-    leverage: PromiseOrValue<BigNumberish>,
-    takerMargin: PromiseOrValue<BigNumberish>,
-    makerMargin: PromiseOrValue<BigNumberish>,
-    maxAllowableTradingFee: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    qty: BigNumberish,
+    leverage: BigNumberish,
+    takerMargin: BigNumberish,
+    makerMargin: BigNumberish,
+    maxAllowableTradingFee: BigNumberish,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   callStatic: {
@@ -336,9 +331,9 @@ export interface MarketTradeFacet extends BaseContract {
      * @param recipient The address of the recipient of the claimed position.
      */
     claimPosition(
-      positionId: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
+      positionId: BigNumberish,
+      recipient: string,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -347,7 +342,7 @@ export interface MarketTradeFacet extends BaseContract {
      * @param positionId The ID of the position to close.
      */
     closePosition(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -356,7 +351,7 @@ export interface MarketTradeFacet extends BaseContract {
      * @param positionIds The IDs of the positions to retrieve.
      */
     getPositions(
-      positionIds: PromiseOrValue<BigNumberish>[],
+      positionIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<PositionStructOutput[]>;
 
@@ -370,55 +365,55 @@ export interface MarketTradeFacet extends BaseContract {
      * @param takerMargin The margin amount provided by the taker.
      */
     openPosition(
-      qty: PromiseOrValue<BigNumberish>,
-      leverage: PromiseOrValue<BigNumberish>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      makerMargin: PromiseOrValue<BigNumberish>,
-      maxAllowableTradingFee: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      qty: BigNumberish,
+      leverage: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<PositionStructOutput>;
   };
 
   filters: {
-    "ClaimPosition(address,int256,uint256,tuple)"(
-      account?: PromiseOrValue<string> | null,
-      pnl?: PromiseOrValue<BigNumberish> | null,
-      interest?: PromiseOrValue<BigNumberish> | null,
+    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
       position?: null
     ): ClaimPositionEventFilter;
     ClaimPosition(
-      account?: PromiseOrValue<string> | null,
-      pnl?: PromiseOrValue<BigNumberish> | null,
-      interest?: PromiseOrValue<BigNumberish> | null,
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
       position?: null
     ): ClaimPositionEventFilter;
 
-    "ClosePosition(address,tuple)"(
-      account?: PromiseOrValue<string> | null,
+    "ClosePosition(address,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+      account?: string | null,
       position?: null
     ): ClosePositionEventFilter;
     ClosePosition(
-      account?: PromiseOrValue<string> | null,
+      account?: string | null,
       position?: null
     ): ClosePositionEventFilter;
 
-    "OpenPosition(address,tuple)"(
-      account?: PromiseOrValue<string> | null,
+    "OpenPosition(address,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+      account?: string | null,
       position?: null
     ): OpenPositionEventFilter;
     OpenPosition(
-      account?: PromiseOrValue<string> | null,
+      account?: string | null,
       position?: null
     ): OpenPositionEventFilter;
 
     "TransferProtocolFee(uint256,uint256)"(
-      positionId?: PromiseOrValue<BigNumberish> | null,
-      amount?: PromiseOrValue<BigNumberish> | null
+      positionId?: BigNumberish | null,
+      amount?: BigNumberish | null
     ): TransferProtocolFeeEventFilter;
     TransferProtocolFee(
-      positionId?: PromiseOrValue<BigNumberish> | null,
-      amount?: PromiseOrValue<BigNumberish> | null
+      positionId?: BigNumberish | null,
+      amount?: BigNumberish | null
     ): TransferProtocolFeeEventFilter;
   };
 
@@ -430,10 +425,10 @@ export interface MarketTradeFacet extends BaseContract {
      * @param recipient The address of the recipient of the claimed position.
      */
     claimPosition(
-      positionId: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      recipient: string,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -441,8 +436,8 @@ export interface MarketTradeFacet extends BaseContract {
      * @param positionId The ID of the position to close.
      */
     closePosition(
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -450,7 +445,7 @@ export interface MarketTradeFacet extends BaseContract {
      * @param positionIds The IDs of the positions to retrieve.
      */
     getPositions(
-      positionIds: PromiseOrValue<BigNumberish>[],
+      positionIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -464,13 +459,13 @@ export interface MarketTradeFacet extends BaseContract {
      * @param takerMargin The margin amount provided by the taker.
      */
     openPosition(
-      qty: PromiseOrValue<BigNumberish>,
-      leverage: PromiseOrValue<BigNumberish>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      makerMargin: PromiseOrValue<BigNumberish>,
-      maxAllowableTradingFee: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      qty: BigNumberish,
+      leverage: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
   };
 
@@ -482,10 +477,10 @@ export interface MarketTradeFacet extends BaseContract {
      * @param recipient The address of the recipient of the claimed position.
      */
     claimPosition(
-      positionId: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      recipient: string,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -493,8 +488,8 @@ export interface MarketTradeFacet extends BaseContract {
      * @param positionId The ID of the position to close.
      */
     closePosition(
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -502,7 +497,7 @@ export interface MarketTradeFacet extends BaseContract {
      * @param positionIds The IDs of the positions to retrieve.
      */
     getPositions(
-      positionIds: PromiseOrValue<BigNumberish>[],
+      positionIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -516,13 +511,13 @@ export interface MarketTradeFacet extends BaseContract {
      * @param takerMargin The margin amount provided by the taker.
      */
     openPosition(
-      qty: PromiseOrValue<BigNumberish>,
-      leverage: PromiseOrValue<BigNumberish>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      makerMargin: PromiseOrValue<BigNumberish>,
-      maxAllowableTradingFee: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      qty: BigNumberish,
+      leverage: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
   };
 }

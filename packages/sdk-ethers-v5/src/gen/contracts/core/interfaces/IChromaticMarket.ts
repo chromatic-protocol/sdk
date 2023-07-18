@@ -24,16 +24,15 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "../../../common";
 
 export type LpReceiptStruct = {
-  id: PromiseOrValue<BigNumberish>;
-  oracleVersion: PromiseOrValue<BigNumberish>;
-  amount: PromiseOrValue<BigNumberish>;
-  recipient: PromiseOrValue<string>;
-  action: PromiseOrValue<BigNumberish>;
-  tradingFeeRate: PromiseOrValue<BigNumberish>;
+  id: BigNumberish;
+  oracleVersion: BigNumberish;
+  amount: BigNumberish;
+  recipient: string;
+  action: BigNumberish;
+  tradingFeeRate: BigNumberish;
 };
 
 export type LpReceiptStructOutput = [
@@ -53,8 +52,8 @@ export type LpReceiptStructOutput = [
 };
 
 export type BinMarginStruct = {
-  tradingFeeRate: PromiseOrValue<BigNumberish>;
-  amount: PromiseOrValue<BigNumberish>;
+  tradingFeeRate: BigNumberish;
+  amount: BigNumberish;
 };
 
 export type BinMarginStructOutput = [number, BigNumber] & {
@@ -63,17 +62,17 @@ export type BinMarginStructOutput = [number, BigNumber] & {
 };
 
 export type PositionStruct = {
-  id: PromiseOrValue<BigNumberish>;
-  openVersion: PromiseOrValue<BigNumberish>;
-  closeVersion: PromiseOrValue<BigNumberish>;
-  qty: PromiseOrValue<BigNumberish>;
-  leverage: PromiseOrValue<BigNumberish>;
-  openTimestamp: PromiseOrValue<BigNumberish>;
-  closeTimestamp: PromiseOrValue<BigNumberish>;
-  takerMargin: PromiseOrValue<BigNumberish>;
-  owner: PromiseOrValue<string>;
+  id: BigNumberish;
+  openVersion: BigNumberish;
+  closeVersion: BigNumberish;
+  qty: BigNumberish;
+  leverage: BigNumberish;
+  openTimestamp: BigNumberish;
+  closeTimestamp: BigNumberish;
+  takerMargin: BigNumberish;
+  owner: string;
   _binMargins: BinMarginStruct[];
-  _feeProtocol: PromiseOrValue<BigNumberish>;
+  _feeProtocol: BigNumberish;
 };
 
 export type PositionStructOutput = [
@@ -104,11 +103,11 @@ export type PositionStructOutput = [
 
 export declare namespace IMarketLiquidity {
   export type ClaimableLiquidityStruct = {
-    mintingTokenAmountRequested: PromiseOrValue<BigNumberish>;
-    mintingCLBTokenAmount: PromiseOrValue<BigNumberish>;
-    burningCLBTokenAmountRequested: PromiseOrValue<BigNumberish>;
-    burningCLBTokenAmount: PromiseOrValue<BigNumberish>;
-    burningTokenAmount: PromiseOrValue<BigNumberish>;
+    mintingTokenAmountRequested: BigNumberish;
+    mintingCLBTokenAmount: BigNumberish;
+    burningCLBTokenAmountRequested: BigNumberish;
+    burningCLBTokenAmount: BigNumberish;
+    burningTokenAmount: BigNumberish;
   };
 
   export type ClaimableLiquidityStructOutput = [
@@ -126,10 +125,10 @@ export declare namespace IMarketLiquidity {
   };
 
   export type LiquidityBinStatusStruct = {
-    liquidity: PromiseOrValue<BigNumberish>;
-    freeLiquidity: PromiseOrValue<BigNumberish>;
-    binValue: PromiseOrValue<BigNumberish>;
-    tradingFeeRate: PromiseOrValue<BigNumberish>;
+    liquidity: BigNumberish;
+    freeLiquidity: BigNumberish;
+    binValue: BigNumberish;
+    tradingFeeRate: BigNumberish;
   };
 
   export type LiquidityBinStatusStructOutput = [
@@ -221,65 +220,48 @@ export interface IChromaticMarketInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "addLiquidity",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "addLiquidityBatch",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, BigNumberish[], BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "checkClaimPosition",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "checkLiquidation",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "claimLiquidity",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BytesLike>]
+    values: [BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "claimLiquidityBatch",
-    values: [PromiseOrValue<BigNumberish>[], PromiseOrValue<BytesLike>]
+    values: [BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "claimPosition(uint256,address,bytes)",
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [BigNumberish, string, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "claimPosition(uint256,address,uint256)",
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [BigNumberish, string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "claimableLiquidity",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "clbToken", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "closePosition",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "distributeEarningToBins",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "factory", values?: undefined): string;
   encodeFunctionData(
@@ -288,23 +270,23 @@ export interface IChromaticMarketInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getBinFreeLiquidity",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getBinLiquidity",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getBinValues",
-    values: [PromiseOrValue<BigNumberish>[]]
+    values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "getLpReceipt",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getPositions",
-    values: [PromiseOrValue<BigNumberish>[]]
+    values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "keeperFeePayer",
@@ -312,11 +294,7 @@ export interface IChromaticMarketInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "liquidate",
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [BigNumberish, string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "liquidator",
@@ -329,12 +307,12 @@ export interface IChromaticMarketInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "openPosition",
     values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BytesLike
     ]
   ): string;
   encodeFunctionData(
@@ -343,24 +321,15 @@ export interface IChromaticMarketInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "removeLiquidity",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "removeLiquidityBatch",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, BigNumberish[], BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "setFeeProtocol",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "settle", values?: undefined): string;
   encodeFunctionData(
@@ -370,11 +339,11 @@ export interface IChromaticMarketInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "vault", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "withdrawLiquidity",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BytesLike>]
+    values: [BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawLiquidityBatch",
-    values: [PromiseOrValue<BigNumberish>[], PromiseOrValue<BytesLike>]
+    values: [BigNumberish[], BytesLike]
   ): string;
 
   decodeFunctionResult(
@@ -493,21 +462,21 @@ export interface IChromaticMarketInterface extends utils.Interface {
   ): Result;
 
   events: {
-    "AddLiquidity(tuple)": EventFragment;
-    "AddLiquidityBatch(tuple[])": EventFragment;
-    "ClaimLiquidity(tuple,uint256)": EventFragment;
-    "ClaimLiquidityBatch(tuple[],uint256[])": EventFragment;
-    "ClaimPosition(address,int256,uint256,tuple)": EventFragment;
-    "ClaimPositionByKeeper(address,int256,uint256,uint256,tuple)": EventFragment;
-    "ClosePosition(address,tuple)": EventFragment;
-    "Liquidate(address,int256,uint256,uint256,tuple)": EventFragment;
-    "OpenPosition(address,tuple)": EventFragment;
-    "RemoveLiquidity(tuple)": EventFragment;
-    "RemoveLiquidityBatch(tuple[])": EventFragment;
+    "AddLiquidity((uint256,uint256,uint256,address,uint8,int16))": EventFragment;
+    "AddLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])": EventFragment;
+    "ClaimLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256)": EventFragment;
+    "ClaimLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[])": EventFragment;
+    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "ClosePosition(address,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "OpenPosition(address,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "RemoveLiquidity((uint256,uint256,uint256,address,uint8,int16))": EventFragment;
+    "RemoveLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])": EventFragment;
     "SetFeeProtocol(uint8,uint8)": EventFragment;
     "TransferProtocolFee(uint256,uint256)": EventFragment;
-    "WithdrawLiquidity(tuple,uint256,uint256)": EventFragment;
-    "WithdrawLiquidityBatch(tuple[],uint256[],uint256[])": EventFragment;
+    "WithdrawLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256,uint256)": EventFragment;
+    "WithdrawLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[],uint256[])": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "AddLiquidity"): EventFragment;
@@ -739,10 +708,10 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRate The trading fee rate for the liquidity.
      */
     addLiquidity(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRate: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -753,11 +722,11 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRates An array of fee rates for each liquidity bin.
      */
     addLiquidityBatch(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRates: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -765,7 +734,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionId The ID of the position to check.
      */
     checkClaimPosition(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -774,7 +743,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionId The ID of the position to check.
      */
     checkLiquidation(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -784,9 +753,9 @@ export interface IChromaticMarket extends BaseContract {
      * @param receiptId The ID of the liquidity receipt.
      */
     claimLiquidity(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -795,9 +764,9 @@ export interface IChromaticMarket extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     claimLiquidityBatch(
-      receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -807,10 +776,10 @@ export interface IChromaticMarket extends BaseContract {
      * @param recipient The address of the recipient of the claimed position.
      */
     "claimPosition(uint256,address,bytes)"(
-      positionId: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      recipient: string,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -820,10 +789,10 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionId The ID of the position to claim.
      */
     "claimPosition(uint256,address,uint256)"(
-      positionId: PromiseOrValue<BigNumberish>,
-      keeper: PromiseOrValue<string>,
-      keeperFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      keeper: string,
+      keeperFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -832,8 +801,8 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
      */
     claimableLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      oracleVersion: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
+      oracleVersion: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[IMarketLiquidity.ClaimableLiquidityStructOutput]>;
 
@@ -847,8 +816,8 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionId The ID of the position to close.
      */
     closePosition(
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -857,9 +826,9 @@ export interface IChromaticMarket extends BaseContract {
      * @param marketBalance The balance of the market.
      */
     distributeEarningToBins(
-      earning: PromiseOrValue<BigNumberish>,
-      marketBalance: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      earning: BigNumberish,
+      marketBalance: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -877,7 +846,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
      */
     getBinFreeLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { amount: BigNumber }>;
 
@@ -886,7 +855,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
      */
     getBinLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { amount: BigNumber }>;
 
@@ -895,7 +864,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
      */
     getBinValues(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      tradingFeeRates: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<[BigNumber[]] & { values: BigNumber[] }>;
 
@@ -904,7 +873,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param receiptId The ID of the liquidity receipt to retrieve.
      */
     getLpReceipt(
-      receiptId: PromiseOrValue<BigNumberish>,
+      receiptId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[LpReceiptStructOutput]>;
 
@@ -913,7 +882,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionIds The IDs of the positions to retrieve.
      */
     getPositions(
-      positionIds: PromiseOrValue<BigNumberish>[],
+      positionIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<
       [PositionStructOutput[]] & { positions: PositionStructOutput[] }
@@ -931,10 +900,10 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionId The ID of the position to liquidate.
      */
     liquidate(
-      positionId: PromiseOrValue<BigNumberish>,
-      keeper: PromiseOrValue<string>,
-      keeperFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      keeper: string,
+      keeperFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -959,13 +928,13 @@ export interface IChromaticMarket extends BaseContract {
      * @param takerMargin The margin amount provided by the taker.
      */
     openPosition(
-      qty: PromiseOrValue<BigNumberish>,
-      leverage: PromiseOrValue<BigNumberish>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      makerMargin: PromiseOrValue<BigNumberish>,
-      maxAllowableTradingFee: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      qty: BigNumberish,
+      leverage: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -980,10 +949,10 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRate The trading fee rate for the liquidity.
      */
     removeLiquidity(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRate: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -994,11 +963,11 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRates An array of fee rates for each liquidity bin.
      */
     removeLiquidityBatch(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRates: BigNumberish[],
+      clbTokenAmounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -1006,8 +975,8 @@ export interface IChromaticMarket extends BaseContract {
      * @param feeProtocol new protocol fee for the market
      */
     setFeeProtocol(
-      feeProtocol: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      feeProtocol: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -1015,7 +984,7 @@ export interface IChromaticMarket extends BaseContract {
      * Executes the settlement process for the Chromatic market.
      */
     settle(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -1034,9 +1003,9 @@ export interface IChromaticMarket extends BaseContract {
      * @param receiptId The ID of the liquidity receipt.
      */
     withdrawLiquidity(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -1045,9 +1014,9 @@ export interface IChromaticMarket extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     withdrawLiquidityBatch(
-      receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
   };
 
@@ -1058,10 +1027,10 @@ export interface IChromaticMarket extends BaseContract {
    * @param tradingFeeRate The trading fee rate for the liquidity.
    */
   addLiquidity(
-    recipient: PromiseOrValue<string>,
-    tradingFeeRate: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    recipient: string,
+    tradingFeeRate: BigNumberish,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1072,11 +1041,11 @@ export interface IChromaticMarket extends BaseContract {
    * @param tradingFeeRates An array of fee rates for each liquidity bin.
    */
   addLiquidityBatch(
-    recipient: PromiseOrValue<string>,
-    tradingFeeRates: PromiseOrValue<BigNumberish>[],
-    amounts: PromiseOrValue<BigNumberish>[],
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    recipient: string,
+    tradingFeeRates: BigNumberish[],
+    amounts: BigNumberish[],
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1084,7 +1053,7 @@ export interface IChromaticMarket extends BaseContract {
    * @param positionId The ID of the position to check.
    */
   checkClaimPosition(
-    positionId: PromiseOrValue<BigNumberish>,
+    positionId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -1093,7 +1062,7 @@ export interface IChromaticMarket extends BaseContract {
    * @param positionId The ID of the position to check.
    */
   checkLiquidation(
-    positionId: PromiseOrValue<BigNumberish>,
+    positionId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -1103,9 +1072,9 @@ export interface IChromaticMarket extends BaseContract {
    * @param receiptId The ID of the liquidity receipt.
    */
   claimLiquidity(
-    receiptId: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    receiptId: BigNumberish,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1114,9 +1083,9 @@ export interface IChromaticMarket extends BaseContract {
    * @param receiptIds The array of the liquidity receipt IDs.
    */
   claimLiquidityBatch(
-    receiptIds: PromiseOrValue<BigNumberish>[],
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    receiptIds: BigNumberish[],
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1126,10 +1095,10 @@ export interface IChromaticMarket extends BaseContract {
    * @param recipient The address of the recipient of the claimed position.
    */
   "claimPosition(uint256,address,bytes)"(
-    positionId: PromiseOrValue<BigNumberish>,
-    recipient: PromiseOrValue<string>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    positionId: BigNumberish,
+    recipient: string,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1139,10 +1108,10 @@ export interface IChromaticMarket extends BaseContract {
    * @param positionId The ID of the position to claim.
    */
   "claimPosition(uint256,address,uint256)"(
-    positionId: PromiseOrValue<BigNumberish>,
-    keeper: PromiseOrValue<string>,
-    keeperFee: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    positionId: BigNumberish,
+    keeper: string,
+    keeperFee: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1151,8 +1120,8 @@ export interface IChromaticMarket extends BaseContract {
    * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
    */
   claimableLiquidity(
-    tradingFeeRate: PromiseOrValue<BigNumberish>,
-    oracleVersion: PromiseOrValue<BigNumberish>,
+    tradingFeeRate: BigNumberish,
+    oracleVersion: BigNumberish,
     overrides?: CallOverrides
   ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput>;
 
@@ -1166,8 +1135,8 @@ export interface IChromaticMarket extends BaseContract {
    * @param positionId The ID of the position to close.
    */
   closePosition(
-    positionId: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    positionId: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1176,9 +1145,9 @@ export interface IChromaticMarket extends BaseContract {
    * @param marketBalance The balance of the market.
    */
   distributeEarningToBins(
-    earning: PromiseOrValue<BigNumberish>,
-    marketBalance: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    earning: BigNumberish,
+    marketBalance: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1196,7 +1165,7 @@ export interface IChromaticMarket extends BaseContract {
    * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
    */
   getBinFreeLiquidity(
-    tradingFeeRate: PromiseOrValue<BigNumberish>,
+    tradingFeeRate: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -1205,7 +1174,7 @@ export interface IChromaticMarket extends BaseContract {
    * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
    */
   getBinLiquidity(
-    tradingFeeRate: PromiseOrValue<BigNumberish>,
+    tradingFeeRate: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -1214,7 +1183,7 @@ export interface IChromaticMarket extends BaseContract {
    * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
    */
   getBinValues(
-    tradingFeeRates: PromiseOrValue<BigNumberish>[],
+    tradingFeeRates: BigNumberish[],
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
@@ -1223,7 +1192,7 @@ export interface IChromaticMarket extends BaseContract {
    * @param receiptId The ID of the liquidity receipt to retrieve.
    */
   getLpReceipt(
-    receiptId: PromiseOrValue<BigNumberish>,
+    receiptId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<LpReceiptStructOutput>;
 
@@ -1232,7 +1201,7 @@ export interface IChromaticMarket extends BaseContract {
    * @param positionIds The IDs of the positions to retrieve.
    */
   getPositions(
-    positionIds: PromiseOrValue<BigNumberish>[],
+    positionIds: BigNumberish[],
     overrides?: CallOverrides
   ): Promise<PositionStructOutput[]>;
 
@@ -1248,10 +1217,10 @@ export interface IChromaticMarket extends BaseContract {
    * @param positionId The ID of the position to liquidate.
    */
   liquidate(
-    positionId: PromiseOrValue<BigNumberish>,
-    keeper: PromiseOrValue<string>,
-    keeperFee: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    positionId: BigNumberish,
+    keeper: string,
+    keeperFee: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1276,13 +1245,13 @@ export interface IChromaticMarket extends BaseContract {
    * @param takerMargin The margin amount provided by the taker.
    */
   openPosition(
-    qty: PromiseOrValue<BigNumberish>,
-    leverage: PromiseOrValue<BigNumberish>,
-    takerMargin: PromiseOrValue<BigNumberish>,
-    makerMargin: PromiseOrValue<BigNumberish>,
-    maxAllowableTradingFee: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    qty: BigNumberish,
+    leverage: BigNumberish,
+    takerMargin: BigNumberish,
+    makerMargin: BigNumberish,
+    maxAllowableTradingFee: BigNumberish,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1297,10 +1266,10 @@ export interface IChromaticMarket extends BaseContract {
    * @param tradingFeeRate The trading fee rate for the liquidity.
    */
   removeLiquidity(
-    recipient: PromiseOrValue<string>,
-    tradingFeeRate: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    recipient: string,
+    tradingFeeRate: BigNumberish,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1311,11 +1280,11 @@ export interface IChromaticMarket extends BaseContract {
    * @param tradingFeeRates An array of fee rates for each liquidity bin.
    */
   removeLiquidityBatch(
-    recipient: PromiseOrValue<string>,
-    tradingFeeRates: PromiseOrValue<BigNumberish>[],
-    clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    recipient: string,
+    tradingFeeRates: BigNumberish[],
+    clbTokenAmounts: BigNumberish[],
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1323,8 +1292,8 @@ export interface IChromaticMarket extends BaseContract {
    * @param feeProtocol new protocol fee for the market
    */
   setFeeProtocol(
-    feeProtocol: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    feeProtocol: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1332,7 +1301,7 @@ export interface IChromaticMarket extends BaseContract {
    * Executes the settlement process for the Chromatic market.
    */
   settle(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1351,9 +1320,9 @@ export interface IChromaticMarket extends BaseContract {
    * @param receiptId The ID of the liquidity receipt.
    */
   withdrawLiquidity(
-    receiptId: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    receiptId: BigNumberish,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1362,9 +1331,9 @@ export interface IChromaticMarket extends BaseContract {
    * @param receiptIds The array of the liquidity receipt IDs.
    */
   withdrawLiquidityBatch(
-    receiptIds: PromiseOrValue<BigNumberish>[],
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    receiptIds: BigNumberish[],
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   callStatic: {
@@ -1375,9 +1344,9 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRate The trading fee rate for the liquidity.
      */
     addLiquidity(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      recipient: string,
+      tradingFeeRate: BigNumberish,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput>;
 
@@ -1389,10 +1358,10 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRates An array of fee rates for each liquidity bin.
      */
     addLiquidityBatch(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
+      recipient: string,
+      tradingFeeRates: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput[]>;
 
@@ -1401,7 +1370,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionId The ID of the position to check.
      */
     checkClaimPosition(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -1410,7 +1379,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionId The ID of the position to check.
      */
     checkLiquidation(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -1420,8 +1389,8 @@ export interface IChromaticMarket extends BaseContract {
      * @param receiptId The ID of the liquidity receipt.
      */
     claimLiquidity(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      receiptId: BigNumberish,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1431,8 +1400,8 @@ export interface IChromaticMarket extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     claimLiquidityBatch(
-      receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
+      receiptIds: BigNumberish[],
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1443,9 +1412,9 @@ export interface IChromaticMarket extends BaseContract {
      * @param recipient The address of the recipient of the claimed position.
      */
     "claimPosition(uint256,address,bytes)"(
-      positionId: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
+      positionId: BigNumberish,
+      recipient: string,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1456,9 +1425,9 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionId The ID of the position to claim.
      */
     "claimPosition(uint256,address,uint256)"(
-      positionId: PromiseOrValue<BigNumberish>,
-      keeper: PromiseOrValue<string>,
-      keeperFee: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
+      keeper: string,
+      keeperFee: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1468,8 +1437,8 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
      */
     claimableLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      oracleVersion: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
+      oracleVersion: BigNumberish,
       overrides?: CallOverrides
     ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput>;
 
@@ -1483,7 +1452,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionId The ID of the position to close.
      */
     closePosition(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1493,8 +1462,8 @@ export interface IChromaticMarket extends BaseContract {
      * @param marketBalance The balance of the market.
      */
     distributeEarningToBins(
-      earning: PromiseOrValue<BigNumberish>,
-      marketBalance: PromiseOrValue<BigNumberish>,
+      earning: BigNumberish,
+      marketBalance: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1513,7 +1482,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
      */
     getBinFreeLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1522,7 +1491,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
      */
     getBinLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1531,7 +1500,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
      */
     getBinValues(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      tradingFeeRates: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
@@ -1540,7 +1509,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param receiptId The ID of the liquidity receipt to retrieve.
      */
     getLpReceipt(
-      receiptId: PromiseOrValue<BigNumberish>,
+      receiptId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput>;
 
@@ -1549,7 +1518,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionIds The IDs of the positions to retrieve.
      */
     getPositions(
-      positionIds: PromiseOrValue<BigNumberish>[],
+      positionIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<PositionStructOutput[]>;
 
@@ -1565,9 +1534,9 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionId The ID of the position to liquidate.
      */
     liquidate(
-      positionId: PromiseOrValue<BigNumberish>,
-      keeper: PromiseOrValue<string>,
-      keeperFee: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
+      keeper: string,
+      keeperFee: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1593,12 +1562,12 @@ export interface IChromaticMarket extends BaseContract {
      * @param takerMargin The margin amount provided by the taker.
      */
     openPosition(
-      qty: PromiseOrValue<BigNumberish>,
-      leverage: PromiseOrValue<BigNumberish>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      makerMargin: PromiseOrValue<BigNumberish>,
-      maxAllowableTradingFee: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      qty: BigNumberish,
+      leverage: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<PositionStructOutput>;
 
@@ -1614,9 +1583,9 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRate The trading fee rate for the liquidity.
      */
     removeLiquidity(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      recipient: string,
+      tradingFeeRate: BigNumberish,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput>;
 
@@ -1628,10 +1597,10 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRates An array of fee rates for each liquidity bin.
      */
     removeLiquidityBatch(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
+      recipient: string,
+      tradingFeeRates: BigNumberish[],
+      clbTokenAmounts: BigNumberish[],
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput[]>;
 
@@ -1640,7 +1609,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param feeProtocol new protocol fee for the market
      */
     setFeeProtocol(
-      feeProtocol: PromiseOrValue<BigNumberish>,
+      feeProtocol: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1666,8 +1635,8 @@ export interface IChromaticMarket extends BaseContract {
      * @param receiptId The ID of the liquidity receipt.
      */
     withdrawLiquidity(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      receiptId: BigNumberish,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1677,29 +1646,33 @@ export interface IChromaticMarket extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     withdrawLiquidityBatch(
-      receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
+      receiptIds: BigNumberish[],
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
   };
 
   filters: {
-    "AddLiquidity(tuple)"(receipt?: null): AddLiquidityEventFilter;
+    "AddLiquidity((uint256,uint256,uint256,address,uint8,int16))"(
+      receipt?: null
+    ): AddLiquidityEventFilter;
     AddLiquidity(receipt?: null): AddLiquidityEventFilter;
 
-    "AddLiquidityBatch(tuple[])"(receipts?: null): AddLiquidityBatchEventFilter;
+    "AddLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])"(
+      receipts?: null
+    ): AddLiquidityBatchEventFilter;
     AddLiquidityBatch(receipts?: null): AddLiquidityBatchEventFilter;
 
-    "ClaimLiquidity(tuple,uint256)"(
+    "ClaimLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256)"(
       receipt?: null,
-      clbTokenAmount?: PromiseOrValue<BigNumberish> | null
+      clbTokenAmount?: BigNumberish | null
     ): ClaimLiquidityEventFilter;
     ClaimLiquidity(
       receipt?: null,
-      clbTokenAmount?: PromiseOrValue<BigNumberish> | null
+      clbTokenAmount?: BigNumberish | null
     ): ClaimLiquidityEventFilter;
 
-    "ClaimLiquidityBatch(tuple[],uint256[])"(
+    "ClaimLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[])"(
       receipts?: null,
       clbTokenAmounts?: null
     ): ClaimLiquidityBatchEventFilter;
@@ -1708,71 +1681,73 @@ export interface IChromaticMarket extends BaseContract {
       clbTokenAmounts?: null
     ): ClaimLiquidityBatchEventFilter;
 
-    "ClaimPosition(address,int256,uint256,tuple)"(
-      account?: PromiseOrValue<string> | null,
-      pnl?: PromiseOrValue<BigNumberish> | null,
-      interest?: PromiseOrValue<BigNumberish> | null,
+    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
       position?: null
     ): ClaimPositionEventFilter;
     ClaimPosition(
-      account?: PromiseOrValue<string> | null,
-      pnl?: PromiseOrValue<BigNumberish> | null,
-      interest?: PromiseOrValue<BigNumberish> | null,
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
       position?: null
     ): ClaimPositionEventFilter;
 
-    "ClaimPositionByKeeper(address,int256,uint256,uint256,tuple)"(
-      account?: PromiseOrValue<string> | null,
-      pnl?: PromiseOrValue<BigNumberish> | null,
-      interest?: PromiseOrValue<BigNumberish> | null,
+    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
       usedKeeperFee?: null,
       position?: null
     ): ClaimPositionByKeeperEventFilter;
     ClaimPositionByKeeper(
-      account?: PromiseOrValue<string> | null,
-      pnl?: PromiseOrValue<BigNumberish> | null,
-      interest?: PromiseOrValue<BigNumberish> | null,
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
       usedKeeperFee?: null,
       position?: null
     ): ClaimPositionByKeeperEventFilter;
 
-    "ClosePosition(address,tuple)"(
-      account?: PromiseOrValue<string> | null,
+    "ClosePosition(address,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+      account?: string | null,
       position?: null
     ): ClosePositionEventFilter;
     ClosePosition(
-      account?: PromiseOrValue<string> | null,
+      account?: string | null,
       position?: null
     ): ClosePositionEventFilter;
 
-    "Liquidate(address,int256,uint256,uint256,tuple)"(
-      account?: PromiseOrValue<string> | null,
-      pnl?: PromiseOrValue<BigNumberish> | null,
-      interest?: PromiseOrValue<BigNumberish> | null,
+    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
       usedKeeperFee?: null,
       position?: null
     ): LiquidateEventFilter;
     Liquidate(
-      account?: PromiseOrValue<string> | null,
-      pnl?: PromiseOrValue<BigNumberish> | null,
-      interest?: PromiseOrValue<BigNumberish> | null,
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
       usedKeeperFee?: null,
       position?: null
     ): LiquidateEventFilter;
 
-    "OpenPosition(address,tuple)"(
-      account?: PromiseOrValue<string> | null,
+    "OpenPosition(address,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+      account?: string | null,
       position?: null
     ): OpenPositionEventFilter;
     OpenPosition(
-      account?: PromiseOrValue<string> | null,
+      account?: string | null,
       position?: null
     ): OpenPositionEventFilter;
 
-    "RemoveLiquidity(tuple)"(receipt?: null): RemoveLiquidityEventFilter;
+    "RemoveLiquidity((uint256,uint256,uint256,address,uint8,int16))"(
+      receipt?: null
+    ): RemoveLiquidityEventFilter;
     RemoveLiquidity(receipt?: null): RemoveLiquidityEventFilter;
 
-    "RemoveLiquidityBatch(tuple[])"(
+    "RemoveLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])"(
       receipts?: null
     ): RemoveLiquidityBatchEventFilter;
     RemoveLiquidityBatch(receipts?: null): RemoveLiquidityBatchEventFilter;
@@ -1787,26 +1762,26 @@ export interface IChromaticMarket extends BaseContract {
     ): SetFeeProtocolEventFilter;
 
     "TransferProtocolFee(uint256,uint256)"(
-      positionId?: PromiseOrValue<BigNumberish> | null,
-      amount?: PromiseOrValue<BigNumberish> | null
+      positionId?: BigNumberish | null,
+      amount?: BigNumberish | null
     ): TransferProtocolFeeEventFilter;
     TransferProtocolFee(
-      positionId?: PromiseOrValue<BigNumberish> | null,
-      amount?: PromiseOrValue<BigNumberish> | null
+      positionId?: BigNumberish | null,
+      amount?: BigNumberish | null
     ): TransferProtocolFeeEventFilter;
 
-    "WithdrawLiquidity(tuple,uint256,uint256)"(
+    "WithdrawLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256,uint256)"(
       receipt?: null,
-      amount?: PromiseOrValue<BigNumberish> | null,
-      burnedCLBTokenAmount?: PromiseOrValue<BigNumberish> | null
+      amount?: BigNumberish | null,
+      burnedCLBTokenAmount?: BigNumberish | null
     ): WithdrawLiquidityEventFilter;
     WithdrawLiquidity(
       receipt?: null,
-      amount?: PromiseOrValue<BigNumberish> | null,
-      burnedCLBTokenAmount?: PromiseOrValue<BigNumberish> | null
+      amount?: BigNumberish | null,
+      burnedCLBTokenAmount?: BigNumberish | null
     ): WithdrawLiquidityEventFilter;
 
-    "WithdrawLiquidityBatch(tuple[],uint256[],uint256[])"(
+    "WithdrawLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[],uint256[])"(
       receipts?: null,
       amounts?: null,
       burnedCLBTokenAmounts?: null
@@ -1826,10 +1801,10 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRate The trading fee rate for the liquidity.
      */
     addLiquidity(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRate: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1840,11 +1815,11 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRates An array of fee rates for each liquidity bin.
      */
     addLiquidityBatch(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRates: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1852,7 +1827,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionId The ID of the position to check.
      */
     checkClaimPosition(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1861,7 +1836,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionId The ID of the position to check.
      */
     checkLiquidation(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1871,9 +1846,9 @@ export interface IChromaticMarket extends BaseContract {
      * @param receiptId The ID of the liquidity receipt.
      */
     claimLiquidity(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1882,9 +1857,9 @@ export interface IChromaticMarket extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     claimLiquidityBatch(
-      receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1894,10 +1869,10 @@ export interface IChromaticMarket extends BaseContract {
      * @param recipient The address of the recipient of the claimed position.
      */
     "claimPosition(uint256,address,bytes)"(
-      positionId: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      recipient: string,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1907,10 +1882,10 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionId The ID of the position to claim.
      */
     "claimPosition(uint256,address,uint256)"(
-      positionId: PromiseOrValue<BigNumberish>,
-      keeper: PromiseOrValue<string>,
-      keeperFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      keeper: string,
+      keeperFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1919,8 +1894,8 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
      */
     claimableLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      oracleVersion: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
+      oracleVersion: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1934,8 +1909,8 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionId The ID of the position to close.
      */
     closePosition(
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1944,9 +1919,9 @@ export interface IChromaticMarket extends BaseContract {
      * @param marketBalance The balance of the market.
      */
     distributeEarningToBins(
-      earning: PromiseOrValue<BigNumberish>,
-      marketBalance: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      earning: BigNumberish,
+      marketBalance: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1964,7 +1939,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
      */
     getBinFreeLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1973,7 +1948,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
      */
     getBinLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1982,7 +1957,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
      */
     getBinValues(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      tradingFeeRates: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1991,7 +1966,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param receiptId The ID of the liquidity receipt to retrieve.
      */
     getLpReceipt(
-      receiptId: PromiseOrValue<BigNumberish>,
+      receiptId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2000,7 +1975,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionIds The IDs of the positions to retrieve.
      */
     getPositions(
-      positionIds: PromiseOrValue<BigNumberish>[],
+      positionIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2016,10 +1991,10 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionId The ID of the position to liquidate.
      */
     liquidate(
-      positionId: PromiseOrValue<BigNumberish>,
-      keeper: PromiseOrValue<string>,
-      keeperFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      keeper: string,
+      keeperFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2042,13 +2017,13 @@ export interface IChromaticMarket extends BaseContract {
      * @param takerMargin The margin amount provided by the taker.
      */
     openPosition(
-      qty: PromiseOrValue<BigNumberish>,
-      leverage: PromiseOrValue<BigNumberish>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      makerMargin: PromiseOrValue<BigNumberish>,
-      maxAllowableTradingFee: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      qty: BigNumberish,
+      leverage: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2063,10 +2038,10 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRate The trading fee rate for the liquidity.
      */
     removeLiquidity(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRate: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2077,11 +2052,11 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRates An array of fee rates for each liquidity bin.
      */
     removeLiquidityBatch(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRates: BigNumberish[],
+      clbTokenAmounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2089,17 +2064,15 @@ export interface IChromaticMarket extends BaseContract {
      * @param feeProtocol new protocol fee for the market
      */
     setFeeProtocol(
-      feeProtocol: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      feeProtocol: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * This function is called to settle the market.
      * Executes the settlement process for the Chromatic market.
      */
-    settle(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    settle(overrides?: Overrides & { from?: string }): Promise<BigNumber>;
 
     /**
      * Returns the settlement token of the market.
@@ -2117,9 +2090,9 @@ export interface IChromaticMarket extends BaseContract {
      * @param receiptId The ID of the liquidity receipt.
      */
     withdrawLiquidity(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2128,9 +2101,9 @@ export interface IChromaticMarket extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     withdrawLiquidityBatch(
-      receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
   };
 
@@ -2142,10 +2115,10 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRate The trading fee rate for the liquidity.
      */
     addLiquidity(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRate: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2156,11 +2129,11 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRates An array of fee rates for each liquidity bin.
      */
     addLiquidityBatch(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRates: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2168,7 +2141,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionId The ID of the position to check.
      */
     checkClaimPosition(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2177,7 +2150,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionId The ID of the position to check.
      */
     checkLiquidation(
-      positionId: PromiseOrValue<BigNumberish>,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2187,9 +2160,9 @@ export interface IChromaticMarket extends BaseContract {
      * @param receiptId The ID of the liquidity receipt.
      */
     claimLiquidity(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2198,9 +2171,9 @@ export interface IChromaticMarket extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     claimLiquidityBatch(
-      receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2210,10 +2183,10 @@ export interface IChromaticMarket extends BaseContract {
      * @param recipient The address of the recipient of the claimed position.
      */
     "claimPosition(uint256,address,bytes)"(
-      positionId: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      recipient: string,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2223,10 +2196,10 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionId The ID of the position to claim.
      */
     "claimPosition(uint256,address,uint256)"(
-      positionId: PromiseOrValue<BigNumberish>,
-      keeper: PromiseOrValue<string>,
-      keeperFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      keeper: string,
+      keeperFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2235,8 +2208,8 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
      */
     claimableLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      oracleVersion: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
+      oracleVersion: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2250,8 +2223,8 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionId The ID of the position to close.
      */
     closePosition(
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2260,9 +2233,9 @@ export interface IChromaticMarket extends BaseContract {
      * @param marketBalance The balance of the market.
      */
     distributeEarningToBins(
-      earning: PromiseOrValue<BigNumberish>,
-      marketBalance: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      earning: BigNumberish,
+      marketBalance: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2280,7 +2253,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
      */
     getBinFreeLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2289,7 +2262,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
      */
     getBinLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2298,7 +2271,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
      */
     getBinValues(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      tradingFeeRates: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2307,7 +2280,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param receiptId The ID of the liquidity receipt to retrieve.
      */
     getLpReceipt(
-      receiptId: PromiseOrValue<BigNumberish>,
+      receiptId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2316,7 +2289,7 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionIds The IDs of the positions to retrieve.
      */
     getPositions(
-      positionIds: PromiseOrValue<BigNumberish>[],
+      positionIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2332,10 +2305,10 @@ export interface IChromaticMarket extends BaseContract {
      * @param positionId The ID of the position to liquidate.
      */
     liquidate(
-      positionId: PromiseOrValue<BigNumberish>,
-      keeper: PromiseOrValue<string>,
-      keeperFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      keeper: string,
+      keeperFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2360,13 +2333,13 @@ export interface IChromaticMarket extends BaseContract {
      * @param takerMargin The margin amount provided by the taker.
      */
     openPosition(
-      qty: PromiseOrValue<BigNumberish>,
-      leverage: PromiseOrValue<BigNumberish>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      makerMargin: PromiseOrValue<BigNumberish>,
-      maxAllowableTradingFee: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      qty: BigNumberish,
+      leverage: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2381,10 +2354,10 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRate The trading fee rate for the liquidity.
      */
     removeLiquidity(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRate: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2395,11 +2368,11 @@ export interface IChromaticMarket extends BaseContract {
      * @param tradingFeeRates An array of fee rates for each liquidity bin.
      */
     removeLiquidityBatch(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRates: BigNumberish[],
+      clbTokenAmounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2407,8 +2380,8 @@ export interface IChromaticMarket extends BaseContract {
      * @param feeProtocol new protocol fee for the market
      */
     setFeeProtocol(
-      feeProtocol: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      feeProtocol: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2416,7 +2389,7 @@ export interface IChromaticMarket extends BaseContract {
      * Executes the settlement process for the Chromatic market.
      */
     settle(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2435,9 +2408,9 @@ export interface IChromaticMarket extends BaseContract {
      * @param receiptId The ID of the liquidity receipt.
      */
     withdrawLiquidity(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2446,9 +2419,9 @@ export interface IChromaticMarket extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     withdrawLiquidityBatch(
-      receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
   };
 }

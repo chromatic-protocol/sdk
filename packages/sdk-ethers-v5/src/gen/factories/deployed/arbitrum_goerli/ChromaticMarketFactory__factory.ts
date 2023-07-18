@@ -3,7 +3,6 @@
 /* eslint-disable */
 import { Signer, utils, Contract, ContractFactory, Overrides } from "ethers";
 import type { Provider, TransactionRequest } from "@ethersproject/providers";
-import type { PromiseOrValue } from "../../../common";
 import type {
   ChromaticMarketFactory,
   ChromaticMarketFactoryInterface,
@@ -1202,14 +1201,14 @@ export class ChromaticMarketFactory__factory extends ContractFactory {
   }
 
   override deploy(
-    _marketDiamondCutFacet: PromiseOrValue<string>,
-    _marketLoupeFacet: PromiseOrValue<string>,
-    _marketStateFacet: PromiseOrValue<string>,
-    _marketLiquidityFacet: PromiseOrValue<string>,
-    _marketTradeFacet: PromiseOrValue<string>,
-    _marketLiquidateFacet: PromiseOrValue<string>,
-    _marketSettleFacet: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _marketDiamondCutFacet: string,
+    _marketLoupeFacet: string,
+    _marketStateFacet: string,
+    _marketLiquidityFacet: string,
+    _marketTradeFacet: string,
+    _marketLiquidateFacet: string,
+    _marketSettleFacet: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ChromaticMarketFactory> {
     return super.deploy(
       _marketDiamondCutFacet,
@@ -1223,14 +1222,14 @@ export class ChromaticMarketFactory__factory extends ContractFactory {
     ) as Promise<ChromaticMarketFactory>;
   }
   override getDeployTransaction(
-    _marketDiamondCutFacet: PromiseOrValue<string>,
-    _marketLoupeFacet: PromiseOrValue<string>,
-    _marketStateFacet: PromiseOrValue<string>,
-    _marketLiquidityFacet: PromiseOrValue<string>,
-    _marketTradeFacet: PromiseOrValue<string>,
-    _marketLiquidateFacet: PromiseOrValue<string>,
-    _marketSettleFacet: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _marketDiamondCutFacet: string,
+    _marketLoupeFacet: string,
+    _marketStateFacet: string,
+    _marketLiquidityFacet: string,
+    _marketTradeFacet: string,
+    _marketLiquidateFacet: string,
+    _marketSettleFacet: string,
+    overrides?: Overrides & { from?: string }
   ): TransactionRequest {
     return super.getDeployTransaction(
       _marketDiamondCutFacet,

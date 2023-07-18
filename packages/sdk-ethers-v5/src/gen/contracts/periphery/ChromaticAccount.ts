@@ -20,12 +20,11 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "../../common";
 
 export type BinMarginStruct = {
-  tradingFeeRate: PromiseOrValue<BigNumberish>;
-  amount: PromiseOrValue<BigNumberish>;
+  tradingFeeRate: BigNumberish;
+  amount: BigNumberish;
 };
 
 export type BinMarginStructOutput = [number, BigNumber] & {
@@ -34,17 +33,17 @@ export type BinMarginStructOutput = [number, BigNumber] & {
 };
 
 export type PositionStruct = {
-  id: PromiseOrValue<BigNumberish>;
-  openVersion: PromiseOrValue<BigNumberish>;
-  closeVersion: PromiseOrValue<BigNumberish>;
-  qty: PromiseOrValue<BigNumberish>;
-  leverage: PromiseOrValue<BigNumberish>;
-  openTimestamp: PromiseOrValue<BigNumberish>;
-  closeTimestamp: PromiseOrValue<BigNumberish>;
-  takerMargin: PromiseOrValue<BigNumberish>;
-  owner: PromiseOrValue<string>;
+  id: BigNumberish;
+  openVersion: BigNumberish;
+  closeVersion: BigNumberish;
+  qty: BigNumberish;
+  leverage: BigNumberish;
+  openTimestamp: BigNumberish;
+  closeTimestamp: BigNumberish;
+  takerMargin: BigNumberish;
+  owner: string;
   _binMargins: BinMarginStruct[];
-  _feeProtocol: PromiseOrValue<BigNumberish>;
+  _feeProtocol: BigNumberish;
 };
 
 export type PositionStructOutput = [
@@ -101,61 +100,49 @@ export interface ChromaticAccountInterface extends utils.Interface {
       | "withdraw"
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: "balance",
-    values: [PromiseOrValue<string>]
-  ): string;
+  encodeFunctionData(functionFragment: "balance", values: [string]): string;
   encodeFunctionData(
     functionFragment: "claimPosition",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "claimPositionCallback",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BytesLike>]
+    values: [BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "closePosition",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getPositionIds",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "hasPositionId",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
-    ]
+    values: [string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "openPosition",
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
     ]
   ): string;
   encodeFunctionData(
     functionFragment: "openPositionCallback",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, string, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "withdraw",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
 
   decodeFunctionResult(functionFragment: "balance", data: BytesLike): Result;
@@ -224,10 +211,7 @@ export interface ChromaticAccount extends BaseContract {
      * Returns the balance of the specified token for the account.
      * @param token The address of the token.
      */
-    balance(
-      token: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    balance(token: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     /**
      * This function can only be called by the chromatic router contract.      Throws a `NotExistPosition` error if the position does not exist.
@@ -236,9 +220,9 @@ export interface ChromaticAccount extends BaseContract {
      * @param positionId The ID of the position to claim.
      */
     claimPosition(
-      marketAddress: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      marketAddress: string,
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -247,9 +231,9 @@ export interface ChromaticAccount extends BaseContract {
      * @param positionId The ID of the claimed position.
      */
     claimPositionCallback(
-      positionId: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      arg1: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -259,9 +243,9 @@ export interface ChromaticAccount extends BaseContract {
      * @param positionId The ID of the position to close.
      */
     closePosition(
-      marketAddress: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      marketAddress: string,
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -269,7 +253,7 @@ export interface ChromaticAccount extends BaseContract {
      * @param marketAddress The address of the market.
      */
     getPositionIds(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
 
@@ -279,8 +263,8 @@ export interface ChromaticAccount extends BaseContract {
      * @param positionId The ID of the position.
      */
     hasPositionId(
-      market: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
+      market: string,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -292,10 +276,10 @@ export interface ChromaticAccount extends BaseContract {
      * @param _router The address of the router contract.
      */
     initialize(
-      _owner: PromiseOrValue<string>,
-      _router: PromiseOrValue<string>,
-      _marketFactory: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _owner: string,
+      _router: string,
+      _marketFactory: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -309,13 +293,13 @@ export interface ChromaticAccount extends BaseContract {
      * @param takerMargin The margin required for the taker.
      */
     openPosition(
-      marketAddress: PromiseOrValue<string>,
-      qty: PromiseOrValue<BigNumberish>,
-      leverage: PromiseOrValue<BigNumberish>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      makerMargin: PromiseOrValue<BigNumberish>,
-      maxAllowableTradingFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      marketAddress: string,
+      qty: BigNumberish,
+      leverage: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -327,11 +311,11 @@ export interface ChromaticAccount extends BaseContract {
      * @param vault The address of the vault contract.
      */
     openPositionCallback(
-      settlementToken: PromiseOrValue<string>,
-      vault: PromiseOrValue<string>,
-      marginRequired: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      vault: string,
+      marginRequired: BigNumberish,
+      arg3: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -341,9 +325,9 @@ export interface ChromaticAccount extends BaseContract {
      * @param token The address of the token to withdraw.
      */
     withdraw(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
   };
 
@@ -351,10 +335,7 @@ export interface ChromaticAccount extends BaseContract {
    * Returns the balance of the specified token for the account.
    * @param token The address of the token.
    */
-  balance(
-    token: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  balance(token: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   /**
    * This function can only be called by the chromatic router contract.      Throws a `NotExistPosition` error if the position does not exist.
@@ -363,9 +344,9 @@ export interface ChromaticAccount extends BaseContract {
    * @param positionId The ID of the position to claim.
    */
   claimPosition(
-    marketAddress: PromiseOrValue<string>,
-    positionId: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    marketAddress: string,
+    positionId: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -374,9 +355,9 @@ export interface ChromaticAccount extends BaseContract {
    * @param positionId The ID of the claimed position.
    */
   claimPositionCallback(
-    positionId: PromiseOrValue<BigNumberish>,
-    arg1: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    positionId: BigNumberish,
+    arg1: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -386,9 +367,9 @@ export interface ChromaticAccount extends BaseContract {
    * @param positionId The ID of the position to close.
    */
   closePosition(
-    marketAddress: PromiseOrValue<string>,
-    positionId: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    marketAddress: string,
+    positionId: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -396,7 +377,7 @@ export interface ChromaticAccount extends BaseContract {
    * @param marketAddress The address of the market.
    */
   getPositionIds(
-    market: PromiseOrValue<string>,
+    market: string,
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
@@ -406,8 +387,8 @@ export interface ChromaticAccount extends BaseContract {
    * @param positionId The ID of the position.
    */
   hasPositionId(
-    market: PromiseOrValue<string>,
-    id: PromiseOrValue<BigNumberish>,
+    market: string,
+    id: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -419,10 +400,10 @@ export interface ChromaticAccount extends BaseContract {
    * @param _router The address of the router contract.
    */
   initialize(
-    _owner: PromiseOrValue<string>,
-    _router: PromiseOrValue<string>,
-    _marketFactory: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _owner: string,
+    _router: string,
+    _marketFactory: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -436,13 +417,13 @@ export interface ChromaticAccount extends BaseContract {
    * @param takerMargin The margin required for the taker.
    */
   openPosition(
-    marketAddress: PromiseOrValue<string>,
-    qty: PromiseOrValue<BigNumberish>,
-    leverage: PromiseOrValue<BigNumberish>,
-    takerMargin: PromiseOrValue<BigNumberish>,
-    makerMargin: PromiseOrValue<BigNumberish>,
-    maxAllowableTradingFee: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    marketAddress: string,
+    qty: BigNumberish,
+    leverage: BigNumberish,
+    takerMargin: BigNumberish,
+    makerMargin: BigNumberish,
+    maxAllowableTradingFee: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -454,11 +435,11 @@ export interface ChromaticAccount extends BaseContract {
    * @param vault The address of the vault contract.
    */
   openPositionCallback(
-    settlementToken: PromiseOrValue<string>,
-    vault: PromiseOrValue<string>,
-    marginRequired: PromiseOrValue<BigNumberish>,
-    arg3: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    settlementToken: string,
+    vault: string,
+    marginRequired: BigNumberish,
+    arg3: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -468,9 +449,9 @@ export interface ChromaticAccount extends BaseContract {
    * @param token The address of the token to withdraw.
    */
   withdraw(
-    token: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    token: string,
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   callStatic: {
@@ -478,10 +459,7 @@ export interface ChromaticAccount extends BaseContract {
      * Returns the balance of the specified token for the account.
      * @param token The address of the token.
      */
-    balance(
-      token: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    balance(token: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * This function can only be called by the chromatic router contract.      Throws a `NotExistPosition` error if the position does not exist.
@@ -490,8 +468,8 @@ export interface ChromaticAccount extends BaseContract {
      * @param positionId The ID of the position to claim.
      */
     claimPosition(
-      marketAddress: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
+      marketAddress: string,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -501,8 +479,8 @@ export interface ChromaticAccount extends BaseContract {
      * @param positionId The ID of the claimed position.
      */
     claimPositionCallback(
-      positionId: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BytesLike>,
+      positionId: BigNumberish,
+      arg1: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -513,8 +491,8 @@ export interface ChromaticAccount extends BaseContract {
      * @param positionId The ID of the position to close.
      */
     closePosition(
-      marketAddress: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
+      marketAddress: string,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -523,7 +501,7 @@ export interface ChromaticAccount extends BaseContract {
      * @param marketAddress The address of the market.
      */
     getPositionIds(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
@@ -533,8 +511,8 @@ export interface ChromaticAccount extends BaseContract {
      * @param positionId The ID of the position.
      */
     hasPositionId(
-      market: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
+      market: string,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -546,9 +524,9 @@ export interface ChromaticAccount extends BaseContract {
      * @param _router The address of the router contract.
      */
     initialize(
-      _owner: PromiseOrValue<string>,
-      _router: PromiseOrValue<string>,
-      _marketFactory: PromiseOrValue<string>,
+      _owner: string,
+      _router: string,
+      _marketFactory: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -563,12 +541,12 @@ export interface ChromaticAccount extends BaseContract {
      * @param takerMargin The margin required for the taker.
      */
     openPosition(
-      marketAddress: PromiseOrValue<string>,
-      qty: PromiseOrValue<BigNumberish>,
-      leverage: PromiseOrValue<BigNumberish>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      makerMargin: PromiseOrValue<BigNumberish>,
-      maxAllowableTradingFee: PromiseOrValue<BigNumberish>,
+      marketAddress: string,
+      qty: BigNumberish,
+      leverage: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PositionStructOutput>;
 
@@ -581,10 +559,10 @@ export interface ChromaticAccount extends BaseContract {
      * @param vault The address of the vault contract.
      */
     openPositionCallback(
-      settlementToken: PromiseOrValue<string>,
-      vault: PromiseOrValue<string>,
-      marginRequired: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BytesLike>,
+      settlementToken: string,
+      vault: string,
+      marginRequired: BigNumberish,
+      arg3: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -595,8 +573,8 @@ export interface ChromaticAccount extends BaseContract {
      * @param token The address of the token to withdraw.
      */
     withdraw(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
+      token: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -608,10 +586,7 @@ export interface ChromaticAccount extends BaseContract {
      * Returns the balance of the specified token for the account.
      * @param token The address of the token.
      */
-    balance(
-      token: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    balance(token: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * This function can only be called by the chromatic router contract.      Throws a `NotExistPosition` error if the position does not exist.
@@ -620,9 +595,9 @@ export interface ChromaticAccount extends BaseContract {
      * @param positionId The ID of the position to claim.
      */
     claimPosition(
-      marketAddress: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      marketAddress: string,
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -631,9 +606,9 @@ export interface ChromaticAccount extends BaseContract {
      * @param positionId The ID of the claimed position.
      */
     claimPositionCallback(
-      positionId: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      arg1: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -643,9 +618,9 @@ export interface ChromaticAccount extends BaseContract {
      * @param positionId The ID of the position to close.
      */
     closePosition(
-      marketAddress: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      marketAddress: string,
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -653,7 +628,7 @@ export interface ChromaticAccount extends BaseContract {
      * @param marketAddress The address of the market.
      */
     getPositionIds(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -663,8 +638,8 @@ export interface ChromaticAccount extends BaseContract {
      * @param positionId The ID of the position.
      */
     hasPositionId(
-      market: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
+      market: string,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -676,10 +651,10 @@ export interface ChromaticAccount extends BaseContract {
      * @param _router The address of the router contract.
      */
     initialize(
-      _owner: PromiseOrValue<string>,
-      _router: PromiseOrValue<string>,
-      _marketFactory: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _owner: string,
+      _router: string,
+      _marketFactory: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -693,13 +668,13 @@ export interface ChromaticAccount extends BaseContract {
      * @param takerMargin The margin required for the taker.
      */
     openPosition(
-      marketAddress: PromiseOrValue<string>,
-      qty: PromiseOrValue<BigNumberish>,
-      leverage: PromiseOrValue<BigNumberish>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      makerMargin: PromiseOrValue<BigNumberish>,
-      maxAllowableTradingFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      marketAddress: string,
+      qty: BigNumberish,
+      leverage: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -711,11 +686,11 @@ export interface ChromaticAccount extends BaseContract {
      * @param vault The address of the vault contract.
      */
     openPositionCallback(
-      settlementToken: PromiseOrValue<string>,
-      vault: PromiseOrValue<string>,
-      marginRequired: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      vault: string,
+      marginRequired: BigNumberish,
+      arg3: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -725,9 +700,9 @@ export interface ChromaticAccount extends BaseContract {
      * @param token The address of the token to withdraw.
      */
     withdraw(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
   };
 
@@ -737,7 +712,7 @@ export interface ChromaticAccount extends BaseContract {
      * @param token The address of the token.
      */
     balance(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -748,9 +723,9 @@ export interface ChromaticAccount extends BaseContract {
      * @param positionId The ID of the position to claim.
      */
     claimPosition(
-      marketAddress: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      marketAddress: string,
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -759,9 +734,9 @@ export interface ChromaticAccount extends BaseContract {
      * @param positionId The ID of the claimed position.
      */
     claimPositionCallback(
-      positionId: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      positionId: BigNumberish,
+      arg1: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -771,9 +746,9 @@ export interface ChromaticAccount extends BaseContract {
      * @param positionId The ID of the position to close.
      */
     closePosition(
-      marketAddress: PromiseOrValue<string>,
-      positionId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      marketAddress: string,
+      positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -781,7 +756,7 @@ export interface ChromaticAccount extends BaseContract {
      * @param marketAddress The address of the market.
      */
     getPositionIds(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -791,8 +766,8 @@ export interface ChromaticAccount extends BaseContract {
      * @param positionId The ID of the position.
      */
     hasPositionId(
-      market: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
+      market: string,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -804,10 +779,10 @@ export interface ChromaticAccount extends BaseContract {
      * @param _router The address of the router contract.
      */
     initialize(
-      _owner: PromiseOrValue<string>,
-      _router: PromiseOrValue<string>,
-      _marketFactory: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _owner: string,
+      _router: string,
+      _marketFactory: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -821,13 +796,13 @@ export interface ChromaticAccount extends BaseContract {
      * @param takerMargin The margin required for the taker.
      */
     openPosition(
-      marketAddress: PromiseOrValue<string>,
-      qty: PromiseOrValue<BigNumberish>,
-      leverage: PromiseOrValue<BigNumberish>,
-      takerMargin: PromiseOrValue<BigNumberish>,
-      makerMargin: PromiseOrValue<BigNumberish>,
-      maxAllowableTradingFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      marketAddress: string,
+      qty: BigNumberish,
+      leverage: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -839,11 +814,11 @@ export interface ChromaticAccount extends BaseContract {
      * @param vault The address of the vault contract.
      */
     openPositionCallback(
-      settlementToken: PromiseOrValue<string>,
-      vault: PromiseOrValue<string>,
-      marginRequired: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      settlementToken: string,
+      vault: string,
+      marginRequired: BigNumberish,
+      arg3: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -853,9 +828,9 @@ export interface ChromaticAccount extends BaseContract {
      * @param token The address of the token to withdraw.
      */
     withdraw(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
   };
 }

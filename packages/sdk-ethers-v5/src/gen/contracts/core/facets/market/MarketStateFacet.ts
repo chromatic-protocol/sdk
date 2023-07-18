@@ -24,7 +24,6 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "../../../../common";
 
 export interface MarketStateFacetInterface extends utils.Interface {
@@ -73,7 +72,7 @@ export interface MarketStateFacetInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setFeeProtocol",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "settlementToken",
@@ -196,8 +195,8 @@ export interface MarketStateFacet extends BaseContract {
      * @param feeProtocol new protocol fee for the market
      */
     setFeeProtocol(
-      _feeProtocol: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _feeProtocol: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -248,8 +247,8 @@ export interface MarketStateFacet extends BaseContract {
    * @param feeProtocol new protocol fee for the market
    */
   setFeeProtocol(
-    _feeProtocol: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _feeProtocol: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -298,7 +297,7 @@ export interface MarketStateFacet extends BaseContract {
      * @param feeProtocol new protocol fee for the market
      */
     setFeeProtocol(
-      _feeProtocol: PromiseOrValue<BigNumberish>,
+      _feeProtocol: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -360,8 +359,8 @@ export interface MarketStateFacet extends BaseContract {
      * @param feeProtocol new protocol fee for the market
      */
     setFeeProtocol(
-      _feeProtocol: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _feeProtocol: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -411,8 +410,8 @@ export interface MarketStateFacet extends BaseContract {
      * @param feeProtocol new protocol fee for the market
      */
     setFeeProtocol(
-      _feeProtocol: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _feeProtocol: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**

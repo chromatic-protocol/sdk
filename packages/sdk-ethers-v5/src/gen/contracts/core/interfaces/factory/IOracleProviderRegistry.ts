@@ -24,14 +24,13 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "../../../../common";
 
 export declare namespace IOracleProviderRegistry {
   export type OracleProviderPropertiesStruct = {
-    minTakeProfitBPS: PromiseOrValue<BigNumberish>;
-    maxTakeProfitBPS: PromiseOrValue<BigNumberish>;
-    leverageLevel: PromiseOrValue<BigNumberish>;
+    minTakeProfitBPS: BigNumberish;
+    maxTakeProfitBPS: BigNumberish;
+    leverageLevel: BigNumberish;
   };
 
   export type OracleProviderPropertiesStructOutput = [
@@ -69,18 +68,15 @@ export interface IOracleProviderRegistryInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "getOracleProviderProperties",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "isRegisteredOracleProvider",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "registerOracleProvider",
-    values: [
-      PromiseOrValue<string>,
-      IOracleProviderRegistry.OracleProviderPropertiesStruct
-    ]
+    values: [string, IOracleProviderRegistry.OracleProviderPropertiesStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "registeredOracleProviders",
@@ -88,19 +84,15 @@ export interface IOracleProviderRegistryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "unregisterOracleProvider",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "updateLeverageLevel",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "updateTakeProfitBPSRange",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [string, BigNumberish, BigNumberish]
   ): string;
 
   decodeFunctionResult(
@@ -133,7 +125,7 @@ export interface IOracleProviderRegistryInterface extends utils.Interface {
   ): Result;
 
   events: {
-    "OracleProviderRegistered(address,tuple)": EventFragment;
+    "OracleProviderRegistered(address,(uint32,uint32,uint8))": EventFragment;
     "OracleProviderUnregistered(address)": EventFragment;
     "UpdateLeverageLevel(address,uint8)": EventFragment;
     "UpdateTakeProfitBPSRange(address,uint32,uint32)": EventFragment;
@@ -225,7 +217,7 @@ export interface IOracleProviderRegistry extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     getOracleProviderProperties(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       overrides?: CallOverrides
     ): Promise<[IOracleProviderRegistry.OracleProviderPropertiesStructOutput]>;
 
@@ -234,14 +226,14 @@ export interface IOracleProviderRegistry extends BaseContract {
      * @param oracleProvider The address of the oracle provider to check.
      */
     isRegisteredOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
     registerOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -254,8 +246,8 @@ export interface IOracleProviderRegistry extends BaseContract {
      * @param oracleProvider The address of the oracle provider to unregister.
      */
     unregisterOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      oracleProvider: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -265,9 +257,9 @@ export interface IOracleProviderRegistry extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     updateLeverageLevel(
-      oracleProvider: PromiseOrValue<string>,
-      level: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      oracleProvider: string,
+      level: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -277,10 +269,10 @@ export interface IOracleProviderRegistry extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     updateTakeProfitBPSRange(
-      oracleProvider: PromiseOrValue<string>,
-      minTakeProfitBPS: PromiseOrValue<BigNumberish>,
-      maxTakeProfitBPS: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      oracleProvider: string,
+      minTakeProfitBPS: BigNumberish,
+      maxTakeProfitBPS: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
   };
 
@@ -289,7 +281,7 @@ export interface IOracleProviderRegistry extends BaseContract {
    * @param oracleProvider The address of the oracle provider.
    */
   getOracleProviderProperties(
-    oracleProvider: PromiseOrValue<string>,
+    oracleProvider: string,
     overrides?: CallOverrides
   ): Promise<IOracleProviderRegistry.OracleProviderPropertiesStructOutput>;
 
@@ -298,14 +290,14 @@ export interface IOracleProviderRegistry extends BaseContract {
    * @param oracleProvider The address of the oracle provider to check.
    */
   isRegisteredOracleProvider(
-    oracleProvider: PromiseOrValue<string>,
+    oracleProvider: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   registerOracleProvider(
-    oracleProvider: PromiseOrValue<string>,
+    oracleProvider: string,
     properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -318,8 +310,8 @@ export interface IOracleProviderRegistry extends BaseContract {
    * @param oracleProvider The address of the oracle provider to unregister.
    */
   unregisterOracleProvider(
-    oracleProvider: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    oracleProvider: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -329,9 +321,9 @@ export interface IOracleProviderRegistry extends BaseContract {
    * @param oracleProvider The address of the oracle provider.
    */
   updateLeverageLevel(
-    oracleProvider: PromiseOrValue<string>,
-    level: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    oracleProvider: string,
+    level: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -341,10 +333,10 @@ export interface IOracleProviderRegistry extends BaseContract {
    * @param oracleProvider The address of the oracle provider.
    */
   updateTakeProfitBPSRange(
-    oracleProvider: PromiseOrValue<string>,
-    minTakeProfitBPS: PromiseOrValue<BigNumberish>,
-    maxTakeProfitBPS: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    oracleProvider: string,
+    minTakeProfitBPS: BigNumberish,
+    maxTakeProfitBPS: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   callStatic: {
@@ -353,7 +345,7 @@ export interface IOracleProviderRegistry extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     getOracleProviderProperties(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       overrides?: CallOverrides
     ): Promise<IOracleProviderRegistry.OracleProviderPropertiesStructOutput>;
 
@@ -362,12 +354,12 @@ export interface IOracleProviderRegistry extends BaseContract {
      * @param oracleProvider The address of the oracle provider to check.
      */
     isRegisteredOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     registerOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -382,7 +374,7 @@ export interface IOracleProviderRegistry extends BaseContract {
      * @param oracleProvider The address of the oracle provider to unregister.
      */
     unregisterOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -393,8 +385,8 @@ export interface IOracleProviderRegistry extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     updateLeverageLevel(
-      oracleProvider: PromiseOrValue<string>,
-      level: PromiseOrValue<BigNumberish>,
+      oracleProvider: string,
+      level: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -405,48 +397,48 @@ export interface IOracleProviderRegistry extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     updateTakeProfitBPSRange(
-      oracleProvider: PromiseOrValue<string>,
-      minTakeProfitBPS: PromiseOrValue<BigNumberish>,
-      maxTakeProfitBPS: PromiseOrValue<BigNumberish>,
+      oracleProvider: string,
+      minTakeProfitBPS: BigNumberish,
+      maxTakeProfitBPS: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
   };
 
   filters: {
-    "OracleProviderRegistered(address,tuple)"(
-      oracleProvider?: PromiseOrValue<string> | null,
+    "OracleProviderRegistered(address,(uint32,uint32,uint8))"(
+      oracleProvider?: string | null,
       properties?: null
     ): OracleProviderRegisteredEventFilter;
     OracleProviderRegistered(
-      oracleProvider?: PromiseOrValue<string> | null,
+      oracleProvider?: string | null,
       properties?: null
     ): OracleProviderRegisteredEventFilter;
 
     "OracleProviderUnregistered(address)"(
-      oracleProvider?: PromiseOrValue<string> | null
+      oracleProvider?: string | null
     ): OracleProviderUnregisteredEventFilter;
     OracleProviderUnregistered(
-      oracleProvider?: PromiseOrValue<string> | null
+      oracleProvider?: string | null
     ): OracleProviderUnregisteredEventFilter;
 
     "UpdateLeverageLevel(address,uint8)"(
-      oracleProvider?: PromiseOrValue<string> | null,
-      level?: PromiseOrValue<BigNumberish> | null
+      oracleProvider?: string | null,
+      level?: BigNumberish | null
     ): UpdateLeverageLevelEventFilter;
     UpdateLeverageLevel(
-      oracleProvider?: PromiseOrValue<string> | null,
-      level?: PromiseOrValue<BigNumberish> | null
+      oracleProvider?: string | null,
+      level?: BigNumberish | null
     ): UpdateLeverageLevelEventFilter;
 
     "UpdateTakeProfitBPSRange(address,uint32,uint32)"(
-      oracleProvider?: PromiseOrValue<string> | null,
-      minTakeProfitBPS?: PromiseOrValue<BigNumberish> | null,
-      maxTakeProfitBPS?: PromiseOrValue<BigNumberish> | null
+      oracleProvider?: string | null,
+      minTakeProfitBPS?: BigNumberish | null,
+      maxTakeProfitBPS?: BigNumberish | null
     ): UpdateTakeProfitBPSRangeEventFilter;
     UpdateTakeProfitBPSRange(
-      oracleProvider?: PromiseOrValue<string> | null,
-      minTakeProfitBPS?: PromiseOrValue<BigNumberish> | null,
-      maxTakeProfitBPS?: PromiseOrValue<BigNumberish> | null
+      oracleProvider?: string | null,
+      minTakeProfitBPS?: BigNumberish | null,
+      maxTakeProfitBPS?: BigNumberish | null
     ): UpdateTakeProfitBPSRangeEventFilter;
   };
 
@@ -456,7 +448,7 @@ export interface IOracleProviderRegistry extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     getOracleProviderProperties(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -465,14 +457,14 @@ export interface IOracleProviderRegistry extends BaseContract {
      * @param oracleProvider The address of the oracle provider to check.
      */
     isRegisteredOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     registerOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -485,8 +477,8 @@ export interface IOracleProviderRegistry extends BaseContract {
      * @param oracleProvider The address of the oracle provider to unregister.
      */
     unregisterOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      oracleProvider: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -496,9 +488,9 @@ export interface IOracleProviderRegistry extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     updateLeverageLevel(
-      oracleProvider: PromiseOrValue<string>,
-      level: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      oracleProvider: string,
+      level: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -508,10 +500,10 @@ export interface IOracleProviderRegistry extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     updateTakeProfitBPSRange(
-      oracleProvider: PromiseOrValue<string>,
-      minTakeProfitBPS: PromiseOrValue<BigNumberish>,
-      maxTakeProfitBPS: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      oracleProvider: string,
+      minTakeProfitBPS: BigNumberish,
+      maxTakeProfitBPS: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
   };
 
@@ -521,7 +513,7 @@ export interface IOracleProviderRegistry extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     getOracleProviderProperties(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -530,14 +522,14 @@ export interface IOracleProviderRegistry extends BaseContract {
      * @param oracleProvider The address of the oracle provider to check.
      */
     isRegisteredOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     registerOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -552,8 +544,8 @@ export interface IOracleProviderRegistry extends BaseContract {
      * @param oracleProvider The address of the oracle provider to unregister.
      */
     unregisterOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      oracleProvider: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -563,9 +555,9 @@ export interface IOracleProviderRegistry extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     updateLeverageLevel(
-      oracleProvider: PromiseOrValue<string>,
-      level: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      oracleProvider: string,
+      level: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -575,10 +567,10 @@ export interface IOracleProviderRegistry extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     updateTakeProfitBPSRange(
-      oracleProvider: PromiseOrValue<string>,
-      minTakeProfitBPS: PromiseOrValue<BigNumberish>,
-      maxTakeProfitBPS: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      oracleProvider: string,
+      minTakeProfitBPS: BigNumberish,
+      maxTakeProfitBPS: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
   };
 }

@@ -24,14 +24,13 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "../../common";
 
 export declare namespace IOracleProviderRegistry {
   export type OracleProviderPropertiesStruct = {
-    minTakeProfitBPS: PromiseOrValue<BigNumberish>;
-    maxTakeProfitBPS: PromiseOrValue<BigNumberish>;
-    leverageLevel: PromiseOrValue<BigNumberish>;
+    minTakeProfitBPS: BigNumberish;
+    maxTakeProfitBPS: BigNumberish;
+    leverageLevel: BigNumberish;
   };
 
   export type OracleProviderPropertiesStructOutput = [
@@ -47,8 +46,8 @@ export declare namespace IOracleProviderRegistry {
 
 export declare namespace InterestRate {
   export type RecordStruct = {
-    annualRateBPS: PromiseOrValue<BigNumberish>;
-    beginTimestamp: PromiseOrValue<BigNumberish>;
+    annualRateBPS: BigNumberish;
+    beginTimestamp: BigNumberish;
   };
 
   export type RecordStructOutput = [BigNumber, BigNumber] & {
@@ -145,45 +144,36 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "appendInterestRateRecord",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "calculateInterest",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [string, BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "createMarket",
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "currentInterestRate",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(functionFragment: "dao", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getEarningDistributionThreshold",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "getFlashLoanFeeRate",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "getInterestRateRecords",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "getMarket",
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "getMarkets",
@@ -191,31 +181,31 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getMarketsBySettlmentToken",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "getMinimumMargin",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "getOracleProviderProperties",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "getUniswapFeeTier",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "isRegisteredMarket",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "isRegisteredOracleProvider",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "isRegisteredSettlementToken",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "keeperFeePayer",
@@ -231,20 +221,17 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "registerOracleProvider",
-    values: [
-      PromiseOrValue<string>,
-      IOracleProviderRegistry.OracleProviderPropertiesStruct
-    ]
+    values: [string, IOracleProviderRegistry.OracleProviderPropertiesStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "registerSettlementToken",
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
     ]
   ): string;
   encodeFunctionData(
@@ -257,60 +244,50 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "removeLastInterestRateRecord",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "setEarningDistributionThreshold",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "setFlashLoanFeeRate",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "setKeeperFeePayer",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "setLiquidator",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "setMinimumMargin",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "setUniswapFeeTier",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "setVault",
-    values: [PromiseOrValue<string>]
-  ): string;
+  encodeFunctionData(functionFragment: "setVault", values: [string]): string;
   encodeFunctionData(functionFragment: "treasury", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "unregisterOracleProvider",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
-  encodeFunctionData(
-    functionFragment: "updateDao",
-    values: [PromiseOrValue<string>]
-  ): string;
+  encodeFunctionData(functionFragment: "updateDao", values: [string]): string;
   encodeFunctionData(
     functionFragment: "updateLeverageLevel",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "updateTakeProfitBPSRange",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "updateTreasury",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(functionFragment: "vault", values?: undefined): string;
 
@@ -448,7 +425,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "InterestRateRecordAppended(address,uint256,uint256)": EventFragment;
     "LastInterestRateRecordRemoved(address,uint256,uint256)": EventFragment;
     "MarketCreated(address,address,address)": EventFragment;
-    "OracleProviderRegistered(address,tuple)": EventFragment;
+    "OracleProviderRegistered(address,(uint32,uint32,uint8))": EventFragment;
     "OracleProviderUnregistered(address)": EventFragment;
     "SetEarningDistributionThreshold(address,uint256)": EventFragment;
     "SetFlashLoanFeeRate(address,uint256)": EventFragment;
@@ -714,10 +691,10 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     appendInterestRateRecord(
-      token: PromiseOrValue<string>,
-      annualRateBPS: PromiseOrValue<BigNumberish>,
-      beginTimestamp: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      annualRateBPS: BigNumberish,
+      beginTimestamp: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -728,10 +705,10 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the token.
      */
     calculateInterest(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      from: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<BigNumberish>,
+      token: string,
+      amount: BigNumberish,
+      from: BigNumberish,
+      to: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -742,9 +719,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param settlementToken The address of the settlement token.
      */
     createMarket(
-      oracleProvider: PromiseOrValue<string>,
-      settlementToken: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      oracleProvider: string,
+      settlementToken: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -752,7 +729,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     currentInterestRate(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { annualRateBPS: BigNumber }>;
 
@@ -766,7 +743,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     getEarningDistributionThreshold(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -775,7 +752,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     getFlashLoanFeeRate(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -784,7 +761,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     getInterestRateRecords(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<[InterestRate.RecordStructOutput[]]>;
 
@@ -794,8 +771,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param settlementToken The address of the settlement token.
      */
     getMarket(
-      oracleProvider: PromiseOrValue<string>,
-      settlementToken: PromiseOrValue<string>,
+      oracleProvider: string,
+      settlementToken: string,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
@@ -809,7 +786,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param settlementToken The address of the settlement token.
      */
     getMarketsBySettlmentToken(
-      settlementToken: PromiseOrValue<string>,
+      settlementToken: string,
       overrides?: CallOverrides
     ): Promise<[string[]]>;
 
@@ -819,7 +796,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     getMinimumMargin(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -828,7 +805,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     getOracleProviderProperties(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       overrides?: CallOverrides
     ): Promise<[IOracleProviderRegistry.OracleProviderPropertiesStructOutput]>;
 
@@ -837,7 +814,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     getUniswapFeeTier(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<[number]>;
 
@@ -846,7 +823,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param market The address of the market.
      */
     isRegisteredMarket(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -855,7 +832,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param oracleProvider The address of the oracle provider to check.
      */
     isRegisteredOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -864,7 +841,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token to check.
      */
     isRegisteredSettlementToken(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -889,9 +866,9 @@ export interface ChromaticMarketFactory extends BaseContract {
     >;
 
     registerOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -905,13 +882,13 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param uniswapFeeTier The Uniswap fee tier for the settlement token.
      */
     registerSettlementToken(
-      token: PromiseOrValue<string>,
-      minimumMargin: PromiseOrValue<BigNumberish>,
-      interestRate: PromiseOrValue<BigNumberish>,
-      flashLoanFeeRate: PromiseOrValue<BigNumberish>,
-      earningDistributionThreshold: PromiseOrValue<BigNumberish>,
-      uniswapFeeTier: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      minimumMargin: BigNumberish,
+      interestRate: BigNumberish,
+      flashLoanFeeRate: BigNumberish,
+      earningDistributionThreshold: BigNumberish,
+      uniswapFeeTier: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -930,8 +907,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     removeLastInterestRateRecord(
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -941,9 +918,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     setEarningDistributionThreshold(
-      token: PromiseOrValue<string>,
-      earningDistributionThreshold: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      earningDistributionThreshold: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -953,9 +930,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     setFlashLoanFeeRate(
-      token: PromiseOrValue<string>,
-      flashLoanFeeRate: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      flashLoanFeeRate: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -964,8 +941,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param keeperFeePayer The keeper fee payer address.
      */
     setKeeperFeePayer(
-      _keeperFeePayer: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _keeperFeePayer: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -974,8 +951,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param liquidator The liquidator address.
      */
     setLiquidator(
-      _liquidator: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _liquidator: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -985,9 +962,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     setMinimumMargin(
-      token: PromiseOrValue<string>,
-      minimumMargin: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      minimumMargin: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -997,9 +974,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param uniswapFeeTier The new Uniswap fee tier for the settlement token.
      */
     setUniswapFeeTier(
-      token: PromiseOrValue<string>,
-      uniswapFeeTier: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      uniswapFeeTier: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -1008,8 +985,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param vault The vault address.
      */
     setVault(
-      _vault: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _vault: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -1023,8 +1000,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param oracleProvider The address of the oracle provider to unregister.
      */
     unregisterOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      oracleProvider: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -1033,8 +1010,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param dao The new DAO address.
      */
     updateDao(
-      _dao: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _dao: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -1044,9 +1021,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     updateLeverageLevel(
-      oracleProvider: PromiseOrValue<string>,
-      level: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      oracleProvider: string,
+      level: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -1057,10 +1034,10 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     updateTakeProfitBPSRange(
-      oracleProvider: PromiseOrValue<string>,
-      minTakeProfitBPS: PromiseOrValue<BigNumberish>,
-      maxTakeProfitBPS: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      oracleProvider: string,
+      minTakeProfitBPS: BigNumberish,
+      maxTakeProfitBPS: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -1069,8 +1046,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param treasury The new DAO treasury address.
      */
     updateTreasury(
-      _treasury: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _treasury: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -1087,10 +1064,10 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param token The address of the settlement token.
    */
   appendInterestRateRecord(
-    token: PromiseOrValue<string>,
-    annualRateBPS: PromiseOrValue<BigNumberish>,
-    beginTimestamp: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    token: string,
+    annualRateBPS: BigNumberish,
+    beginTimestamp: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1101,10 +1078,10 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param token The address of the token.
    */
   calculateInterest(
-    token: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    from: PromiseOrValue<BigNumberish>,
-    to: PromiseOrValue<BigNumberish>,
+    token: string,
+    amount: BigNumberish,
+    from: BigNumberish,
+    to: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -1115,9 +1092,9 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param settlementToken The address of the settlement token.
    */
   createMarket(
-    oracleProvider: PromiseOrValue<string>,
-    settlementToken: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    oracleProvider: string,
+    settlementToken: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1125,7 +1102,7 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param token The address of the settlement token.
    */
   currentInterestRate(
-    token: PromiseOrValue<string>,
+    token: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -1139,7 +1116,7 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param token The address of the settlement token.
    */
   getEarningDistributionThreshold(
-    token: PromiseOrValue<string>,
+    token: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -1148,7 +1125,7 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param token The address of the settlement token.
    */
   getFlashLoanFeeRate(
-    token: PromiseOrValue<string>,
+    token: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -1157,7 +1134,7 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param token The address of the settlement token.
    */
   getInterestRateRecords(
-    token: PromiseOrValue<string>,
+    token: string,
     overrides?: CallOverrides
   ): Promise<InterestRate.RecordStructOutput[]>;
 
@@ -1167,8 +1144,8 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param settlementToken The address of the settlement token.
    */
   getMarket(
-    oracleProvider: PromiseOrValue<string>,
-    settlementToken: PromiseOrValue<string>,
+    oracleProvider: string,
+    settlementToken: string,
     overrides?: CallOverrides
   ): Promise<string>;
 
@@ -1182,7 +1159,7 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param settlementToken The address of the settlement token.
    */
   getMarketsBySettlmentToken(
-    settlementToken: PromiseOrValue<string>,
+    settlementToken: string,
     overrides?: CallOverrides
   ): Promise<string[]>;
 
@@ -1192,7 +1169,7 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param token The address of the settlement token.
    */
   getMinimumMargin(
-    token: PromiseOrValue<string>,
+    token: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -1201,7 +1178,7 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param oracleProvider The address of the oracle provider.
    */
   getOracleProviderProperties(
-    oracleProvider: PromiseOrValue<string>,
+    oracleProvider: string,
     overrides?: CallOverrides
   ): Promise<IOracleProviderRegistry.OracleProviderPropertiesStructOutput>;
 
@@ -1209,17 +1186,14 @@ export interface ChromaticMarketFactory extends BaseContract {
    * Gets the Uniswap fee tier for a settlement token.
    * @param token The address of the settlement token.
    */
-  getUniswapFeeTier(
-    token: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<number>;
+  getUniswapFeeTier(token: string, overrides?: CallOverrides): Promise<number>;
 
   /**
    * Checks if a market is registered.
    * @param market The address of the market.
    */
   isRegisteredMarket(
-    market: PromiseOrValue<string>,
+    market: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -1228,7 +1202,7 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param oracleProvider The address of the oracle provider to check.
    */
   isRegisteredOracleProvider(
-    oracleProvider: PromiseOrValue<string>,
+    oracleProvider: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -1237,7 +1211,7 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param token The address of the settlement token to check.
    */
   isRegisteredSettlementToken(
-    token: PromiseOrValue<string>,
+    token: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -1262,9 +1236,9 @@ export interface ChromaticMarketFactory extends BaseContract {
   >;
 
   registerOracleProvider(
-    oracleProvider: PromiseOrValue<string>,
+    oracleProvider: string,
     properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1278,13 +1252,13 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param uniswapFeeTier The Uniswap fee tier for the settlement token.
    */
   registerSettlementToken(
-    token: PromiseOrValue<string>,
-    minimumMargin: PromiseOrValue<BigNumberish>,
-    interestRate: PromiseOrValue<BigNumberish>,
-    flashLoanFeeRate: PromiseOrValue<BigNumberish>,
-    earningDistributionThreshold: PromiseOrValue<BigNumberish>,
-    uniswapFeeTier: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    token: string,
+    minimumMargin: BigNumberish,
+    interestRate: BigNumberish,
+    flashLoanFeeRate: BigNumberish,
+    earningDistributionThreshold: BigNumberish,
+    uniswapFeeTier: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1303,8 +1277,8 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param token The address of the settlement token.
    */
   removeLastInterestRateRecord(
-    token: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    token: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1314,9 +1288,9 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param token The address of the settlement token.
    */
   setEarningDistributionThreshold(
-    token: PromiseOrValue<string>,
-    earningDistributionThreshold: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    token: string,
+    earningDistributionThreshold: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1326,9 +1300,9 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param token The address of the settlement token.
    */
   setFlashLoanFeeRate(
-    token: PromiseOrValue<string>,
-    flashLoanFeeRate: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    token: string,
+    flashLoanFeeRate: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1337,8 +1311,8 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param keeperFeePayer The keeper fee payer address.
    */
   setKeeperFeePayer(
-    _keeperFeePayer: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _keeperFeePayer: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1347,8 +1321,8 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param liquidator The liquidator address.
    */
   setLiquidator(
-    _liquidator: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _liquidator: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1358,9 +1332,9 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param token The address of the settlement token.
    */
   setMinimumMargin(
-    token: PromiseOrValue<string>,
-    minimumMargin: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    token: string,
+    minimumMargin: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1370,9 +1344,9 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param uniswapFeeTier The new Uniswap fee tier for the settlement token.
    */
   setUniswapFeeTier(
-    token: PromiseOrValue<string>,
-    uniswapFeeTier: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    token: string,
+    uniswapFeeTier: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1381,8 +1355,8 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param vault The vault address.
    */
   setVault(
-    _vault: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _vault: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1396,8 +1370,8 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param oracleProvider The address of the oracle provider to unregister.
    */
   unregisterOracleProvider(
-    oracleProvider: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    oracleProvider: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1406,8 +1380,8 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param dao The new DAO address.
    */
   updateDao(
-    _dao: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _dao: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1417,9 +1391,9 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param oracleProvider The address of the oracle provider.
    */
   updateLeverageLevel(
-    oracleProvider: PromiseOrValue<string>,
-    level: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    oracleProvider: string,
+    level: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1430,10 +1404,10 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param oracleProvider The address of the oracle provider.
    */
   updateTakeProfitBPSRange(
-    oracleProvider: PromiseOrValue<string>,
-    minTakeProfitBPS: PromiseOrValue<BigNumberish>,
-    maxTakeProfitBPS: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    oracleProvider: string,
+    minTakeProfitBPS: BigNumberish,
+    maxTakeProfitBPS: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1442,8 +1416,8 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param treasury The new DAO treasury address.
    */
   updateTreasury(
-    _treasury: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _treasury: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -1460,9 +1434,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     appendInterestRateRecord(
-      token: PromiseOrValue<string>,
-      annualRateBPS: PromiseOrValue<BigNumberish>,
-      beginTimestamp: PromiseOrValue<BigNumberish>,
+      token: string,
+      annualRateBPS: BigNumberish,
+      beginTimestamp: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1474,10 +1448,10 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the token.
      */
     calculateInterest(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      from: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<BigNumberish>,
+      token: string,
+      amount: BigNumberish,
+      from: BigNumberish,
+      to: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1488,8 +1462,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param settlementToken The address of the settlement token.
      */
     createMarket(
-      oracleProvider: PromiseOrValue<string>,
-      settlementToken: PromiseOrValue<string>,
+      oracleProvider: string,
+      settlementToken: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1498,7 +1472,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     currentInterestRate(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1512,7 +1486,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     getEarningDistributionThreshold(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1521,7 +1495,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     getFlashLoanFeeRate(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1530,7 +1504,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     getInterestRateRecords(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<InterestRate.RecordStructOutput[]>;
 
@@ -1540,8 +1514,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param settlementToken The address of the settlement token.
      */
     getMarket(
-      oracleProvider: PromiseOrValue<string>,
-      settlementToken: PromiseOrValue<string>,
+      oracleProvider: string,
+      settlementToken: string,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -1555,7 +1529,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param settlementToken The address of the settlement token.
      */
     getMarketsBySettlmentToken(
-      settlementToken: PromiseOrValue<string>,
+      settlementToken: string,
       overrides?: CallOverrides
     ): Promise<string[]>;
 
@@ -1565,7 +1539,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     getMinimumMargin(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1574,7 +1548,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     getOracleProviderProperties(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       overrides?: CallOverrides
     ): Promise<IOracleProviderRegistry.OracleProviderPropertiesStructOutput>;
 
@@ -1583,7 +1557,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     getUniswapFeeTier(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<number>;
 
@@ -1592,7 +1566,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param market The address of the market.
      */
     isRegisteredMarket(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -1601,7 +1575,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param oracleProvider The address of the oracle provider to check.
      */
     isRegisteredOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -1610,7 +1584,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token to check.
      */
     isRegisteredSettlementToken(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -1635,7 +1609,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     >;
 
     registerOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1651,12 +1625,12 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param uniswapFeeTier The Uniswap fee tier for the settlement token.
      */
     registerSettlementToken(
-      token: PromiseOrValue<string>,
-      minimumMargin: PromiseOrValue<BigNumberish>,
-      interestRate: PromiseOrValue<BigNumberish>,
-      flashLoanFeeRate: PromiseOrValue<BigNumberish>,
-      earningDistributionThreshold: PromiseOrValue<BigNumberish>,
-      uniswapFeeTier: PromiseOrValue<BigNumberish>,
+      token: string,
+      minimumMargin: BigNumberish,
+      interestRate: BigNumberish,
+      flashLoanFeeRate: BigNumberish,
+      earningDistributionThreshold: BigNumberish,
+      uniswapFeeTier: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1676,7 +1650,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     removeLastInterestRateRecord(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1687,8 +1661,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     setEarningDistributionThreshold(
-      token: PromiseOrValue<string>,
-      earningDistributionThreshold: PromiseOrValue<BigNumberish>,
+      token: string,
+      earningDistributionThreshold: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1699,8 +1673,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     setFlashLoanFeeRate(
-      token: PromiseOrValue<string>,
-      flashLoanFeeRate: PromiseOrValue<BigNumberish>,
+      token: string,
+      flashLoanFeeRate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1710,7 +1684,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param keeperFeePayer The keeper fee payer address.
      */
     setKeeperFeePayer(
-      _keeperFeePayer: PromiseOrValue<string>,
+      _keeperFeePayer: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1720,7 +1694,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param liquidator The liquidator address.
      */
     setLiquidator(
-      _liquidator: PromiseOrValue<string>,
+      _liquidator: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1731,8 +1705,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     setMinimumMargin(
-      token: PromiseOrValue<string>,
-      minimumMargin: PromiseOrValue<BigNumberish>,
+      token: string,
+      minimumMargin: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1743,8 +1717,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param uniswapFeeTier The new Uniswap fee tier for the settlement token.
      */
     setUniswapFeeTier(
-      token: PromiseOrValue<string>,
-      uniswapFeeTier: PromiseOrValue<BigNumberish>,
+      token: string,
+      uniswapFeeTier: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1753,10 +1727,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * Sets the vault address.
      * @param vault The vault address.
      */
-    setVault(
-      _vault: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    setVault(_vault: string, overrides?: CallOverrides): Promise<void>;
 
     /**
      * Returns the address of the DAO treasury.
@@ -1769,7 +1740,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param oracleProvider The address of the oracle provider to unregister.
      */
     unregisterOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1778,10 +1749,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * Updates the DAO address.
      * @param dao The new DAO address.
      */
-    updateDao(
-      _dao: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    updateDao(_dao: string, overrides?: CallOverrides): Promise<void>;
 
     /**
      * This function can only be called by the DAO and registered oracle providers.
@@ -1790,8 +1758,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     updateLeverageLevel(
-      oracleProvider: PromiseOrValue<string>,
-      level: PromiseOrValue<BigNumberish>,
+      oracleProvider: string,
+      level: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1803,9 +1771,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     updateTakeProfitBPSRange(
-      oracleProvider: PromiseOrValue<string>,
-      minTakeProfitBPS: PromiseOrValue<BigNumberish>,
-      maxTakeProfitBPS: PromiseOrValue<BigNumberish>,
+      oracleProvider: string,
+      minTakeProfitBPS: BigNumberish,
+      maxTakeProfitBPS: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1814,10 +1782,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * Updates the DAO treasury address.
      * @param treasury The new DAO treasury address.
      */
-    updateTreasury(
-      _treasury: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    updateTreasury(_treasury: string, overrides?: CallOverrides): Promise<void>;
 
     /**
      * Returns the address of the vault.
@@ -1827,157 +1792,149 @@ export interface ChromaticMarketFactory extends BaseContract {
 
   filters: {
     "InterestRateRecordAppended(address,uint256,uint256)"(
-      token?: PromiseOrValue<string> | null,
-      annualRateBPS?: PromiseOrValue<BigNumberish> | null,
-      beginTimestamp?: PromiseOrValue<BigNumberish> | null
+      token?: string | null,
+      annualRateBPS?: BigNumberish | null,
+      beginTimestamp?: BigNumberish | null
     ): InterestRateRecordAppendedEventFilter;
     InterestRateRecordAppended(
-      token?: PromiseOrValue<string> | null,
-      annualRateBPS?: PromiseOrValue<BigNumberish> | null,
-      beginTimestamp?: PromiseOrValue<BigNumberish> | null
+      token?: string | null,
+      annualRateBPS?: BigNumberish | null,
+      beginTimestamp?: BigNumberish | null
     ): InterestRateRecordAppendedEventFilter;
 
     "LastInterestRateRecordRemoved(address,uint256,uint256)"(
-      token?: PromiseOrValue<string> | null,
-      annualRateBPS?: PromiseOrValue<BigNumberish> | null,
-      beginTimestamp?: PromiseOrValue<BigNumberish> | null
+      token?: string | null,
+      annualRateBPS?: BigNumberish | null,
+      beginTimestamp?: BigNumberish | null
     ): LastInterestRateRecordRemovedEventFilter;
     LastInterestRateRecordRemoved(
-      token?: PromiseOrValue<string> | null,
-      annualRateBPS?: PromiseOrValue<BigNumberish> | null,
-      beginTimestamp?: PromiseOrValue<BigNumberish> | null
+      token?: string | null,
+      annualRateBPS?: BigNumberish | null,
+      beginTimestamp?: BigNumberish | null
     ): LastInterestRateRecordRemovedEventFilter;
 
     "MarketCreated(address,address,address)"(
-      oracleProvider?: PromiseOrValue<string> | null,
-      settlementToken?: PromiseOrValue<string> | null,
-      market?: PromiseOrValue<string> | null
+      oracleProvider?: string | null,
+      settlementToken?: string | null,
+      market?: string | null
     ): MarketCreatedEventFilter;
     MarketCreated(
-      oracleProvider?: PromiseOrValue<string> | null,
-      settlementToken?: PromiseOrValue<string> | null,
-      market?: PromiseOrValue<string> | null
+      oracleProvider?: string | null,
+      settlementToken?: string | null,
+      market?: string | null
     ): MarketCreatedEventFilter;
 
-    "OracleProviderRegistered(address,tuple)"(
-      oracleProvider?: PromiseOrValue<string> | null,
+    "OracleProviderRegistered(address,(uint32,uint32,uint8))"(
+      oracleProvider?: string | null,
       properties?: null
     ): OracleProviderRegisteredEventFilter;
     OracleProviderRegistered(
-      oracleProvider?: PromiseOrValue<string> | null,
+      oracleProvider?: string | null,
       properties?: null
     ): OracleProviderRegisteredEventFilter;
 
     "OracleProviderUnregistered(address)"(
-      oracleProvider?: PromiseOrValue<string> | null
+      oracleProvider?: string | null
     ): OracleProviderUnregisteredEventFilter;
     OracleProviderUnregistered(
-      oracleProvider?: PromiseOrValue<string> | null
+      oracleProvider?: string | null
     ): OracleProviderUnregisteredEventFilter;
 
     "SetEarningDistributionThreshold(address,uint256)"(
-      token?: PromiseOrValue<string> | null,
-      earningDistributionThreshold?: PromiseOrValue<BigNumberish> | null
+      token?: string | null,
+      earningDistributionThreshold?: BigNumberish | null
     ): SetEarningDistributionThresholdEventFilter;
     SetEarningDistributionThreshold(
-      token?: PromiseOrValue<string> | null,
-      earningDistributionThreshold?: PromiseOrValue<BigNumberish> | null
+      token?: string | null,
+      earningDistributionThreshold?: BigNumberish | null
     ): SetEarningDistributionThresholdEventFilter;
 
     "SetFlashLoanFeeRate(address,uint256)"(
-      token?: PromiseOrValue<string> | null,
-      flashLoanFeeRate?: PromiseOrValue<BigNumberish> | null
+      token?: string | null,
+      flashLoanFeeRate?: BigNumberish | null
     ): SetFlashLoanFeeRateEventFilter;
     SetFlashLoanFeeRate(
-      token?: PromiseOrValue<string> | null,
-      flashLoanFeeRate?: PromiseOrValue<BigNumberish> | null
+      token?: string | null,
+      flashLoanFeeRate?: BigNumberish | null
     ): SetFlashLoanFeeRateEventFilter;
 
     "SetKeeperFeePayer(address)"(
-      keeperFeePayer?: PromiseOrValue<string> | null
+      keeperFeePayer?: string | null
     ): SetKeeperFeePayerEventFilter;
     SetKeeperFeePayer(
-      keeperFeePayer?: PromiseOrValue<string> | null
+      keeperFeePayer?: string | null
     ): SetKeeperFeePayerEventFilter;
 
     "SetLiquidator(address)"(
-      liquidator?: PromiseOrValue<string> | null
+      liquidator?: string | null
     ): SetLiquidatorEventFilter;
-    SetLiquidator(
-      liquidator?: PromiseOrValue<string> | null
-    ): SetLiquidatorEventFilter;
+    SetLiquidator(liquidator?: string | null): SetLiquidatorEventFilter;
 
     "SetMinimumMargin(address,uint256)"(
-      token?: PromiseOrValue<string> | null,
-      minimumMargin?: PromiseOrValue<BigNumberish> | null
+      token?: string | null,
+      minimumMargin?: BigNumberish | null
     ): SetMinimumMarginEventFilter;
     SetMinimumMargin(
-      token?: PromiseOrValue<string> | null,
-      minimumMargin?: PromiseOrValue<BigNumberish> | null
+      token?: string | null,
+      minimumMargin?: BigNumberish | null
     ): SetMinimumMarginEventFilter;
 
     "SetUniswapFeeTier(address,uint24)"(
-      token?: PromiseOrValue<string> | null,
-      uniswapFeeTier?: PromiseOrValue<BigNumberish> | null
+      token?: string | null,
+      uniswapFeeTier?: BigNumberish | null
     ): SetUniswapFeeTierEventFilter;
     SetUniswapFeeTier(
-      token?: PromiseOrValue<string> | null,
-      uniswapFeeTier?: PromiseOrValue<BigNumberish> | null
+      token?: string | null,
+      uniswapFeeTier?: BigNumberish | null
     ): SetUniswapFeeTierEventFilter;
 
-    "SetVault(address)"(
-      vault?: PromiseOrValue<string> | null
-    ): SetVaultEventFilter;
-    SetVault(vault?: PromiseOrValue<string> | null): SetVaultEventFilter;
+    "SetVault(address)"(vault?: string | null): SetVaultEventFilter;
+    SetVault(vault?: string | null): SetVaultEventFilter;
 
     "SettlementTokenRegistered(address,uint256,uint256,uint256,uint256,uint24)"(
-      token?: PromiseOrValue<string> | null,
-      minimumMargin?: PromiseOrValue<BigNumberish> | null,
-      interestRate?: PromiseOrValue<BigNumberish> | null,
+      token?: string | null,
+      minimumMargin?: BigNumberish | null,
+      interestRate?: BigNumberish | null,
       flashLoanFeeRate?: null,
       earningDistributionThreshold?: null,
       uniswapFeeTier?: null
     ): SettlementTokenRegisteredEventFilter;
     SettlementTokenRegistered(
-      token?: PromiseOrValue<string> | null,
-      minimumMargin?: PromiseOrValue<BigNumberish> | null,
-      interestRate?: PromiseOrValue<BigNumberish> | null,
+      token?: string | null,
+      minimumMargin?: BigNumberish | null,
+      interestRate?: BigNumberish | null,
       flashLoanFeeRate?: null,
       earningDistributionThreshold?: null,
       uniswapFeeTier?: null
     ): SettlementTokenRegisteredEventFilter;
 
-    "UpdateDao(address)"(
-      dao?: PromiseOrValue<string> | null
-    ): UpdateDaoEventFilter;
-    UpdateDao(dao?: PromiseOrValue<string> | null): UpdateDaoEventFilter;
+    "UpdateDao(address)"(dao?: string | null): UpdateDaoEventFilter;
+    UpdateDao(dao?: string | null): UpdateDaoEventFilter;
 
     "UpdateLeverageLevel(address,uint8)"(
-      oracleProvider?: PromiseOrValue<string> | null,
-      level?: PromiseOrValue<BigNumberish> | null
+      oracleProvider?: string | null,
+      level?: BigNumberish | null
     ): UpdateLeverageLevelEventFilter;
     UpdateLeverageLevel(
-      oracleProvider?: PromiseOrValue<string> | null,
-      level?: PromiseOrValue<BigNumberish> | null
+      oracleProvider?: string | null,
+      level?: BigNumberish | null
     ): UpdateLeverageLevelEventFilter;
 
     "UpdateTakeProfitBPSRange(address,uint32,uint32)"(
-      oracleProvider?: PromiseOrValue<string> | null,
-      minTakeProfitBPS?: PromiseOrValue<BigNumberish> | null,
-      maxTakeProfitBPS?: PromiseOrValue<BigNumberish> | null
+      oracleProvider?: string | null,
+      minTakeProfitBPS?: BigNumberish | null,
+      maxTakeProfitBPS?: BigNumberish | null
     ): UpdateTakeProfitBPSRangeEventFilter;
     UpdateTakeProfitBPSRange(
-      oracleProvider?: PromiseOrValue<string> | null,
-      minTakeProfitBPS?: PromiseOrValue<BigNumberish> | null,
-      maxTakeProfitBPS?: PromiseOrValue<BigNumberish> | null
+      oracleProvider?: string | null,
+      minTakeProfitBPS?: BigNumberish | null,
+      maxTakeProfitBPS?: BigNumberish | null
     ): UpdateTakeProfitBPSRangeEventFilter;
 
     "UpdateTreasury(address)"(
-      treasury?: PromiseOrValue<string> | null
+      treasury?: string | null
     ): UpdateTreasuryEventFilter;
-    UpdateTreasury(
-      treasury?: PromiseOrValue<string> | null
-    ): UpdateTreasuryEventFilter;
+    UpdateTreasury(treasury?: string | null): UpdateTreasuryEventFilter;
   };
 
   estimateGas: {
@@ -1989,10 +1946,10 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     appendInterestRateRecord(
-      token: PromiseOrValue<string>,
-      annualRateBPS: PromiseOrValue<BigNumberish>,
-      beginTimestamp: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      annualRateBPS: BigNumberish,
+      beginTimestamp: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2003,10 +1960,10 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the token.
      */
     calculateInterest(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      from: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<BigNumberish>,
+      token: string,
+      amount: BigNumberish,
+      from: BigNumberish,
+      to: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2017,9 +1974,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param settlementToken The address of the settlement token.
      */
     createMarket(
-      oracleProvider: PromiseOrValue<string>,
-      settlementToken: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      oracleProvider: string,
+      settlementToken: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2027,7 +1984,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     currentInterestRate(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2041,7 +1998,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     getEarningDistributionThreshold(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2050,7 +2007,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     getFlashLoanFeeRate(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2059,7 +2016,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     getInterestRateRecords(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2069,8 +2026,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param settlementToken The address of the settlement token.
      */
     getMarket(
-      oracleProvider: PromiseOrValue<string>,
-      settlementToken: PromiseOrValue<string>,
+      oracleProvider: string,
+      settlementToken: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2084,7 +2041,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param settlementToken The address of the settlement token.
      */
     getMarketsBySettlmentToken(
-      settlementToken: PromiseOrValue<string>,
+      settlementToken: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2094,7 +2051,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     getMinimumMargin(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2103,7 +2060,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     getOracleProviderProperties(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2112,7 +2069,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     getUniswapFeeTier(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2121,7 +2078,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param market The address of the market.
      */
     isRegisteredMarket(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2130,7 +2087,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param oracleProvider The address of the oracle provider to check.
      */
     isRegisteredOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2139,7 +2096,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token to check.
      */
     isRegisteredSettlementToken(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2160,9 +2117,9 @@ export interface ChromaticMarketFactory extends BaseContract {
     parameters(overrides?: CallOverrides): Promise<BigNumber>;
 
     registerOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2176,13 +2133,13 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param uniswapFeeTier The Uniswap fee tier for the settlement token.
      */
     registerSettlementToken(
-      token: PromiseOrValue<string>,
-      minimumMargin: PromiseOrValue<BigNumberish>,
-      interestRate: PromiseOrValue<BigNumberish>,
-      flashLoanFeeRate: PromiseOrValue<BigNumberish>,
-      earningDistributionThreshold: PromiseOrValue<BigNumberish>,
-      uniswapFeeTier: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      minimumMargin: BigNumberish,
+      interestRate: BigNumberish,
+      flashLoanFeeRate: BigNumberish,
+      earningDistributionThreshold: BigNumberish,
+      uniswapFeeTier: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2201,8 +2158,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     removeLastInterestRateRecord(
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2212,9 +2169,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     setEarningDistributionThreshold(
-      token: PromiseOrValue<string>,
-      earningDistributionThreshold: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      earningDistributionThreshold: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2224,9 +2181,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     setFlashLoanFeeRate(
-      token: PromiseOrValue<string>,
-      flashLoanFeeRate: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      flashLoanFeeRate: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2235,8 +2192,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param keeperFeePayer The keeper fee payer address.
      */
     setKeeperFeePayer(
-      _keeperFeePayer: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _keeperFeePayer: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2245,8 +2202,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param liquidator The liquidator address.
      */
     setLiquidator(
-      _liquidator: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _liquidator: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2256,9 +2213,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     setMinimumMargin(
-      token: PromiseOrValue<string>,
-      minimumMargin: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      minimumMargin: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2268,9 +2225,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param uniswapFeeTier The new Uniswap fee tier for the settlement token.
      */
     setUniswapFeeTier(
-      token: PromiseOrValue<string>,
-      uniswapFeeTier: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      uniswapFeeTier: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2279,8 +2236,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param vault The vault address.
      */
     setVault(
-      _vault: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _vault: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2294,8 +2251,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param oracleProvider The address of the oracle provider to unregister.
      */
     unregisterOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      oracleProvider: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2304,8 +2261,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param dao The new DAO address.
      */
     updateDao(
-      _dao: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _dao: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2315,9 +2272,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     updateLeverageLevel(
-      oracleProvider: PromiseOrValue<string>,
-      level: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      oracleProvider: string,
+      level: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2328,10 +2285,10 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     updateTakeProfitBPSRange(
-      oracleProvider: PromiseOrValue<string>,
-      minTakeProfitBPS: PromiseOrValue<BigNumberish>,
-      maxTakeProfitBPS: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      oracleProvider: string,
+      minTakeProfitBPS: BigNumberish,
+      maxTakeProfitBPS: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2340,8 +2297,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param treasury The new DAO treasury address.
      */
     updateTreasury(
-      _treasury: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _treasury: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -2359,10 +2316,10 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     appendInterestRateRecord(
-      token: PromiseOrValue<string>,
-      annualRateBPS: PromiseOrValue<BigNumberish>,
-      beginTimestamp: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      annualRateBPS: BigNumberish,
+      beginTimestamp: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2373,10 +2330,10 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the token.
      */
     calculateInterest(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      from: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<BigNumberish>,
+      token: string,
+      amount: BigNumberish,
+      from: BigNumberish,
+      to: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2387,9 +2344,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param settlementToken The address of the settlement token.
      */
     createMarket(
-      oracleProvider: PromiseOrValue<string>,
-      settlementToken: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      oracleProvider: string,
+      settlementToken: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2397,7 +2354,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     currentInterestRate(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2411,7 +2368,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     getEarningDistributionThreshold(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2420,7 +2377,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     getFlashLoanFeeRate(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2429,7 +2386,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     getInterestRateRecords(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2439,8 +2396,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param settlementToken The address of the settlement token.
      */
     getMarket(
-      oracleProvider: PromiseOrValue<string>,
-      settlementToken: PromiseOrValue<string>,
+      oracleProvider: string,
+      settlementToken: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2454,7 +2411,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param settlementToken The address of the settlement token.
      */
     getMarketsBySettlmentToken(
-      settlementToken: PromiseOrValue<string>,
+      settlementToken: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2464,7 +2421,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     getMinimumMargin(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2473,7 +2430,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     getOracleProviderProperties(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2482,7 +2439,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     getUniswapFeeTier(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2491,7 +2448,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param market The address of the market.
      */
     isRegisteredMarket(
-      market: PromiseOrValue<string>,
+      market: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2500,7 +2457,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param oracleProvider The address of the oracle provider to check.
      */
     isRegisteredOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2509,7 +2466,7 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token to check.
      */
     isRegisteredSettlementToken(
-      token: PromiseOrValue<string>,
+      token: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2530,9 +2487,9 @@ export interface ChromaticMarketFactory extends BaseContract {
     parameters(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     registerOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
+      oracleProvider: string,
       properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2546,13 +2503,13 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param uniswapFeeTier The Uniswap fee tier for the settlement token.
      */
     registerSettlementToken(
-      token: PromiseOrValue<string>,
-      minimumMargin: PromiseOrValue<BigNumberish>,
-      interestRate: PromiseOrValue<BigNumberish>,
-      flashLoanFeeRate: PromiseOrValue<BigNumberish>,
-      earningDistributionThreshold: PromiseOrValue<BigNumberish>,
-      uniswapFeeTier: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      minimumMargin: BigNumberish,
+      interestRate: BigNumberish,
+      flashLoanFeeRate: BigNumberish,
+      earningDistributionThreshold: BigNumberish,
+      uniswapFeeTier: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2575,8 +2532,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     removeLastInterestRateRecord(
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2586,9 +2543,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     setEarningDistributionThreshold(
-      token: PromiseOrValue<string>,
-      earningDistributionThreshold: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      earningDistributionThreshold: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2598,9 +2555,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     setFlashLoanFeeRate(
-      token: PromiseOrValue<string>,
-      flashLoanFeeRate: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      flashLoanFeeRate: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2609,8 +2566,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param keeperFeePayer The keeper fee payer address.
      */
     setKeeperFeePayer(
-      _keeperFeePayer: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _keeperFeePayer: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2619,8 +2576,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param liquidator The liquidator address.
      */
     setLiquidator(
-      _liquidator: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _liquidator: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2630,9 +2587,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param token The address of the settlement token.
      */
     setMinimumMargin(
-      token: PromiseOrValue<string>,
-      minimumMargin: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      minimumMargin: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2642,9 +2599,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param uniswapFeeTier The new Uniswap fee tier for the settlement token.
      */
     setUniswapFeeTier(
-      token: PromiseOrValue<string>,
-      uniswapFeeTier: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      token: string,
+      uniswapFeeTier: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2653,8 +2610,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param vault The vault address.
      */
     setVault(
-      _vault: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _vault: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2668,8 +2625,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param oracleProvider The address of the oracle provider to unregister.
      */
     unregisterOracleProvider(
-      oracleProvider: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      oracleProvider: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2678,8 +2635,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param dao The new DAO address.
      */
     updateDao(
-      _dao: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _dao: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2689,9 +2646,9 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     updateLeverageLevel(
-      oracleProvider: PromiseOrValue<string>,
-      level: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      oracleProvider: string,
+      level: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2702,10 +2659,10 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param oracleProvider The address of the oracle provider.
      */
     updateTakeProfitBPSRange(
-      oracleProvider: PromiseOrValue<string>,
-      minTakeProfitBPS: PromiseOrValue<BigNumberish>,
-      maxTakeProfitBPS: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      oracleProvider: string,
+      minTakeProfitBPS: BigNumberish,
+      maxTakeProfitBPS: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2714,8 +2671,8 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param treasury The new DAO treasury address.
      */
     updateTreasury(
-      _treasury: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _treasury: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**

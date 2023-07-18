@@ -24,7 +24,6 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "../../../../common";
 
 export interface IERC1155Interface extends utils.Interface {
@@ -51,43 +50,31 @@ export interface IERC1155Interface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "balanceOf",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "balanceOfBatch",
-    values: [PromiseOrValue<string>[], PromiseOrValue<BigNumberish>[]]
+    values: [string[], BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "safeBatchTransferFrom",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, string, BigNumberish[], BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, string, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "setApprovalForAll",
-    values: [PromiseOrValue<string>, PromiseOrValue<boolean>]
+    values: [string, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
-    values: [PromiseOrValue<BytesLike>]
+    values: [BytesLike]
   ): string;
 
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
@@ -208,8 +195,8 @@ export interface IERC1155 extends BaseContract {
      * Returns the amount of tokens of token type `id` owned by `account`. Requirements: - `account` cannot be the zero address.
      */
     balanceOf(
-      account: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
+      account: string,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -217,8 +204,8 @@ export interface IERC1155 extends BaseContract {
      * xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {balanceOf}. Requirements: - `accounts` and `ids` must have the same length.
      */
     balanceOfBatch(
-      accounts: PromiseOrValue<string>[],
-      ids: PromiseOrValue<BigNumberish>[],
+      accounts: string[],
+      ids: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
 
@@ -226,8 +213,8 @@ export interface IERC1155 extends BaseContract {
      * Returns true if `operator` is approved to transfer ``account``'s tokens. See {setApprovalForAll}.
      */
     isApprovedForAll(
-      account: PromiseOrValue<string>,
-      operator: PromiseOrValue<string>,
+      account: string,
+      operator: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -235,40 +222,40 @@ export interface IERC1155 extends BaseContract {
      * xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {safeTransferFrom}. Emits a {TransferBatch} event. Requirements: - `ids` and `amounts` must have the same length. - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155BatchReceived} and return the acceptance magic value.
      */
     safeBatchTransferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      ids: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      from: string,
+      to: string,
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * Transfers `amount` tokens of token type `id` from `from` to `to`. Emits a {TransferSingle} event. Requirements: - `to` cannot be the zero address. - If the caller is not `from`, it must have been approved to spend ``from``'s tokens via {setApprovalForAll}. - `from` must have a balance of tokens of type `id` of at least `amount`. - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155Received} and return the acceptance magic value.
      */
     safeTransferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      from: string,
+      to: string,
+      id: BigNumberish,
+      amount: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * Grants or revokes permission to `operator` to transfer the caller's tokens, according to `approved`, Emits an {ApprovalForAll} event. Requirements: - `operator` cannot be the caller.
      */
     setApprovalForAll(
-      operator: PromiseOrValue<string>,
-      approved: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      operator: string,
+      approved: boolean,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
      */
     supportsInterface(
-      interfaceId: PromiseOrValue<BytesLike>,
+      interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
   };
@@ -277,8 +264,8 @@ export interface IERC1155 extends BaseContract {
    * Returns the amount of tokens of token type `id` owned by `account`. Requirements: - `account` cannot be the zero address.
    */
   balanceOf(
-    account: PromiseOrValue<string>,
-    id: PromiseOrValue<BigNumberish>,
+    account: string,
+    id: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -286,8 +273,8 @@ export interface IERC1155 extends BaseContract {
    * xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {balanceOf}. Requirements: - `accounts` and `ids` must have the same length.
    */
   balanceOfBatch(
-    accounts: PromiseOrValue<string>[],
-    ids: PromiseOrValue<BigNumberish>[],
+    accounts: string[],
+    ids: BigNumberish[],
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
@@ -295,8 +282,8 @@ export interface IERC1155 extends BaseContract {
    * Returns true if `operator` is approved to transfer ``account``'s tokens. See {setApprovalForAll}.
    */
   isApprovedForAll(
-    account: PromiseOrValue<string>,
-    operator: PromiseOrValue<string>,
+    account: string,
+    operator: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -304,40 +291,40 @@ export interface IERC1155 extends BaseContract {
    * xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {safeTransferFrom}. Emits a {TransferBatch} event. Requirements: - `ids` and `amounts` must have the same length. - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155BatchReceived} and return the acceptance magic value.
    */
   safeBatchTransferFrom(
-    from: PromiseOrValue<string>,
-    to: PromiseOrValue<string>,
-    ids: PromiseOrValue<BigNumberish>[],
-    amounts: PromiseOrValue<BigNumberish>[],
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    from: string,
+    to: string,
+    ids: BigNumberish[],
+    amounts: BigNumberish[],
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * Transfers `amount` tokens of token type `id` from `from` to `to`. Emits a {TransferSingle} event. Requirements: - `to` cannot be the zero address. - If the caller is not `from`, it must have been approved to spend ``from``'s tokens via {setApprovalForAll}. - `from` must have a balance of tokens of type `id` of at least `amount`. - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155Received} and return the acceptance magic value.
    */
   safeTransferFrom(
-    from: PromiseOrValue<string>,
-    to: PromiseOrValue<string>,
-    id: PromiseOrValue<BigNumberish>,
-    amount: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    from: string,
+    to: string,
+    id: BigNumberish,
+    amount: BigNumberish,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * Grants or revokes permission to `operator` to transfer the caller's tokens, according to `approved`, Emits an {ApprovalForAll} event. Requirements: - `operator` cannot be the caller.
    */
   setApprovalForAll(
-    operator: PromiseOrValue<string>,
-    approved: PromiseOrValue<boolean>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    operator: string,
+    approved: boolean,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
    */
   supportsInterface(
-    interfaceId: PromiseOrValue<BytesLike>,
+    interfaceId: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -346,8 +333,8 @@ export interface IERC1155 extends BaseContract {
      * Returns the amount of tokens of token type `id` owned by `account`. Requirements: - `account` cannot be the zero address.
      */
     balanceOf(
-      account: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
+      account: string,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -355,8 +342,8 @@ export interface IERC1155 extends BaseContract {
      * xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {balanceOf}. Requirements: - `accounts` and `ids` must have the same length.
      */
     balanceOfBatch(
-      accounts: PromiseOrValue<string>[],
-      ids: PromiseOrValue<BigNumberish>[],
+      accounts: string[],
+      ids: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
@@ -364,8 +351,8 @@ export interface IERC1155 extends BaseContract {
      * Returns true if `operator` is approved to transfer ``account``'s tokens. See {setApprovalForAll}.
      */
     isApprovedForAll(
-      account: PromiseOrValue<string>,
-      operator: PromiseOrValue<string>,
+      account: string,
+      operator: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -373,11 +360,11 @@ export interface IERC1155 extends BaseContract {
      * xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {safeTransferFrom}. Emits a {TransferBatch} event. Requirements: - `ids` and `amounts` must have the same length. - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155BatchReceived} and return the acceptance magic value.
      */
     safeBatchTransferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      ids: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
+      from: string,
+      to: string,
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -385,11 +372,11 @@ export interface IERC1155 extends BaseContract {
      * Transfers `amount` tokens of token type `id` from `from` to `to`. Emits a {TransferSingle} event. Requirements: - `to` cannot be the zero address. - If the caller is not `from`, it must have been approved to spend ``from``'s tokens via {setApprovalForAll}. - `from` must have a balance of tokens of type `id` of at least `amount`. - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155Received} and return the acceptance magic value.
      */
     safeTransferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      from: string,
+      to: string,
+      id: BigNumberish,
+      amount: BigNumberish,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -397,8 +384,8 @@ export interface IERC1155 extends BaseContract {
      * Grants or revokes permission to `operator` to transfer the caller's tokens, according to `approved`, Emits an {ApprovalForAll} event. Requirements: - `operator` cannot be the caller.
      */
     setApprovalForAll(
-      operator: PromiseOrValue<string>,
-      approved: PromiseOrValue<boolean>,
+      operator: string,
+      approved: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -406,58 +393,58 @@ export interface IERC1155 extends BaseContract {
      * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
      */
     supportsInterface(
-      interfaceId: PromiseOrValue<BytesLike>,
+      interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
   };
 
   filters: {
     "ApprovalForAll(address,address,bool)"(
-      account?: PromiseOrValue<string> | null,
-      operator?: PromiseOrValue<string> | null,
+      account?: string | null,
+      operator?: string | null,
       approved?: null
     ): ApprovalForAllEventFilter;
     ApprovalForAll(
-      account?: PromiseOrValue<string> | null,
-      operator?: PromiseOrValue<string> | null,
+      account?: string | null,
+      operator?: string | null,
       approved?: null
     ): ApprovalForAllEventFilter;
 
     "TransferBatch(address,address,address,uint256[],uint256[])"(
-      operator?: PromiseOrValue<string> | null,
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
+      operator?: string | null,
+      from?: string | null,
+      to?: string | null,
       ids?: null,
       values?: null
     ): TransferBatchEventFilter;
     TransferBatch(
-      operator?: PromiseOrValue<string> | null,
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
+      operator?: string | null,
+      from?: string | null,
+      to?: string | null,
       ids?: null,
       values?: null
     ): TransferBatchEventFilter;
 
     "TransferSingle(address,address,address,uint256,uint256)"(
-      operator?: PromiseOrValue<string> | null,
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
+      operator?: string | null,
+      from?: string | null,
+      to?: string | null,
       id?: null,
       value?: null
     ): TransferSingleEventFilter;
     TransferSingle(
-      operator?: PromiseOrValue<string> | null,
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
+      operator?: string | null,
+      from?: string | null,
+      to?: string | null,
       id?: null,
       value?: null
     ): TransferSingleEventFilter;
 
     "URI(string,uint256)"(
       value?: null,
-      id?: PromiseOrValue<BigNumberish> | null
+      id?: BigNumberish | null
     ): URIEventFilter;
-    URI(value?: null, id?: PromiseOrValue<BigNumberish> | null): URIEventFilter;
+    URI(value?: null, id?: BigNumberish | null): URIEventFilter;
   };
 
   estimateGas: {
@@ -465,8 +452,8 @@ export interface IERC1155 extends BaseContract {
      * Returns the amount of tokens of token type `id` owned by `account`. Requirements: - `account` cannot be the zero address.
      */
     balanceOf(
-      account: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
+      account: string,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -474,8 +461,8 @@ export interface IERC1155 extends BaseContract {
      * xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {balanceOf}. Requirements: - `accounts` and `ids` must have the same length.
      */
     balanceOfBatch(
-      accounts: PromiseOrValue<string>[],
-      ids: PromiseOrValue<BigNumberish>[],
+      accounts: string[],
+      ids: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -483,8 +470,8 @@ export interface IERC1155 extends BaseContract {
      * Returns true if `operator` is approved to transfer ``account``'s tokens. See {setApprovalForAll}.
      */
     isApprovedForAll(
-      account: PromiseOrValue<string>,
-      operator: PromiseOrValue<string>,
+      account: string,
+      operator: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -492,40 +479,40 @@ export interface IERC1155 extends BaseContract {
      * xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {safeTransferFrom}. Emits a {TransferBatch} event. Requirements: - `ids` and `amounts` must have the same length. - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155BatchReceived} and return the acceptance magic value.
      */
     safeBatchTransferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      ids: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      from: string,
+      to: string,
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * Transfers `amount` tokens of token type `id` from `from` to `to`. Emits a {TransferSingle} event. Requirements: - `to` cannot be the zero address. - If the caller is not `from`, it must have been approved to spend ``from``'s tokens via {setApprovalForAll}. - `from` must have a balance of tokens of type `id` of at least `amount`. - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155Received} and return the acceptance magic value.
      */
     safeTransferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      from: string,
+      to: string,
+      id: BigNumberish,
+      amount: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * Grants or revokes permission to `operator` to transfer the caller's tokens, according to `approved`, Emits an {ApprovalForAll} event. Requirements: - `operator` cannot be the caller.
      */
     setApprovalForAll(
-      operator: PromiseOrValue<string>,
-      approved: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      operator: string,
+      approved: boolean,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
      */
     supportsInterface(
-      interfaceId: PromiseOrValue<BytesLike>,
+      interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -535,8 +522,8 @@ export interface IERC1155 extends BaseContract {
      * Returns the amount of tokens of token type `id` owned by `account`. Requirements: - `account` cannot be the zero address.
      */
     balanceOf(
-      account: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
+      account: string,
+      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -544,8 +531,8 @@ export interface IERC1155 extends BaseContract {
      * xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {balanceOf}. Requirements: - `accounts` and `ids` must have the same length.
      */
     balanceOfBatch(
-      accounts: PromiseOrValue<string>[],
-      ids: PromiseOrValue<BigNumberish>[],
+      accounts: string[],
+      ids: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -553,8 +540,8 @@ export interface IERC1155 extends BaseContract {
      * Returns true if `operator` is approved to transfer ``account``'s tokens. See {setApprovalForAll}.
      */
     isApprovedForAll(
-      account: PromiseOrValue<string>,
-      operator: PromiseOrValue<string>,
+      account: string,
+      operator: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -562,40 +549,40 @@ export interface IERC1155 extends BaseContract {
      * xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {safeTransferFrom}. Emits a {TransferBatch} event. Requirements: - `ids` and `amounts` must have the same length. - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155BatchReceived} and return the acceptance magic value.
      */
     safeBatchTransferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      ids: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      from: string,
+      to: string,
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      * Transfers `amount` tokens of token type `id` from `from` to `to`. Emits a {TransferSingle} event. Requirements: - `to` cannot be the zero address. - If the caller is not `from`, it must have been approved to spend ``from``'s tokens via {setApprovalForAll}. - `from` must have a balance of tokens of type `id` of at least `amount`. - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155Received} and return the acceptance magic value.
      */
     safeTransferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      id: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      from: string,
+      to: string,
+      id: BigNumberish,
+      amount: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      * Grants or revokes permission to `operator` to transfer the caller's tokens, according to `approved`, Emits an {ApprovalForAll} event. Requirements: - `operator` cannot be the caller.
      */
     setApprovalForAll(
-      operator: PromiseOrValue<string>,
-      approved: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      operator: string,
+      approved: boolean,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
      */
     supportsInterface(
-      interfaceId: PromiseOrValue<BytesLike>,
+      interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

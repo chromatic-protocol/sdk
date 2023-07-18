@@ -24,16 +24,15 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "../../../../common";
 
 export type LpReceiptStruct = {
-  id: PromiseOrValue<BigNumberish>;
-  oracleVersion: PromiseOrValue<BigNumberish>;
-  amount: PromiseOrValue<BigNumberish>;
-  recipient: PromiseOrValue<string>;
-  action: PromiseOrValue<BigNumberish>;
-  tradingFeeRate: PromiseOrValue<BigNumberish>;
+  id: BigNumberish;
+  oracleVersion: BigNumberish;
+  amount: BigNumberish;
+  recipient: string;
+  action: BigNumberish;
+  tradingFeeRate: BigNumberish;
 };
 
 export type LpReceiptStructOutput = [
@@ -54,11 +53,11 @@ export type LpReceiptStructOutput = [
 
 export declare namespace IMarketLiquidity {
   export type ClaimableLiquidityStruct = {
-    mintingTokenAmountRequested: PromiseOrValue<BigNumberish>;
-    mintingCLBTokenAmount: PromiseOrValue<BigNumberish>;
-    burningCLBTokenAmountRequested: PromiseOrValue<BigNumberish>;
-    burningCLBTokenAmount: PromiseOrValue<BigNumberish>;
-    burningTokenAmount: PromiseOrValue<BigNumberish>;
+    mintingTokenAmountRequested: BigNumberish;
+    mintingCLBTokenAmount: BigNumberish;
+    burningCLBTokenAmountRequested: BigNumberish;
+    burningCLBTokenAmount: BigNumberish;
+    burningTokenAmount: BigNumberish;
   };
 
   export type ClaimableLiquidityStructOutput = [
@@ -76,10 +75,10 @@ export declare namespace IMarketLiquidity {
   };
 
   export type LiquidityBinStatusStruct = {
-    liquidity: PromiseOrValue<BigNumberish>;
-    freeLiquidity: PromiseOrValue<BigNumberish>;
-    binValue: PromiseOrValue<BigNumberish>;
-    tradingFeeRate: PromiseOrValue<BigNumberish>;
+    liquidity: BigNumberish;
+    freeLiquidity: BigNumberish;
+    binValue: BigNumberish;
+    tradingFeeRate: BigNumberish;
   };
 
   export type LiquidityBinStatusStructOutput = [
@@ -141,52 +140,43 @@ export interface MarketLiquidityFacetInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "addLiquidity",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "addLiquidityBatch",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, BigNumberish[], BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "claimLiquidity",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BytesLike>]
+    values: [BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "claimLiquidityBatch",
-    values: [PromiseOrValue<BigNumberish>[], PromiseOrValue<BytesLike>]
+    values: [BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "claimableLiquidity",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "distributeEarningToBins",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getBinFreeLiquidity",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getBinLiquidity",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getBinValues",
-    values: [PromiseOrValue<BigNumberish>[]]
+    values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "getLpReceipt",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "liquidityBinStatuses",
@@ -194,52 +184,31 @@ export interface MarketLiquidityFacetInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "onERC1155BatchReceived",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, string, BigNumberish[], BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "onERC1155Received",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, string, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "removeLiquidity",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "removeLiquidityBatch",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, BigNumberish[], BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
-    values: [PromiseOrValue<BytesLike>]
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawLiquidity",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BytesLike>]
+    values: [BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawLiquidityBatch",
-    values: [PromiseOrValue<BigNumberish>[], PromiseOrValue<BytesLike>]
+    values: [BigNumberish[], BytesLike]
   ): string;
 
   decodeFunctionResult(
@@ -316,14 +285,14 @@ export interface MarketLiquidityFacetInterface extends utils.Interface {
   ): Result;
 
   events: {
-    "AddLiquidity(tuple)": EventFragment;
-    "AddLiquidityBatch(tuple[])": EventFragment;
-    "ClaimLiquidity(tuple,uint256)": EventFragment;
-    "ClaimLiquidityBatch(tuple[],uint256[])": EventFragment;
-    "RemoveLiquidity(tuple)": EventFragment;
-    "RemoveLiquidityBatch(tuple[])": EventFragment;
-    "WithdrawLiquidity(tuple,uint256,uint256)": EventFragment;
-    "WithdrawLiquidityBatch(tuple[],uint256[],uint256[])": EventFragment;
+    "AddLiquidity((uint256,uint256,uint256,address,uint8,int16))": EventFragment;
+    "AddLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])": EventFragment;
+    "ClaimLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256)": EventFragment;
+    "ClaimLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[])": EventFragment;
+    "RemoveLiquidity((uint256,uint256,uint256,address,uint8,int16))": EventFragment;
+    "RemoveLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])": EventFragment;
+    "WithdrawLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256,uint256)": EventFragment;
+    "WithdrawLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[],uint256[])": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "AddLiquidity"): EventFragment;
@@ -461,10 +430,10 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRate The trading fee rate for the liquidity.
      */
     addLiquidity(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRate: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -476,11 +445,11 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRates An array of fee rates for each liquidity bin.
      */
     addLiquidityBatch(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRates: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -489,9 +458,9 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param receiptId The ID of the liquidity receipt.
      */
     claimLiquidity(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -500,9 +469,9 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     claimLiquidityBatch(
-      receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -511,8 +480,8 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
      */
     claimableLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      oracleVersion: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
+      oracleVersion: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[IMarketLiquidity.ClaimableLiquidityStructOutput]>;
 
@@ -522,9 +491,9 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param marketBalance The balance of the market.
      */
     distributeEarningToBins(
-      earning: PromiseOrValue<BigNumberish>,
-      marketBalance: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      earning: BigNumberish,
+      marketBalance: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -532,7 +501,7 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
      */
     getBinFreeLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { amount: BigNumber }>;
 
@@ -541,7 +510,7 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
      */
     getBinLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { amount: BigNumber }>;
 
@@ -550,7 +519,7 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
      */
     getBinValues(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      tradingFeeRates: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
 
@@ -559,7 +528,7 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param receiptId The ID of the liquidity receipt to retrieve.
      */
     getLpReceipt(
-      receiptId: PromiseOrValue<BigNumberish>,
+      receiptId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[LpReceiptStructOutput] & { receipt: LpReceiptStructOutput }>;
 
@@ -579,11 +548,11 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param values An array containing amounts of each token being transferred (order and length must match ids array)
      */
     onERC1155BatchReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>[],
-      arg3: PromiseOrValue<BigNumberish>[],
-      arg4: PromiseOrValue<BytesLike>,
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
@@ -596,11 +565,11 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param value The amount of tokens being transferred
      */
     onERC1155Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
@@ -611,10 +580,10 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRate The trading fee rate for the liquidity.
      */
     removeLiquidity(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRate: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -625,18 +594,18 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRates An array of fee rates for each liquidity bin.
      */
     removeLiquidityBatch(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRates: BigNumberish[],
+      clbTokenAmounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
      */
     supportsInterface(
-      interfaceID: PromiseOrValue<BytesLike>,
+      interfaceID: BytesLike,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -646,9 +615,9 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param receiptId The ID of the liquidity receipt.
      */
     withdrawLiquidity(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -657,9 +626,9 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     withdrawLiquidityBatch(
-      receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
   };
 
@@ -670,10 +639,10 @@ export interface MarketLiquidityFacet extends BaseContract {
    * @param tradingFeeRate The trading fee rate for the liquidity.
    */
   addLiquidity(
-    recipient: PromiseOrValue<string>,
-    tradingFeeRate: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    recipient: string,
+    tradingFeeRate: BigNumberish,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -685,11 +654,11 @@ export interface MarketLiquidityFacet extends BaseContract {
    * @param tradingFeeRates An array of fee rates for each liquidity bin.
    */
   addLiquidityBatch(
-    recipient: PromiseOrValue<string>,
-    tradingFeeRates: PromiseOrValue<BigNumberish>[],
-    amounts: PromiseOrValue<BigNumberish>[],
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    recipient: string,
+    tradingFeeRates: BigNumberish[],
+    amounts: BigNumberish[],
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -698,9 +667,9 @@ export interface MarketLiquidityFacet extends BaseContract {
    * @param receiptId The ID of the liquidity receipt.
    */
   claimLiquidity(
-    receiptId: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    receiptId: BigNumberish,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -709,9 +678,9 @@ export interface MarketLiquidityFacet extends BaseContract {
    * @param receiptIds The array of the liquidity receipt IDs.
    */
   claimLiquidityBatch(
-    receiptIds: PromiseOrValue<BigNumberish>[],
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    receiptIds: BigNumberish[],
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -720,8 +689,8 @@ export interface MarketLiquidityFacet extends BaseContract {
    * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
    */
   claimableLiquidity(
-    tradingFeeRate: PromiseOrValue<BigNumberish>,
-    oracleVersion: PromiseOrValue<BigNumberish>,
+    tradingFeeRate: BigNumberish,
+    oracleVersion: BigNumberish,
     overrides?: CallOverrides
   ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput>;
 
@@ -731,9 +700,9 @@ export interface MarketLiquidityFacet extends BaseContract {
    * @param marketBalance The balance of the market.
    */
   distributeEarningToBins(
-    earning: PromiseOrValue<BigNumberish>,
-    marketBalance: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    earning: BigNumberish,
+    marketBalance: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -741,7 +710,7 @@ export interface MarketLiquidityFacet extends BaseContract {
    * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
    */
   getBinFreeLiquidity(
-    tradingFeeRate: PromiseOrValue<BigNumberish>,
+    tradingFeeRate: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -750,7 +719,7 @@ export interface MarketLiquidityFacet extends BaseContract {
    * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
    */
   getBinLiquidity(
-    tradingFeeRate: PromiseOrValue<BigNumberish>,
+    tradingFeeRate: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -759,7 +728,7 @@ export interface MarketLiquidityFacet extends BaseContract {
    * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
    */
   getBinValues(
-    tradingFeeRates: PromiseOrValue<BigNumberish>[],
+    tradingFeeRates: BigNumberish[],
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
@@ -768,7 +737,7 @@ export interface MarketLiquidityFacet extends BaseContract {
    * @param receiptId The ID of the liquidity receipt to retrieve.
    */
   getLpReceipt(
-    receiptId: PromiseOrValue<BigNumberish>,
+    receiptId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<LpReceiptStructOutput>;
 
@@ -788,11 +757,11 @@ export interface MarketLiquidityFacet extends BaseContract {
    * @param values An array containing amounts of each token being transferred (order and length must match ids array)
    */
   onERC1155BatchReceived(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<string>,
-    arg2: PromiseOrValue<BigNumberish>[],
-    arg3: PromiseOrValue<BigNumberish>[],
-    arg4: PromiseOrValue<BytesLike>,
+    arg0: string,
+    arg1: string,
+    arg2: BigNumberish[],
+    arg3: BigNumberish[],
+    arg4: BytesLike,
     overrides?: CallOverrides
   ): Promise<string>;
 
@@ -805,11 +774,11 @@ export interface MarketLiquidityFacet extends BaseContract {
    * @param value The amount of tokens being transferred
    */
   onERC1155Received(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<string>,
-    arg2: PromiseOrValue<BigNumberish>,
-    arg3: PromiseOrValue<BigNumberish>,
-    arg4: PromiseOrValue<BytesLike>,
+    arg0: string,
+    arg1: string,
+    arg2: BigNumberish,
+    arg3: BigNumberish,
+    arg4: BytesLike,
     overrides?: CallOverrides
   ): Promise<string>;
 
@@ -820,10 +789,10 @@ export interface MarketLiquidityFacet extends BaseContract {
    * @param tradingFeeRate The trading fee rate for the liquidity.
    */
   removeLiquidity(
-    recipient: PromiseOrValue<string>,
-    tradingFeeRate: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    recipient: string,
+    tradingFeeRate: BigNumberish,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -834,18 +803,18 @@ export interface MarketLiquidityFacet extends BaseContract {
    * @param tradingFeeRates An array of fee rates for each liquidity bin.
    */
   removeLiquidityBatch(
-    recipient: PromiseOrValue<string>,
-    tradingFeeRates: PromiseOrValue<BigNumberish>[],
-    clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    recipient: string,
+    tradingFeeRates: BigNumberish[],
+    clbTokenAmounts: BigNumberish[],
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
    */
   supportsInterface(
-    interfaceID: PromiseOrValue<BytesLike>,
+    interfaceID: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -855,9 +824,9 @@ export interface MarketLiquidityFacet extends BaseContract {
    * @param receiptId The ID of the liquidity receipt.
    */
   withdrawLiquidity(
-    receiptId: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    receiptId: BigNumberish,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -866,9 +835,9 @@ export interface MarketLiquidityFacet extends BaseContract {
    * @param receiptIds The array of the liquidity receipt IDs.
    */
   withdrawLiquidityBatch(
-    receiptIds: PromiseOrValue<BigNumberish>[],
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    receiptIds: BigNumberish[],
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   callStatic: {
@@ -879,9 +848,9 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRate The trading fee rate for the liquidity.
      */
     addLiquidity(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      recipient: string,
+      tradingFeeRate: BigNumberish,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput>;
 
@@ -894,10 +863,10 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRates An array of fee rates for each liquidity bin.
      */
     addLiquidityBatch(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
+      recipient: string,
+      tradingFeeRates: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput[]>;
 
@@ -907,8 +876,8 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param receiptId The ID of the liquidity receipt.
      */
     claimLiquidity(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      receiptId: BigNumberish,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -918,8 +887,8 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     claimLiquidityBatch(
-      receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
+      receiptIds: BigNumberish[],
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -929,8 +898,8 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
      */
     claimableLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      oracleVersion: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
+      oracleVersion: BigNumberish,
       overrides?: CallOverrides
     ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput>;
 
@@ -940,8 +909,8 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param marketBalance The balance of the market.
      */
     distributeEarningToBins(
-      earning: PromiseOrValue<BigNumberish>,
-      marketBalance: PromiseOrValue<BigNumberish>,
+      earning: BigNumberish,
+      marketBalance: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -950,7 +919,7 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
      */
     getBinFreeLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -959,7 +928,7 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
      */
     getBinLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -968,7 +937,7 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
      */
     getBinValues(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      tradingFeeRates: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
 
@@ -977,7 +946,7 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param receiptId The ID of the liquidity receipt to retrieve.
      */
     getLpReceipt(
-      receiptId: PromiseOrValue<BigNumberish>,
+      receiptId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput>;
 
@@ -997,11 +966,11 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param values An array containing amounts of each token being transferred (order and length must match ids array)
      */
     onERC1155BatchReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>[],
-      arg3: PromiseOrValue<BigNumberish>[],
-      arg4: PromiseOrValue<BytesLike>,
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -1014,11 +983,11 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param value The amount of tokens being transferred
      */
     onERC1155Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -1029,9 +998,9 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRate The trading fee rate for the liquidity.
      */
     removeLiquidity(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      recipient: string,
+      tradingFeeRate: BigNumberish,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput>;
 
@@ -1043,10 +1012,10 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRates An array of fee rates for each liquidity bin.
      */
     removeLiquidityBatch(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
+      recipient: string,
+      tradingFeeRates: BigNumberish[],
+      clbTokenAmounts: BigNumberish[],
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput[]>;
 
@@ -1054,7 +1023,7 @@ export interface MarketLiquidityFacet extends BaseContract {
      * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
      */
     supportsInterface(
-      interfaceID: PromiseOrValue<BytesLike>,
+      interfaceID: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -1064,8 +1033,8 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param receiptId The ID of the liquidity receipt.
      */
     withdrawLiquidity(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      receiptId: BigNumberish,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1075,29 +1044,33 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     withdrawLiquidityBatch(
-      receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
+      receiptIds: BigNumberish[],
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
   };
 
   filters: {
-    "AddLiquidity(tuple)"(receipt?: null): AddLiquidityEventFilter;
+    "AddLiquidity((uint256,uint256,uint256,address,uint8,int16))"(
+      receipt?: null
+    ): AddLiquidityEventFilter;
     AddLiquidity(receipt?: null): AddLiquidityEventFilter;
 
-    "AddLiquidityBatch(tuple[])"(receipts?: null): AddLiquidityBatchEventFilter;
+    "AddLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])"(
+      receipts?: null
+    ): AddLiquidityBatchEventFilter;
     AddLiquidityBatch(receipts?: null): AddLiquidityBatchEventFilter;
 
-    "ClaimLiquidity(tuple,uint256)"(
+    "ClaimLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256)"(
       receipt?: null,
-      clbTokenAmount?: PromiseOrValue<BigNumberish> | null
+      clbTokenAmount?: BigNumberish | null
     ): ClaimLiquidityEventFilter;
     ClaimLiquidity(
       receipt?: null,
-      clbTokenAmount?: PromiseOrValue<BigNumberish> | null
+      clbTokenAmount?: BigNumberish | null
     ): ClaimLiquidityEventFilter;
 
-    "ClaimLiquidityBatch(tuple[],uint256[])"(
+    "ClaimLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[])"(
       receipts?: null,
       clbTokenAmounts?: null
     ): ClaimLiquidityBatchEventFilter;
@@ -1106,26 +1079,28 @@ export interface MarketLiquidityFacet extends BaseContract {
       clbTokenAmounts?: null
     ): ClaimLiquidityBatchEventFilter;
 
-    "RemoveLiquidity(tuple)"(receipt?: null): RemoveLiquidityEventFilter;
+    "RemoveLiquidity((uint256,uint256,uint256,address,uint8,int16))"(
+      receipt?: null
+    ): RemoveLiquidityEventFilter;
     RemoveLiquidity(receipt?: null): RemoveLiquidityEventFilter;
 
-    "RemoveLiquidityBatch(tuple[])"(
+    "RemoveLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])"(
       receipts?: null
     ): RemoveLiquidityBatchEventFilter;
     RemoveLiquidityBatch(receipts?: null): RemoveLiquidityBatchEventFilter;
 
-    "WithdrawLiquidity(tuple,uint256,uint256)"(
+    "WithdrawLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256,uint256)"(
       receipt?: null,
-      amount?: PromiseOrValue<BigNumberish> | null,
-      burnedCLBTokenAmount?: PromiseOrValue<BigNumberish> | null
+      amount?: BigNumberish | null,
+      burnedCLBTokenAmount?: BigNumberish | null
     ): WithdrawLiquidityEventFilter;
     WithdrawLiquidity(
       receipt?: null,
-      amount?: PromiseOrValue<BigNumberish> | null,
-      burnedCLBTokenAmount?: PromiseOrValue<BigNumberish> | null
+      amount?: BigNumberish | null,
+      burnedCLBTokenAmount?: BigNumberish | null
     ): WithdrawLiquidityEventFilter;
 
-    "WithdrawLiquidityBatch(tuple[],uint256[],uint256[])"(
+    "WithdrawLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[],uint256[])"(
       receipts?: null,
       amounts?: null,
       burnedCLBTokenAmounts?: null
@@ -1145,10 +1120,10 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRate The trading fee rate for the liquidity.
      */
     addLiquidity(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRate: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1160,11 +1135,11 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRates An array of fee rates for each liquidity bin.
      */
     addLiquidityBatch(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRates: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1173,9 +1148,9 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param receiptId The ID of the liquidity receipt.
      */
     claimLiquidity(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1184,9 +1159,9 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     claimLiquidityBatch(
-      receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1195,8 +1170,8 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
      */
     claimableLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      oracleVersion: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
+      oracleVersion: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1206,9 +1181,9 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param marketBalance The balance of the market.
      */
     distributeEarningToBins(
-      earning: PromiseOrValue<BigNumberish>,
-      marketBalance: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      earning: BigNumberish,
+      marketBalance: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1216,7 +1191,7 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
      */
     getBinFreeLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1225,7 +1200,7 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
      */
     getBinLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1234,7 +1209,7 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
      */
     getBinValues(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      tradingFeeRates: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1243,7 +1218,7 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param receiptId The ID of the liquidity receipt to retrieve.
      */
     getLpReceipt(
-      receiptId: PromiseOrValue<BigNumberish>,
+      receiptId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1261,11 +1236,11 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param values An array containing amounts of each token being transferred (order and length must match ids array)
      */
     onERC1155BatchReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>[],
-      arg3: PromiseOrValue<BigNumberish>[],
-      arg4: PromiseOrValue<BytesLike>,
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1278,11 +1253,11 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param value The amount of tokens being transferred
      */
     onERC1155Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1293,10 +1268,10 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRate The trading fee rate for the liquidity.
      */
     removeLiquidity(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRate: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1307,18 +1282,18 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRates An array of fee rates for each liquidity bin.
      */
     removeLiquidityBatch(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRates: BigNumberish[],
+      clbTokenAmounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
      */
     supportsInterface(
-      interfaceID: PromiseOrValue<BytesLike>,
+      interfaceID: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1328,9 +1303,9 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param receiptId The ID of the liquidity receipt.
      */
     withdrawLiquidity(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1339,9 +1314,9 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     withdrawLiquidityBatch(
-      receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
   };
 
@@ -1353,10 +1328,10 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRate The trading fee rate for the liquidity.
      */
     addLiquidity(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRate: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1368,11 +1343,11 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRates An array of fee rates for each liquidity bin.
      */
     addLiquidityBatch(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRates: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1381,9 +1356,9 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param receiptId The ID of the liquidity receipt.
      */
     claimLiquidity(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1392,9 +1367,9 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     claimLiquidityBatch(
-      receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1403,8 +1378,8 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
      */
     claimableLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      oracleVersion: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
+      oracleVersion: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1414,9 +1389,9 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param marketBalance The balance of the market.
      */
     distributeEarningToBins(
-      earning: PromiseOrValue<BigNumberish>,
-      marketBalance: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      earning: BigNumberish,
+      marketBalance: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1424,7 +1399,7 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
      */
     getBinFreeLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1433,7 +1408,7 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
      */
     getBinLiquidity(
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
+      tradingFeeRate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1442,7 +1417,7 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
      */
     getBinValues(
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
+      tradingFeeRates: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1451,7 +1426,7 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param receiptId The ID of the liquidity receipt to retrieve.
      */
     getLpReceipt(
-      receiptId: PromiseOrValue<BigNumberish>,
+      receiptId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1471,11 +1446,11 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param values An array containing amounts of each token being transferred (order and length must match ids array)
      */
     onERC1155BatchReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>[],
-      arg3: PromiseOrValue<BigNumberish>[],
-      arg4: PromiseOrValue<BytesLike>,
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1488,11 +1463,11 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param value The amount of tokens being transferred
      */
     onERC1155Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1503,10 +1478,10 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRate The trading fee rate for the liquidity.
      */
     removeLiquidity(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRate: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRate: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1517,18 +1492,18 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param tradingFeeRates An array of fee rates for each liquidity bin.
      */
     removeLiquidityBatch(
-      recipient: PromiseOrValue<string>,
-      tradingFeeRates: PromiseOrValue<BigNumberish>[],
-      clbTokenAmounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      recipient: string,
+      tradingFeeRates: BigNumberish[],
+      clbTokenAmounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
      */
     supportsInterface(
-      interfaceID: PromiseOrValue<BytesLike>,
+      interfaceID: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1538,9 +1513,9 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param receiptId The ID of the liquidity receipt.
      */
     withdrawLiquidity(
-      receiptId: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1549,9 +1524,9 @@ export interface MarketLiquidityFacet extends BaseContract {
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     withdrawLiquidityBatch(
-      receiptIds: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
   };
 }

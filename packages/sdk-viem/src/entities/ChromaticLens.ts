@@ -1,6 +1,6 @@
 import { Address, getContract, zeroAddress } from "viem";
 import type { Client } from "../Client";
-import { chromaticLensABI, chromaticLensAddress } from "../gen";
+import { chromaticLensABI, chromaticLensAddress, clbTokenABI } from "../gen";
 import {
   checkWalletClient,
   decodeTokenId,
@@ -13,7 +13,7 @@ import type { ContractChromaticLens } from "./types";
  */
 export interface LiquidityBinResult {
   tradingFeeRate: number;
-  clbValue: number;
+  clbValue: bigint;
   liquidity: bigint;
   freeLiquidity: bigint;
 }
@@ -27,7 +27,7 @@ export interface OwnedLiquidityBinResult {
   freeLiquidity: bigint;
   clbBalance: bigint;
   clbTotalSupply: bigint;
-  clbValue: number;
+  clbValue: bigint;
   removableRate: number;
 }
 
@@ -89,14 +89,18 @@ export class ChromaticLens {
       const clbTokenContract = await market.contracts().clbToken(marketAddress);
       const tokenIds = totalLiquidityBins.map((bin) => encodeTokenId(bin.tradingFeeRate));
 
-      const totalSupplies = await clbTokenContract.read.totalSupplyBatch([tokenIds]);
+      const [totalSupplies, clbTokenDecimals] = await Promise.all([
+        clbTokenContract.read.totalSupplyBatch([tokenIds]),
+        clbTokenContract.read.decimals(),
+      ]);
+
       return totalLiquidityBins.map((bin, index) => {
         return {
           tradingFeeRate: bin.tradingFeeRate,
           clbValue:
             totalSupplies[index] == 0n
-              ? 0
-              : Number(bin.liquidity.toString()) / Number(totalSupplies[index].toString()),
+              ? 0n
+              : (bin.liquidity * 10n ** BigInt(clbTokenDecimals)) / totalSupplies[index],
           liquidity: bin.liquidity,
           clbTokenTotalSupply: totalSupplies[index],
           freeLiquidity: bin.freeLiquidity,
@@ -119,7 +123,9 @@ export class ChromaticLens {
         checkWalletClient(this._client);
       }
 
-      const [totalLiquidityBins, ownedLiquidities] = await Promise.all([
+      const clbTokenContract = await this._client.market().contracts().clbToken(marketAddress);
+      const [clbTokenDecimals, totalLiquidityBins, ownedLiquidities] = await Promise.all([
+        clbTokenContract.read.decimals(),
         lens.read.liquidityBinStatuses([marketAddress]),
         lens.read.clbBalanceOf([
           marketAddress,
@@ -144,7 +150,8 @@ export class ChromaticLens {
           clbValue:
             ownedBin.totalSupply == 0n
               ? 0
-              : Number(ownedBin.binValue || 0n) / Number(ownedBin.totalSupply),
+              : ((ownedBin.binValue || 0n) * 10n ** BigInt(clbTokenDecimals)) /
+                ownedBin.totalSupply,
           removableRate:
             targetTotalLiqBin.liquidity == 0n
               ? 0

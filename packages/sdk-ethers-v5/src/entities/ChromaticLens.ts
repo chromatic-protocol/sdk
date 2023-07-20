@@ -148,7 +148,7 @@ export class ChromaticLens {
             ? BigNumber.from(0)
             : targetTotalLiqBin.freeLiquidity
                 .mul(clbTokenDecimals)
-                .div(targetTotalLiqBin.liquidity),
+                .div(ownedBin.binValue),
         } satisfies OwnedLiquidityBinResult;
       });
 

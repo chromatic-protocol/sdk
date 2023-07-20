@@ -147,7 +147,7 @@ export class ChromaticLens {
             targetTotalLiqBin.liquidity == 0n
               ? 0n
               : (targetTotalLiqBin.freeLiquidity * 10n ** clbTokenDecimals) /
-                targetTotalLiqBin.liquidity,
+              ownedBin.binValue,
         };
       });
 

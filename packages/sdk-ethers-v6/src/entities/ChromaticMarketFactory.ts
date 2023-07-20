@@ -6,6 +6,7 @@ import {
 } from "../gen";
 import { PromiseOnlySuccess, handleBytesError } from "../utils/helpers";
 
+/** @ignore */
 export interface SettlementToken {
   name: string;
   address: string;

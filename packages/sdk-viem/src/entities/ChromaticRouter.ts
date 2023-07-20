@@ -6,7 +6,9 @@ import { Contract, MAX_UINT256, checkClient, handleBytesError } from "../utils/h
  * Represents the parameters for adding liquidity to a market using the ChromaticRouter.
  */
 export interface RouterAddLiquidityParam {
+  /** The fee rate of the liquidity bin */
   feeRate: number;
+  /** The amount to add as liquidity */
   amount: bigint;
 }
 
@@ -14,10 +16,15 @@ export interface RouterAddLiquidityParam {
  * Represents the parameters for opening a position using the ChromaticRouter.
  */
 export interface RouterOpenPositionParam {
+  /** The quantity of the position, with 4 decimal places */
   quantity: bigint;
+  /** The leverage BPS of the position */
   leverage: number;
+  /** The margin required for the taker */
   takerMargin: bigint;
+  /** The margin required for the maker */
   makerMargin: bigint;
+  /** The maximum allowable trading fee */
   maxAllowableTradingFee: bigint;
 }
 
@@ -25,8 +32,11 @@ export interface RouterOpenPositionParam {
  * Represents the parameters for removing liquidity from a market using the ChromaticRouter.
  */
 export interface RouterRemoveLiquidityParam {
+  /** The fee rate of the liquidity bin */
   feeRate: number;
-  receipient?: Address;
+  /** The recipient address */
+  recipient?: Address;
+  /** The amount of CLB tokens to remove as liquidity */
   clbTokenAmount: bigint;
 }
 
@@ -198,10 +208,10 @@ export class ChromaticRouter {
    * Adds liquidity to the specified market.
    * @param marketAddress The address of the Chromatic Market contract.
    * @param param The parameters for adding liquidity.
-   * @param receipient The recipient address for the liquidity tokens.
+   * @param recipient The recipient address for the liquidity tokens.
    * @returns A promise that resolves to the transaction receipt of the liquidity addition.
    */
-  async addLiquidity(marketAddress: Address, param: RouterAddLiquidityParam, receipient?: Address) {
+  async addLiquidity(marketAddress: Address, param: RouterAddLiquidityParam, recipient?: Address) {
     checkClient(this._client);
 
     // TODO check option flag
@@ -216,7 +226,7 @@ export class ChromaticRouter {
           marketAddress,
           param.feeRate,
           param.amount,
-          receipient || this._client.walletClient.account?.address || zeroAddress,
+          recipient || this._client.walletClient.account?.address || zeroAddress,
         ],
         { account: this._client.walletClient.account }
       );
@@ -294,7 +304,7 @@ export class ChromaticRouter {
             marketAddress,
             param.feeRate,
             param.clbTokenAmount,
-            param.receipient || this._client.walletClient.account!.address,
+            param.recipient || this._client.walletClient.account!.address,
           ],
           {
             account: this._client.walletClient.account,
@@ -316,7 +326,7 @@ export class ChromaticRouter {
   async removeLiquidities(
     marketAddress: Address,
     params: RouterRemoveLiquidityParam[],
-    receipient?: Address
+    recipient?: Address
   ) {
     // TODO check option flag
     if (!(await this.approvalClbTokenToRouter(marketAddress))) {
@@ -325,7 +335,7 @@ export class ChromaticRouter {
 
     return await handleBytesError(async () => {
       checkClient(this._client);
-      receipient = receipient || this._client.walletClient.account!.address;
+      recipient = recipient || this._client.walletClient.account!.address;
       const contractParam = params.reduce(
         (contractParam, param) => {
           contractParam["clbTokenAmount"].push(param.clbTokenAmount);
@@ -341,7 +351,7 @@ export class ChromaticRouter {
       const { request } = await this.contracts()
         .router()
         .simulate.removeLiquidityBatch(
-          [marketAddress, receipient, contractParam.feeRate, contractParam.clbTokenAmount],
+          [marketAddress, recipient, contractParam.feeRate, contractParam.clbTokenAmount],
           {
             account: this._client.walletClient!.account,
           }

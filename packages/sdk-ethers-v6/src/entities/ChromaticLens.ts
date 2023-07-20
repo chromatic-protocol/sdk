@@ -7,9 +7,17 @@ import { decodeTokenId, encodeTokenId, handleBytesError } from "../utils/helpers
  * Represents the result of a liquidity bin.
  */
 export interface LiquidityBinResult {
+  /** The trading fee rate for the liquidity bin*/
   tradingFeeRate: bigint;
+  /**
+   * The current value per one CLB token, which includes decimal points.
+   * The unrealized profit or loss of the position and adds it to the total value.
+   * Additionally, it includes the pending bin share from the market's vault 
+   */
   clbValue: bigint;
+  /** The total liquidity amount (settlement token) for the specified trading fee rate */
   liquidity: bigint;
+  /** The available (free) liquidity amount (settlement token) for the specified trading fee rate */
   freeLiquidity: bigint;
 }
 
@@ -17,12 +25,27 @@ export interface LiquidityBinResult {
  * Represents the result of an owned liquidity bin.
  */
 export interface OwnedLiquidityBinResult {
+  /** The trading fee rate for the liquidity bin*/
   tradingFeeRate: number;
+  /** The total liquidity amount (settlement token) for the specified trading fee rate */
   liquidity: bigint;
+  /** The available (free) liquidity amount (settlement token) for the specified trading fee rate */
   freeLiquidity: bigint;
+  /** The balance of CLB tokens owned by the owner for the specified trading fee rate */
   clbBalance: bigint;
+  /** The total supply of CLB tokens for the specified trading fee rate */
   clbTotalSupply: bigint;
+  /**
+   * The current value per one CLB token, which includes decimal points.
+   * The unrealized profit or loss of the position and adds it to the total value.
+   * Additionally, it includes the pending bin share from the market's vault 
+   */
   clbValue: bigint;
+  /** 
+   * The current value of the bin for the specified trading fee rate.
+   * The unrealized profit or loss of the position and adds it to the total value.
+   * Additionally, it includes the pending bin share from the market's vault 
+   */
   binValue: bigint;
 }
 
@@ -30,11 +53,17 @@ export interface OwnedLiquidityBinResult {
  * Represents the result of a claimable liquidity.
  */
 export interface ClaimableLiquidityResult {
+  /** The trading fee rate for the liquidity bin*/
   tradingFeeRate: number;
+  /** The amount of settlement tokens requested for minting */
   mintingTokenAmountRequested: bigint;
+  /** The actual amount of CLB tokens minted */
   mintingCLBTokenAmount: bigint;
+  /** The amount of CLB tokens requested for burning */
   burningCLBTokenAmountRequested: bigint;
+  /** The actual amount of CLB tokens burned */
   burningCLBTokenAmount: bigint;
+  /** The amount of settlement tokens equal in value to the burned CLB tokens */
   burningTokenAmount: bigint;
 }
 

@@ -14,36 +14,60 @@ export interface IBinMargin {
  * Represents the parameters of a Chromatic position.
  */
 export interface PositionParam {
+  /** The position identifier */
   id?: bigint;
+  /** The amount of collateral that a trader must provide */
   takerMargin: bigint;
+  /** The amount of maker's margin */
   makerMargin: bigint;
+  /** The timestamp when the position was opened */
   openTimestamp: bigint;
+  /** The timestamp when the position was claimed */
   claimTimestamp?: bigint;
+  /** The quantity of the position, with 4 decimal places */
   qty: bigint;
+  /** The leverage BPS applied to the position */
   leverage: number;
 }
 interface InterestRateRecord {
+  /** The annual interest rate in basis points (BPS) */
   annualRateBPS: bigint;
+  /** The timestamp when the interest rate record begins */
   beginTimestamp: bigint;
 }
 /**
  * Represents a Chromatic position.
  */
 export interface IPosition {
+  /** The position identifier */
   id: bigint;
+  /** The version of the oracle when the position was opened */
   openVersion: bigint;
+  /** The version of the oracle when the position was closed */
   closeVersion: bigint;
+  /** The quantity of the position, with 4 decimal places */
   qty: bigint;
+  /** The leverage BPS applied to the position */
   leverage: number;
+  /** The timestamp when the position was opened */
   openTimestamp: bigint;
+  /** The timestamp when the position was closed */
   closeTimestamp: bigint;
+  /** The amount of collateral that a trader must provide */
   takerMargin: bigint;
+  /** The owner of the position, usually it is the account address of trader */ 
   owner: string;
+  /** The bin margins for the position, it represents the amount of collateral for each bin */
   _binMargins: IBinMargin[];
+  /** The denominator of the protocol's % share of the fees */
   _feeProtocol: number;
+  /** The amount of maker's margin */
   makerMargin: bigint;
+  /** The price of the underlying asset when position was closed. */
   closePrice: bigint | undefined;
+  /** The price of the underlying asset when position was opened. */
   openPrice: bigint | undefined;
+  /** The timestamp when the position was claimed */
   claimTimestamp?: bigint;
 }
 

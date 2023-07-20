@@ -28,7 +28,7 @@ export interface OwnedLiquidityBinResult {
   clbBalance: bigint;
   clbTotalSupply: bigint;
   clbValue: bigint;
-  removableRate: number;
+  removableRate: bigint;
 }
 
 /**
@@ -154,9 +154,10 @@ export class ChromaticLens {
                 ownedBin.totalSupply,
           removableRate:
             targetTotalLiqBin.liquidity == 0n
-              ? 0
-              : Number(targetTotalLiqBin.freeLiquidity || 0n) / Number(targetTotalLiqBin.liquidity),
-        };
+              ? 0n
+              : ((targetTotalLiqBin.freeLiquidity || 0n) * 10n ** BigInt(clbTokenDecimals)) /
+                ownedBin.binValue,
+        } satisfies OwnedLiquidityBinResult;
       });
       return results.filter((bin) => bin.clbBalance > 0n);
     });

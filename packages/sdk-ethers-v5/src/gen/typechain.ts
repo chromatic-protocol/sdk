@@ -52,7 +52,5 @@ export type { ChromaticLens } from "./contracts/periphery/ChromaticLens";
 export { ChromaticLens__factory } from "./factories/contracts/periphery/ChromaticLens__factory";
 export type { ChromaticRouter } from "./contracts/periphery/ChromaticRouter";
 export { ChromaticRouter__factory } from "./factories/contracts/periphery/ChromaticRouter__factory";
-export type { ChromaticLiquidatorMock } from "./deployed/anvil/ChromaticLiquidatorMock";
-export { ChromaticLiquidatorMock__factory } from "./factories/deployed/anvil/ChromaticLiquidatorMock__factory";
 export type { ChromaticLiquidator } from "./deployed/arbitrum_goerli/ChromaticLiquidator";
 export { ChromaticLiquidator__factory } from "./factories/deployed/arbitrum_goerli/ChromaticLiquidator__factory";

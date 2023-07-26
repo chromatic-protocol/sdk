@@ -92,6 +92,8 @@ jobs:
           docs/contracts/reference/deployedAddress.ts
         token: ${{ steps.generate-token.outputs.token }}
         commit-message: ${{ github.event.pull_request.title }}
+        title: Changes from sdk-ethers-v5
+
   publish-ethers-v6:
     if: ${{ always() }}
     needs: publish-ethers-v5
@@ -158,6 +160,8 @@ jobs:
           docs/contracts/reference/deployedAddress.ts
         token: ${{ steps.generate-token.outputs.token }}
         commit-message: ${{ github.event.pull_request.title }}
+        title: Changes from sdk-ethers-v6
+
   publish-viem:
     if: ${{ always() }}
     needs: [publish-ethers-v5, publish-ethers-v6]
@@ -224,3 +228,4 @@ jobs:
           docs/sdk/reference/sdk-viem/**
         token: ${{ steps.generate-token.outputs.token }}
         commit-message: ${{ github.event.pull_request.title }}
+        title: Changes from sdk-viem

@@ -1034,10 +1034,10 @@ export interface IChromaticMarket extends BaseContract {
 
   /**
    * Set the denominator of the protocol's % share of the fees
-   * @param feeProtocol new protocol fee for the market
+   * @param _feeProtocol new protocol fee for the market
    */
   setFeeProtocol: TypedContractMethod<
-    [feeProtocol: BigNumberish],
+    [_feeProtocol: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -1244,7 +1244,7 @@ export interface IChromaticMarket extends BaseContract {
   >;
   getFunction(
     nameOrSignature: "setFeeProtocol"
-  ): TypedContractMethod<[feeProtocol: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<[_feeProtocol: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "settle"
   ): TypedContractMethod<[], [void], "nonpayable">;

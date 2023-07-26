@@ -938,7 +938,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     /**
      * This function can only be called by the DAO address.      Throws an `AlreadySetKeeperFeePayer` error if the keeper fee payer address has already been set.
      * Sets the keeper fee payer address.
-     * @param keeperFeePayer The keeper fee payer address.
+     * @param _keeperFeePayer The keeper fee payer address.
      */
     setKeeperFeePayer(
       _keeperFeePayer: string,
@@ -948,7 +948,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     /**
      * This function can only be called by the DAO address.      Throws an `AlreadySetLiquidator` error if the liquidator address has already been set.
      * Sets the liquidator address.
-     * @param liquidator The liquidator address.
+     * @param _liquidator The liquidator address.
      */
     setLiquidator(
       _liquidator: string,
@@ -982,7 +982,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     /**
      * This function can only be called by the DAO address.      Throws an `AlreadySetVault` error if the vault address has already been set.
      * Sets the vault address.
-     * @param vault The vault address.
+     * @param _vault The vault address.
      */
     setVault(
       _vault: string,
@@ -1007,7 +1007,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     /**
      * This function can only be called by the DAO address.
      * Updates the DAO address.
-     * @param dao The new DAO address.
+     * @param _dao The new DAO address.
      */
     updateDao(
       _dao: string,
@@ -1043,7 +1043,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     /**
      * This function can only be called by the DAO address.
      * Updates the DAO treasury address.
-     * @param treasury The new DAO treasury address.
+     * @param _treasury The new DAO treasury address.
      */
     updateTreasury(
       _treasury: string,
@@ -1308,7 +1308,7 @@ export interface ChromaticMarketFactory extends BaseContract {
   /**
    * This function can only be called by the DAO address.      Throws an `AlreadySetKeeperFeePayer` error if the keeper fee payer address has already been set.
    * Sets the keeper fee payer address.
-   * @param keeperFeePayer The keeper fee payer address.
+   * @param _keeperFeePayer The keeper fee payer address.
    */
   setKeeperFeePayer(
     _keeperFeePayer: string,
@@ -1318,7 +1318,7 @@ export interface ChromaticMarketFactory extends BaseContract {
   /**
    * This function can only be called by the DAO address.      Throws an `AlreadySetLiquidator` error if the liquidator address has already been set.
    * Sets the liquidator address.
-   * @param liquidator The liquidator address.
+   * @param _liquidator The liquidator address.
    */
   setLiquidator(
     _liquidator: string,
@@ -1352,7 +1352,7 @@ export interface ChromaticMarketFactory extends BaseContract {
   /**
    * This function can only be called by the DAO address.      Throws an `AlreadySetVault` error if the vault address has already been set.
    * Sets the vault address.
-   * @param vault The vault address.
+   * @param _vault The vault address.
    */
   setVault(
     _vault: string,
@@ -1377,7 +1377,7 @@ export interface ChromaticMarketFactory extends BaseContract {
   /**
    * This function can only be called by the DAO address.
    * Updates the DAO address.
-   * @param dao The new DAO address.
+   * @param _dao The new DAO address.
    */
   updateDao(
     _dao: string,
@@ -1413,7 +1413,7 @@ export interface ChromaticMarketFactory extends BaseContract {
   /**
    * This function can only be called by the DAO address.
    * Updates the DAO treasury address.
-   * @param treasury The new DAO treasury address.
+   * @param _treasury The new DAO treasury address.
    */
   updateTreasury(
     _treasury: string,
@@ -1681,7 +1681,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     /**
      * This function can only be called by the DAO address.      Throws an `AlreadySetKeeperFeePayer` error if the keeper fee payer address has already been set.
      * Sets the keeper fee payer address.
-     * @param keeperFeePayer The keeper fee payer address.
+     * @param _keeperFeePayer The keeper fee payer address.
      */
     setKeeperFeePayer(
       _keeperFeePayer: string,
@@ -1691,7 +1691,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     /**
      * This function can only be called by the DAO address.      Throws an `AlreadySetLiquidator` error if the liquidator address has already been set.
      * Sets the liquidator address.
-     * @param liquidator The liquidator address.
+     * @param _liquidator The liquidator address.
      */
     setLiquidator(
       _liquidator: string,
@@ -1725,7 +1725,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     /**
      * This function can only be called by the DAO address.      Throws an `AlreadySetVault` error if the vault address has already been set.
      * Sets the vault address.
-     * @param vault The vault address.
+     * @param _vault The vault address.
      */
     setVault(_vault: string, overrides?: CallOverrides): Promise<void>;
 
@@ -1747,7 +1747,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     /**
      * This function can only be called by the DAO address.
      * Updates the DAO address.
-     * @param dao The new DAO address.
+     * @param _dao The new DAO address.
      */
     updateDao(_dao: string, overrides?: CallOverrides): Promise<void>;
 
@@ -1780,7 +1780,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     /**
      * This function can only be called by the DAO address.
      * Updates the DAO treasury address.
-     * @param treasury The new DAO treasury address.
+     * @param _treasury The new DAO treasury address.
      */
     updateTreasury(_treasury: string, overrides?: CallOverrides): Promise<void>;
 
@@ -2189,7 +2189,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     /**
      * This function can only be called by the DAO address.      Throws an `AlreadySetKeeperFeePayer` error if the keeper fee payer address has already been set.
      * Sets the keeper fee payer address.
-     * @param keeperFeePayer The keeper fee payer address.
+     * @param _keeperFeePayer The keeper fee payer address.
      */
     setKeeperFeePayer(
       _keeperFeePayer: string,
@@ -2199,7 +2199,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     /**
      * This function can only be called by the DAO address.      Throws an `AlreadySetLiquidator` error if the liquidator address has already been set.
      * Sets the liquidator address.
-     * @param liquidator The liquidator address.
+     * @param _liquidator The liquidator address.
      */
     setLiquidator(
       _liquidator: string,
@@ -2233,7 +2233,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     /**
      * This function can only be called by the DAO address.      Throws an `AlreadySetVault` error if the vault address has already been set.
      * Sets the vault address.
-     * @param vault The vault address.
+     * @param _vault The vault address.
      */
     setVault(
       _vault: string,
@@ -2258,7 +2258,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     /**
      * This function can only be called by the DAO address.
      * Updates the DAO address.
-     * @param dao The new DAO address.
+     * @param _dao The new DAO address.
      */
     updateDao(
       _dao: string,
@@ -2294,7 +2294,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     /**
      * This function can only be called by the DAO address.
      * Updates the DAO treasury address.
-     * @param treasury The new DAO treasury address.
+     * @param _treasury The new DAO treasury address.
      */
     updateTreasury(
       _treasury: string,
@@ -2563,7 +2563,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     /**
      * This function can only be called by the DAO address.      Throws an `AlreadySetKeeperFeePayer` error if the keeper fee payer address has already been set.
      * Sets the keeper fee payer address.
-     * @param keeperFeePayer The keeper fee payer address.
+     * @param _keeperFeePayer The keeper fee payer address.
      */
     setKeeperFeePayer(
       _keeperFeePayer: string,
@@ -2573,7 +2573,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     /**
      * This function can only be called by the DAO address.      Throws an `AlreadySetLiquidator` error if the liquidator address has already been set.
      * Sets the liquidator address.
-     * @param liquidator The liquidator address.
+     * @param _liquidator The liquidator address.
      */
     setLiquidator(
       _liquidator: string,
@@ -2607,7 +2607,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     /**
      * This function can only be called by the DAO address.      Throws an `AlreadySetVault` error if the vault address has already been set.
      * Sets the vault address.
-     * @param vault The vault address.
+     * @param _vault The vault address.
      */
     setVault(
       _vault: string,
@@ -2632,7 +2632,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     /**
      * This function can only be called by the DAO address.
      * Updates the DAO address.
-     * @param dao The new DAO address.
+     * @param _dao The new DAO address.
      */
     updateDao(
       _dao: string,
@@ -2668,7 +2668,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     /**
      * This function can only be called by the DAO address.
      * Updates the DAO treasury address.
-     * @param treasury The new DAO treasury address.
+     * @param _treasury The new DAO treasury address.
      */
     updateTreasury(
       _treasury: string,

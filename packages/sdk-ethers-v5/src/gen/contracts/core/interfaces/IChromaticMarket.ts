@@ -972,10 +972,10 @@ export interface IChromaticMarket extends BaseContract {
 
     /**
      * Set the denominator of the protocol's % share of the fees
-     * @param feeProtocol new protocol fee for the market
+     * @param _feeProtocol new protocol fee for the market
      */
     setFeeProtocol(
-      feeProtocol: BigNumberish,
+      _feeProtocol: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
@@ -1289,10 +1289,10 @@ export interface IChromaticMarket extends BaseContract {
 
   /**
    * Set the denominator of the protocol's % share of the fees
-   * @param feeProtocol new protocol fee for the market
+   * @param _feeProtocol new protocol fee for the market
    */
   setFeeProtocol(
-    feeProtocol: BigNumberish,
+    _feeProtocol: BigNumberish,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -1606,10 +1606,10 @@ export interface IChromaticMarket extends BaseContract {
 
     /**
      * Set the denominator of the protocol's % share of the fees
-     * @param feeProtocol new protocol fee for the market
+     * @param _feeProtocol new protocol fee for the market
      */
     setFeeProtocol(
-      feeProtocol: BigNumberish,
+      _feeProtocol: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2061,10 +2061,10 @@ export interface IChromaticMarket extends BaseContract {
 
     /**
      * Set the denominator of the protocol's % share of the fees
-     * @param feeProtocol new protocol fee for the market
+     * @param _feeProtocol new protocol fee for the market
      */
     setFeeProtocol(
-      feeProtocol: BigNumberish,
+      _feeProtocol: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
@@ -2377,10 +2377,10 @@ export interface IChromaticMarket extends BaseContract {
 
     /**
      * Set the denominator of the protocol's % share of the fees
-     * @param feeProtocol new protocol fee for the market
+     * @param _feeProtocol new protocol fee for the market
      */
     setFeeProtocol(
-      feeProtocol: BigNumberish,
+      _feeProtocol: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 

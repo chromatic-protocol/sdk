@@ -1837,7 +1837,7 @@ const _abi = [
     inputs: [
       {
         internalType: "uint8",
-        name: "feeProtocol",
+        name: "_feeProtocol",
         type: "uint8",
       },
     ],

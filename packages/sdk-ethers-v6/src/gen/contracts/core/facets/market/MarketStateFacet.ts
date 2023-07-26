@@ -183,7 +183,7 @@ export interface MarketStateFacet extends BaseContract {
 
   /**
    * Set the denominator of the protocol's % share of the fees
-   * @param feeProtocol new protocol fee for the market
+   * @param _feeProtocol new protocol fee for the market
    */
   setFeeProtocol: TypedContractMethod<
     [_feeProtocol: BigNumberish],

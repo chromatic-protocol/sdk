@@ -142,6 +142,22 @@ export declare namespace IMarketLiquidity {
     binValue: BigNumber;
     tradingFeeRate: number;
   };
+
+  export type PendingLiquidityStruct = {
+    oracleVersion: BigNumberish;
+    mintingTokenAmountRequested: BigNumberish;
+    burningCLBTokenAmountRequested: BigNumberish;
+  };
+
+  export type PendingLiquidityStructOutput = [
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ] & {
+    oracleVersion: BigNumber;
+    mintingTokenAmountRequested: BigNumber;
+    burningCLBTokenAmountRequested: BigNumber;
+  };
 }
 
 export interface IChromaticMarketInterface extends utils.Interface {
@@ -155,6 +171,7 @@ export interface IChromaticMarketInterface extends utils.Interface {
     "claimPosition(uint256,address,bytes)": FunctionFragment;
     "claimPosition(uint256,address,uint256)": FunctionFragment;
     "claimableLiquidity(int16,uint256)": FunctionFragment;
+    "claimableLiquidityBatch(int16[],uint256)": FunctionFragment;
     "clbToken()": FunctionFragment;
     "closePosition(uint256)": FunctionFragment;
     "distributeEarningToBins(uint256,uint256)": FunctionFragment;
@@ -171,6 +188,8 @@ export interface IChromaticMarketInterface extends utils.Interface {
     "liquidityBinStatuses()": FunctionFragment;
     "openPosition(int224,uint32,uint256,uint256,uint256,bytes)": FunctionFragment;
     "oracleProvider()": FunctionFragment;
+    "pendingLiquidity(int16)": FunctionFragment;
+    "pendingLiquidityBatch(int16[])": FunctionFragment;
     "removeLiquidity(address,int16,bytes)": FunctionFragment;
     "removeLiquidityBatch(address,int16[],uint256[],bytes)": FunctionFragment;
     "setFeeProtocol(uint8)": FunctionFragment;
@@ -192,6 +211,7 @@ export interface IChromaticMarketInterface extends utils.Interface {
       | "claimPosition(uint256,address,bytes)"
       | "claimPosition(uint256,address,uint256)"
       | "claimableLiquidity"
+      | "claimableLiquidityBatch"
       | "clbToken"
       | "closePosition"
       | "distributeEarningToBins"
@@ -208,6 +228,8 @@ export interface IChromaticMarketInterface extends utils.Interface {
       | "liquidityBinStatuses"
       | "openPosition"
       | "oracleProvider"
+      | "pendingLiquidity"
+      | "pendingLiquidityBatch"
       | "removeLiquidity"
       | "removeLiquidityBatch"
       | "setFeeProtocol"
@@ -253,6 +275,10 @@ export interface IChromaticMarketInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "claimableLiquidity",
     values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "claimableLiquidityBatch",
+    values: [BigNumberish[], BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "clbToken", values?: undefined): string;
   encodeFunctionData(
@@ -320,6 +346,14 @@ export interface IChromaticMarketInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "pendingLiquidity",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "pendingLiquidityBatch",
+    values: [BigNumberish[]]
+  ): string;
+  encodeFunctionData(
     functionFragment: "removeLiquidity",
     values: [string, BigNumberish, BytesLike]
   ): string;
@@ -382,6 +416,10 @@ export interface IChromaticMarketInterface extends utils.Interface {
     functionFragment: "claimableLiquidity",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "claimableLiquidityBatch",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "clbToken", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "closePosition",
@@ -432,6 +470,14 @@ export interface IChromaticMarketInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "oracleProvider",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "pendingLiquidity",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "pendingLiquidityBatch",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -807,6 +853,17 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<[IMarketLiquidity.ClaimableLiquidityStructOutput]>;
 
     /**
+     * Retrieves the claimable liquidity information for multiple trading fee rates and a specific oracle version from the associated LiquidityPool.
+     * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the claimable liquidity.
+     */
+    claimableLiquidityBatch(
+      tradingFeeRates: BigNumberish[],
+      oracleVersion: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[IMarketLiquidity.ClaimableLiquidityStructOutput[]]>;
+
+    /**
      * Returns the CLB token contract for the market.
      */
     clbToken(overrides?: CallOverrides): Promise<[string]>;
@@ -941,6 +998,24 @@ export interface IChromaticMarket extends BaseContract {
      * Returns the oracle provider contract for the market.
      */
     oracleProvider(overrides?: CallOverrides): Promise<[string]>;
+
+    /**
+     * Retrieves the pending liquidity information for a specific trading fee rate from the associated LiquidityPool.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the pending liquidity.
+     */
+    pendingLiquidity(
+      tradingFeeRate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[IMarketLiquidity.PendingLiquidityStructOutput]>;
+
+    /**
+     * Retrieves the pending liquidity information for multiple trading fee rates from the associated LiquidityPool.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending liquidity.
+     */
+    pendingLiquidityBatch(
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<[IMarketLiquidity.PendingLiquidityStructOutput[]]>;
 
     /**
      * Removes liquidity from the market.
@@ -1126,6 +1201,17 @@ export interface IChromaticMarket extends BaseContract {
   ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput>;
 
   /**
+   * Retrieves the claimable liquidity information for multiple trading fee rates and a specific oracle version from the associated LiquidityPool.
+   * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
+   * @param tradingFeeRates The list of trading fee rates for which to retrieve the claimable liquidity.
+   */
+  claimableLiquidityBatch(
+    tradingFeeRates: BigNumberish[],
+    oracleVersion: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput[]>;
+
+  /**
    * Returns the CLB token contract for the market.
    */
   clbToken(overrides?: CallOverrides): Promise<string>;
@@ -1258,6 +1344,24 @@ export interface IChromaticMarket extends BaseContract {
    * Returns the oracle provider contract for the market.
    */
   oracleProvider(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Retrieves the pending liquidity information for a specific trading fee rate from the associated LiquidityPool.
+   * @param tradingFeeRate The trading fee rate for which to retrieve the pending liquidity.
+   */
+  pendingLiquidity(
+    tradingFeeRate: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<IMarketLiquidity.PendingLiquidityStructOutput>;
+
+  /**
+   * Retrieves the pending liquidity information for multiple trading fee rates from the associated LiquidityPool.
+   * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending liquidity.
+   */
+  pendingLiquidityBatch(
+    tradingFeeRates: BigNumberish[],
+    overrides?: CallOverrides
+  ): Promise<IMarketLiquidity.PendingLiquidityStructOutput[]>;
 
   /**
    * Removes liquidity from the market.
@@ -1443,6 +1547,17 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput>;
 
     /**
+     * Retrieves the claimable liquidity information for multiple trading fee rates and a specific oracle version from the associated LiquidityPool.
+     * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the claimable liquidity.
+     */
+    claimableLiquidityBatch(
+      tradingFeeRates: BigNumberish[],
+      oracleVersion: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput[]>;
+
+    /**
      * Returns the CLB token contract for the market.
      */
     clbToken(overrides?: CallOverrides): Promise<string>;
@@ -1575,6 +1690,24 @@ export interface IChromaticMarket extends BaseContract {
      * Returns the oracle provider contract for the market.
      */
     oracleProvider(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Retrieves the pending liquidity information for a specific trading fee rate from the associated LiquidityPool.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the pending liquidity.
+     */
+    pendingLiquidity(
+      tradingFeeRate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<IMarketLiquidity.PendingLiquidityStructOutput>;
+
+    /**
+     * Retrieves the pending liquidity information for multiple trading fee rates from the associated LiquidityPool.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending liquidity.
+     */
+    pendingLiquidityBatch(
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<IMarketLiquidity.PendingLiquidityStructOutput[]>;
 
     /**
      * Removes liquidity from the market.
@@ -1900,6 +2033,17 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * Retrieves the claimable liquidity information for multiple trading fee rates and a specific oracle version from the associated LiquidityPool.
+     * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the claimable liquidity.
+     */
+    claimableLiquidityBatch(
+      tradingFeeRates: BigNumberish[],
+      oracleVersion: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
      * Returns the CLB token contract for the market.
      */
     clbToken(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2030,6 +2174,24 @@ export interface IChromaticMarket extends BaseContract {
      * Returns the oracle provider contract for the market.
      */
     oracleProvider(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Retrieves the pending liquidity information for a specific trading fee rate from the associated LiquidityPool.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the pending liquidity.
+     */
+    pendingLiquidity(
+      tradingFeeRate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Retrieves the pending liquidity information for multiple trading fee rates from the associated LiquidityPool.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending liquidity.
+     */
+    pendingLiquidityBatch(
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     /**
      * Removes liquidity from the market.
@@ -2214,6 +2376,17 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * Retrieves the claimable liquidity information for multiple trading fee rates and a specific oracle version from the associated LiquidityPool.
+     * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the claimable liquidity.
+     */
+    claimableLiquidityBatch(
+      tradingFeeRates: BigNumberish[],
+      oracleVersion: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
      * Returns the CLB token contract for the market.
      */
     clbToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -2346,6 +2519,24 @@ export interface IChromaticMarket extends BaseContract {
      * Returns the oracle provider contract for the market.
      */
     oracleProvider(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Retrieves the pending liquidity information for a specific trading fee rate from the associated LiquidityPool.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the pending liquidity.
+     */
+    pendingLiquidity(
+      tradingFeeRate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Retrieves the pending liquidity information for multiple trading fee rates from the associated LiquidityPool.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending liquidity.
+     */
+    pendingLiquidityBatch(
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     /**
      * Removes liquidity from the market.

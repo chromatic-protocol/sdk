@@ -86,6 +86,22 @@ export declare namespace IMarketLiquidity {
     binValue: BigNumber;
     tradingFeeRate: number;
   };
+
+  export type PendingLiquidityStruct = {
+    oracleVersion: BigNumberish;
+    mintingTokenAmountRequested: BigNumberish;
+    burningCLBTokenAmountRequested: BigNumberish;
+  };
+
+  export type PendingLiquidityStructOutput = [
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ] & {
+    oracleVersion: BigNumber;
+    mintingTokenAmountRequested: BigNumber;
+    burningCLBTokenAmountRequested: BigNumber;
+  };
 }
 
 export declare namespace ChromaticLens {
@@ -126,24 +142,34 @@ export declare namespace IOracleProvider {
 export interface ChromaticLensInterface extends utils.Interface {
   functions: {
     "claimableLiquidity(address,int16,uint256)": FunctionFragment;
+    "claimableLiquidityBatch(address,int16[],uint256)": FunctionFragment;
     "clbBalanceOf(address,address)": FunctionFragment;
     "liquidityBinStatuses(address)": FunctionFragment;
     "lpReceipts(address,address)": FunctionFragment;
     "oracleVersion(address,uint256)": FunctionFragment;
+    "pendingLiquidity(address,int16)": FunctionFragment;
+    "pendingLiquidityBatch(address,int16[])": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
       | "claimableLiquidity"
+      | "claimableLiquidityBatch"
       | "clbBalanceOf"
       | "liquidityBinStatuses"
       | "lpReceipts"
       | "oracleVersion"
+      | "pendingLiquidity"
+      | "pendingLiquidityBatch"
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "claimableLiquidity",
     values: [string, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "claimableLiquidityBatch",
+    values: [string, BigNumberish[], BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "clbBalanceOf",
@@ -161,9 +187,21 @@ export interface ChromaticLensInterface extends utils.Interface {
     functionFragment: "oracleVersion",
     values: [string, BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "pendingLiquidity",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "pendingLiquidityBatch",
+    values: [string, BigNumberish[]]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "claimableLiquidity",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "claimableLiquidityBatch",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -177,6 +215,14 @@ export interface ChromaticLensInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "lpReceipts", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "oracleVersion",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "pendingLiquidity",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "pendingLiquidityBatch",
     data: BytesLike
   ): Result;
 
@@ -224,6 +270,19 @@ export interface ChromaticLens extends BaseContract {
     ): Promise<[IMarketLiquidity.ClaimableLiquidityStructOutput]>;
 
     /**
+     * Retrieves the claimable liquidity information for a list of trading fee rates and a specific oracle version from the given Chromatic Market.
+     * @param _oracleVersion The oracle version for which to retrieve the claimable liquidity.
+     * @param market The Chromatic Market from which to retrieve the claimable liquidity information.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the claimable liquidity.
+     */
+    claimableLiquidityBatch(
+      market: string,
+      tradingFeeRates: BigNumberish[],
+      _oracleVersion: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[IMarketLiquidity.ClaimableLiquidityStructOutput[]]>;
+
+    /**
      * Retrieves the CLB token balances for the specified owner in the given Chromatic market.
      * @param market The address of the Chromatic market contract.
      * @param owner The address of the CLB token owner.
@@ -264,6 +323,28 @@ export interface ChromaticLens extends BaseContract {
       version: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[IOracleProvider.OracleVersionStructOutput]>;
+
+    /**
+     * Retrieves the pending liquidity information for a specific trading fee rate in the given Chromatic market.
+     * @param market The Chromatic market from which to retrieve the pending liquidity information.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the pending liquidity.
+     */
+    pendingLiquidity(
+      market: string,
+      tradingFeeRate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[IMarketLiquidity.PendingLiquidityStructOutput]>;
+
+    /**
+     * Retrieves the pending liquidity information for a list of trading fee rates in the given Chromatic market.
+     * @param market The Chromatic market from which to retrieve the pending liquidity information.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending liquidity.
+     */
+    pendingLiquidityBatch(
+      market: string,
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<[IMarketLiquidity.PendingLiquidityStructOutput[]]>;
   };
 
   /**
@@ -278,6 +359,19 @@ export interface ChromaticLens extends BaseContract {
     _oracleVersion: BigNumberish,
     overrides?: CallOverrides
   ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput>;
+
+  /**
+   * Retrieves the claimable liquidity information for a list of trading fee rates and a specific oracle version from the given Chromatic Market.
+   * @param _oracleVersion The oracle version for which to retrieve the claimable liquidity.
+   * @param market The Chromatic Market from which to retrieve the claimable liquidity information.
+   * @param tradingFeeRates The list of trading fee rates for which to retrieve the claimable liquidity.
+   */
+  claimableLiquidityBatch(
+    market: string,
+    tradingFeeRates: BigNumberish[],
+    _oracleVersion: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput[]>;
 
   /**
    * Retrieves the CLB token balances for the specified owner in the given Chromatic market.
@@ -321,6 +415,28 @@ export interface ChromaticLens extends BaseContract {
     overrides?: CallOverrides
   ): Promise<IOracleProvider.OracleVersionStructOutput>;
 
+  /**
+   * Retrieves the pending liquidity information for a specific trading fee rate in the given Chromatic market.
+   * @param market The Chromatic market from which to retrieve the pending liquidity information.
+   * @param tradingFeeRate The trading fee rate for which to retrieve the pending liquidity.
+   */
+  pendingLiquidity(
+    market: string,
+    tradingFeeRate: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<IMarketLiquidity.PendingLiquidityStructOutput>;
+
+  /**
+   * Retrieves the pending liquidity information for a list of trading fee rates in the given Chromatic market.
+   * @param market The Chromatic market from which to retrieve the pending liquidity information.
+   * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending liquidity.
+   */
+  pendingLiquidityBatch(
+    market: string,
+    tradingFeeRates: BigNumberish[],
+    overrides?: CallOverrides
+  ): Promise<IMarketLiquidity.PendingLiquidityStructOutput[]>;
+
   callStatic: {
     /**
      * Retrieves the claimable liquidity information for a specific trading fee rate and oracle version from the given Chromatic Market.
@@ -334,6 +450,19 @@ export interface ChromaticLens extends BaseContract {
       _oracleVersion: BigNumberish,
       overrides?: CallOverrides
     ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput>;
+
+    /**
+     * Retrieves the claimable liquidity information for a list of trading fee rates and a specific oracle version from the given Chromatic Market.
+     * @param _oracleVersion The oracle version for which to retrieve the claimable liquidity.
+     * @param market The Chromatic Market from which to retrieve the claimable liquidity information.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the claimable liquidity.
+     */
+    claimableLiquidityBatch(
+      market: string,
+      tradingFeeRates: BigNumberish[],
+      _oracleVersion: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput[]>;
 
     /**
      * Retrieves the CLB token balances for the specified owner in the given Chromatic market.
@@ -376,6 +505,28 @@ export interface ChromaticLens extends BaseContract {
       version: BigNumberish,
       overrides?: CallOverrides
     ): Promise<IOracleProvider.OracleVersionStructOutput>;
+
+    /**
+     * Retrieves the pending liquidity information for a specific trading fee rate in the given Chromatic market.
+     * @param market The Chromatic market from which to retrieve the pending liquidity information.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the pending liquidity.
+     */
+    pendingLiquidity(
+      market: string,
+      tradingFeeRate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<IMarketLiquidity.PendingLiquidityStructOutput>;
+
+    /**
+     * Retrieves the pending liquidity information for a list of trading fee rates in the given Chromatic market.
+     * @param market The Chromatic market from which to retrieve the pending liquidity information.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending liquidity.
+     */
+    pendingLiquidityBatch(
+      market: string,
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<IMarketLiquidity.PendingLiquidityStructOutput[]>;
   };
 
   filters: {};
@@ -395,6 +546,19 @@ export interface ChromaticLens extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * Retrieves the claimable liquidity information for a list of trading fee rates and a specific oracle version from the given Chromatic Market.
+     * @param _oracleVersion The oracle version for which to retrieve the claimable liquidity.
+     * @param market The Chromatic Market from which to retrieve the claimable liquidity information.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the claimable liquidity.
+     */
+    claimableLiquidityBatch(
+      market: string,
+      tradingFeeRates: BigNumberish[],
+      _oracleVersion: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
      * Retrieves the CLB token balances for the specified owner in the given Chromatic market.
      * @param market The address of the Chromatic market contract.
      * @param owner The address of the CLB token owner.
@@ -435,6 +599,28 @@ export interface ChromaticLens extends BaseContract {
       version: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    /**
+     * Retrieves the pending liquidity information for a specific trading fee rate in the given Chromatic market.
+     * @param market The Chromatic market from which to retrieve the pending liquidity information.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the pending liquidity.
+     */
+    pendingLiquidity(
+      market: string,
+      tradingFeeRate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Retrieves the pending liquidity information for a list of trading fee rates in the given Chromatic market.
+     * @param market The Chromatic market from which to retrieve the pending liquidity information.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending liquidity.
+     */
+    pendingLiquidityBatch(
+      market: string,
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -447,6 +633,19 @@ export interface ChromaticLens extends BaseContract {
     claimableLiquidity(
       market: string,
       tradingFeeRate: BigNumberish,
+      _oracleVersion: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Retrieves the claimable liquidity information for a list of trading fee rates and a specific oracle version from the given Chromatic Market.
+     * @param _oracleVersion The oracle version for which to retrieve the claimable liquidity.
+     * @param market The Chromatic Market from which to retrieve the claimable liquidity information.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the claimable liquidity.
+     */
+    claimableLiquidityBatch(
+      market: string,
+      tradingFeeRates: BigNumberish[],
       _oracleVersion: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -490,6 +689,28 @@ export interface ChromaticLens extends BaseContract {
     oracleVersion(
       market: string,
       version: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Retrieves the pending liquidity information for a specific trading fee rate in the given Chromatic market.
+     * @param market The Chromatic market from which to retrieve the pending liquidity information.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the pending liquidity.
+     */
+    pendingLiquidity(
+      market: string,
+      tradingFeeRate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Retrieves the pending liquidity information for a list of trading fee rates in the given Chromatic market.
+     * @param market The Chromatic market from which to retrieve the pending liquidity information.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending liquidity.
+     */
+    pendingLiquidityBatch(
+      market: string,
+      tradingFeeRates: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

@@ -116,22 +116,17 @@ export interface ChromaticRouterInterface extends Interface {
       | "getLpReceiptIds(address,address)"
       | "getLpReceiptIds(address)"
       | "openPosition"
-      | "owner"
       | "removeLiquidity"
       | "removeLiquidityBatch"
       | "removeLiquidityBatchCallback"
       | "removeLiquidityCallback"
-      | "renounceOwnership"
-      | "transferOwnership"
       | "withdrawLiquidity"
       | "withdrawLiquidityBatch"
       | "withdrawLiquidityBatchCallback"
       | "withdrawLiquidityCallback"
   ): FunctionFragment;
 
-  getEvent(
-    nameOrSignatureOrTopic: "AccountCreated" | "OwnershipTransferred"
-  ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "AccountCreated"): EventFragment;
 
   encodeFunctionData(
     functionFragment: "addLiquidity",
@@ -200,7 +195,6 @@ export interface ChromaticRouterInterface extends Interface {
       BigNumberish
     ]
   ): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "removeLiquidity",
     values: [AddressLike, BigNumberish, BigNumberish, AddressLike]
@@ -216,14 +210,6 @@ export interface ChromaticRouterInterface extends Interface {
   encodeFunctionData(
     functionFragment: "removeLiquidityCallback",
     values: [AddressLike, BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawLiquidity",
@@ -299,7 +285,6 @@ export interface ChromaticRouterInterface extends Interface {
     functionFragment: "openPosition",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "removeLiquidity",
     data: BytesLike
@@ -314,14 +299,6 @@ export interface ChromaticRouterInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "removeLiquidityCallback",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -348,19 +325,6 @@ export namespace AccountCreatedEvent {
   export interface OutputObject {
     account: string;
     owner: string;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace OwnershipTransferredEvent {
-  export type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
-  export type OutputTuple = [previousOwner: string, newOwner: string];
-  export interface OutputObject {
-    previousOwner: string;
-    newOwner: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -593,11 +557,6 @@ export interface ChromaticRouter extends BaseContract {
   >;
 
   /**
-   * Returns the address of the current owner.
-   */
-  owner: TypedContractMethod<[], [string], "view">;
-
-  /**
    * Removes liquidity from a ChromaticMarket contract.
    * @param clbTokenAmount The amount of CLB tokens to remove as liquidity.
    * @param feeRate The fee rate of the liquidity bin.
@@ -653,20 +612,6 @@ export interface ChromaticRouter extends BaseContract {
    */
   removeLiquidityCallback: TypedContractMethod<
     [clbToken: AddressLike, clbTokenId: BigNumberish, data: BytesLike],
-    [void],
-    "nonpayable"
-  >;
-
-  /**
-   * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.
-   */
-  renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
-
-  /**
-   * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
-   */
-  transferOwnership: TypedContractMethod<
-    [newOwner: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -831,9 +776,6 @@ export interface ChromaticRouter extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "owner"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
     nameOrSignature: "removeLiquidity"
   ): TypedContractMethod<
     [
@@ -872,12 +814,6 @@ export interface ChromaticRouter extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "renounceOwnership"
-  ): TypedContractMethod<[], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "transferOwnership"
-  ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
-  getFunction(
     nameOrSignature: "withdrawLiquidity"
   ): TypedContractMethod<
     [market: AddressLike, receiptId: BigNumberish],
@@ -913,13 +849,6 @@ export interface ChromaticRouter extends BaseContract {
     AccountCreatedEvent.OutputTuple,
     AccountCreatedEvent.OutputObject
   >;
-  getEvent(
-    key: "OwnershipTransferred"
-  ): TypedContractEvent<
-    OwnershipTransferredEvent.InputTuple,
-    OwnershipTransferredEvent.OutputTuple,
-    OwnershipTransferredEvent.OutputObject
-  >;
 
   filters: {
     "AccountCreated(address,address)": TypedContractEvent<
@@ -931,17 +860,6 @@ export interface ChromaticRouter extends BaseContract {
       AccountCreatedEvent.InputTuple,
       AccountCreatedEvent.OutputTuple,
       AccountCreatedEvent.OutputObject
-    >;
-
-    "OwnershipTransferred(address,address)": TypedContractEvent<
-      OwnershipTransferredEvent.InputTuple,
-      OwnershipTransferredEvent.OutputTuple,
-      OwnershipTransferredEvent.OutputObject
-    >;
-    OwnershipTransferred: TypedContractEvent<
-      OwnershipTransferredEvent.InputTuple,
-      OwnershipTransferredEvent.OutputTuple,
-      OwnershipTransferredEvent.OutputObject
     >;
   };
 }

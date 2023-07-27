@@ -19,7 +19,7 @@ import type {
   TypedEventLog,
   TypedListener,
   TypedContractMethod,
-} from "../../common";
+} from "../../../../common";
 
 export type LpReceiptStruct = {
   id: BigNumberish;
@@ -105,85 +105,55 @@ export declare namespace IMarketLiquidity {
   };
 }
 
-export declare namespace ChromaticLens {
-  export type CLBBalanceStruct = {
-    tokenId: BigNumberish;
-    balance: BigNumberish;
-    totalSupply: BigNumberish;
-    binValue: BigNumberish;
-  };
-
-  export type CLBBalanceStructOutput = [
-    tokenId: bigint,
-    balance: bigint,
-    totalSupply: bigint,
-    binValue: bigint
-  ] & {
-    tokenId: bigint;
-    balance: bigint;
-    totalSupply: bigint;
-    binValue: bigint;
-  };
-}
-
-export declare namespace IOracleProvider {
-  export type OracleVersionStruct = {
-    version: BigNumberish;
-    timestamp: BigNumberish;
-    price: BigNumberish;
-  };
-
-  export type OracleVersionStructOutput = [
-    version: bigint,
-    timestamp: bigint,
-    price: bigint
-  ] & { version: bigint; timestamp: bigint; price: bigint };
-}
-
-export interface ChromaticLensInterface extends Interface {
+export interface MarketLiquidityLensFacetInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "claimableLiquidity"
       | "claimableLiquidityBatch"
-      | "clbBalanceOf"
+      | "getBinFreeLiquidity"
+      | "getBinLiquidity"
+      | "getBinValues"
+      | "getLpReceipt"
       | "liquidityBinStatuses"
-      | "lpReceipts"
-      | "oracleVersion"
       | "pendingLiquidity"
       | "pendingLiquidityBatch"
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "claimableLiquidity",
-    values: [AddressLike, BigNumberish, BigNumberish]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "claimableLiquidityBatch",
-    values: [AddressLike, BigNumberish[], BigNumberish]
+    values: [BigNumberish[], BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "clbBalanceOf",
-    values: [AddressLike, AddressLike]
+    functionFragment: "getBinFreeLiquidity",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBinLiquidity",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBinValues",
+    values: [BigNumberish[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getLpReceipt",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "liquidityBinStatuses",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "lpReceipts",
-    values: [AddressLike, AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "oracleVersion",
-    values: [AddressLike, BigNumberish]
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "pendingLiquidity",
-    values: [AddressLike, BigNumberish]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "pendingLiquidityBatch",
-    values: [AddressLike, BigNumberish[]]
+    values: [BigNumberish[]]
   ): string;
 
   decodeFunctionResult(
@@ -195,16 +165,23 @@ export interface ChromaticLensInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "clbBalanceOf",
+    functionFragment: "getBinFreeLiquidity",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBinLiquidity",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBinValues",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getLpReceipt",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "liquidityBinStatuses",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "lpReceipts", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "oracleVersion",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -217,11 +194,11 @@ export interface ChromaticLensInterface extends Interface {
   ): Result;
 }
 
-export interface ChromaticLens extends BaseContract {
-  connect(runner?: ContractRunner | null): ChromaticLens;
+export interface MarketLiquidityLensFacet extends BaseContract {
+  connect(runner?: ContractRunner | null): MarketLiquidityLensFacet;
   waitForDeployment(): Promise<this>;
 
-  interface: ChromaticLensInterface;
+  interface: MarketLiquidityLensFacetInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -261,98 +238,92 @@ export interface ChromaticLens extends BaseContract {
   ): Promise<this>;
 
   /**
-   * Retrieves the claimable liquidity information for a specific trading fee rate and oracle version from the given Chromatic Market.
-   * @param _oracleVersion The oracle version for which to retrieve the claimable liquidity.
-   * @param market The Chromatic Market from which to retrieve the claimable liquidity information.
+   * Retrieves the claimable liquidity information for a specific trading fee rate and oracle version from the associated LiquidityPool.
+   * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
    * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
    */
   claimableLiquidity: TypedContractMethod<
-    [
-      market: AddressLike,
-      tradingFeeRate: BigNumberish,
-      _oracleVersion: BigNumberish
-    ],
+    [tradingFeeRate: BigNumberish, oracleVersion: BigNumberish],
     [IMarketLiquidity.ClaimableLiquidityStructOutput],
     "view"
   >;
 
   /**
-   * Retrieves the claimable liquidity information for a list of trading fee rates and a specific oracle version from the given Chromatic Market.
-   * @param _oracleVersion The oracle version for which to retrieve the claimable liquidity.
-   * @param market The Chromatic Market from which to retrieve the claimable liquidity information.
+   * Retrieves the claimable liquidity information for multiple trading fee rates and a specific oracle version from the associated LiquidityPool.
+   * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
    * @param tradingFeeRates The list of trading fee rates for which to retrieve the claimable liquidity.
    */
   claimableLiquidityBatch: TypedContractMethod<
-    [
-      market: AddressLike,
-      tradingFeeRates: BigNumberish[],
-      _oracleVersion: BigNumberish
-    ],
+    [tradingFeeRates: BigNumberish[], oracleVersion: BigNumberish],
     [IMarketLiquidity.ClaimableLiquidityStructOutput[]],
     "view"
   >;
 
   /**
-   * Retrieves the CLB token balances for the specified owner in the given Chromatic market.
-   * @param market The address of the Chromatic market contract.
-   * @param owner The address of the CLB token owner.
+   * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
+   * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
    */
-  clbBalanceOf: TypedContractMethod<
-    [market: AddressLike, owner: AddressLike],
-    [ChromaticLens.CLBBalanceStructOutput[]],
+  getBinFreeLiquidity: TypedContractMethod<
+    [tradingFeeRate: BigNumberish],
+    [bigint],
     "view"
   >;
 
   /**
-   * Retrieves the liquidity bin statuses for the specified Chromatic Market.
-   * @param market The Chromatic Market contract for which liquidity bin statuses are retrieved.
+   * Retrieves the total liquidity amount for a specific trading fee rate in the liquidity pool.
+   * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
+   */
+  getBinLiquidity: TypedContractMethod<
+    [tradingFeeRate: BigNumberish],
+    [bigint],
+    "view"
+  >;
+
+  /**
+   * Retrieves the values of a specific trading fee rate's bins in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
+   * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
+   */
+  getBinValues: TypedContractMethod<
+    [tradingFeeRates: BigNumberish[]],
+    [bigint[]],
+    "view"
+  >;
+
+  /**
+   * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
+   * @param receiptId The ID of the liquidity receipt to retrieve.
+   */
+  getLpReceipt: TypedContractMethod<
+    [receiptId: BigNumberish],
+    [LpReceiptStructOutput],
+    "view"
+  >;
+
+  /**
+   * Retrieves the liquidity bin statuses for the caller's liquidity pool.
    */
   liquidityBinStatuses: TypedContractMethod<
-    [market: AddressLike],
+    [],
     [IMarketLiquidity.LiquidityBinStatusStructOutput[]],
     "view"
   >;
 
   /**
-   * Retrieves the LP receipts for the specified owner in the given Chromatic market.
-   * @param market The address of the Chromatic market contract.
-   * @param owner The address of the LP token owner.
-   */
-  lpReceipts: TypedContractMethod<
-    [market: AddressLike, owner: AddressLike],
-    [LpReceiptStructOutput[]],
-    "view"
-  >;
-
-  /**
-   * Retrieves the OracleVersion for the specified oracle version in the given Chromatic market.
-   * @param market The address of the Chromatic market contract.
-   * @param version An oracle versions.
-   */
-  oracleVersion: TypedContractMethod<
-    [market: AddressLike, version: BigNumberish],
-    [IOracleProvider.OracleVersionStructOutput],
-    "view"
-  >;
-
-  /**
-   * Retrieves the pending liquidity information for a specific trading fee rate in the given Chromatic market.
-   * @param market The Chromatic market from which to retrieve the pending liquidity information.
+   * Retrieves the pending liquidity information for a specific trading fee rate from the associated LiquidityPool.
    * @param tradingFeeRate The trading fee rate for which to retrieve the pending liquidity.
    */
   pendingLiquidity: TypedContractMethod<
-    [market: AddressLike, tradingFeeRate: BigNumberish],
+    [tradingFeeRate: BigNumberish],
     [IMarketLiquidity.PendingLiquidityStructOutput],
     "view"
   >;
 
   /**
-   * Retrieves the pending liquidity information for a list of trading fee rates in the given Chromatic market.
-   * @param market The Chromatic market from which to retrieve the pending liquidity information.
+   * Retrieves the pending liquidity information for multiple trading fee rates from the associated LiquidityPool.
    * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending liquidity.
    */
   pendingLiquidityBatch: TypedContractMethod<
-    [market: AddressLike, tradingFeeRates: BigNumberish[]],
+    [tradingFeeRates: BigNumberish[]],
     [IMarketLiquidity.PendingLiquidityStructOutput[]],
     "view"
   >;
@@ -364,64 +335,51 @@ export interface ChromaticLens extends BaseContract {
   getFunction(
     nameOrSignature: "claimableLiquidity"
   ): TypedContractMethod<
-    [
-      market: AddressLike,
-      tradingFeeRate: BigNumberish,
-      _oracleVersion: BigNumberish
-    ],
+    [tradingFeeRate: BigNumberish, oracleVersion: BigNumberish],
     [IMarketLiquidity.ClaimableLiquidityStructOutput],
     "view"
   >;
   getFunction(
     nameOrSignature: "claimableLiquidityBatch"
   ): TypedContractMethod<
-    [
-      market: AddressLike,
-      tradingFeeRates: BigNumberish[],
-      _oracleVersion: BigNumberish
-    ],
+    [tradingFeeRates: BigNumberish[], oracleVersion: BigNumberish],
     [IMarketLiquidity.ClaimableLiquidityStructOutput[]],
     "view"
   >;
   getFunction(
-    nameOrSignature: "clbBalanceOf"
+    nameOrSignature: "getBinFreeLiquidity"
+  ): TypedContractMethod<[tradingFeeRate: BigNumberish], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getBinLiquidity"
+  ): TypedContractMethod<[tradingFeeRate: BigNumberish], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getBinValues"
+  ): TypedContractMethod<[tradingFeeRates: BigNumberish[]], [bigint[]], "view">;
+  getFunction(
+    nameOrSignature: "getLpReceipt"
   ): TypedContractMethod<
-    [market: AddressLike, owner: AddressLike],
-    [ChromaticLens.CLBBalanceStructOutput[]],
+    [receiptId: BigNumberish],
+    [LpReceiptStructOutput],
     "view"
   >;
   getFunction(
     nameOrSignature: "liquidityBinStatuses"
   ): TypedContractMethod<
-    [market: AddressLike],
+    [],
     [IMarketLiquidity.LiquidityBinStatusStructOutput[]],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "lpReceipts"
-  ): TypedContractMethod<
-    [market: AddressLike, owner: AddressLike],
-    [LpReceiptStructOutput[]],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "oracleVersion"
-  ): TypedContractMethod<
-    [market: AddressLike, version: BigNumberish],
-    [IOracleProvider.OracleVersionStructOutput],
     "view"
   >;
   getFunction(
     nameOrSignature: "pendingLiquidity"
   ): TypedContractMethod<
-    [market: AddressLike, tradingFeeRate: BigNumberish],
+    [tradingFeeRate: BigNumberish],
     [IMarketLiquidity.PendingLiquidityStructOutput],
     "view"
   >;
   getFunction(
     nameOrSignature: "pendingLiquidityBatch"
   ): TypedContractMethod<
-    [market: AddressLike, tradingFeeRates: BigNumberish[]],
+    [tradingFeeRates: BigNumberish[]],
     [IMarketLiquidity.PendingLiquidityStructOutput[]],
     "view"
   >;

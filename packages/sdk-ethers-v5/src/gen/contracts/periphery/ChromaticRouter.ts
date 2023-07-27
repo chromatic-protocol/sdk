@@ -118,13 +118,10 @@ export interface ChromaticRouterInterface extends utils.Interface {
     "getLpReceiptIds(address,address)": FunctionFragment;
     "getLpReceiptIds(address)": FunctionFragment;
     "openPosition(address,int224,uint32,uint256,uint256,uint256)": FunctionFragment;
-    "owner()": FunctionFragment;
     "removeLiquidity(address,int16,uint256,address)": FunctionFragment;
     "removeLiquidityBatch(address,address,int16[],uint256[])": FunctionFragment;
     "removeLiquidityBatchCallback(address,uint256[],bytes)": FunctionFragment;
     "removeLiquidityCallback(address,uint256,bytes)": FunctionFragment;
-    "renounceOwnership()": FunctionFragment;
-    "transferOwnership(address)": FunctionFragment;
     "withdrawLiquidity(address,uint256)": FunctionFragment;
     "withdrawLiquidityBatch(address,uint256[])": FunctionFragment;
     "withdrawLiquidityBatchCallback(uint256[],bytes)": FunctionFragment;
@@ -148,13 +145,10 @@ export interface ChromaticRouterInterface extends utils.Interface {
       | "getLpReceiptIds(address,address)"
       | "getLpReceiptIds(address)"
       | "openPosition"
-      | "owner"
       | "removeLiquidity"
       | "removeLiquidityBatch"
       | "removeLiquidityBatchCallback"
       | "removeLiquidityCallback"
-      | "renounceOwnership"
-      | "transferOwnership"
       | "withdrawLiquidity"
       | "withdrawLiquidityBatch"
       | "withdrawLiquidityBatchCallback"
@@ -228,7 +222,6 @@ export interface ChromaticRouterInterface extends utils.Interface {
       BigNumberish
     ]
   ): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "removeLiquidity",
     values: [string, BigNumberish, BigNumberish, string]
@@ -244,14 +237,6 @@ export interface ChromaticRouterInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "removeLiquidityCallback",
     values: [string, BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawLiquidity",
@@ -327,7 +312,6 @@ export interface ChromaticRouterInterface extends utils.Interface {
     functionFragment: "openPosition",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "removeLiquidity",
     data: BytesLike
@@ -342,14 +326,6 @@ export interface ChromaticRouterInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "removeLiquidityCallback",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -371,11 +347,9 @@ export interface ChromaticRouterInterface extends utils.Interface {
 
   events: {
     "AccountCreated(address,address)": EventFragment;
-    "OwnershipTransferred(address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "AccountCreated"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
 
 export interface AccountCreatedEventObject {
@@ -388,18 +362,6 @@ export type AccountCreatedEvent = TypedEvent<
 >;
 
 export type AccountCreatedEventFilter = TypedEventFilter<AccountCreatedEvent>;
-
-export interface OwnershipTransferredEventObject {
-  previousOwner: string;
-  newOwner: string;
-}
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  OwnershipTransferredEventObject
->;
-
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
 
 export interface ChromaticRouter extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -604,11 +566,6 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * Returns the address of the current owner.
-     */
-    owner(overrides?: CallOverrides): Promise<[string]>;
-
-    /**
      * Removes liquidity from a ChromaticMarket contract.
      * @param clbTokenAmount The amount of CLB tokens to remove as liquidity.
      * @param feeRate The fee rate of the liquidity bin.
@@ -661,21 +618,6 @@ export interface ChromaticRouter extends BaseContract {
       clbToken: string,
       clbTokenId: BigNumberish,
       data: BytesLike,
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
-
-    /**
-     * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.
-     */
-    renounceOwnership(
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
-
-    /**
-     * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
-     */
-    transferOwnership(
-      newOwner: string,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
@@ -901,11 +843,6 @@ export interface ChromaticRouter extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * Returns the address of the current owner.
-   */
-  owner(overrides?: CallOverrides): Promise<string>;
-
-  /**
    * Removes liquidity from a ChromaticMarket contract.
    * @param clbTokenAmount The amount of CLB tokens to remove as liquidity.
    * @param feeRate The fee rate of the liquidity bin.
@@ -958,21 +895,6 @@ export interface ChromaticRouter extends BaseContract {
     clbToken: string,
     clbTokenId: BigNumberish,
     data: BytesLike,
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
-
-  /**
-   * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.
-   */
-  renounceOwnership(
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
-
-  /**
-   * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
-   */
-  transferOwnership(
-    newOwner: string,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -1196,11 +1118,6 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<PositionStructOutput>;
 
     /**
-     * Returns the address of the current owner.
-     */
-    owner(overrides?: CallOverrides): Promise<string>;
-
-    /**
      * Removes liquidity from a ChromaticMarket contract.
      * @param clbTokenAmount The amount of CLB tokens to remove as liquidity.
      * @param feeRate The fee rate of the liquidity bin.
@@ -1253,19 +1170,6 @@ export interface ChromaticRouter extends BaseContract {
       clbToken: string,
       clbTokenId: BigNumberish,
       data: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    /**
-     * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.
-     */
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    /**
-     * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
-     */
-    transferOwnership(
-      newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1324,15 +1228,6 @@ export interface ChromaticRouter extends BaseContract {
       account?: string | null,
       owner?: string | null
     ): AccountCreatedEventFilter;
-
-    "OwnershipTransferred(address,address)"(
-      previousOwner?: string | null,
-      newOwner?: string | null
-    ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      previousOwner?: string | null,
-      newOwner?: string | null
-    ): OwnershipTransferredEventFilter;
   };
 
   estimateGas: {
@@ -1512,11 +1407,6 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Returns the address of the current owner.
-     */
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    /**
      * Removes liquidity from a ChromaticMarket contract.
      * @param clbTokenAmount The amount of CLB tokens to remove as liquidity.
      * @param feeRate The fee rate of the liquidity bin.
@@ -1569,21 +1459,6 @@ export interface ChromaticRouter extends BaseContract {
       clbToken: string,
       clbTokenId: BigNumberish,
       data: BytesLike,
-      overrides?: Overrides & { from?: string }
-    ): Promise<BigNumber>;
-
-    /**
-     * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.
-     */
-    renounceOwnership(
-      overrides?: Overrides & { from?: string }
-    ): Promise<BigNumber>;
-
-    /**
-     * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
-     */
-    transferOwnership(
-      newOwner: string,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
@@ -1810,11 +1685,6 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Returns the address of the current owner.
-     */
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    /**
      * Removes liquidity from a ChromaticMarket contract.
      * @param clbTokenAmount The amount of CLB tokens to remove as liquidity.
      * @param feeRate The fee rate of the liquidity bin.
@@ -1867,21 +1737,6 @@ export interface ChromaticRouter extends BaseContract {
       clbToken: string,
       clbTokenId: BigNumberish,
       data: BytesLike,
-      overrides?: Overrides & { from?: string }
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.
-     */
-    renounceOwnership(
-      overrides?: Overrides & { from?: string }
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
-     */
-    transferOwnership(
-      newOwner: string,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 

@@ -33,6 +33,11 @@ const _abi = [
       },
       {
         internalType: "address",
+        name: "_marketLiquidityLensFacet",
+        type: "address",
+      },
+      {
+        internalType: "address",
         name: "_marketTradeFacet",
         type: "address",
       },

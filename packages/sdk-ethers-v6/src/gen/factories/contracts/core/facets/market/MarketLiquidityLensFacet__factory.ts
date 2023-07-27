@@ -4,29 +4,44 @@
 
 import { Contract, Interface, type ContractRunner } from "ethers";
 import type {
-  ChromaticLens,
-  ChromaticLensInterface,
-} from "../../../contracts/periphery/ChromaticLens";
+  MarketLiquidityLensFacet,
+  MarketLiquidityLensFacetInterface,
+} from "../../../../../contracts/core/facets/market/MarketLiquidityLensFacet";
 
 const _abi = [
   {
-    inputs: [
-      {
-        internalType: "contract IChromaticRouter",
-        name: "_router",
-        type: "address",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "constructor",
+    inputs: [],
+    name: "NotExistLpReceipt",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OnlyAccessableByDao",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OnlyAccessableByLiquidator",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OnlyAccessableByVault",
+    type: "error",
   },
   {
     inputs: [
       {
-        internalType: "contract IChromaticMarket",
-        name: "market",
-        type: "address",
+        internalType: "int256",
+        name: "value",
+        type: "int256",
       },
+    ],
+    name: "UFixed18UnderflowError",
+    type: "error",
+  },
+  {
+    inputs: [
       {
         internalType: "int16",
         name: "tradingFeeRate",
@@ -34,7 +49,7 @@ const _abi = [
       },
       {
         internalType: "uint256",
-        name: "_oracleVersion",
+        name: "oracleVersion",
         type: "uint256",
       },
     ],
@@ -79,18 +94,13 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "contract IChromaticMarket",
-        name: "market",
-        type: "address",
-      },
-      {
         internalType: "int16[]",
         name: "tradingFeeRates",
         type: "int16[]",
       },
       {
         internalType: "uint256",
-        name: "_oracleVersion",
+        name: "oracleVersion",
         type: "uint256",
       },
     ],
@@ -135,44 +145,17 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "contract IChromaticMarket",
-        name: "market",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "owner",
-        type: "address",
+        internalType: "int16",
+        name: "tradingFeeRate",
+        type: "int16",
       },
     ],
-    name: "clbBalanceOf",
+    name: "getBinFreeLiquidity",
     outputs: [
       {
-        components: [
-          {
-            internalType: "uint256",
-            name: "tokenId",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "balance",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "totalSupply",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "binValue",
-            type: "uint256",
-          },
-        ],
-        internalType: "struct ChromaticLens.CLBBalance[]",
-        name: "",
-        type: "tuple[]",
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -181,11 +164,94 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "contract IChromaticMarket",
-        name: "market",
-        type: "address",
+        internalType: "int16",
+        name: "tradingFeeRate",
+        type: "int16",
       },
     ],
+    name: "getBinLiquidity",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "int16[]",
+        name: "tradingFeeRates",
+        type: "int16[]",
+      },
+    ],
+    name: "getBinValues",
+    outputs: [
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "receiptId",
+        type: "uint256",
+      },
+    ],
+    name: "getLpReceipt",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "oracleVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "recipient",
+            type: "address",
+          },
+          {
+            internalType: "enum LpAction",
+            name: "action",
+            type: "uint8",
+          },
+          {
+            internalType: "int16",
+            name: "tradingFeeRate",
+            type: "int16",
+          },
+        ],
+        internalType: "struct LpReceipt",
+        name: "receipt",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "liquidityBinStatuses",
     outputs: [
       {
@@ -221,108 +287,6 @@ const _abi = [
   },
   {
     inputs: [
-      {
-        internalType: "contract IChromaticMarket",
-        name: "market",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "owner",
-        type: "address",
-      },
-    ],
-    name: "lpReceipts",
-    outputs: [
-      {
-        components: [
-          {
-            internalType: "uint256",
-            name: "id",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "oracleVersion",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "amount",
-            type: "uint256",
-          },
-          {
-            internalType: "address",
-            name: "recipient",
-            type: "address",
-          },
-          {
-            internalType: "enum LpAction",
-            name: "action",
-            type: "uint8",
-          },
-          {
-            internalType: "int16",
-            name: "tradingFeeRate",
-            type: "int16",
-          },
-        ],
-        internalType: "struct LpReceipt[]",
-        name: "result",
-        type: "tuple[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "contract IChromaticMarket",
-        name: "market",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "version",
-        type: "uint256",
-      },
-    ],
-    name: "oracleVersion",
-    outputs: [
-      {
-        components: [
-          {
-            internalType: "uint256",
-            name: "version",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "timestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "Fixed18",
-            name: "price",
-            type: "int256",
-          },
-        ],
-        internalType: "struct IOracleProvider.OracleVersion",
-        name: "",
-        type: "tuple",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "contract IChromaticMarket",
-        name: "market",
-        type: "address",
-      },
       {
         internalType: "int16",
         name: "tradingFeeRate",
@@ -360,11 +324,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "contract IChromaticMarket",
-        name: "market",
-        type: "address",
-      },
-      {
         internalType: "int16[]",
         name: "tradingFeeRates",
         type: "int16[]",
@@ -400,15 +359,19 @@ const _abi = [
   },
 ] as const;
 
-export class ChromaticLens__factory {
+export class MarketLiquidityLensFacet__factory {
   static readonly abi = _abi;
-  static createInterface(): ChromaticLensInterface {
-    return new Interface(_abi) as ChromaticLensInterface;
+  static createInterface(): MarketLiquidityLensFacetInterface {
+    return new Interface(_abi) as MarketLiquidityLensFacetInterface;
   }
   static connect(
     address: string,
     runner?: ContractRunner | null
-  ): ChromaticLens {
-    return new Contract(address, _abi, runner) as unknown as ChromaticLens;
+  ): MarketLiquidityLensFacet {
+    return new Contract(
+      address,
+      _abi,
+      runner
+    ) as unknown as MarketLiquidityLensFacet;
   }
 }

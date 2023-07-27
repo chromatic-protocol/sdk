@@ -48,49 +48,6 @@ export type LpReceiptStructOutput = [
   tradingFeeRate: bigint;
 };
 
-export declare namespace IMarketLiquidity {
-  export type ClaimableLiquidityStruct = {
-    mintingTokenAmountRequested: BigNumberish;
-    mintingCLBTokenAmount: BigNumberish;
-    burningCLBTokenAmountRequested: BigNumberish;
-    burningCLBTokenAmount: BigNumberish;
-    burningTokenAmount: BigNumberish;
-  };
-
-  export type ClaimableLiquidityStructOutput = [
-    mintingTokenAmountRequested: bigint,
-    mintingCLBTokenAmount: bigint,
-    burningCLBTokenAmountRequested: bigint,
-    burningCLBTokenAmount: bigint,
-    burningTokenAmount: bigint
-  ] & {
-    mintingTokenAmountRequested: bigint;
-    mintingCLBTokenAmount: bigint;
-    burningCLBTokenAmountRequested: bigint;
-    burningCLBTokenAmount: bigint;
-    burningTokenAmount: bigint;
-  };
-
-  export type LiquidityBinStatusStruct = {
-    liquidity: BigNumberish;
-    freeLiquidity: BigNumberish;
-    binValue: BigNumberish;
-    tradingFeeRate: BigNumberish;
-  };
-
-  export type LiquidityBinStatusStructOutput = [
-    liquidity: bigint,
-    freeLiquidity: bigint,
-    binValue: bigint,
-    tradingFeeRate: bigint
-  ] & {
-    liquidity: bigint;
-    freeLiquidity: bigint;
-    binValue: bigint;
-    tradingFeeRate: bigint;
-  };
-}
-
 export interface MarketLiquidityFacetInterface extends Interface {
   getFunction(
     nameOrSignature:
@@ -98,13 +55,7 @@ export interface MarketLiquidityFacetInterface extends Interface {
       | "addLiquidityBatch"
       | "claimLiquidity"
       | "claimLiquidityBatch"
-      | "claimableLiquidity"
       | "distributeEarningToBins"
-      | "getBinFreeLiquidity"
-      | "getBinLiquidity"
-      | "getBinValues"
-      | "getLpReceipt"
-      | "liquidityBinStatuses"
       | "onERC1155BatchReceived"
       | "onERC1155Received"
       | "removeLiquidity"
@@ -143,32 +94,8 @@ export interface MarketLiquidityFacetInterface extends Interface {
     values: [BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "claimableLiquidity",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "distributeEarningToBins",
     values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getBinFreeLiquidity",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getBinLiquidity",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getBinValues",
-    values: [BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getLpReceipt",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "liquidityBinStatuses",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "onERC1155BatchReceived",
@@ -222,31 +149,7 @@ export interface MarketLiquidityFacetInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "claimableLiquidity",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "distributeEarningToBins",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getBinFreeLiquidity",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getBinLiquidity",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getBinValues",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getLpReceipt",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "liquidityBinStatuses",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -506,17 +409,6 @@ export interface MarketLiquidityFacet extends BaseContract {
   >;
 
   /**
-   * Retrieves the claimable liquidity information for a specific trading fee rate and oracle version from the associated LiquidityPool.
-   * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
-   * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
-   */
-  claimableLiquidity: TypedContractMethod<
-    [tradingFeeRate: BigNumberish, oracleVersion: BigNumberish],
-    [IMarketLiquidity.ClaimableLiquidityStructOutput],
-    "view"
-  >;
-
-  /**
    * Distributes earning to the liquidity bins.
    * @param earning The amount of earning to distribute.
    * @param marketBalance The balance of the market.
@@ -525,55 +417,6 @@ export interface MarketLiquidityFacet extends BaseContract {
     [earning: BigNumberish, marketBalance: BigNumberish],
     [void],
     "nonpayable"
-  >;
-
-  /**
-   * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
-   * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
-   */
-  getBinFreeLiquidity: TypedContractMethod<
-    [tradingFeeRate: BigNumberish],
-    [bigint],
-    "view"
-  >;
-
-  /**
-   * Retrieves the total liquidity amount for a specific trading fee rate in the liquidity pool.
-   * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
-   */
-  getBinLiquidity: TypedContractMethod<
-    [tradingFeeRate: BigNumberish],
-    [bigint],
-    "view"
-  >;
-
-  /**
-   * Retrieves the values of a specific trading fee rate's bins in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
-   * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
-   */
-  getBinValues: TypedContractMethod<
-    [tradingFeeRates: BigNumberish[]],
-    [bigint[]],
-    "view"
-  >;
-
-  /**
-   * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
-   * @param receiptId The ID of the liquidity receipt to retrieve.
-   */
-  getLpReceipt: TypedContractMethod<
-    [receiptId: BigNumberish],
-    [LpReceiptStructOutput],
-    "view"
-  >;
-
-  /**
-   * Retrieves the liquidity bin statuses for the caller's liquidity pool.
-   */
-  liquidityBinStatuses: TypedContractMethod<
-    [],
-    [IMarketLiquidity.LiquidityBinStatusStructOutput[]],
-    "view"
   >;
 
   /**
@@ -715,41 +558,11 @@ export interface MarketLiquidityFacet extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "claimableLiquidity"
-  ): TypedContractMethod<
-    [tradingFeeRate: BigNumberish, oracleVersion: BigNumberish],
-    [IMarketLiquidity.ClaimableLiquidityStructOutput],
-    "view"
-  >;
-  getFunction(
     nameOrSignature: "distributeEarningToBins"
   ): TypedContractMethod<
     [earning: BigNumberish, marketBalance: BigNumberish],
     [void],
     "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "getBinFreeLiquidity"
-  ): TypedContractMethod<[tradingFeeRate: BigNumberish], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "getBinLiquidity"
-  ): TypedContractMethod<[tradingFeeRate: BigNumberish], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "getBinValues"
-  ): TypedContractMethod<[tradingFeeRates: BigNumberish[]], [bigint[]], "view">;
-  getFunction(
-    nameOrSignature: "getLpReceipt"
-  ): TypedContractMethod<
-    [receiptId: BigNumberish],
-    [LpReceiptStructOutput],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "liquidityBinStatuses"
-  ): TypedContractMethod<
-    [],
-    [IMarketLiquidity.LiquidityBinStatusStructOutput[]],
-    "view"
   >;
   getFunction(
     nameOrSignature: "onERC1155BatchReceived"

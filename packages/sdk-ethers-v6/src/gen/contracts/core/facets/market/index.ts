@@ -5,6 +5,8 @@ export type { MarketDiamondCutFacet } from "./MarketDiamondCutFacet";
 export type { MarketFacetBase } from "./MarketFacetBase";
 export type { MarketLiquidateFacet } from "./MarketLiquidateFacet";
 export type { MarketLiquidityFacet } from "./MarketLiquidityFacet";
+export type { MarketLiquidityFacetBase } from "./MarketLiquidityFacetBase";
+export type { MarketLiquidityLensFacet } from "./MarketLiquidityLensFacet";
 export type { MarketSettleFacet } from "./MarketSettleFacet";
 export type { MarketStateFacet } from "./MarketStateFacet";
 export type { MarketTradeFacet } from "./MarketTradeFacet";

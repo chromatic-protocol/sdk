@@ -51,62 +51,13 @@ export type LpReceiptStructOutput = [
   tradingFeeRate: number;
 };
 
-export declare namespace IMarketLiquidity {
-  export type ClaimableLiquidityStruct = {
-    mintingTokenAmountRequested: BigNumberish;
-    mintingCLBTokenAmount: BigNumberish;
-    burningCLBTokenAmountRequested: BigNumberish;
-    burningCLBTokenAmount: BigNumberish;
-    burningTokenAmount: BigNumberish;
-  };
-
-  export type ClaimableLiquidityStructOutput = [
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber
-  ] & {
-    mintingTokenAmountRequested: BigNumber;
-    mintingCLBTokenAmount: BigNumber;
-    burningCLBTokenAmountRequested: BigNumber;
-    burningCLBTokenAmount: BigNumber;
-    burningTokenAmount: BigNumber;
-  };
-
-  export type LiquidityBinStatusStruct = {
-    liquidity: BigNumberish;
-    freeLiquidity: BigNumberish;
-    binValue: BigNumberish;
-    tradingFeeRate: BigNumberish;
-  };
-
-  export type LiquidityBinStatusStructOutput = [
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    number
-  ] & {
-    liquidity: BigNumber;
-    freeLiquidity: BigNumber;
-    binValue: BigNumber;
-    tradingFeeRate: number;
-  };
-}
-
 export interface MarketLiquidityFacetInterface extends utils.Interface {
   functions: {
     "addLiquidity(address,int16,bytes)": FunctionFragment;
     "addLiquidityBatch(address,int16[],uint256[],bytes)": FunctionFragment;
     "claimLiquidity(uint256,bytes)": FunctionFragment;
     "claimLiquidityBatch(uint256[],bytes)": FunctionFragment;
-    "claimableLiquidity(int16,uint256)": FunctionFragment;
     "distributeEarningToBins(uint256,uint256)": FunctionFragment;
-    "getBinFreeLiquidity(int16)": FunctionFragment;
-    "getBinLiquidity(int16)": FunctionFragment;
-    "getBinValues(int16[])": FunctionFragment;
-    "getLpReceipt(uint256)": FunctionFragment;
-    "liquidityBinStatuses()": FunctionFragment;
     "onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "onERC1155Received(address,address,uint256,uint256,bytes)": FunctionFragment;
     "removeLiquidity(address,int16,bytes)": FunctionFragment;
@@ -122,13 +73,7 @@ export interface MarketLiquidityFacetInterface extends utils.Interface {
       | "addLiquidityBatch"
       | "claimLiquidity"
       | "claimLiquidityBatch"
-      | "claimableLiquidity"
       | "distributeEarningToBins"
-      | "getBinFreeLiquidity"
-      | "getBinLiquidity"
-      | "getBinValues"
-      | "getLpReceipt"
-      | "liquidityBinStatuses"
       | "onERC1155BatchReceived"
       | "onERC1155Received"
       | "removeLiquidity"
@@ -155,32 +100,8 @@ export interface MarketLiquidityFacetInterface extends utils.Interface {
     values: [BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "claimableLiquidity",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "distributeEarningToBins",
     values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getBinFreeLiquidity",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getBinLiquidity",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getBinValues",
-    values: [BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getLpReceipt",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "liquidityBinStatuses",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "onERC1155BatchReceived",
@@ -228,31 +149,7 @@ export interface MarketLiquidityFacetInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "claimableLiquidity",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "distributeEarningToBins",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getBinFreeLiquidity",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getBinLiquidity",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getBinValues",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getLpReceipt",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "liquidityBinStatuses",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -475,17 +372,6 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * Retrieves the claimable liquidity information for a specific trading fee rate and oracle version from the associated LiquidityPool.
-     * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
-     * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
-     */
-    claimableLiquidity(
-      tradingFeeRate: BigNumberish,
-      oracleVersion: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[IMarketLiquidity.ClaimableLiquidityStructOutput]>;
-
-    /**
      * Distributes earning to the liquidity bins.
      * @param earning The amount of earning to distribute.
      * @param marketBalance The balance of the market.
@@ -495,49 +381,6 @@ export interface MarketLiquidityFacet extends BaseContract {
       marketBalance: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
-
-    /**
-     * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
-     * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
-     */
-    getBinFreeLiquidity(
-      tradingFeeRate: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { amount: BigNumber }>;
-
-    /**
-     * Retrieves the total liquidity amount for a specific trading fee rate in the liquidity pool.
-     * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
-     */
-    getBinLiquidity(
-      tradingFeeRate: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { amount: BigNumber }>;
-
-    /**
-     * Retrieves the values of a specific trading fee rate's bins in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
-     * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
-     */
-    getBinValues(
-      tradingFeeRates: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<[BigNumber[]]>;
-
-    /**
-     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
-     * @param receiptId The ID of the liquidity receipt to retrieve.
-     */
-    getLpReceipt(
-      receiptId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[LpReceiptStructOutput] & { receipt: LpReceiptStructOutput }>;
-
-    /**
-     * Retrieves the liquidity bin statuses for the caller's liquidity pool.
-     */
-    liquidityBinStatuses(
-      overrides?: CallOverrides
-    ): Promise<[IMarketLiquidity.LiquidityBinStatusStructOutput[]]>;
 
     /**
      * Handles the receipt of a multiple ERC1155 token types. This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated. NOTE: To accept the transfer(s), this must return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81, or its own function selector).
@@ -684,17 +527,6 @@ export interface MarketLiquidityFacet extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * Retrieves the claimable liquidity information for a specific trading fee rate and oracle version from the associated LiquidityPool.
-   * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
-   * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
-   */
-  claimableLiquidity(
-    tradingFeeRate: BigNumberish,
-    oracleVersion: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput>;
-
-  /**
    * Distributes earning to the liquidity bins.
    * @param earning The amount of earning to distribute.
    * @param marketBalance The balance of the market.
@@ -704,49 +536,6 @@ export interface MarketLiquidityFacet extends BaseContract {
     marketBalance: BigNumberish,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
-
-  /**
-   * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
-   * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
-   */
-  getBinFreeLiquidity(
-    tradingFeeRate: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  /**
-   * Retrieves the total liquidity amount for a specific trading fee rate in the liquidity pool.
-   * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
-   */
-  getBinLiquidity(
-    tradingFeeRate: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  /**
-   * Retrieves the values of a specific trading fee rate's bins in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
-   * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
-   */
-  getBinValues(
-    tradingFeeRates: BigNumberish[],
-    overrides?: CallOverrides
-  ): Promise<BigNumber[]>;
-
-  /**
-   * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
-   * @param receiptId The ID of the liquidity receipt to retrieve.
-   */
-  getLpReceipt(
-    receiptId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<LpReceiptStructOutput>;
-
-  /**
-   * Retrieves the liquidity bin statuses for the caller's liquidity pool.
-   */
-  liquidityBinStatuses(
-    overrides?: CallOverrides
-  ): Promise<IMarketLiquidity.LiquidityBinStatusStructOutput[]>;
 
   /**
    * Handles the receipt of a multiple ERC1155 token types. This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated. NOTE: To accept the transfer(s), this must return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81, or its own function selector).
@@ -893,17 +682,6 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<void>;
 
     /**
-     * Retrieves the claimable liquidity information for a specific trading fee rate and oracle version from the associated LiquidityPool.
-     * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
-     * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
-     */
-    claimableLiquidity(
-      tradingFeeRate: BigNumberish,
-      oracleVersion: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput>;
-
-    /**
      * Distributes earning to the liquidity bins.
      * @param earning The amount of earning to distribute.
      * @param marketBalance The balance of the market.
@@ -913,49 +691,6 @@ export interface MarketLiquidityFacet extends BaseContract {
       marketBalance: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    /**
-     * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
-     * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
-     */
-    getBinFreeLiquidity(
-      tradingFeeRate: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
-     * Retrieves the total liquidity amount for a specific trading fee rate in the liquidity pool.
-     * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
-     */
-    getBinLiquidity(
-      tradingFeeRate: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
-     * Retrieves the values of a specific trading fee rate's bins in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
-     * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
-     */
-    getBinValues(
-      tradingFeeRates: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber[]>;
-
-    /**
-     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
-     * @param receiptId The ID of the liquidity receipt to retrieve.
-     */
-    getLpReceipt(
-      receiptId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<LpReceiptStructOutput>;
-
-    /**
-     * Retrieves the liquidity bin statuses for the caller's liquidity pool.
-     */
-    liquidityBinStatuses(
-      overrides?: CallOverrides
-    ): Promise<IMarketLiquidity.LiquidityBinStatusStructOutput[]>;
 
     /**
      * Handles the receipt of a multiple ERC1155 token types. This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated. NOTE: To accept the transfer(s), this must return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81, or its own function selector).
@@ -1165,17 +900,6 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Retrieves the claimable liquidity information for a specific trading fee rate and oracle version from the associated LiquidityPool.
-     * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
-     * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
-     */
-    claimableLiquidity(
-      tradingFeeRate: BigNumberish,
-      oracleVersion: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
      * Distributes earning to the liquidity bins.
      * @param earning The amount of earning to distribute.
      * @param marketBalance The balance of the market.
@@ -1185,47 +909,6 @@ export interface MarketLiquidityFacet extends BaseContract {
       marketBalance: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
-
-    /**
-     * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
-     * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
-     */
-    getBinFreeLiquidity(
-      tradingFeeRate: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
-     * Retrieves the total liquidity amount for a specific trading fee rate in the liquidity pool.
-     * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
-     */
-    getBinLiquidity(
-      tradingFeeRate: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
-     * Retrieves the values of a specific trading fee rate's bins in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
-     * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
-     */
-    getBinValues(
-      tradingFeeRates: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
-     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
-     * @param receiptId The ID of the liquidity receipt to retrieve.
-     */
-    getLpReceipt(
-      receiptId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
-     * Retrieves the liquidity bin statuses for the caller's liquidity pool.
-     */
-    liquidityBinStatuses(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * Handles the receipt of a multiple ERC1155 token types. This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated. NOTE: To accept the transfer(s), this must return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81, or its own function selector).
@@ -1373,17 +1056,6 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Retrieves the claimable liquidity information for a specific trading fee rate and oracle version from the associated LiquidityPool.
-     * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
-     * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
-     */
-    claimableLiquidity(
-      tradingFeeRate: BigNumberish,
-      oracleVersion: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    /**
      * Distributes earning to the liquidity bins.
      * @param earning The amount of earning to distribute.
      * @param marketBalance The balance of the market.
@@ -1392,49 +1064,6 @@ export interface MarketLiquidityFacet extends BaseContract {
       earning: BigNumberish,
       marketBalance: BigNumberish,
       overrides?: Overrides & { from?: string }
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
-     * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
-     */
-    getBinFreeLiquidity(
-      tradingFeeRate: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Retrieves the total liquidity amount for a specific trading fee rate in the liquidity pool.
-     * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
-     */
-    getBinLiquidity(
-      tradingFeeRate: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Retrieves the values of a specific trading fee rate's bins in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
-     * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
-     */
-    getBinValues(
-      tradingFeeRates: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
-     * @param receiptId The ID of the liquidity receipt to retrieve.
-     */
-    getLpReceipt(
-      receiptId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Retrieves the liquidity bin statuses for the caller's liquidity pool.
-     */
-    liquidityBinStatuses(
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     /**

@@ -5,6 +5,8 @@ export { MarketDiamondCutFacet__factory } from "./MarketDiamondCutFacet__factory
 export { MarketFacetBase__factory } from "./MarketFacetBase__factory";
 export { MarketLiquidateFacet__factory } from "./MarketLiquidateFacet__factory";
 export { MarketLiquidityFacet__factory } from "./MarketLiquidityFacet__factory";
+export { MarketLiquidityFacetBase__factory } from "./MarketLiquidityFacetBase__factory";
+export { MarketLiquidityLensFacet__factory } from "./MarketLiquidityLensFacet__factory";
 export { MarketSettleFacet__factory } from "./MarketSettleFacet__factory";
 export { MarketStateFacet__factory } from "./MarketStateFacet__factory";
 export { MarketTradeFacet__factory } from "./MarketTradeFacet__factory";

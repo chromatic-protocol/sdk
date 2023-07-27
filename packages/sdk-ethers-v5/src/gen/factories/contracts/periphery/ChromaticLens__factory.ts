@@ -85,6 +85,62 @@ const _abi = [
         type: "address",
       },
       {
+        internalType: "int16[]",
+        name: "tradingFeeRates",
+        type: "int16[]",
+      },
+      {
+        internalType: "uint256",
+        name: "_oracleVersion",
+        type: "uint256",
+      },
+    ],
+    name: "claimableLiquidityBatch",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "mintingTokenAmountRequested",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "mintingCLBTokenAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "burningCLBTokenAmountRequested",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "burningCLBTokenAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "burningTokenAmount",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IMarketLiquidity.ClaimableLiquidity[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IChromaticMarket",
+        name: "market",
+        type: "address",
+      },
+      {
         internalType: "address",
         name: "owner",
         type: "address",
@@ -256,6 +312,88 @@ const _abi = [
         internalType: "struct IOracleProvider.OracleVersion",
         name: "",
         type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IChromaticMarket",
+        name: "market",
+        type: "address",
+      },
+      {
+        internalType: "int16",
+        name: "tradingFeeRate",
+        type: "int16",
+      },
+    ],
+    name: "pendingLiquidity",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "oracleVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "mintingTokenAmountRequested",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "burningCLBTokenAmountRequested",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IMarketLiquidity.PendingLiquidity",
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IChromaticMarket",
+        name: "market",
+        type: "address",
+      },
+      {
+        internalType: "int16[]",
+        name: "tradingFeeRates",
+        type: "int16[]",
+      },
+    ],
+    name: "pendingLiquidityBatch",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "oracleVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "mintingTokenAmountRequested",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "burningCLBTokenAmountRequested",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IMarketLiquidity.PendingLiquidity[]",
+        name: "",
+        type: "tuple[]",
       },
     ],
     stateMutability: "view",

@@ -267,12 +267,11 @@ export class ChromaticPosition {
   ) {
     const interestFee = await this.getInterest(marketAddress, position);
     const margin = isProfitStop ? position.makerMargin : position.takerMargin;
-    const leveragedQty = position.qty * BigInt(position.leverage);
     const pricePrecision = BigInt(QTY_LEVERAGE_PRECISION) * BigInt(LIQUIDATION_PRICE_PRECISION);
     const marginWithInterest = isProfitStop ? margin + interestFee : margin - interestFee;
     let delta =
       (entryPrice * BigInt(marginWithInterest * BigInt(pricePrecision))) /
-      leveragedQty /
+      position.qty /
       BigInt(LIQUIDATION_PRICE_PRECISION) /
       10n ** BigInt(oraclePriceDecimals);
     return delta;

@@ -1,7 +1,7 @@
-import { Address } from "viem";
-import { Client } from "../Client";
-import { QTY_LEVERAGE_PRECISION, QTY_PRECISION } from "../constants";
-import { handleBytesError } from "../utils/helpers";
+import { Address } from "viem"
+import { Client } from "../Client"
+import { QTY_LEVERAGE_PRECISION } from "../constants"
+import { handleBytesError } from "../utils/helpers"
 
 type InterestParam = Pick<PositionParam, "makerMargin" | "claimTimestamp" | "openTimestamp">;
 
@@ -267,10 +267,11 @@ export class ChromaticPosition {
   ) {
     const interestFee = await this.getInterest(marketAddress, position);
     const margin = isProfitStop ? position.makerMargin : position.takerMargin;
+    const leveragedQty = position.qty * BigInt(position.leverage);
     const marginWithInterest = isProfitStop ? margin + interestFee : margin - interestFee;
     let delta =
-      (entryPrice * BigInt(marginWithInterest) * BigInt(QTY_PRECISION)) /
-      position.qty /
+      (entryPrice * marginWithInterest * BigInt(QTY_LEVERAGE_PRECISION)) /
+      leveragedQty /
       10n ** BigInt(oraclePriceDecimals);
     return delta;
   }

@@ -1,6 +1,6 @@
 import { BigNumberish } from "ethers";
 import { Client } from "../Client";
-import { QTY_LEVERAGE_PRECISION, QTY_PRECISION } from "../constants";
+import { QTY_LEVERAGE_PRECISION } from "../constants";
 import { InterestRate } from "../gen/contracts/core/ChromaticMarketFactory";
 import {
   BinMarginStructOutput,
@@ -262,10 +262,11 @@ export class ChromaticPosition {
   ): Promise<bigint> {
     const interestFee = await this.getInterest(marketAddress, position);
     const margin = isProfitStop ? position.makerMargin : position.takerMargin;
+    const leveragedQty = position.qty * position.leverage;
     const marginWithInterest = isProfitStop ? margin + interestFee : margin - interestFee;
     let delta =
-      (entryPrice * BigInt(marginWithInterest) * BigInt(QTY_PRECISION)) /
-      position.qty /
+      (entryPrice * marginWithInterest * BigInt(QTY_LEVERAGE_PRECISION)) /
+      leveragedQty /
       10n ** BigInt(oraclePriceDecimals);
     return delta;
   }

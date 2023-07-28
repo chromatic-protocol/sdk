@@ -1,4 +1,4 @@
-import { Address, getContract } from "viem";
+import { Address, getContract, zeroAddress } from "viem";
 import { Client } from "../Client";
 import { chromaticAccountABI } from "../gen";
 import { PromiseOnlySuccess, checkClient, handleBytesError } from "../utils/helpers";
@@ -47,7 +47,9 @@ export class ChromaticAccount {
   async createAccount() {
     return await handleBytesError(async () => {
       checkClient(this._client);
-      const { request } = await this.contracts().router().simulate.createAccount();
+      const { request } = await this.contracts()
+        .router()
+        .simulate.createAccount({ account: this._client.walletClient!.account });
       const hash = await this._client.walletClient.writeContract(request);
       return await this._client.publicClient.waitForTransactionReceipt({ hash });
     });
@@ -74,7 +76,11 @@ export class ChromaticAccount {
   async getPositionIds(marketAddress: Address, accountAddress?: Address) {
     return await handleBytesError(async () => {
       const currAccountAddress = await this.getCurrentAddress();
-      const chromaticAcc = this.contracts().account(accountAddress || currAccountAddress);
+      const targetAccount = accountAddress || currAccountAddress;
+      if (!targetAccount || targetAccount === zeroAddress) {
+        return [];
+      }
+      const chromaticAcc = this.contracts().account(targetAccount);
       return await chromaticAcc.read.getPositionIds([marketAddress], {
         account: this._client.walletClient?.account,
       });
@@ -90,9 +96,11 @@ export class ChromaticAccount {
   async balance(token: Address, accountAddress?: Address) {
     return await handleBytesError(async () => {
       const currAccountAddress = await this.getCurrentAddress();
-      return this.contracts()
-        .account(accountAddress || currAccountAddress)
-        .read.balance([token]);
+      const targetAccount = accountAddress || currAccountAddress;
+      if (!targetAccount || targetAccount === zeroAddress) {
+        return 0n;
+      }
+      return this.contracts().account(targetAccount).read.balance([token]);
     });
   }
 
@@ -106,13 +114,15 @@ export class ChromaticAccount {
     // : Promise<TokenBalancesResult[]> {
     return await handleBytesError(async () => {
       const currAccountAddress = await this.getCurrentAddress();
+      const targetAccount = accountAddress || currAccountAddress;
+      if (!targetAccount || targetAccount === zeroAddress) {
+        return [];
+      }
       return PromiseOnlySuccess(
         tokens.map(async (token) => {
           return {
             token,
-            balance: await this.contracts()
-              .account(accountAddress || currAccountAddress)
-              .read.balance([token]),
+            balance: await this.contracts().account(targetAccount).read.balance([token]),
           } satisfies TokenBalancesResult;
         }) || []
       );

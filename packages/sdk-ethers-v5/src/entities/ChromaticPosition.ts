@@ -1,12 +1,12 @@
-import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
-import { Client } from "../Client";
-import { QTY_LEVERAGE_PRECISION, QTY_PRECISION } from "../constants";
-import { InterestRate } from "../gen/contracts/core/ChromaticMarketFactory";
+import { BigNumber, BigNumberish } from "@ethersproject/bignumber"
+import { Client } from "../Client"
+import { QTY_LEVERAGE_PRECISION } from "../constants"
+import { InterestRate } from "../gen/contracts/core/ChromaticMarketFactory"
 import {
   BinMarginStructOutput,
   PositionStructOutput,
-} from "../gen/contracts/core/interfaces/IChromaticMarket";
-import { handleBytesError, logger } from "../utils/helpers";
+} from "../gen/contracts/core/interfaces/IChromaticMarket"
+import { handleBytesError, logger } from "../utils/helpers"
 
 type InterestParam = Pick<PositionParam, "makerMargin" | "claimTimestamp" | "openTimestamp">;
 
@@ -264,10 +264,11 @@ export class ChromaticPosition {
   ) {
     const interestFee = await this.getInterest(marketAddress, position);
     const margin = isProfitStop ? position.makerMargin : position.takerMargin;
+    const leveragedQty = position.qty.mul(position.leverage);
     const marginWithInterest = isProfitStop ? margin.add(interestFee) : margin.sub(interestFee);
     let delta = entryPrice
-      .mul(marginWithInterest.mul(QTY_PRECISION))
-      .div(position.qty)
+      .mul(marginWithInterest.mul(QTY_LEVERAGE_PRECISION))
+      .div(leveragedQty)
       .div(BigNumber.from(10).pow(oraclePriceDecimals));
     return delta;
   }

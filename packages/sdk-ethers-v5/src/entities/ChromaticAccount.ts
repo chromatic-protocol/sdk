@@ -1,4 +1,4 @@
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { Client } from "../Client";
 import { ChromaticAccount__factory } from "../gen";
 import { PromiseOnlySuccess, handleBytesError } from "../utils/helpers";
@@ -63,7 +63,11 @@ export class ChromaticAccount {
   async getPositionIds(marketAddress: string, accountAddress?: string) {
     return await handleBytesError(async () => {
       const currAccountAddress = await this.getCurrentAddress();
-      const chromaticAcc = this.contracts().account(accountAddress || currAccountAddress);
+      const targetAccount = accountAddress || currAccountAddress;
+      if (!targetAccount || targetAccount === ethers.constants.AddressZero) {
+        return [];
+      }
+      const chromaticAcc = this.contracts().account(targetAccount);
       return await chromaticAcc.getPositionIds(marketAddress);
     }, this._client.provider);
   }
@@ -77,9 +81,11 @@ export class ChromaticAccount {
   async balance(token: string, accountAddress?: string) {
     return await handleBytesError(async () => {
       const currAccountAddress = await this.getCurrentAddress();
-      return this.contracts()
-        .account(accountAddress || currAccountAddress)
-        .balance(token);
+      const targetAccount = accountAddress || currAccountAddress;
+      if (!targetAccount || targetAccount === ethers.constants.AddressZero) {
+        return BigNumber.from(0);
+      }
+      return this.contracts().account(targetAccount).balance(token);
     }, this._client.provider);
   }
 
@@ -92,13 +98,15 @@ export class ChromaticAccount {
   async balances(tokens: string[], accountAddress?: string): Promise<TokenBalancesResult[]> {
     return await handleBytesError(async () => {
       const currAccountAddress = await this.getCurrentAddress();
+      const targetAccount = accountAddress || currAccountAddress;
+      if (!targetAccount || targetAccount === ethers.constants.AddressZero) {
+        return [];
+      }
       return PromiseOnlySuccess(
         tokens.map(async (token) => {
           return {
             token,
-            balance: await this.contracts()
-              .account(accountAddress || currAccountAddress)
-              .balance(token),
+            balance: await this.contracts().account(targetAccount).balance(token),
           } satisfies TokenBalancesResult;
         }) || []
       );

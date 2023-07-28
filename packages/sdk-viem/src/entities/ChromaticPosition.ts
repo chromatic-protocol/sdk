@@ -1,6 +1,6 @@
 import { Address } from "viem";
 import { Client } from "../Client";
-import { LIQUIDATION_PRICE_PRECISION, QTY_LEVERAGE_PRECISION } from "../constants";
+import { QTY_LEVERAGE_PRECISION, QTY_PRECISION } from "../constants";
 import { handleBytesError } from "../utils/helpers";
 
 type InterestParam = Pick<PositionParam, "makerMargin" | "claimTimestamp" | "openTimestamp">;
@@ -55,7 +55,7 @@ export interface IPosition {
   closeTimestamp: bigint;
   /** The amount of collateral that a trader must provide */
   takerMargin: bigint;
-  /** The owner of the position, usually it is the account address of trader */ 
+  /** The owner of the position, usually it is the account address of trader */
   owner: string;
   /** The bin margins for the position, it represents the amount of collateral for each bin */
   _binMargins: IBinMargin[];
@@ -267,12 +267,10 @@ export class ChromaticPosition {
   ) {
     const interestFee = await this.getInterest(marketAddress, position);
     const margin = isProfitStop ? position.makerMargin : position.takerMargin;
-    const pricePrecision = BigInt(QTY_LEVERAGE_PRECISION) * BigInt(LIQUIDATION_PRICE_PRECISION);
     const marginWithInterest = isProfitStop ? margin + interestFee : margin - interestFee;
     let delta =
-      (entryPrice * BigInt(marginWithInterest * BigInt(pricePrecision))) /
+      (entryPrice * BigInt(marginWithInterest) * BigInt(QTY_PRECISION)) /
       position.qty /
-      BigInt(LIQUIDATION_PRICE_PRECISION) /
       10n ** BigInt(oraclePriceDecimals);
     return delta;
   }

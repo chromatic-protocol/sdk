@@ -1,6 +1,6 @@
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import { Client } from "../Client";
-import { LIQUIDATION_PRICE_PRECISION, QTY_LEVERAGE_PRECISION } from "../constants";
+import { QTY_LEVERAGE_PRECISION, QTY_PRECISION } from "../constants";
 import { InterestRate } from "../gen/contracts/core/ChromaticMarketFactory";
 import {
   BinMarginStructOutput,
@@ -50,7 +50,7 @@ export interface IPosition {
   closeTimestamp: BigNumber;
   /** The amount of collateral that a trader must provide */
   takerMargin: BigNumber;
-  /** The owner of the position, usually it is the account address of trader */ 
+  /** The owner of the position, usually it is the account address of trader */
   owner: string;
   /** The bin margins for the position, it represents the amount of collateral for each bin */
   _binMargins: BinMarginStructOutput[];
@@ -264,15 +264,10 @@ export class ChromaticPosition {
   ) {
     const interestFee = await this.getInterest(marketAddress, position);
     const margin = isProfitStop ? position.makerMargin : position.takerMargin;
-    const leveragedQty = position.qty.mul(position.leverage);
-    const pricePrecision = BigNumber.from(QTY_LEVERAGE_PRECISION).mul(LIQUIDATION_PRICE_PRECISION);
     const marginWithInterest = isProfitStop ? margin.add(interestFee) : margin.sub(interestFee);
-    //18 + 18 + 10 - 10  36
-    // 6 + 6 + 10 - 10  12
     let delta = entryPrice
-      .mul(marginWithInterest.mul(pricePrecision))
-      .div(leveragedQty)
-      .div(LIQUIDATION_PRICE_PRECISION)
+      .mul(marginWithInterest.mul(QTY_PRECISION))
+      .div(position.qty)
       .div(BigNumber.from(10).pow(oraclePriceDecimals));
     return delta;
   }

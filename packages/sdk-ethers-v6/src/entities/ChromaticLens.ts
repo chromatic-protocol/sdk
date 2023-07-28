@@ -236,6 +236,18 @@ export class ChromaticLens {
   }
 
   /**
+   * Retrieves the pending liquidities for a given market and trading fee rates.
+   * @param marketAddress The address of the Chromatic Market contract.
+   * @param tradingFeeRates An array of tradingFeeRate.
+   * @returns A promise that resolves to an array of PendingLiquidity.
+   */
+  async pendingLiquidityBatch(marketAddress: string, tradingFeeRates: number[]) {
+    return await handleBytesError(async () => {
+      return await this.getContract().pendingLiquidityBatch(marketAddress, tradingFeeRates);
+    }, this._client.provider);
+  }
+
+  /**
    * Retrieves the LP receipts for a given market and owner.
    * @param marketAddress The address of the Chromatic Market contract.
    * @param owner The address of the LP owner.

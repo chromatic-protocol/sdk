@@ -8,6 +8,7 @@ import {
   handleBytesError,
 } from "../utils/helpers";
 import type { ContractChromaticLens } from "./types";
+import { Dictionary, groupBy } from "lodash";
 /**
  * Represents the result of a liquidity bin.
  */
@@ -17,7 +18,7 @@ export interface LiquidityBinResult {
   /**
    * The current value per one CLB token, which includes decimal points.
    * The unrealized profit or loss of the position and adds it to the total value.
-   * Additionally, it includes the pending bin share from the market's vault 
+   * Additionally, it includes the pending bin share from the market's vault
    */
   clbValue: bigint;
   /** The total liquidity amount (settlement token) for the specified trading fee rate */
@@ -43,13 +44,13 @@ export interface OwnedLiquidityBinResult {
   /**
    * The current value per one CLB token, which includes decimal points.
    * The unrealized profit or loss of the position and adds it to the total value.
-   * Additionally, it includes the pending bin share from the market's vault 
+   * Additionally, it includes the pending bin share from the market's vault
    */
   clbValue: bigint;
-  /** 
+  /**
    * The current value of the bin for the specified trading fee rate.
    * The unrealized profit or loss of the position and adds it to the total value.
-   * Additionally, it includes the pending bin share from the market's vault 
+   * Additionally, it includes the pending bin share from the market's vault
    */
   binValue: bigint;
 }
@@ -62,7 +63,7 @@ export interface ClaimableLiquidityResult {
   tradingFeeRate: number;
   /** The amount of settlement tokens requested for minting */
   mintingTokenAmountRequested: bigint;
-  /** The actual amount of CLB tokens minted */
+  // /** The actual amount of CLB tokens minted */
   mintingCLBTokenAmount: bigint;
   /** The amount of CLB tokens requested for burning */
   burningCLBTokenAmountRequested: bigint;
@@ -199,20 +200,52 @@ export class ChromaticLens {
     params: { tradingFeeRate: number; oracleVersion: bigint }[]
   ) {
     return await handleBytesError(async () => {
-      return await Promise.all(
-        params.map(async ({ tradingFeeRate, oracleVersion }) => {
-          const res = await this.getContract().read.claimableLiquidity([
+      const groupedByOV = groupBy(params, (p) => p.oracleVersion);
+
+      // Get claimable liquidities for each oracleVersion and tradingFeeRate
+      const claimableLiquidities = await Promise.all(
+        Object.entries(groupedByOV).map(async ([ov, params]) => {
+          const tradingFees = new Set(params.map((param) => param.tradingFeeRate));
+          const claimableLiquiditiesByOv = await this.getContract().read.claimableLiquidityBatch([
             marketAddress,
-            tradingFeeRate,
-            oracleVersion,
+            Array.from(tradingFees),
+            BigInt(ov),
           ]);
 
-          return {
-            tradingFeeRate,
-            ...res,
-          };
+          return Array.from(tradingFees).map((fee, index) => {
+            return {
+              oracleVersion: BigInt(ov),
+              ...claimableLiquiditiesByOv[index],
+              tradingFeeRate: fee,
+            };
+          });
         })
       );
+
+      const groupedByFeeAndOV = claimableLiquidities.flat(1).reduce((acc, liq) => {
+        const key = `${liq.tradingFeeRate}_${liq.oracleVersion}`;
+        if (!acc[key]) {
+          acc[key] = { ...liq };
+        } else {
+          acc[key].burningCLBTokenAmount += liq.burningCLBTokenAmount;
+          acc[key].burningCLBTokenAmountRequested += liq.burningCLBTokenAmountRequested;
+          acc[key].burningTokenAmount += liq.burningTokenAmount;
+          acc[key].mintingCLBTokenAmount += liq.mintingCLBTokenAmount;
+          acc[key].mintingTokenAmountRequested += liq.mintingTokenAmountRequested;
+        }
+        return acc;
+      }, {} as { [tradingFeeAndOracleVersion: string]: ClaimableLiquidityResult });
+
+      const result = Object.entries(groupedByFeeAndOV).reduce((acc, [key, value]) => {
+        const [tradingFeeRate, oracleVersion] = key.split("_");
+        if (!acc[tradingFeeRate]) {
+          acc[tradingFeeRate] = {};
+        }
+        acc[tradingFeeRate][oracleVersion] = value;
+        return acc;
+      }, {} as { [tradingFeeRate: string | number]: { [oracleVersion: string | number]: ClaimableLiquidityResult } });
+
+      return result;
     });
   }
 

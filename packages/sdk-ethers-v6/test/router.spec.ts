@@ -155,15 +155,15 @@ describe("router sdk test", () => {
     );
     // 0xd0e30db0
     const beforeOpenPositions = await getPositions();
-    await waitTxMining(() =>
-      router.openPosition(marketAddress, {
-        quantity: 10n ** 8n,
-        leverage: 100, // x1
-        takerMargin: accountBalance / 3n,
+    await waitTxMining(() => {
+      const takerMargin = accountBalance / 3n;
+      return router.openPosition(marketAddress, {
+        quantity: takerMargin, // x1 leverage
+        takerMargin,
         makerMargin: bin100[0].freeLiquidity / 2n,
         maxAllowableTradingFee: bin100[0].freeLiquidity / 2n / 10n,
-      })
-    );
+      });
+    });
 
     const afterOpenPositions = await getPositions();
     expect(beforeOpenPositions.length).toBeLessThan(afterOpenPositions.length);
@@ -192,7 +192,6 @@ describe("router sdk test", () => {
 
   test("revert msg handling", async () => {
     const { marketAddress, router, tokenContract } = await getFixture();
-
 
     // require Long String message
     async function erc20TransferFromTx() {

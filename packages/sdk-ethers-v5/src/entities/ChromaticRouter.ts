@@ -18,10 +18,8 @@ export interface RouterAddLiquidityParam {
  * Represents the parameters for opening a position using the ChromaticRouter.
  */
 export interface RouterOpenPositionParam {
-  /** The quantity of the position, with 4 decimal places */
+  /** The quantity of the position */
   quantity: BigNumberish;
-  /** The leverage BPS of the position */
-  leverage: BigNumberish;
   /** The margin required for the taker */
   takerMargin: BigNumberish;
   /** The margin required for the maker */
@@ -80,7 +78,6 @@ export class ChromaticRouter {
         .openPosition(
           marketAddress,
           BigNumber.from(param.quantity),
-          BigNumber.from(param.leverage),
           BigNumber.from(param.takerMargin),
           BigNumber.from(param.makerMargin),
           BigNumber.from(param.maxAllowableTradingFee)
@@ -139,7 +136,10 @@ export class ChromaticRouter {
    * @param amount The allowance of Chromatic Router over the caller's tokens
    * @returns A promise that resolves to a boolean indicating whether the approval was successful.
    */
-  async approvalSettlementTokenToRouter(marketAddress: string, amount : BigNumberish): Promise<boolean> {
+  async approvalSettlementTokenToRouter(
+    marketAddress: string,
+    amount: BigNumberish
+  ): Promise<boolean> {
     const settlementToken = await this._client.market().settlementToken(marketAddress);
     const routerAddress = this.contracts().router().address;
     const signerAddress = await this._client.signer.getAddress();
@@ -162,7 +162,7 @@ export class ChromaticRouter {
    */
   async addLiquidity(marketAddress: string, param: RouterAddLiquidityParam, recipient?: string) {
     // TODO check option flag
-    if (!(await this.approvalSettlementTokenToRouter(marketAddress,param.amount))) {
+    if (!(await this.approvalSettlementTokenToRouter(marketAddress, param.amount))) {
       return;
     }
 
@@ -173,7 +173,7 @@ export class ChromaticRouter {
           marketAddress,
           param.feeRate,
           param.amount,
-          recipient || await this._client.signer.getAddress()
+          recipient || (await this._client.signer.getAddress())
         );
       return await tx.wait();
     }, this._client.provider);
@@ -192,7 +192,7 @@ export class ChromaticRouter {
     recipient?: string
   ) {
     // TODO check option flag
-    const totalAmount = params.reduce((prev, curr) => prev.add(curr.amount),BigNumber.from(0))
+    const totalAmount = params.reduce((prev, curr) => prev.add(curr.amount), BigNumber.from(0));
     if (!(await this.approvalSettlementTokenToRouter(marketAddress, totalAmount))) {
       return;
     }
@@ -232,7 +232,7 @@ export class ChromaticRouter {
           marketAddress,
           BigNumber.from(param.feeRate),
           BigNumber.from(param.clbTokenAmount),
-          param.recipient || await this._client.signer.getAddress()
+          param.recipient || (await this._client.signer.getAddress())
         );
       return await tx.wait();
     }, this._client.provider);

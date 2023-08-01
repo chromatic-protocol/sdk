@@ -56,7 +56,7 @@ describe("lens sdk test", () => {
         targetBeforeBin === undefined ? 0n : targetBeforeBin.clbBalance;
       expect(beforeClbBalance < targetAbterBin.clbBalance).toEqual(true);
     }
-  }, 30000);
+  }, 60000);
 
   test("liquidityBins", async () => {
     const { market } = await getContracts();

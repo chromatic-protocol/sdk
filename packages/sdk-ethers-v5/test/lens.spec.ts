@@ -39,8 +39,6 @@ describe("lens sdk test", () => {
     const addLiqfn = () =>
       client.router().addLiquidities(market, [{ feeRate: 100, amount: usdcBalance.div(2) }]);
     const txReceipt = await waitTxMining(addLiqfn);
-    
-
     const lpReceiptIds = await client.router().contracts().router()["getLpReceiptIds(address)"](market)
 
     await updatePrice({ market, signer, price: 1000 });

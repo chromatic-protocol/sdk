@@ -3,7 +3,7 @@ import type { Client } from "../Client";
 import { ChromaticLens__factory, getDeployedAddress } from "../gen";
 import { IMarketLiquidity } from "../gen/contracts/core/interfaces/IChromaticMarket";
 import { decodeTokenId, encodeTokenId, handleBytesError } from "../utils/helpers";
-
+import groupBy from 'lodash/groupBy'
 /**
  * Represents the result of a liquidity bin.
  */
@@ -54,8 +54,6 @@ export interface OwnedLiquidityBinResult {
  * Represents the result of a claimable liquidity.
  */
 export interface ClaimableLiquidityResult {
-  /** The trading fee rate for the liquidity bin*/
-  tradingFeeRate: number;
   /** The amount of settlement tokens requested for minting */
   mintingTokenAmountRequested: BigNumber;
   /** The actual amount of CLB tokens minted */
@@ -185,27 +183,59 @@ export class ChromaticLens {
    * Retrieves the claimable liquidities for a given market and parameters.
    * @param marketAddress The address of the Chromatic Market contract.
    * @param params An array of objects containing tradingFeeRate and oracleVersion.
-   * @returns A promise that resolves to an array of ClaimableLiquidityResult.
+   * @returns A promise that resolves to an object with mappings between tradingFee and oracleVersion.
    */
   async claimableLiquidities(
     marketAddress: string,
     params: { tradingFeeRate: number; oracleVersion: BigNumber }[]
-  ): Promise<ClaimableLiquidityResult[]> {
+  ): Promise<{ [tradingFeeRate: string | number]: { [oracleVersion: string | number]: ClaimableLiquidityResult } }> {
     return await handleBytesError(async () => {
-      return await Promise.all(
-        params.map(async ({ tradingFeeRate, oracleVersion }) => {
-          const res = await this.getContract().claimableLiquidity(
+      const groupedByOV = groupBy(params, (p) => p.oracleVersion);
+
+      // Get claimable liquidities for each oracleVersion and tradingFeeRate
+      const claimableLiquidities = await Promise.all(
+        Object.entries(groupedByOV).map(async ([ov, params]) => {
+          const tradingFees = new Set(params.map((param) => param.tradingFeeRate));
+          const claimableLiquiditiesByOv = await this.getContract().claimableLiquidityBatch(
             marketAddress,
-            tradingFeeRate,
-            oracleVersion
+            Array.from(tradingFees),
+            BigInt(ov),
           );
 
-          return {
-            tradingFeeRate,
-            ...res,
-          };
+          return Array.from(tradingFees).map((fee, index) => {
+            return {
+              oracleVersion: BigInt(ov),
+              ...claimableLiquiditiesByOv[index],
+              tradingFeeRate: fee,
+            };
+          });
         })
       );
+
+      const groupedByFeeAndOV = claimableLiquidities.flat(1).reduce((acc, liq) => {
+        const key = `${liq.tradingFeeRate}_${liq.oracleVersion}`;
+        if (!acc[key]) {
+          acc[key] = { ...liq };
+        } else {
+          acc[key].burningCLBTokenAmount = acc[key].burningCLBTokenAmount.add(liq.burningCLBTokenAmount);
+          acc[key].burningCLBTokenAmountRequested = acc[key].burningCLBTokenAmountRequested.add(liq.burningCLBTokenAmountRequested)
+          acc[key].burningTokenAmount = acc[key].burningTokenAmount.add(liq.burningTokenAmount)
+          acc[key].mintingCLBTokenAmount = acc[key].mintingCLBTokenAmount.add(liq.mintingCLBTokenAmount);
+          acc[key].mintingTokenAmountRequested = acc[key].mintingTokenAmountRequested.add(liq.mintingTokenAmountRequested)
+        }
+        return acc;
+      }, {} as { [tradingFeeAndOracleVersion: string]: ClaimableLiquidityResult });
+
+      const result = Object.entries(groupedByFeeAndOV).reduce((acc, [key, value]) => {
+        const [tradingFeeRate, oracleVersion] = key.split("_");
+        if (!acc[tradingFeeRate]) {
+          acc[tradingFeeRate] = {};
+        }
+        acc[tradingFeeRate][oracleVersion] = value;
+        return acc;
+      }, {} as { [tradingFeeRate: string | number]: { [oracleVersion: string | number]: ClaimableLiquidityResult } });
+
+      return result;
     }, this._client.provider);
   }
 

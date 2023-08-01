@@ -8,7 +8,7 @@ import {
   handleBytesError,
 } from "../utils/helpers";
 import type { ContractChromaticLens } from "./types";
-import { Dictionary, groupBy } from "lodash";
+import groupBy from "lodash/groupBy";
 /**
  * Represents the result of a liquidity bin.
  */
@@ -59,8 +59,6 @@ export interface OwnedLiquidityBinResult {
  * Represents the result of a claimable liquidity.
  */
 export interface ClaimableLiquidityResult {
-  /** The trading fee rate for the liquidity bin*/
-  tradingFeeRate: number;
   /** The amount of settlement tokens requested for minting */
   mintingTokenAmountRequested: bigint;
   // /** The actual amount of CLB tokens minted */
@@ -193,7 +191,7 @@ export class ChromaticLens {
    * Retrieves the claimable liquidities for a given market and parameters.
    * @param marketAddress The address of the Chromatic Market contract.
    * @param params An array of objects containing tradingFeeRate and oracleVersion.
-   * @returns A promise that resolves to an array of ClaimableLiquidityResult.
+   * @returns A promise that resolves to an object with mappings between tradingFee and oracleVersion.
    */
   async claimableLiquidities(
     marketAddress: Address,

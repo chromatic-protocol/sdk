@@ -4,6 +4,8 @@
     "outDir": "./esm",
     "target": "esnext",
     "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "declaration": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,

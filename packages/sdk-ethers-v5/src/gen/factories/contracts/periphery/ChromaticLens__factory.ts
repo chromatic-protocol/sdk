@@ -304,7 +304,7 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "Fixed18",
+            internalType: "int256",
             name: "price",
             type: "int256",
           },

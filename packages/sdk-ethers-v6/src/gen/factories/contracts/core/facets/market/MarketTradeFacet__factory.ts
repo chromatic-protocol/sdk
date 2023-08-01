@@ -41,11 +41,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "NotAllowableTakerMargin",
-    type: "error",
-  },
-  {
-    inputs: [],
     name: "NotClaimablePosition",
     type: "error",
   },
@@ -90,17 +85,6 @@ const _abi = [
     type: "error",
   },
   {
-    inputs: [
-      {
-        internalType: "int256",
-        name: "value",
-        type: "int256",
-      },
-    ],
-    name: "UFixed18UnderflowError",
-    type: "error",
-  },
-  {
     anonymous: false,
     inputs: [
       {
@@ -139,14 +123,9 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "int224",
+            internalType: "int256",
             name: "qty",
-            type: "int224",
-          },
-          {
-            internalType: "uint32",
-            name: "leverage",
-            type: "uint32",
+            type: "int256",
           },
           {
             internalType: "uint256",
@@ -227,14 +206,9 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "int224",
+            internalType: "int256",
             name: "qty",
-            type: "int224",
-          },
-          {
-            internalType: "uint32",
-            name: "leverage",
-            type: "uint32",
+            type: "int256",
           },
           {
             internalType: "uint256",
@@ -315,14 +289,9 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "int224",
+            internalType: "int256",
             name: "qty",
-            type: "int224",
-          },
-          {
-            internalType: "uint32",
-            name: "leverage",
-            type: "uint32",
+            type: "int256",
           },
           {
             internalType: "uint256",
@@ -459,14 +428,9 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "int224",
+            internalType: "int256",
             name: "qty",
-            type: "int224",
-          },
-          {
-            internalType: "uint32",
-            name: "leverage",
-            type: "uint32",
+            type: "int256",
           },
           {
             internalType: "uint256",
@@ -522,14 +486,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "int224",
+        internalType: "int256",
         name: "qty",
-        type: "int224",
-      },
-      {
-        internalType: "uint32",
-        name: "leverage",
-        type: "uint32",
+        type: "int256",
       },
       {
         internalType: "uint256",
@@ -572,14 +531,9 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "int224",
+            internalType: "int256",
             name: "qty",
-            type: "int224",
-          },
-          {
-            internalType: "uint32",
-            name: "leverage",
-            type: "uint32",
+            type: "int256",
           },
           {
             internalType: "uint256",

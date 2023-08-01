@@ -36,7 +36,6 @@ export type PositionStruct = {
   openVersion: BigNumberish;
   closeVersion: BigNumberish;
   qty: BigNumberish;
-  leverage: BigNumberish;
   openTimestamp: BigNumberish;
   closeTimestamp: BigNumberish;
   takerMargin: BigNumberish;
@@ -50,7 +49,6 @@ export type PositionStructOutput = [
   openVersion: bigint,
   closeVersion: bigint,
   qty: bigint,
-  leverage: bigint,
   openTimestamp: bigint,
   closeTimestamp: bigint,
   takerMargin: bigint,
@@ -62,7 +60,6 @@ export type PositionStructOutput = [
   openVersion: bigint;
   closeVersion: bigint;
   qty: bigint;
-  leverage: bigint;
   openTimestamp: bigint;
   closeTimestamp: bigint;
   takerMargin: bigint;
@@ -118,7 +115,6 @@ export interface ChromaticAccountInterface extends Interface {
     functionFragment: "openPosition",
     values: [
       AddressLike,
-      BigNumberish,
       BigNumberish,
       BigNumberish,
       BigNumberish,
@@ -288,7 +284,6 @@ export interface ChromaticAccount extends BaseContract {
   /**
    * This function can only be called by the chromatic router contract.
    * Opens a new position in the specified market.
-   * @param leverage The leverage of the position.
    * @param makerMargin The margin required for the maker.
    * @param marketAddress The address of the market.
    * @param maxAllowableTradingFee The maximum allowable trading fee.
@@ -299,7 +294,6 @@ export interface ChromaticAccount extends BaseContract {
     [
       marketAddress: AddressLike,
       qty: BigNumberish,
-      leverage: BigNumberish,
       takerMargin: BigNumberish,
       makerMargin: BigNumberish,
       maxAllowableTradingFee: BigNumberish
@@ -390,7 +384,6 @@ export interface ChromaticAccount extends BaseContract {
     [
       marketAddress: AddressLike,
       qty: BigNumberish,
-      leverage: BigNumberish,
       takerMargin: BigNumberish,
       makerMargin: BigNumberish,
       maxAllowableTradingFee: BigNumberish

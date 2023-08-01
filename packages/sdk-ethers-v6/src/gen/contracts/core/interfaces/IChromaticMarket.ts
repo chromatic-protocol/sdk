@@ -63,7 +63,6 @@ export type PositionStruct = {
   openVersion: BigNumberish;
   closeVersion: BigNumberish;
   qty: BigNumberish;
-  leverage: BigNumberish;
   openTimestamp: BigNumberish;
   closeTimestamp: BigNumberish;
   takerMargin: BigNumberish;
@@ -77,7 +76,6 @@ export type PositionStructOutput = [
   openVersion: bigint,
   closeVersion: bigint,
   qty: bigint,
-  leverage: bigint,
   openTimestamp: bigint,
   closeTimestamp: bigint,
   takerMargin: bigint,
@@ -89,7 +87,6 @@ export type PositionStructOutput = [
   openVersion: bigint;
   closeVersion: bigint;
   qty: bigint;
-  leverage: bigint;
   openTimestamp: bigint;
   closeTimestamp: bigint;
   takerMargin: bigint;
@@ -309,14 +306,7 @@ export interface IChromaticMarketInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "openPosition",
-    values: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BytesLike
-    ]
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "oracleProvider",
@@ -1032,7 +1022,6 @@ export interface IChromaticMarket extends BaseContract {
   /**
    * Opens a new position in the market.
    * @param data Additional data for the position callback.
-   * @param leverage The leverage of the position in basis points.
    * @param makerMargin The margin amount provided by the maker.
    * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
    * @param qty The quantity of the position.
@@ -1041,7 +1030,6 @@ export interface IChromaticMarket extends BaseContract {
   openPosition: TypedContractMethod<
     [
       qty: BigNumberish,
-      leverage: BigNumberish,
       takerMargin: BigNumberish,
       makerMargin: BigNumberish,
       maxAllowableTradingFee: BigNumberish,
@@ -1292,7 +1280,6 @@ export interface IChromaticMarket extends BaseContract {
   ): TypedContractMethod<
     [
       qty: BigNumberish,
-      leverage: BigNumberish,
       takerMargin: BigNumberish,
       makerMargin: BigNumberish,
       maxAllowableTradingFee: BigNumberish,

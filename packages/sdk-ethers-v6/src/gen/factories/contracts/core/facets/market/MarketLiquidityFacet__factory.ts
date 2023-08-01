@@ -65,17 +65,6 @@ const _abi = [
     type: "error",
   },
   {
-    inputs: [
-      {
-        internalType: "int256",
-        name: "value",
-        type: "int256",
-      },
-    ],
-    name: "UFixed18UnderflowError",
-    type: "error",
-  },
-  {
     anonymous: false,
     inputs: [
       {

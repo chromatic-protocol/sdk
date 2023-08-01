@@ -38,7 +38,6 @@ export type PositionStruct = {
   openVersion: BigNumberish;
   closeVersion: BigNumberish;
   qty: BigNumberish;
-  leverage: BigNumberish;
   openTimestamp: BigNumberish;
   closeTimestamp: BigNumberish;
   takerMargin: BigNumberish;
@@ -52,7 +51,6 @@ export type PositionStructOutput = [
   openVersion: bigint,
   closeVersion: bigint,
   qty: bigint,
-  leverage: bigint,
   openTimestamp: bigint,
   closeTimestamp: bigint,
   takerMargin: bigint,
@@ -64,7 +62,6 @@ export type PositionStructOutput = [
   openVersion: bigint;
   closeVersion: bigint;
   qty: bigint;
-  leverage: bigint;
   openTimestamp: bigint;
   closeTimestamp: bigint;
   takerMargin: bigint;

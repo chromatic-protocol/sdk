@@ -38,7 +38,6 @@ export type PositionStruct = {
   openVersion: BigNumberish;
   closeVersion: BigNumberish;
   qty: BigNumberish;
-  leverage: BigNumberish;
   openTimestamp: BigNumberish;
   closeTimestamp: BigNumberish;
   takerMargin: BigNumberish;
@@ -52,7 +51,6 @@ export type PositionStructOutput = [
   openVersion: bigint,
   closeVersion: bigint,
   qty: bigint,
-  leverage: bigint,
   openTimestamp: bigint,
   closeTimestamp: bigint,
   takerMargin: bigint,
@@ -64,7 +62,6 @@ export type PositionStructOutput = [
   openVersion: bigint;
   closeVersion: bigint;
   qty: bigint;
-  leverage: bigint;
   openTimestamp: bigint;
   closeTimestamp: bigint;
   takerMargin: bigint;
@@ -104,14 +101,7 @@ export interface MarketTradeFacetInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "openPosition",
-    values: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BytesLike
-    ]
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish, BytesLike]
   ): string;
 
   decodeFunctionResult(
@@ -272,9 +262,8 @@ export interface MarketTradeFacet extends BaseContract {
   >;
 
   /**
-   * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableTakerMargin` if the taker margin is not within the allowable range based on the absolute quantity and maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
+   * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
    * @param data Additional data for the position callback.
-   * @param leverage The leverage of the position in basis points.
    * @param makerMargin The margin amount provided by the maker.
    * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
    * @param qty The quantity of the position.
@@ -283,7 +272,6 @@ export interface MarketTradeFacet extends BaseContract {
   openPosition: TypedContractMethod<
     [
       qty: BigNumberish,
-      leverage: BigNumberish,
       takerMargin: BigNumberish,
       makerMargin: BigNumberish,
       maxAllowableTradingFee: BigNumberish,
@@ -319,7 +307,6 @@ export interface MarketTradeFacet extends BaseContract {
   ): TypedContractMethod<
     [
       qty: BigNumberish,
-      leverage: BigNumberish,
       takerMargin: BigNumberish,
       makerMargin: BigNumberish,
       maxAllowableTradingFee: BigNumberish,

@@ -6,5 +6,5 @@
     "target": "es2020"
   },
   "exclude": ["test"],
-  "include": ["**/*.d.ts", "**/*.ts", "**/*.js"],
+  "include": ["**/*.d.ts", "**/*.ts", "**/*.js"]
 }

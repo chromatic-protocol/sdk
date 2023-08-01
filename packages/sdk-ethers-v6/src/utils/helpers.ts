@@ -30,8 +30,8 @@ export function decodeTokenId(encodedId: bigint) {
   }
 }
 
-export function encodeTokenId(tradingFeeRate: number, long: boolean = true) {
-  return long
+export function encodeTokenId(tradingFeeRate: number) {
+  return tradingFeeRate > 0
     ? BigInt(Math.abs(tradingFeeRate))
     : BigInt(Math.abs(tradingFeeRate)) + DIRECTION_PRECISION;
 }
@@ -45,17 +45,16 @@ export async function PromiseOnlySuccess<T>(values: Iterable<T | PromiseLike<T>>
   );
 }
 
-
 export async function handleBytesError<T>(fn: () => Promise<T>, provider: Provider): Promise<T> {
   try {
     return await fn();
   } catch (e) {
     // TODO e.action === 'estimateGas'
-    if(e.info && e.info.error.message && e.info.error.data){
+    if (e.info && e.info.error.message && e.info.error.data) {
       throw Error(parseHexError(e.info.error.data));
     }
 
-    if(e.revert && e.revert.args && e.revert.args.length > 0){
+    if (e.revert && e.revert.args && e.revert.args.length > 0) {
       throw Error(`call reverted with error: ${e.revert.args[0]}`);
     }
 

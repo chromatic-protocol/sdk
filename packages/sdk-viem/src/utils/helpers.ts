@@ -61,8 +61,8 @@ export function checkClient(
   if (!client.publicClient) throw new Error("Public client is not set");
 }
 
-export function encodeTokenId(tradingFeeRate: number, long: boolean = true) {
-  return long
+export function encodeTokenId(tradingFeeRate: number) {
+  return tradingFeeRate > 0
     ? BigInt(Math.abs(tradingFeeRate))
     : BigInt(Math.abs(tradingFeeRate)) + DIRECTION_PRECISION;
 }

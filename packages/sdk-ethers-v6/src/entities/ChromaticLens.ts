@@ -116,7 +116,7 @@ export class ChromaticLens {
           clbValue:
             totalSupplies[index] == 0n
               ? 0n
-              : (bin.liquidity * 10n ** clbTokenDecimals) / totalSupplies[index],
+              : (bin.binValue * 10n ** clbTokenDecimals) / totalSupplies[index],
           liquidity: bin.liquidity,
           clbTokenTotalSupply: totalSupplies[index],
           freeLiquidity: bin.freeLiquidity,

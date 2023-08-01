@@ -116,7 +116,7 @@ export class ChromaticLens {
           tradingFeeRate: bin.tradingFeeRate,
           clbValue: totalSupplies[index].isZero()
             ? BigNumber.from(0)
-            : bin.liquidity.mul(BigNumber.from(10 ** clbTokenDecimals)).div(totalSupplies[index]),
+            : bin.binValue.mul(BigNumber.from(10 ** clbTokenDecimals)).div(totalSupplies[index]),
           liquidity: bin.liquidity,
           clbTokenTotalSupply: totalSupplies[index],
           freeLiquidity: bin.freeLiquidity,

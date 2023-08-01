@@ -1,4 +1,4 @@
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { Client } from "../src/Client";
 import { CLBToken__factory, IChromaticMarket__factory, IERC20__factory } from "../src/gen";
 import { encodeTokenId, handleBytesError } from "../src/utils/helpers";
@@ -156,15 +156,15 @@ describe("router sdk test", () => {
     );
 
     const beforeOpenPositions = await getPositions();
-    const openTxReceipt = waitTxMining(() =>
-      router.openPosition(marketAddress, {
-        quantity: BigNumber.from(10 ** 8),
-        leverage: BigNumber.from(100), // x1
-        takerMargin: accountBalance.div(3),
+    const openTxReceipt = waitTxMining(() => {
+      const takerMargin = accountBalance.div(3);
+      return router.openPosition(marketAddress, {
+        quantity: takerMargin, // x1 leverage BigNumber.from(10 ** 8),
+        takerMargin,
         makerMargin: bin100[0].freeLiquidity.div(2),
         maxAllowableTradingFee: bin100[0].freeLiquidity.div(2).div(10),
-      })
-    );
+      });
+    });
     await handleBytesError(() => openTxReceipt, signer.provider);
 
     const afterOpenPositions = await getPositions();
@@ -201,7 +201,6 @@ describe("router sdk test", () => {
 
   test("revert msg handling", async () => {
     const { marketAddress, router, tokenContract } = await getFixture();
-
 
     // require Long String message
     async function erc20TransferFromTx() {

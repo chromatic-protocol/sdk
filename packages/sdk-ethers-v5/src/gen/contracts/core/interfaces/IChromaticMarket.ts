@@ -66,7 +66,6 @@ export type PositionStruct = {
   openVersion: BigNumberish;
   closeVersion: BigNumberish;
   qty: BigNumberish;
-  leverage: BigNumberish;
   openTimestamp: BigNumberish;
   closeTimestamp: BigNumberish;
   takerMargin: BigNumberish;
@@ -80,7 +79,6 @@ export type PositionStructOutput = [
   BigNumber,
   BigNumber,
   BigNumber,
-  number,
   BigNumber,
   BigNumber,
   BigNumber,
@@ -92,7 +90,6 @@ export type PositionStructOutput = [
   openVersion: BigNumber;
   closeVersion: BigNumber;
   qty: BigNumber;
-  leverage: number;
   openTimestamp: BigNumber;
   closeTimestamp: BigNumber;
   takerMargin: BigNumber;
@@ -186,7 +183,7 @@ export interface IChromaticMarketInterface extends utils.Interface {
     "liquidate(uint256,address,uint256)": FunctionFragment;
     "liquidator()": FunctionFragment;
     "liquidityBinStatuses()": FunctionFragment;
-    "openPosition(int224,uint32,uint256,uint256,uint256,bytes)": FunctionFragment;
+    "openPosition(int256,uint256,uint256,uint256,bytes)": FunctionFragment;
     "oracleProvider()": FunctionFragment;
     "pendingLiquidity(int16)": FunctionFragment;
     "pendingLiquidityBatch(int16[])": FunctionFragment;
@@ -332,14 +329,7 @@ export interface IChromaticMarketInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "openPosition",
-    values: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BytesLike
-    ]
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "oracleProvider",
@@ -512,11 +502,11 @@ export interface IChromaticMarketInterface extends utils.Interface {
     "AddLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])": EventFragment;
     "ClaimLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256)": EventFragment;
     "ClaimLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[])": EventFragment;
-    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
-    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
-    "ClosePosition(address,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
-    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
-    "OpenPosition(address,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
     "RemoveLiquidity((uint256,uint256,uint256,address,uint8,int16))": EventFragment;
     "RemoveLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])": EventFragment;
     "SetFeeProtocol(uint8,uint8)": EventFragment;
@@ -978,7 +968,6 @@ export interface IChromaticMarket extends BaseContract {
     /**
      * Opens a new position in the market.
      * @param data Additional data for the position callback.
-     * @param leverage The leverage of the position in basis points.
      * @param makerMargin The margin amount provided by the maker.
      * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
      * @param qty The quantity of the position.
@@ -986,7 +975,6 @@ export interface IChromaticMarket extends BaseContract {
      */
     openPosition(
       qty: BigNumberish,
-      leverage: BigNumberish,
       takerMargin: BigNumberish,
       makerMargin: BigNumberish,
       maxAllowableTradingFee: BigNumberish,
@@ -1324,7 +1312,6 @@ export interface IChromaticMarket extends BaseContract {
   /**
    * Opens a new position in the market.
    * @param data Additional data for the position callback.
-   * @param leverage The leverage of the position in basis points.
    * @param makerMargin The margin amount provided by the maker.
    * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
    * @param qty The quantity of the position.
@@ -1332,7 +1319,6 @@ export interface IChromaticMarket extends BaseContract {
    */
   openPosition(
     qty: BigNumberish,
-    leverage: BigNumberish,
     takerMargin: BigNumberish,
     makerMargin: BigNumberish,
     maxAllowableTradingFee: BigNumberish,
@@ -1670,7 +1656,6 @@ export interface IChromaticMarket extends BaseContract {
     /**
      * Opens a new position in the market.
      * @param data Additional data for the position callback.
-     * @param leverage The leverage of the position in basis points.
      * @param makerMargin The margin amount provided by the maker.
      * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
      * @param qty The quantity of the position.
@@ -1678,7 +1663,6 @@ export interface IChromaticMarket extends BaseContract {
      */
     openPosition(
       qty: BigNumberish,
-      leverage: BigNumberish,
       takerMargin: BigNumberish,
       makerMargin: BigNumberish,
       maxAllowableTradingFee: BigNumberish,
@@ -1814,7 +1798,7 @@ export interface IChromaticMarket extends BaseContract {
       clbTokenAmounts?: null
     ): ClaimLiquidityBatchEventFilter;
 
-    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
       account?: string | null,
       pnl?: BigNumberish | null,
       interest?: BigNumberish | null,
@@ -1827,7 +1811,7 @@ export interface IChromaticMarket extends BaseContract {
       position?: null
     ): ClaimPositionEventFilter;
 
-    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
       account?: string | null,
       pnl?: BigNumberish | null,
       interest?: BigNumberish | null,
@@ -1842,7 +1826,7 @@ export interface IChromaticMarket extends BaseContract {
       position?: null
     ): ClaimPositionByKeeperEventFilter;
 
-    "ClosePosition(address,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
       account?: string | null,
       position?: null
     ): ClosePositionEventFilter;
@@ -1851,7 +1835,7 @@ export interface IChromaticMarket extends BaseContract {
       position?: null
     ): ClosePositionEventFilter;
 
-    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
       account?: string | null,
       pnl?: BigNumberish | null,
       interest?: BigNumberish | null,
@@ -1866,7 +1850,7 @@ export interface IChromaticMarket extends BaseContract {
       position?: null
     ): LiquidateEventFilter;
 
-    "OpenPosition(address,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
       account?: string | null,
       position?: null
     ): OpenPositionEventFilter;
@@ -2154,7 +2138,6 @@ export interface IChromaticMarket extends BaseContract {
     /**
      * Opens a new position in the market.
      * @param data Additional data for the position callback.
-     * @param leverage The leverage of the position in basis points.
      * @param makerMargin The margin amount provided by the maker.
      * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
      * @param qty The quantity of the position.
@@ -2162,7 +2145,6 @@ export interface IChromaticMarket extends BaseContract {
      */
     openPosition(
       qty: BigNumberish,
-      leverage: BigNumberish,
       takerMargin: BigNumberish,
       makerMargin: BigNumberish,
       maxAllowableTradingFee: BigNumberish,
@@ -2499,7 +2481,6 @@ export interface IChromaticMarket extends BaseContract {
     /**
      * Opens a new position in the market.
      * @param data Additional data for the position callback.
-     * @param leverage The leverage of the position in basis points.
      * @param makerMargin The margin amount provided by the maker.
      * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
      * @param qty The quantity of the position.
@@ -2507,7 +2488,6 @@ export interface IChromaticMarket extends BaseContract {
      */
     openPosition(
       qty: BigNumberish,
-      leverage: BigNumberish,
       takerMargin: BigNumberish,
       makerMargin: BigNumberish,
       maxAllowableTradingFee: BigNumberish,

@@ -33,17 +33,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "int256",
-        name: "value",
-        type: "int256",
-      },
-    ],
-    name: "UFixed18UnderflowError",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
         internalType: "int16",
         name: "tradingFeeRate",
         type: "int16",

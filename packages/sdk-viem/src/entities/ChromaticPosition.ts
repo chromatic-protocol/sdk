@@ -1,7 +1,6 @@
-import { Address } from "viem"
-import { Client } from "../Client"
-import { QTY_LEVERAGE_PRECISION } from "../constants"
-import { handleBytesError } from "../utils/helpers"
+import { Address } from "viem";
+import { Client } from "../Client";
+import { handleBytesError } from "../utils/helpers";
 
 type InterestParam = Pick<PositionParam, "makerMargin" | "claimTimestamp" | "openTimestamp">;
 
@@ -24,10 +23,8 @@ export interface PositionParam {
   openTimestamp: bigint;
   /** The timestamp when the position was claimed */
   claimTimestamp?: bigint;
-  /** The quantity of the position, with 4 decimal places */
+  /** The quantity of the position */
   qty: bigint;
-  /** The leverage BPS applied to the position */
-  leverage: number;
 }
 interface InterestRateRecord {
   /** The annual interest rate in basis points (BPS) */
@@ -45,10 +42,8 @@ export interface IPosition {
   openVersion: bigint;
   /** The version of the oracle when the position was closed */
   closeVersion: bigint;
-  /** The quantity of the position, with 4 decimal places */
+  /** The quantity of the position */
   qty: bigint;
-  /** The leverage BPS applied to the position */
-  leverage: number;
   /** The timestamp when the position was opened */
   openTimestamp: bigint;
   /** The timestamp when the position was closed */
@@ -169,24 +164,24 @@ export class ChromaticPosition {
     const yearSecond = 3600 * 24 * 365;
     const denominator = BigInt(yearSecond * 10000);
     let to = position.claimTimestamp || BigInt(Math.floor(Date.now() / 1000));
-    const filteredInterestFees = (await this.getInterestRateRecords(marketAddress))
+    const filteredInterests = (await this.getInterestRateRecords(marketAddress))
       .filter((fee) => fee.beginTimestamp <= BigInt(to))
       .sort((a, b) => Number(b.beginTimestamp - a.beginTimestamp));
-    let totalInterestFee = 0n;
-    for (let fee of filteredInterestFees) {
+    let totalInterest = 0n;
+    for (let fee of filteredInterests) {
       const from = BigInt(Math.max(Number(fee.beginTimestamp), Number(position.openTimestamp)));
       const period = to - from;
       to = fee.beginTimestamp;
       const x = position.makerMargin;
       const y = fee.annualRateBPS * period;
-      let calculatedInterestFee = (x * y) / denominator;
+      let calculatedInterest = (x * y) / denominator;
       if ((x * y) % denominator > 0n) {
-        calculatedInterestFee = calculatedInterestFee + 1n;
+        calculatedInterest = calculatedInterest + 1n;
       }
-      totalInterestFee = totalInterestFee + calculatedInterestFee;
+      totalInterest = totalInterest + calculatedInterest;
       if (fee.beginTimestamp <= position.openTimestamp) break;
     }
-    return totalInterestFee;
+    return totalInterest;
   }
 
   /**
@@ -196,7 +191,6 @@ export class ChromaticPosition {
    * @param exitPrice The exit price of the position.
    * @param position The position parameters.
    * @param options Optional parameters for PNL calculation.
-   * @param tokenDecimals The decimals of the settlement token.
    * @returns A promise that resolves to the PNL value.
    */
   async getPnl(
@@ -204,17 +198,13 @@ export class ChromaticPosition {
     entryPrice: bigint,
     exitPrice: bigint,
     position: PositionParam,
-    tokenDecimals: number,
-    options: { includeInterestFee: boolean } = { includeInterestFee: true }
+    options: { includeInterest: boolean } = { includeInterest: true }
   ) {
-    const leveragedQty =
-      (position.qty * BigInt(position.leverage) * BigInt(10 ** tokenDecimals)) /
-      BigInt(QTY_LEVERAGE_PRECISION);
     let delta = exitPrice - entryPrice;
-    let pnl = (leveragedQty * delta) / entryPrice;
-    if (options.includeInterestFee) {
-      const interestFee = await this.getInterest(marketAddress, position);
-      pnl = pnl - interestFee;
+    let pnl = (position.qty * delta) / entryPrice;
+    if (options.includeInterest) {
+      const interest = await this.getInterest(marketAddress, position);
+      pnl = pnl - interest;
     }
     return pnl;
   }
@@ -224,28 +214,16 @@ export class ChromaticPosition {
    * @param marketAddress The address of the Chromatic Market contract.
    * @param entryPrice The entry price of the position.
    * @param position The position parameters.
-   * @param oraclePriceDecimals The number of decimals used for the oracle price.
    * @returns A promise that resolves to an object containing the profit stop price and loss cut price.
    */
   async getLiquidationPrice(
     marketAddress: Address,
     entryPrice: bigint | undefined,
-    position: PositionParam,
-    oraclePriceDecimals: number
+    position: PositionParam
   ) {
     return {
-      profitStopPrice: await this.profitStopPrice(
-        marketAddress,
-        entryPrice,
-        position,
-        oraclePriceDecimals
-      ),
-      lossCutPrice: await this.lossCutPrice(
-        marketAddress,
-        entryPrice,
-        position,
-        oraclePriceDecimals
-      ),
+      profitStopPrice: await this.profitStopPrice(marketAddress, entryPrice, position),
+      lossCutPrice: await this.lossCutPrice(marketAddress, entryPrice, position),
     };
   }
 
@@ -255,24 +233,18 @@ export class ChromaticPosition {
    * @param entryPrice The entry price of the position.
    * @param position The position parameters.
    * @param isProfitStop A flag indicating whether it is for the profit stop price calculation.
-   * @param oraclePriceDecimals The number of decimals used for the oracle price.
    * @returns A promise that resolves to the delta value.
    */
   private async getDeltaForLiquidation(
     marketAddress: Address,
     entryPrice: bigint,
     position: PositionParam,
-    isProfitStop: boolean,
-    oraclePriceDecimals: number
+    isProfitStop: boolean
   ) {
-    const interestFee = await this.getInterest(marketAddress, position);
+    const interest = await this.getInterest(marketAddress, position);
     const margin = isProfitStop ? position.makerMargin : position.takerMargin;
-    const leveragedQty = position.qty * BigInt(position.leverage);
-    const marginWithInterest = isProfitStop ? margin + interestFee : margin - interestFee;
-    let delta =
-      (entryPrice * marginWithInterest * BigInt(QTY_LEVERAGE_PRECISION)) /
-      leveragedQty /
-      10n ** BigInt(oraclePriceDecimals);
+    const marginWithInterest = isProfitStop ? margin + interest : margin - interest;
+    let delta = (entryPrice * marginWithInterest) / position.qty;
     return delta;
   }
 
@@ -281,23 +253,15 @@ export class ChromaticPosition {
    * @param marketAddress The address of the Chromatic Market contract.
    * @param entryPrice The entry price of the position.
    * @param position The position parameters.
-   * @param oraclePriceDecimals The number of decimals used for the oracle price.
    * @returns A promise that resolves to the profit stop price.
    */
   async profitStopPrice(
     marketAddress: Address,
     entryPrice: bigint | undefined,
-    position: PositionParam,
-    oraclePriceDecimals: number
+    position: PositionParam
   ) {
     if (!entryPrice) return;
-    const delta = await this.getDeltaForLiquidation(
-      marketAddress,
-      entryPrice,
-      position,
-      true,
-      oraclePriceDecimals
-    );
+    const delta = await this.getDeltaForLiquidation(marketAddress, entryPrice, position, true);
     return entryPrice + delta;
   }
 
@@ -306,23 +270,15 @@ export class ChromaticPosition {
    * @param marketAddress The address of the Chromatic Market contract.
    * @param entryPrice The entry price of the position.
    * @param position The position parameters.
-   * @param oraclePriceDecimals The number of decimals used for the oracle price.
    * @returns A promise that resolves to the loss cut price.
    */
   async lossCutPrice(
     marketAddress: Address,
     entryPrice: bigint | undefined,
-    position: PositionParam,
-    oraclePriceDecimals: number
+    position: PositionParam
   ) {
     if (!entryPrice) return;
-    const delta = await this.getDeltaForLiquidation(
-      marketAddress,
-      entryPrice,
-      position,
-      false,
-      oraclePriceDecimals
-    );
+    const delta = await this.getDeltaForLiquidation(marketAddress, entryPrice, position, false);
     return entryPrice - delta;
   }
 }

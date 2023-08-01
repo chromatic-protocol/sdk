@@ -17,10 +17,8 @@ export interface RouterAddLiquidityParam {
  * Represents the parameters for opening a position using the ChromaticRouter.
  */
 export interface RouterOpenPositionParam {
-  /** The quantity of the position, with 4 decimal places */
+  /** The quantity of the position */
   quantity: BigNumberish;
-  /** The leverage BPS of the position */
-  leverage: BigNumberish;
   /** The margin required for the taker */
   takerMargin: BigNumberish;
   /** The margin required for the maker */
@@ -79,7 +77,6 @@ export class ChromaticRouter {
         .openPosition(
           marketAddress,
           BigInt(param.quantity),
-          BigInt(param.leverage),
           BigInt(param.takerMargin),
           BigInt(param.makerMargin),
           BigInt(param.maxAllowableTradingFee)

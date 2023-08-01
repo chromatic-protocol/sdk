@@ -186,14 +186,9 @@ const _abi = [
         type: "address",
       },
       {
-        internalType: "int224",
+        internalType: "int256",
         name: "qty",
-        type: "int224",
-      },
-      {
-        internalType: "uint32",
-        name: "leverage",
-        type: "uint32",
+        type: "int256",
       },
       {
         internalType: "uint256",
@@ -231,14 +226,9 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "int224",
+            internalType: "int256",
             name: "qty",
-            type: "int224",
-          },
-          {
-            internalType: "uint32",
-            name: "leverage",
-            type: "uint32",
+            type: "int256",
           },
           {
             internalType: "uint256",

@@ -155,10 +155,10 @@ describe("router sdk test", () => {
 
     const beforeOpenPositions = await getPositions();
 
+    const takerMargin = accountBalance / 2n;
     const openTxReceipt = await router.openPosition(market.address, {
-      quantity: 10n ** 8n,
-      leverage: 100, // x1
-      takerMargin: accountBalance / 2n,
+      quantity: takerMargin, // x1 leverage
+      takerMargin,
       makerMargin: bin100[0].freeLiquidity / 2n,
       maxAllowableTradingFee: bin100[0].freeLiquidity / 2n,
     });
@@ -199,7 +199,6 @@ describe("router sdk test", () => {
   //     publicClient: client.publicClient,
   //     walletClient: client.walletClient,
   //   });
-
 
   //   // require Long String message
   //   async function erc20TransferFromTx() {

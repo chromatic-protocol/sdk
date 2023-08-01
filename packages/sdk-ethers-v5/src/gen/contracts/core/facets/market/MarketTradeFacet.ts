@@ -41,7 +41,6 @@ export type PositionStruct = {
   openVersion: BigNumberish;
   closeVersion: BigNumberish;
   qty: BigNumberish;
-  leverage: BigNumberish;
   openTimestamp: BigNumberish;
   closeTimestamp: BigNumberish;
   takerMargin: BigNumberish;
@@ -55,7 +54,6 @@ export type PositionStructOutput = [
   BigNumber,
   BigNumber,
   BigNumber,
-  number,
   BigNumber,
   BigNumber,
   BigNumber,
@@ -67,7 +65,6 @@ export type PositionStructOutput = [
   openVersion: BigNumber;
   closeVersion: BigNumber;
   qty: BigNumber;
-  leverage: number;
   openTimestamp: BigNumber;
   closeTimestamp: BigNumber;
   takerMargin: BigNumber;
@@ -81,7 +78,7 @@ export interface MarketTradeFacetInterface extends utils.Interface {
     "claimPosition(uint256,address,bytes)": FunctionFragment;
     "closePosition(uint256)": FunctionFragment;
     "getPositions(uint256[])": FunctionFragment;
-    "openPosition(int224,uint32,uint256,uint256,uint256,bytes)": FunctionFragment;
+    "openPosition(int256,uint256,uint256,uint256,bytes)": FunctionFragment;
   };
 
   getFunction(
@@ -106,14 +103,7 @@ export interface MarketTradeFacetInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "openPosition",
-    values: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BytesLike
-    ]
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish, BytesLike]
   ): string;
 
   decodeFunctionResult(
@@ -134,9 +124,9 @@ export interface MarketTradeFacetInterface extends utils.Interface {
   ): Result;
 
   events: {
-    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
-    "ClosePosition(address,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
-    "OpenPosition(address,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
     "TransferProtocolFee(uint256,uint256)": EventFragment;
   };
 
@@ -254,9 +244,8 @@ export interface MarketTradeFacet extends BaseContract {
     >;
 
     /**
-     * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableTakerMargin` if the taker margin is not within the allowable range based on the absolute quantity and maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
+     * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
      * @param data Additional data for the position callback.
-     * @param leverage The leverage of the position in basis points.
      * @param makerMargin The margin amount provided by the maker.
      * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
      * @param qty The quantity of the position.
@@ -264,7 +253,6 @@ export interface MarketTradeFacet extends BaseContract {
      */
     openPosition(
       qty: BigNumberish,
-      leverage: BigNumberish,
       takerMargin: BigNumberish,
       makerMargin: BigNumberish,
       maxAllowableTradingFee: BigNumberish,
@@ -305,9 +293,8 @@ export interface MarketTradeFacet extends BaseContract {
   ): Promise<PositionStructOutput[]>;
 
   /**
-   * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableTakerMargin` if the taker margin is not within the allowable range based on the absolute quantity and maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
+   * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
    * @param data Additional data for the position callback.
-   * @param leverage The leverage of the position in basis points.
    * @param makerMargin The margin amount provided by the maker.
    * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
    * @param qty The quantity of the position.
@@ -315,7 +302,6 @@ export interface MarketTradeFacet extends BaseContract {
    */
   openPosition(
     qty: BigNumberish,
-    leverage: BigNumberish,
     takerMargin: BigNumberish,
     makerMargin: BigNumberish,
     maxAllowableTradingFee: BigNumberish,
@@ -356,9 +342,8 @@ export interface MarketTradeFacet extends BaseContract {
     ): Promise<PositionStructOutput[]>;
 
     /**
-     * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableTakerMargin` if the taker margin is not within the allowable range based on the absolute quantity and maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
+     * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
      * @param data Additional data for the position callback.
-     * @param leverage The leverage of the position in basis points.
      * @param makerMargin The margin amount provided by the maker.
      * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
      * @param qty The quantity of the position.
@@ -366,7 +351,6 @@ export interface MarketTradeFacet extends BaseContract {
      */
     openPosition(
       qty: BigNumberish,
-      leverage: BigNumberish,
       takerMargin: BigNumberish,
       makerMargin: BigNumberish,
       maxAllowableTradingFee: BigNumberish,
@@ -376,7 +360,7 @@ export interface MarketTradeFacet extends BaseContract {
   };
 
   filters: {
-    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
       account?: string | null,
       pnl?: BigNumberish | null,
       interest?: BigNumberish | null,
@@ -389,7 +373,7 @@ export interface MarketTradeFacet extends BaseContract {
       position?: null
     ): ClaimPositionEventFilter;
 
-    "ClosePosition(address,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
       account?: string | null,
       position?: null
     ): ClosePositionEventFilter;
@@ -398,7 +382,7 @@ export interface MarketTradeFacet extends BaseContract {
       position?: null
     ): ClosePositionEventFilter;
 
-    "OpenPosition(address,(uint256,uint256,uint256,int224,uint32,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
       account?: string | null,
       position?: null
     ): OpenPositionEventFilter;
@@ -450,9 +434,8 @@ export interface MarketTradeFacet extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableTakerMargin` if the taker margin is not within the allowable range based on the absolute quantity and maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
+     * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
      * @param data Additional data for the position callback.
-     * @param leverage The leverage of the position in basis points.
      * @param makerMargin The margin amount provided by the maker.
      * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
      * @param qty The quantity of the position.
@@ -460,7 +443,6 @@ export interface MarketTradeFacet extends BaseContract {
      */
     openPosition(
       qty: BigNumberish,
-      leverage: BigNumberish,
       takerMargin: BigNumberish,
       makerMargin: BigNumberish,
       maxAllowableTradingFee: BigNumberish,
@@ -502,9 +484,8 @@ export interface MarketTradeFacet extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableTakerMargin` if the taker margin is not within the allowable range based on the absolute quantity and maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
+     * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
      * @param data Additional data for the position callback.
-     * @param leverage The leverage of the position in basis points.
      * @param makerMargin The margin amount provided by the maker.
      * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
      * @param qty The quantity of the position.
@@ -512,7 +493,6 @@ export interface MarketTradeFacet extends BaseContract {
      */
     openPosition(
       qty: BigNumberish,
-      leverage: BigNumberish,
       takerMargin: BigNumberish,
       makerMargin: BigNumberish,
       maxAllowableTradingFee: BigNumberish,

@@ -3,7 +3,7 @@ import type { Client } from "../Client";
 import { ChromaticLens__factory, getDeployedAddress } from "../gen";
 import { IMarketLiquidity } from "../gen/contracts/core/interfaces/IChromaticMarket";
 import { decodeTokenId, encodeTokenId, handleBytesError } from "../utils/helpers";
-import groupBy from 'lodash/groupBy'
+import groupBy from "lodash/groupBy";
 /**
  * Represents the result of a liquidity bin.
  */
@@ -13,7 +13,7 @@ export interface LiquidityBinResult {
   /**
    * The current value per one CLB token, which includes decimal points.
    * The unrealized profit or loss of the position and adds it to the total value.
-   * Additionally, it includes the pending bin share from the market's vault 
+   * Additionally, it includes the pending bin share from the market's vault
    */
   clbValue: BigNumber;
   /** The total liquidity amount (settlement token) for the specified trading fee rate */
@@ -39,13 +39,13 @@ export interface OwnedLiquidityBinResult {
   /**
    * The current value per one CLB token, which includes decimal points.
    * The unrealized profit or loss of the position and adds it to the total value.
-   * Additionally, it includes the pending bin share from the market's vault 
+   * Additionally, it includes the pending bin share from the market's vault
    */
   clbValue: BigNumber;
-  /** 
+  /**
    * The current value of the bin for the specified trading fee rate.
    * The unrealized profit or loss of the position and adds it to the total value.
-   * Additionally, it includes the pending bin share from the market's vault 
+   * Additionally, it includes the pending bin share from the market's vault
    */
   binValue: BigNumber;
 }
@@ -188,7 +188,11 @@ export class ChromaticLens {
   async claimableLiquidities(
     marketAddress: string,
     params: { tradingFeeRate: number; oracleVersion: BigNumber }[]
-  ): Promise<{ [tradingFeeRate: string | number]: { [oracleVersion: string | number]: ClaimableLiquidityResult } }> {
+  ): Promise<{
+    [tradingFeeRate: string | number]: {
+      [oracleVersion: string | number]: ClaimableLiquidityResult;
+    };
+  }> {
     return await handleBytesError(async () => {
       const groupedByOV = groupBy(params, (p) => p.oracleVersion);
 
@@ -199,7 +203,7 @@ export class ChromaticLens {
           const claimableLiquiditiesByOv = await this.getContract().claimableLiquidityBatch(
             marketAddress,
             Array.from(tradingFees),
-            BigInt(ov),
+            BigInt(ov)
           );
 
           return Array.from(tradingFees).map((fee, index) => {
@@ -213,16 +217,7 @@ export class ChromaticLens {
       );
 
       const groupedByFeeAndOV = claimableLiquidities.flat(1).reduce((acc, liq) => {
-        const key = `${liq.tradingFeeRate}_${liq.oracleVersion}`;
-        if (!acc[key]) {
-          acc[key] = { ...liq };
-        } else {
-          acc[key].burningCLBTokenAmount = acc[key].burningCLBTokenAmount.add(liq.burningCLBTokenAmount);
-          acc[key].burningCLBTokenAmountRequested = acc[key].burningCLBTokenAmountRequested.add(liq.burningCLBTokenAmountRequested)
-          acc[key].burningTokenAmount = acc[key].burningTokenAmount.add(liq.burningTokenAmount)
-          acc[key].mintingCLBTokenAmount = acc[key].mintingCLBTokenAmount.add(liq.mintingCLBTokenAmount);
-          acc[key].mintingTokenAmountRequested = acc[key].mintingTokenAmountRequested.add(liq.mintingTokenAmountRequested)
-        }
+        acc[`${liq.tradingFeeRate}_${liq.oracleVersion}`] = { ...liq };
         return acc;
       }, {} as { [tradingFeeAndOracleVersion: string]: ClaimableLiquidityResult });
 

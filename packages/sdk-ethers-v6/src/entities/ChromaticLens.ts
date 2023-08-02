@@ -189,7 +189,11 @@ export class ChromaticLens {
   async claimableLiquidities(
     marketAddress: string,
     params: { tradingFeeRate: number; oracleVersion: bigint }[]
-  ): Promise<{[tradingFeeRate: string | number]: { [oracleVersion: string | number]: ClaimableLiquidityResult } }> {
+  ): Promise<{
+    [tradingFeeRate: string | number]: {
+      [oracleVersion: string | number]: ClaimableLiquidityResult;
+    };
+  }> {
     return await handleBytesError(async () => {
       const groupedByOV = groupBy(params, (p) => p.oracleVersion);
 
@@ -200,7 +204,7 @@ export class ChromaticLens {
           const claimableLiquiditiesByOv = await this.getContract().claimableLiquidityBatch(
             marketAddress,
             Array.from(tradingFees),
-            BigInt(ov),
+            BigInt(ov)
           );
 
           return Array.from(tradingFees).map((fee, index) => {
@@ -214,16 +218,7 @@ export class ChromaticLens {
       );
 
       const groupedByFeeAndOV = claimableLiquidities.flat(1).reduce((acc, liq) => {
-        const key = `${liq.tradingFeeRate}_${liq.oracleVersion}`;
-        if (!acc[key]) {
-          acc[key] = { ...liq };
-        } else {
-          acc[key].burningCLBTokenAmount += liq.burningCLBTokenAmount;
-          acc[key].burningCLBTokenAmountRequested += liq.burningCLBTokenAmountRequested;
-          acc[key].burningTokenAmount += liq.burningTokenAmount;
-          acc[key].mintingCLBTokenAmount += liq.mintingCLBTokenAmount;
-          acc[key].mintingTokenAmountRequested += liq.mintingTokenAmountRequested;
-        }
+        acc[`${liq.tradingFeeRate}_${liq.oracleVersion}`] = { ...liq };
         return acc;
       }, {} as { [tradingFeeAndOracleVersion: string]: ClaimableLiquidityResult });
 

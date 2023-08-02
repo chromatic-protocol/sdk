@@ -221,16 +221,7 @@ export class ChromaticLens {
       );
 
       const groupedByFeeAndOV = claimableLiquidities.flat(1).reduce((acc, liq) => {
-        const key = `${liq.tradingFeeRate}_${liq.oracleVersion}`;
-        if (!acc[key]) {
-          acc[key] = { ...liq };
-        } else {
-          acc[key].burningCLBTokenAmount += liq.burningCLBTokenAmount;
-          acc[key].burningCLBTokenAmountRequested += liq.burningCLBTokenAmountRequested;
-          acc[key].burningTokenAmount += liq.burningTokenAmount;
-          acc[key].mintingCLBTokenAmount += liq.mintingCLBTokenAmount;
-          acc[key].mintingTokenAmountRequested += liq.mintingTokenAmountRequested;
-        }
+        acc[`${liq.tradingFeeRate}_${liq.oracleVersion}`] = { ...liq };
         return acc;
       }, {} as { [tradingFeeAndOracleVersion: string]: ClaimableLiquidityResult });
 

@@ -31,8 +31,8 @@ export function decodeTokenId(encodedId: BigNumber) {
   }
 }
 
-export function encodeTokenId(tradingFeeRate: number, long: boolean = true) {
-  return long
+export function encodeTokenId(tradingFeeRate: number) {
+  return tradingFeeRate > 0
     ? BigNumber.from(Math.abs(tradingFeeRate))
     : BigNumber.from(Math.abs(tradingFeeRate)).add(DIRECTION_PRECISION);
 }

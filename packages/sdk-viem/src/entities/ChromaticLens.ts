@@ -8,6 +8,7 @@ import {
   handleBytesError,
 } from "../utils/helpers";
 import type { ContractChromaticLens } from "./types";
+import groupBy from "lodash/groupBy";
 /**
  * Represents the result of a liquidity bin.
  */
@@ -17,7 +18,7 @@ export interface LiquidityBinResult {
   /**
    * The current value per one CLB token, which includes decimal points.
    * The unrealized profit or loss of the position and adds it to the total value.
-   * Additionally, it includes the pending bin share from the market's vault 
+   * Additionally, it includes the pending bin share from the market's vault
    */
   clbValue: bigint;
   /** The total liquidity amount (settlement token) for the specified trading fee rate */
@@ -43,13 +44,13 @@ export interface OwnedLiquidityBinResult {
   /**
    * The current value per one CLB token, which includes decimal points.
    * The unrealized profit or loss of the position and adds it to the total value.
-   * Additionally, it includes the pending bin share from the market's vault 
+   * Additionally, it includes the pending bin share from the market's vault
    */
   clbValue: bigint;
-  /** 
+  /**
    * The current value of the bin for the specified trading fee rate.
    * The unrealized profit or loss of the position and adds it to the total value.
-   * Additionally, it includes the pending bin share from the market's vault 
+   * Additionally, it includes the pending bin share from the market's vault
    */
   binValue: bigint;
 }
@@ -58,11 +59,9 @@ export interface OwnedLiquidityBinResult {
  * Represents the result of a claimable liquidity.
  */
 export interface ClaimableLiquidityResult {
-  /** The trading fee rate for the liquidity bin*/
-  tradingFeeRate: number;
   /** The amount of settlement tokens requested for minting */
   mintingTokenAmountRequested: bigint;
-  /** The actual amount of CLB tokens minted */
+  // /** The actual amount of CLB tokens minted */
   mintingCLBTokenAmount: bigint;
   /** The amount of CLB tokens requested for burning */
   burningCLBTokenAmountRequested: bigint;
@@ -129,7 +128,7 @@ export class ChromaticLens {
           clbValue:
             totalSupplies[index] == 0n
               ? 0n
-              : (bin.liquidity * 10n ** BigInt(clbTokenDecimals)) / totalSupplies[index],
+              : (bin.binValue * 10n ** BigInt(clbTokenDecimals)) / totalSupplies[index],
           liquidity: bin.liquidity,
           clbTokenTotalSupply: totalSupplies[index],
           freeLiquidity: bin.freeLiquidity,
@@ -192,27 +191,50 @@ export class ChromaticLens {
    * Retrieves the claimable liquidities for a given market and parameters.
    * @param marketAddress The address of the Chromatic Market contract.
    * @param params An array of objects containing tradingFeeRate and oracleVersion.
-   * @returns A promise that resolves to an array of ClaimableLiquidityResult.
+   * @returns A promise that resolves to an object with mappings between tradingFee and oracleVersion.
    */
   async claimableLiquidities(
     marketAddress: Address,
     params: { tradingFeeRate: number; oracleVersion: bigint }[]
   ) {
     return await handleBytesError(async () => {
-      return await Promise.all(
-        params.map(async ({ tradingFeeRate, oracleVersion }) => {
-          const res = await this.getContract().read.claimableLiquidity([
+      const groupedByOV = groupBy(params, (p) => p.oracleVersion);
+
+      // Get claimable liquidities for each oracleVersion and tradingFeeRate
+      const claimableLiquidities = await Promise.all(
+        Object.entries(groupedByOV).map(async ([ov, params]) => {
+          const tradingFees = new Set(params.map((param) => param.tradingFeeRate));
+          const claimableLiquiditiesByOv = await this.getContract().read.claimableLiquidityBatch([
             marketAddress,
-            tradingFeeRate,
-            oracleVersion,
+            Array.from(tradingFees),
+            BigInt(ov),
           ]);
 
-          return {
-            tradingFeeRate,
-            ...res,
-          };
+          return Array.from(tradingFees).map((fee, index) => {
+            return {
+              oracleVersion: BigInt(ov),
+              ...claimableLiquiditiesByOv[index],
+              tradingFeeRate: fee,
+            };
+          });
         })
       );
+
+      const groupedByFeeAndOV = claimableLiquidities.flat(1).reduce((acc, liq) => {
+        acc[`${liq.tradingFeeRate}_${liq.oracleVersion}`] = { ...liq };
+        return acc;
+      }, {} as { [tradingFeeAndOracleVersion: string]: ClaimableLiquidityResult });
+
+      const result = Object.entries(groupedByFeeAndOV).reduce((acc, [key, value]) => {
+        const [tradingFeeRate, oracleVersion] = key.split("_");
+        if (!acc[tradingFeeRate]) {
+          acc[tradingFeeRate] = {};
+        }
+        acc[tradingFeeRate][oracleVersion] = value;
+        return acc;
+      }, {} as { [tradingFeeRate: string | number]: { [oracleVersion: string | number]: ClaimableLiquidityResult } });
+
+      return result;
     });
   }
 

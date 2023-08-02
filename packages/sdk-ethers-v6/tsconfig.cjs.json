@@ -4,5 +4,5 @@
     "module": "commonjs",
     "outDir": "./cjs",
     "target": "es2020"
-  },
+  }
 }

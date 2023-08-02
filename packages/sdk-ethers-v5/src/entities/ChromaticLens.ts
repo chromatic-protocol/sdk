@@ -242,7 +242,21 @@ export class ChromaticLens {
    */
   async pendingLiquidityBatch(marketAddress: string, tradingFeeRates: number[]) {
     return await handleBytesError(async () => {
-      return await this.getContract().pendingLiquidityBatch(marketAddress, tradingFeeRates);
+      const uniqTradingFeeRates = Array.from(new Set(tradingFeeRates));
+      const pendingLiquidities = await this.getContract().pendingLiquidityBatch(
+        marketAddress,
+        uniqTradingFeeRates
+      );
+      return uniqTradingFeeRates.map((feeRate, index) => ({
+        tradingFeeRate: feeRate,
+        ...pendingLiquidities[index],
+      })) satisfies Array<
+        {
+          oracleVersion: BigNumber;
+          mintingTokenAmountRequested: BigNumber;
+          burningCLBTokenAmountRequested: BigNumber;
+        } & { tradingFeeRate: number }
+      >;
     }, this._client.provider);
   }
 

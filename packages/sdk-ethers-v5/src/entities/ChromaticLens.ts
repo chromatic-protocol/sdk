@@ -23,6 +23,20 @@ export interface LiquidityBinResult {
 }
 
 /**
+ * Represents the result of a pending liquidity.
+ */
+export interface PendingLiquidityResult {
+  /** The oracle version for pending liquidity */
+  oracleVersion: BigNumber;
+  /** The amount of pending settlement token for minting */
+  mintingTokenAmountRequested: BigNumber;
+  /** The amount of pending CLB tokens requested for burning */
+  burningCLBTokenAmountRequested: BigNumber;
+  /** The trading fee rate for the liquidity bin*/
+  tradingFeeRate: number;
+}
+
+/**
  * Represents the result of an owned liquidity bin.
  */
 export interface OwnedLiquidityBinResult {
@@ -240,7 +254,10 @@ export class ChromaticLens {
    * @param tradingFeeRates An array of tradingFeeRate.
    * @returns A promise that resolves to an array of PendingLiquidity.
    */
-  async pendingLiquidityBatch(marketAddress: string, tradingFeeRates: number[]) {
+  async pendingLiquidityBatch(
+    marketAddress: string,
+    tradingFeeRates: number[]
+  ): Promise<Array<PendingLiquidityResult>> {
     return await handleBytesError(async () => {
       const uniqTradingFeeRates = Array.from(new Set(tradingFeeRates));
       const pendingLiquidities = await this.getContract().pendingLiquidityBatch(
@@ -250,13 +267,7 @@ export class ChromaticLens {
       return uniqTradingFeeRates.map((feeRate, index) => ({
         tradingFeeRate: feeRate,
         ...pendingLiquidities[index],
-      })) satisfies Array<
-        {
-          oracleVersion: BigNumber;
-          mintingTokenAmountRequested: BigNumber;
-          burningCLBTokenAmountRequested: BigNumber;
-        } & { tradingFeeRate: number }
-      >;
+      })) satisfies Array<PendingLiquidityResult>;
     }, this._client.provider);
   }
 

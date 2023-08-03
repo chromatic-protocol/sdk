@@ -51,6 +51,19 @@ const _abi = [
     type: "event",
   },
   {
+    inputs: [],
+    name: "accountBase",
+    outputs: [
+      {
+        internalType: "contract ChromaticAccount",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",

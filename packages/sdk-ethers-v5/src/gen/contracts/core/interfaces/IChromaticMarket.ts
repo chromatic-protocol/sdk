@@ -1555,7 +1555,7 @@ export interface IChromaticMarket extends BaseContract {
     closePosition(
       positionId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<PositionStructOutput>;
 
     /**
      * Distributes earning to the liquidity bins.

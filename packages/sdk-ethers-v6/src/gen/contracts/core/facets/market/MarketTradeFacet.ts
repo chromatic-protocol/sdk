@@ -247,7 +247,7 @@ export interface MarketTradeFacet extends BaseContract {
    */
   closePosition: TypedContractMethod<
     [positionId: BigNumberish],
-    [void],
+    [PositionStructOutput],
     "nonpayable"
   >;
 
@@ -294,7 +294,11 @@ export interface MarketTradeFacet extends BaseContract {
   >;
   getFunction(
     nameOrSignature: "closePosition"
-  ): TypedContractMethod<[positionId: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [positionId: BigNumberish],
+    [PositionStructOutput],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "getPositions"
   ): TypedContractMethod<

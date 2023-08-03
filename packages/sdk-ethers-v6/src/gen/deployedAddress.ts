@@ -28,10 +28,10 @@ export const deployedAddress: DeployedAddress = {
     "ChromaticVault": "0xfaA7b3a4b5c3f54a934a2e33D34C7bC099f96CCE"
   },
   "arbitrum_goerli": {
-    "ChromaticLens": "0xB4b63e4dca49b4F86494a250f3538a1EDB1f3162",
-    "ChromaticLiquidator": "0xf4a5084b0EEc984b9b8D896F0AfBBF7b819a52b7",
-    "ChromaticMarketFactory": "0x96D5cE68eb67271E3018b3FCF128c09D7642eF82",
-    "ChromaticRouter": "0x664aB7aFFBD42a31Ef9078273018906f64Cf2d68",
-    "ChromaticVault": "0x4FfDF978B39466B64bdF778fA755E180dcCcedEC"
+    "ChromaticLens": "0x1492b66490B66eF443386E240a21895cd5BFd9Be",
+    "ChromaticLiquidator": "0x7aD84659B4F798F913BE84f53192bBfa21b0d0a4",
+    "ChromaticMarketFactory": "0x8333fd7347c1afBA6D832B52834BF59Fd70Ce657",
+    "ChromaticRouter": "0x3bB6383923d0f8Dc397D28Fe07Ff9E9E26bbF663",
+    "ChromaticVault": "0x74Ec9c2EE1e96E0Ac2F4BB5641d0C3e3b37B991f"
   }
 }

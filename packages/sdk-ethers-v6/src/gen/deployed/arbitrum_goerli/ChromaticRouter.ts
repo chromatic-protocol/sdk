@@ -98,6 +98,7 @@ export type PositionStructOutput = [
 export interface ChromaticRouterInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "accountBase"
       | "addLiquidity"
       | "addLiquidityBatch"
       | "addLiquidityBatchCallback"
@@ -125,6 +126,10 @@ export interface ChromaticRouterInterface extends Interface {
 
   getEvent(nameOrSignatureOrTopic: "AccountCreated"): EventFragment;
 
+  encodeFunctionData(
+    functionFragment: "accountBase",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "addLiquidity",
     values: [AddressLike, BigNumberish, BigNumberish, AddressLike]
@@ -224,6 +229,10 @@ export interface ChromaticRouterInterface extends Interface {
     values: [BigNumberish, BytesLike]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "accountBase",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "addLiquidity",
     data: BytesLike
@@ -370,6 +379,8 @@ export interface ChromaticRouter extends BaseContract {
   removeAllListeners<TCEvent extends TypedContractEvent>(
     event?: TCEvent
   ): Promise<this>;
+
+  accountBase: TypedContractMethod<[], [string], "view">;
 
   /**
    * Adds liquidity to a ChromaticMarket contract.
@@ -659,6 +670,9 @@ export interface ChromaticRouter extends BaseContract {
     key: string | FunctionFragment
   ): T;
 
+  getFunction(
+    nameOrSignature: "accountBase"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "addLiquidity"
   ): TypedContractMethod<

@@ -100,6 +100,7 @@ export type PositionStructOutput = [
 
 export interface ChromaticRouterInterface extends utils.Interface {
   functions: {
+    "accountBase()": FunctionFragment;
     "addLiquidity(address,int16,uint256,address)": FunctionFragment;
     "addLiquidityBatch(address,address,int16[],uint256[])": FunctionFragment;
     "addLiquidityBatchCallback(address,address,bytes)": FunctionFragment;
@@ -127,6 +128,7 @@ export interface ChromaticRouterInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "accountBase"
       | "addLiquidity"
       | "addLiquidityBatch"
       | "addLiquidityBatchCallback"
@@ -152,6 +154,10 @@ export interface ChromaticRouterInterface extends utils.Interface {
       | "withdrawLiquidityCallback"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "accountBase",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "addLiquidity",
     values: [string, BigNumberish, BigNumberish, string]
@@ -245,6 +251,10 @@ export interface ChromaticRouterInterface extends utils.Interface {
     values: [BigNumberish, BytesLike]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "accountBase",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "addLiquidity",
     data: BytesLike
@@ -380,6 +390,8 @@ export interface ChromaticRouter extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    accountBase(overrides?: CallOverrides): Promise<[string]>;
+
     /**
      * Adds liquidity to a ChromaticMarket contract.
      * @param amount The amount to add as liquidity.
@@ -654,6 +666,8 @@ export interface ChromaticRouter extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
   };
+
+  accountBase(overrides?: CallOverrides): Promise<string>;
 
   /**
    * Adds liquidity to a ChromaticMarket contract.
@@ -930,6 +944,8 @@ export interface ChromaticRouter extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    accountBase(overrides?: CallOverrides): Promise<string>;
+
     /**
      * Adds liquidity to a ChromaticMarket contract.
      * @param amount The amount to add as liquidity.
@@ -1215,6 +1231,8 @@ export interface ChromaticRouter extends BaseContract {
   };
 
   estimateGas: {
+    accountBase(overrides?: CallOverrides): Promise<BigNumber>;
+
     /**
      * Adds liquidity to a ChromaticMarket contract.
      * @param amount The amount to add as liquidity.
@@ -1491,6 +1509,8 @@ export interface ChromaticRouter extends BaseContract {
   };
 
   populateTransaction: {
+    accountBase(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     /**
      * Adds liquidity to a ChromaticMarket contract.
      * @param amount The amount to add as liquidity.

@@ -13,7 +13,11 @@ import type {
   Signer,
   utils,
 } from "ethers";
-import type { FunctionFragment, Result } from "@ethersproject/abi";
+import type {
+  FunctionFragment,
+  Result,
+  EventFragment,
+} from "@ethersproject/abi";
 import type { Listener, Provider } from "@ethersproject/providers";
 import type {
   TypedEventFilter,
@@ -73,7 +77,7 @@ export interface ChromaticAccountInterface extends utils.Interface {
   functions: {
     "balance(address)": FunctionFragment;
     "claimPosition(address,uint256)": FunctionFragment;
-    "claimPositionCallback(uint256,bytes)": FunctionFragment;
+    "claimPositionCallback((uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8),uint256,uint256,int256,uint256,bytes)": FunctionFragment;
     "closePosition(address,uint256)": FunctionFragment;
     "getPositionIds(address)": FunctionFragment;
     "hasPositionId(address,uint256)": FunctionFragment;
@@ -104,7 +108,14 @@ export interface ChromaticAccountInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "claimPositionCallback",
-    values: [BigNumberish, BytesLike]
+    values: [
+      PositionStruct,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BytesLike
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "closePosition",
@@ -167,8 +178,87 @@ export interface ChromaticAccountInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
-  events: {};
+  events: {
+    "ClaimPosition(address,uint256,uint256,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "StopLoss(address,uint256,uint256,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "TakeProfit(address,uint256,uint256,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "ClaimPosition"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ClosePosition"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OpenPosition"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "StopLoss"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TakeProfit"): EventFragment;
 }
+
+export interface ClaimPositionEventObject {
+  marketAddress: string;
+  entryPrice: BigNumber;
+  exitPrice: BigNumber;
+  realizedPnl: BigNumber;
+  interest: BigNumber;
+  position: PositionStructOutput;
+}
+export type ClaimPositionEvent = TypedEvent<
+  [string, BigNumber, BigNumber, BigNumber, BigNumber, PositionStructOutput],
+  ClaimPositionEventObject
+>;
+
+export type ClaimPositionEventFilter = TypedEventFilter<ClaimPositionEvent>;
+
+export interface ClosePositionEventObject {
+  marketAddress: string;
+  position: PositionStructOutput;
+}
+export type ClosePositionEvent = TypedEvent<
+  [string, PositionStructOutput],
+  ClosePositionEventObject
+>;
+
+export type ClosePositionEventFilter = TypedEventFilter<ClosePositionEvent>;
+
+export interface OpenPositionEventObject {
+  marketAddress: string;
+  position: PositionStructOutput;
+}
+export type OpenPositionEvent = TypedEvent<
+  [string, PositionStructOutput],
+  OpenPositionEventObject
+>;
+
+export type OpenPositionEventFilter = TypedEventFilter<OpenPositionEvent>;
+
+export interface StopLossEventObject {
+  marketAddress: string;
+  entryPrice: BigNumber;
+  exitPrice: BigNumber;
+  realizedPnl: BigNumber;
+  interest: BigNumber;
+  position: PositionStructOutput;
+}
+export type StopLossEvent = TypedEvent<
+  [string, BigNumber, BigNumber, BigNumber, BigNumber, PositionStructOutput],
+  StopLossEventObject
+>;
+
+export type StopLossEventFilter = TypedEventFilter<StopLossEvent>;
+
+export interface TakeProfitEventObject {
+  marketAddress: string;
+  entryPrice: BigNumber;
+  exitPrice: BigNumber;
+  realizedPnl: BigNumber;
+  interest: BigNumber;
+  position: PositionStructOutput;
+}
+export type TakeProfitEvent = TypedEvent<
+  [string, BigNumber, BigNumber, BigNumber, BigNumber, PositionStructOutput],
+  TakeProfitEventObject
+>;
+
+export type TakeProfitEventFilter = TypedEventFilter<TakeProfitEvent>;
 
 export interface ChromaticAccount extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -215,14 +305,13 @@ export interface ChromaticAccount extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
-    /**
-     * Callback function called after claiming a position.
-     * @param data Additional data related to the callback.
-     * @param positionId The ID of the claimed position.
-     */
     claimPositionCallback(
-      positionId: BigNumberish,
-      arg1: BytesLike,
+      position: PositionStruct,
+      entryPrice: BigNumberish,
+      exitPrice: BigNumberish,
+      realizedPnl: BigNumberish,
+      interest: BigNumberish,
+      data: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
@@ -337,14 +426,13 @@ export interface ChromaticAccount extends BaseContract {
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
-  /**
-   * Callback function called after claiming a position.
-   * @param data Additional data related to the callback.
-   * @param positionId The ID of the claimed position.
-   */
   claimPositionCallback(
-    positionId: BigNumberish,
-    arg1: BytesLike,
+    position: PositionStruct,
+    entryPrice: BigNumberish,
+    exitPrice: BigNumberish,
+    realizedPnl: BigNumberish,
+    interest: BigNumberish,
+    data: BytesLike,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -459,14 +547,13 @@ export interface ChromaticAccount extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    /**
-     * Callback function called after claiming a position.
-     * @param data Additional data related to the callback.
-     * @param positionId The ID of the claimed position.
-     */
     claimPositionCallback(
-      positionId: BigNumberish,
-      arg1: BytesLike,
+      position: PositionStruct,
+      entryPrice: BigNumberish,
+      exitPrice: BigNumberish,
+      realizedPnl: BigNumberish,
+      interest: BigNumberish,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -563,7 +650,76 @@ export interface ChromaticAccount extends BaseContract {
     ): Promise<void>;
   };
 
-  filters: {};
+  filters: {
+    "ClaimPosition(address,uint256,uint256,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+      marketAddress?: string | null,
+      entryPrice?: null,
+      exitPrice?: null,
+      realizedPnl?: null,
+      interest?: null,
+      position?: null
+    ): ClaimPositionEventFilter;
+    ClaimPosition(
+      marketAddress?: string | null,
+      entryPrice?: null,
+      exitPrice?: null,
+      realizedPnl?: null,
+      interest?: null,
+      position?: null
+    ): ClaimPositionEventFilter;
+
+    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+      marketAddress?: string | null,
+      position?: null
+    ): ClosePositionEventFilter;
+    ClosePosition(
+      marketAddress?: string | null,
+      position?: null
+    ): ClosePositionEventFilter;
+
+    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+      marketAddress?: string | null,
+      position?: null
+    ): OpenPositionEventFilter;
+    OpenPosition(
+      marketAddress?: string | null,
+      position?: null
+    ): OpenPositionEventFilter;
+
+    "StopLoss(address,uint256,uint256,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+      marketAddress?: string | null,
+      entryPrice?: null,
+      exitPrice?: null,
+      realizedPnl?: null,
+      interest?: null,
+      position?: null
+    ): StopLossEventFilter;
+    StopLoss(
+      marketAddress?: string | null,
+      entryPrice?: null,
+      exitPrice?: null,
+      realizedPnl?: null,
+      interest?: null,
+      position?: null
+    ): StopLossEventFilter;
+
+    "TakeProfit(address,uint256,uint256,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+      marketAddress?: string | null,
+      entryPrice?: null,
+      exitPrice?: null,
+      realizedPnl?: null,
+      interest?: null,
+      position?: null
+    ): TakeProfitEventFilter;
+    TakeProfit(
+      marketAddress?: string | null,
+      entryPrice?: null,
+      exitPrice?: null,
+      realizedPnl?: null,
+      interest?: null,
+      position?: null
+    ): TakeProfitEventFilter;
+  };
 
   estimateGas: {
     /**
@@ -584,14 +740,13 @@ export interface ChromaticAccount extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
-    /**
-     * Callback function called after claiming a position.
-     * @param data Additional data related to the callback.
-     * @param positionId The ID of the claimed position.
-     */
     claimPositionCallback(
-      positionId: BigNumberish,
-      arg1: BytesLike,
+      position: PositionStruct,
+      entryPrice: BigNumberish,
+      exitPrice: BigNumberish,
+      realizedPnl: BigNumberish,
+      interest: BigNumberish,
+      data: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
@@ -710,14 +865,13 @@ export interface ChromaticAccount extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
-    /**
-     * Callback function called after claiming a position.
-     * @param data Additional data related to the callback.
-     * @param positionId The ID of the claimed position.
-     */
     claimPositionCallback(
-      positionId: BigNumberish,
-      arg1: BytesLike,
+      position: PositionStruct,
+      entryPrice: BigNumberish,
+      exitPrice: BigNumberish,
+      realizedPnl: BigNumberish,
+      interest: BigNumberish,
+      data: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 

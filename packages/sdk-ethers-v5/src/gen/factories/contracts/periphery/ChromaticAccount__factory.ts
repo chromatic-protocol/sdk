@@ -41,6 +41,493 @@ const _abi = [
     type: "error",
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "marketAddress",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "entryPrice",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "exitPrice",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "int256",
+        name: "realizedPnl",
+        type: "int256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "interest",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "openVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "qty",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "openTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "takerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "owner",
+            type: "address",
+          },
+          {
+            components: [
+              {
+                internalType: "uint16",
+                name: "tradingFeeRate",
+                type: "uint16",
+              },
+              {
+                internalType: "uint256",
+                name: "amount",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct BinMargin[]",
+            name: "_binMargins",
+            type: "tuple[]",
+          },
+          {
+            internalType: "uint8",
+            name: "_feeProtocol",
+            type: "uint8",
+          },
+        ],
+        indexed: false,
+        internalType: "struct Position",
+        name: "position",
+        type: "tuple",
+      },
+    ],
+    name: "ClaimPosition",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "marketAddress",
+        type: "address",
+      },
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "openVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "qty",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "openTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "takerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "owner",
+            type: "address",
+          },
+          {
+            components: [
+              {
+                internalType: "uint16",
+                name: "tradingFeeRate",
+                type: "uint16",
+              },
+              {
+                internalType: "uint256",
+                name: "amount",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct BinMargin[]",
+            name: "_binMargins",
+            type: "tuple[]",
+          },
+          {
+            internalType: "uint8",
+            name: "_feeProtocol",
+            type: "uint8",
+          },
+        ],
+        indexed: false,
+        internalType: "struct Position",
+        name: "position",
+        type: "tuple",
+      },
+    ],
+    name: "ClosePosition",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "marketAddress",
+        type: "address",
+      },
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "openVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "qty",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "openTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "takerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "owner",
+            type: "address",
+          },
+          {
+            components: [
+              {
+                internalType: "uint16",
+                name: "tradingFeeRate",
+                type: "uint16",
+              },
+              {
+                internalType: "uint256",
+                name: "amount",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct BinMargin[]",
+            name: "_binMargins",
+            type: "tuple[]",
+          },
+          {
+            internalType: "uint8",
+            name: "_feeProtocol",
+            type: "uint8",
+          },
+        ],
+        indexed: false,
+        internalType: "struct Position",
+        name: "position",
+        type: "tuple",
+      },
+    ],
+    name: "OpenPosition",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "marketAddress",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "entryPrice",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "exitPrice",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "int256",
+        name: "realizedPnl",
+        type: "int256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "interest",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "openVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "qty",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "openTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "takerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "owner",
+            type: "address",
+          },
+          {
+            components: [
+              {
+                internalType: "uint16",
+                name: "tradingFeeRate",
+                type: "uint16",
+              },
+              {
+                internalType: "uint256",
+                name: "amount",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct BinMargin[]",
+            name: "_binMargins",
+            type: "tuple[]",
+          },
+          {
+            internalType: "uint8",
+            name: "_feeProtocol",
+            type: "uint8",
+          },
+        ],
+        indexed: false,
+        internalType: "struct Position",
+        name: "position",
+        type: "tuple",
+      },
+    ],
+    name: "StopLoss",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "marketAddress",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "entryPrice",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "exitPrice",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "int256",
+        name: "realizedPnl",
+        type: "int256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "interest",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "openVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "qty",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "openTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "takerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "owner",
+            type: "address",
+          },
+          {
+            components: [
+              {
+                internalType: "uint16",
+                name: "tradingFeeRate",
+                type: "uint16",
+              },
+              {
+                internalType: "uint256",
+                name: "amount",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct BinMargin[]",
+            name: "_binMargins",
+            type: "tuple[]",
+          },
+          {
+            internalType: "uint8",
+            name: "_feeProtocol",
+            type: "uint8",
+          },
+        ],
+        indexed: false,
+        internalType: "struct Position",
+        name: "position",
+        type: "tuple",
+      },
+    ],
+    name: "TakeProfit",
+    type: "event",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -80,13 +567,97 @@ const _abi = [
   {
     inputs: [
       {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "openVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "qty",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "openTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "takerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "owner",
+            type: "address",
+          },
+          {
+            components: [
+              {
+                internalType: "uint16",
+                name: "tradingFeeRate",
+                type: "uint16",
+              },
+              {
+                internalType: "uint256",
+                name: "amount",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct BinMargin[]",
+            name: "_binMargins",
+            type: "tuple[]",
+          },
+          {
+            internalType: "uint8",
+            name: "_feeProtocol",
+            type: "uint8",
+          },
+        ],
+        internalType: "struct Position",
+        name: "position",
+        type: "tuple",
+      },
+      {
         internalType: "uint256",
-        name: "positionId",
+        name: "entryPrice",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "exitPrice",
+        type: "uint256",
+      },
+      {
+        internalType: "int256",
+        name: "realizedPnl",
+        type: "int256",
+      },
+      {
+        internalType: "uint256",
+        name: "interest",
         type: "uint256",
       },
       {
         internalType: "bytes",
-        name: "",
+        name: "data",
         type: "bytes",
       },
     ],

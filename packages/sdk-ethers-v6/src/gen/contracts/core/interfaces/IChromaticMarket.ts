@@ -913,7 +913,7 @@ export interface IChromaticMarket extends BaseContract {
    */
   closePosition: TypedContractMethod<
     [positionId: BigNumberish],
-    [void],
+    [PositionStructOutput],
     "nonpayable"
   >;
 
@@ -1218,7 +1218,11 @@ export interface IChromaticMarket extends BaseContract {
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "closePosition"
-  ): TypedContractMethod<[positionId: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [positionId: BigNumberish],
+    [PositionStructOutput],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "distributeEarningToBins"
   ): TypedContractMethod<

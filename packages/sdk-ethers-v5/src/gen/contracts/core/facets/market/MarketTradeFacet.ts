@@ -330,7 +330,7 @@ export interface MarketTradeFacet extends BaseContract {
     closePosition(
       positionId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<PositionStructOutput>;
 
     /**
      * Retrieves multiple positions by their IDs.

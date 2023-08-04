@@ -19,7 +19,10 @@ import {
 
 import {
   Abi,
+  AbiErrorSignatureNotFoundError,
   Address,
+  ContractFunctionExecutionError,
+  ContractFunctionRevertedError,
   GetContractReturnType,
   PublicClient,
   WalletClient,
@@ -76,18 +79,23 @@ export async function PromiseOnlySuccess<T>(values: Iterable<T | PromiseLike<T>>
   );
 }
 
-// TODO panic error
 export async function handleBytesError<T>(fn: () => Promise<T>): Promise<T> {
   try {
     return await fn();
   } catch (e) {
-    // signature "0x22313ae9" not found on ABI
-    const revertMatch = (e as Error).message.match(/signature "([^"]*)" not found on ABI/);
-    if (revertMatch) {
-      throw Error(`call reverted with error: ${errorSignitures[revertMatch[1]]}`);
+    if (
+      e instanceof ContractFunctionExecutionError &&
+      e.cause instanceof ContractFunctionRevertedError
+    ) {
+      const error = (e.cause as any).cause;
+      if (error instanceof AbiErrorSignatureNotFoundError) {
+        const signature = (error as any).signature;
+        if(signature){
+          throw Error(`call reverted with error: ${errorSignitures[signature]}`);
+        }
+      }
     }
 
-    /// etc (panic, too many request...)
     throw e;
   }
 }

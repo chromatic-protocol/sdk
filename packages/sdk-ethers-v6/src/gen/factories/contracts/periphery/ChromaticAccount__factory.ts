@@ -43,18 +43,6 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
-        internalType: "address",
-        name: "marketAddress",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "positionId",
-        type: "uint256",
-      },
-      {
         components: [
           {
             internalType: "uint256",
@@ -92,13 +80,6 @@ const _abi = [
         name: "position",
         type: "tuple",
       },
-    ],
-    name: "ClaimPosition",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
       {
         indexed: true,
         internalType: "address",
@@ -111,6 +92,13 @@ const _abi = [
         name: "positionId",
         type: "uint256",
       },
+    ],
+    name: "ClaimPosition",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
       {
         components: [
           {
@@ -134,13 +122,6 @@ const _abi = [
         name: "position",
         type: "tuple",
       },
-    ],
-    name: "ClosePosition",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
       {
         indexed: true,
         internalType: "address",
@@ -153,6 +134,13 @@ const _abi = [
         name: "positionId",
         type: "uint256",
       },
+    ],
+    name: "ClosePosition",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
       {
         components: [
           {
@@ -195,6 +183,18 @@ const _abi = [
         internalType: "struct OpenPositionInfo",
         name: "position",
         type: "tuple",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "marketAddress",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "positionId",
+        type: "uint256",
       },
     ],
     name: "OpenPosition",

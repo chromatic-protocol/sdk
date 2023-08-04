@@ -237,9 +237,9 @@ export interface ChromaticAccountInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {
-    "ClaimPosition(address,uint256,(uint256,uint256,uint256,int256,uint256,bytes4))": EventFragment;
-    "ClosePosition(address,uint256,(uint256,uint256,uint256))": EventFragment;
-    "OpenPosition(address,uint256,(uint256,uint256,int256,uint256,uint256,uint256,uint256))": EventFragment;
+    "ClaimPosition((uint256,uint256,uint256,int256,uint256,bytes4),address,uint256)": EventFragment;
+    "ClosePosition((uint256,uint256,uint256),address,uint256)": EventFragment;
+    "OpenPosition((uint256,uint256,int256,uint256,uint256,uint256,uint256),address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ClaimPosition"): EventFragment;
@@ -248,36 +248,36 @@ export interface ChromaticAccountInterface extends utils.Interface {
 }
 
 export interface ClaimPositionEventObject {
+  position: ClaimPositionInfoStructOutput;
   marketAddress: string;
   positionId: BigNumber;
-  position: ClaimPositionInfoStructOutput;
 }
 export type ClaimPositionEvent = TypedEvent<
-  [string, BigNumber, ClaimPositionInfoStructOutput],
+  [ClaimPositionInfoStructOutput, string, BigNumber],
   ClaimPositionEventObject
 >;
 
 export type ClaimPositionEventFilter = TypedEventFilter<ClaimPositionEvent>;
 
 export interface ClosePositionEventObject {
+  position: ClosePositionInfoStructOutput;
   marketAddress: string;
   positionId: BigNumber;
-  position: ClosePositionInfoStructOutput;
 }
 export type ClosePositionEvent = TypedEvent<
-  [string, BigNumber, ClosePositionInfoStructOutput],
+  [ClosePositionInfoStructOutput, string, BigNumber],
   ClosePositionEventObject
 >;
 
 export type ClosePositionEventFilter = TypedEventFilter<ClosePositionEvent>;
 
 export interface OpenPositionEventObject {
+  position: OpenPositionInfoStructOutput;
   marketAddress: string;
   positionId: BigNumber;
-  position: OpenPositionInfoStructOutput;
 }
 export type OpenPositionEvent = TypedEvent<
-  [string, BigNumber, OpenPositionInfoStructOutput],
+  [OpenPositionInfoStructOutput, string, BigNumber],
   OpenPositionEventObject
 >;
 
@@ -665,37 +665,37 @@ export interface ChromaticAccount extends BaseContract {
   };
 
   filters: {
-    "ClaimPosition(address,uint256,(uint256,uint256,uint256,int256,uint256,bytes4))"(
+    "ClaimPosition((uint256,uint256,uint256,int256,uint256,bytes4),address,uint256)"(
+      position?: null,
       marketAddress?: string | null,
-      positionId?: BigNumberish | null,
-      position?: null
+      positionId?: BigNumberish | null
     ): ClaimPositionEventFilter;
     ClaimPosition(
+      position?: null,
       marketAddress?: string | null,
-      positionId?: BigNumberish | null,
-      position?: null
+      positionId?: BigNumberish | null
     ): ClaimPositionEventFilter;
 
-    "ClosePosition(address,uint256,(uint256,uint256,uint256))"(
+    "ClosePosition((uint256,uint256,uint256),address,uint256)"(
+      position?: null,
       marketAddress?: string | null,
-      positionId?: BigNumberish | null,
-      position?: null
+      positionId?: BigNumberish | null
     ): ClosePositionEventFilter;
     ClosePosition(
+      position?: null,
       marketAddress?: string | null,
-      positionId?: BigNumberish | null,
-      position?: null
+      positionId?: BigNumberish | null
     ): ClosePositionEventFilter;
 
-    "OpenPosition(address,uint256,(uint256,uint256,int256,uint256,uint256,uint256,uint256))"(
+    "OpenPosition((uint256,uint256,int256,uint256,uint256,uint256,uint256),address,uint256)"(
+      position?: null,
       marketAddress?: string | null,
-      positionId?: BigNumberish | null,
-      position?: null
+      positionId?: BigNumberish | null
     ): OpenPositionEventFilter;
     OpenPosition(
+      position?: null,
       marketAddress?: string | null,
-      positionId?: BigNumberish | null,
-      position?: null
+      positionId?: BigNumberish | null
     ): OpenPositionEventFilter;
   };
 

@@ -79,7 +79,6 @@ export async function PromiseOnlySuccess<T>(values: Iterable<T | PromiseLike<T>>
   );
 }
 
-// TODO panic error
 export async function handleBytesError<T>(fn: () => Promise<T>): Promise<T> {
   try {
     return await fn();
@@ -89,9 +88,11 @@ export async function handleBytesError<T>(fn: () => Promise<T>): Promise<T> {
       e.cause instanceof ContractFunctionRevertedError
     ) {
       const error = (e.cause as any).cause;
-      const signature = (error as any).signature;
-      if (error instanceof AbiErrorSignatureNotFoundError && signature) {
-        throw Error(`call reverted with error: ${errorSignitures[signature]}`);
+      if (error instanceof AbiErrorSignatureNotFoundError) {
+        const signature = (error as any).signature;
+        if(signature){
+          throw Error(`call reverted with error: ${errorSignitures[signature]}`);
+        }
       }
     }
 

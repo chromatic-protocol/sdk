@@ -51,51 +51,32 @@ export type LpReceiptStructOutput = [
   tradingFeeRate: number;
 };
 
-export type BinMarginStruct = {
-  tradingFeeRate: BigNumberish;
-  amount: BigNumberish;
-};
-
-export type BinMarginStructOutput = [number, BigNumber] & {
-  tradingFeeRate: number;
-  amount: BigNumber;
-};
-
-export type PositionStruct = {
+export type OpenPositionInfoStruct = {
   id: BigNumberish;
   openVersion: BigNumberish;
-  closeVersion: BigNumberish;
   qty: BigNumberish;
   openTimestamp: BigNumberish;
-  closeTimestamp: BigNumberish;
   takerMargin: BigNumberish;
-  owner: string;
-  _binMargins: BinMarginStruct[];
-  _feeProtocol: BigNumberish;
+  makerMargin: BigNumberish;
+  tradingFee: BigNumberish;
 };
 
-export type PositionStructOutput = [
+export type OpenPositionInfoStructOutput = [
   BigNumber,
   BigNumber,
   BigNumber,
   BigNumber,
   BigNumber,
   BigNumber,
-  BigNumber,
-  string,
-  BinMarginStructOutput[],
-  number
+  BigNumber
 ] & {
   id: BigNumber;
   openVersion: BigNumber;
-  closeVersion: BigNumber;
   qty: BigNumber;
   openTimestamp: BigNumber;
-  closeTimestamp: BigNumber;
   takerMargin: BigNumber;
-  owner: string;
-  _binMargins: BinMarginStructOutput[];
-  _feeProtocol: number;
+  makerMargin: BigNumber;
+  tradingFee: BigNumber;
 };
 
 export interface ChromaticRouterInterface extends utils.Interface {
@@ -1115,7 +1096,7 @@ export interface ChromaticRouter extends BaseContract {
       makerMargin: BigNumberish,
       maxAllowableTradingFee: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<PositionStructOutput>;
+    ): Promise<OpenPositionInfoStructOutput>;
 
     /**
      * Removes liquidity from a ChromaticMarket contract.

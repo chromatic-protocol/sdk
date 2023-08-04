@@ -98,6 +98,46 @@ export type PositionStructOutput = [
   _feeProtocol: number;
 };
 
+export type ClosePositionInfoStruct = {
+  id: BigNumberish;
+  closeVersion: BigNumberish;
+  closeTimestamp: BigNumberish;
+};
+
+export type ClosePositionInfoStructOutput = [
+  BigNumber,
+  BigNumber,
+  BigNumber
+] & { id: BigNumber; closeVersion: BigNumber; closeTimestamp: BigNumber };
+
+export type OpenPositionInfoStruct = {
+  id: BigNumberish;
+  openVersion: BigNumberish;
+  qty: BigNumberish;
+  openTimestamp: BigNumberish;
+  takerMargin: BigNumberish;
+  makerMargin: BigNumberish;
+  tradingFee: BigNumberish;
+};
+
+export type OpenPositionInfoStructOutput = [
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber
+] & {
+  id: BigNumber;
+  openVersion: BigNumber;
+  qty: BigNumber;
+  openTimestamp: BigNumber;
+  takerMargin: BigNumber;
+  makerMargin: BigNumber;
+  tradingFee: BigNumber;
+};
+
 export declare namespace IMarketLiquidity {
   export type ClaimableLiquidityStruct = {
     mintingTokenAmountRequested: BigNumberish;
@@ -1555,7 +1595,7 @@ export interface IChromaticMarket extends BaseContract {
     closePosition(
       positionId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<PositionStructOutput>;
+    ): Promise<ClosePositionInfoStructOutput>;
 
     /**
      * Distributes earning to the liquidity bins.
@@ -1668,7 +1708,7 @@ export interface IChromaticMarket extends BaseContract {
       maxAllowableTradingFee: BigNumberish,
       data: BytesLike,
       overrides?: CallOverrides
-    ): Promise<PositionStructOutput>;
+    ): Promise<OpenPositionInfoStructOutput>;
 
     /**
      * Returns the oracle provider contract for the market.

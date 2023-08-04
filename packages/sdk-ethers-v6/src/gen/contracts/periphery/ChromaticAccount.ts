@@ -236,19 +236,19 @@ export interface ChromaticAccountInterface extends Interface {
 
 export namespace ClaimPositionEvent {
   export type InputTuple = [
+    position: ClaimPositionInfoStruct,
     marketAddress: AddressLike,
-    positionId: BigNumberish,
-    position: ClaimPositionInfoStruct
+    positionId: BigNumberish
   ];
   export type OutputTuple = [
+    position: ClaimPositionInfoStructOutput,
     marketAddress: string,
-    positionId: bigint,
-    position: ClaimPositionInfoStructOutput
+    positionId: bigint
   ];
   export interface OutputObject {
+    position: ClaimPositionInfoStructOutput;
     marketAddress: string;
     positionId: bigint;
-    position: ClaimPositionInfoStructOutput;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -258,19 +258,19 @@ export namespace ClaimPositionEvent {
 
 export namespace ClosePositionEvent {
   export type InputTuple = [
+    position: ClosePositionInfoStruct,
     marketAddress: AddressLike,
-    positionId: BigNumberish,
-    position: ClosePositionInfoStruct
+    positionId: BigNumberish
   ];
   export type OutputTuple = [
+    position: ClosePositionInfoStructOutput,
     marketAddress: string,
-    positionId: bigint,
-    position: ClosePositionInfoStructOutput
+    positionId: bigint
   ];
   export interface OutputObject {
+    position: ClosePositionInfoStructOutput;
     marketAddress: string;
     positionId: bigint;
-    position: ClosePositionInfoStructOutput;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -280,19 +280,19 @@ export namespace ClosePositionEvent {
 
 export namespace OpenPositionEvent {
   export type InputTuple = [
+    position: OpenPositionInfoStruct,
     marketAddress: AddressLike,
-    positionId: BigNumberish,
-    position: OpenPositionInfoStruct
+    positionId: BigNumberish
   ];
   export type OutputTuple = [
+    position: OpenPositionInfoStructOutput,
     marketAddress: string,
-    positionId: bigint,
-    position: OpenPositionInfoStructOutput
+    positionId: bigint
   ];
   export interface OutputObject {
+    position: OpenPositionInfoStructOutput;
     marketAddress: string;
     positionId: bigint;
-    position: OpenPositionInfoStructOutput;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -574,7 +574,7 @@ export interface ChromaticAccount extends BaseContract {
   >;
 
   filters: {
-    "ClaimPosition(address,uint256,tuple)": TypedContractEvent<
+    "ClaimPosition(tuple,address,uint256)": TypedContractEvent<
       ClaimPositionEvent.InputTuple,
       ClaimPositionEvent.OutputTuple,
       ClaimPositionEvent.OutputObject
@@ -585,7 +585,7 @@ export interface ChromaticAccount extends BaseContract {
       ClaimPositionEvent.OutputObject
     >;
 
-    "ClosePosition(address,uint256,tuple)": TypedContractEvent<
+    "ClosePosition(tuple,address,uint256)": TypedContractEvent<
       ClosePositionEvent.InputTuple,
       ClosePositionEvent.OutputTuple,
       ClosePositionEvent.OutputObject
@@ -596,7 +596,7 @@ export interface ChromaticAccount extends BaseContract {
       ClosePositionEvent.OutputObject
     >;
 
-    "OpenPosition(address,uint256,tuple)": TypedContractEvent<
+    "OpenPosition(tuple,address,uint256)": TypedContractEvent<
       OpenPositionEvent.InputTuple,
       OpenPositionEvent.OutputTuple,
       OpenPositionEvent.OutputObject

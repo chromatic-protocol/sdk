@@ -26,71 +26,6 @@ import type {
   OnEvent,
 } from "../../common";
 
-export type ClaimPositionInfoStruct = {
-  id: BigNumberish;
-  entryPrice: BigNumberish;
-  exitPrice: BigNumberish;
-  realizedPnl: BigNumberish;
-  interest: BigNumberish;
-  cause: BytesLike;
-};
-
-export type ClaimPositionInfoStructOutput = [
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  string
-] & {
-  id: BigNumber;
-  entryPrice: BigNumber;
-  exitPrice: BigNumber;
-  realizedPnl: BigNumber;
-  interest: BigNumber;
-  cause: string;
-};
-
-export type ClosePositionInfoStruct = {
-  id: BigNumberish;
-  closeVersion: BigNumberish;
-  closeTimestamp: BigNumberish;
-};
-
-export type ClosePositionInfoStructOutput = [
-  BigNumber,
-  BigNumber,
-  BigNumber
-] & { id: BigNumber; closeVersion: BigNumber; closeTimestamp: BigNumber };
-
-export type OpenPositionInfoStruct = {
-  id: BigNumberish;
-  openVersion: BigNumberish;
-  qty: BigNumberish;
-  openTimestamp: BigNumberish;
-  takerMargin: BigNumberish;
-  makerMargin: BigNumberish;
-  tradingFee: BigNumberish;
-};
-
-export type OpenPositionInfoStructOutput = [
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  BigNumber
-] & {
-  id: BigNumber;
-  openVersion: BigNumber;
-  qty: BigNumber;
-  openTimestamp: BigNumber;
-  takerMargin: BigNumber;
-  makerMargin: BigNumber;
-  tradingFee: BigNumber;
-};
-
 export type BinMarginStruct = {
   tradingFeeRate: BigNumberish;
   amount: BigNumberish;
@@ -136,6 +71,59 @@ export type PositionStructOutput = [
   owner: string;
   _binMargins: BinMarginStructOutput[];
   _feeProtocol: number;
+};
+
+export type ClaimPositionInfoStruct = {
+  id: BigNumberish;
+  entryPrice: BigNumberish;
+  exitPrice: BigNumberish;
+  realizedPnl: BigNumberish;
+  interest: BigNumberish;
+  cause: BytesLike;
+};
+
+export type ClaimPositionInfoStructOutput = [
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  string
+] & {
+  id: BigNumber;
+  entryPrice: BigNumber;
+  exitPrice: BigNumber;
+  realizedPnl: BigNumber;
+  interest: BigNumber;
+  cause: string;
+};
+
+export type OpenPositionInfoStruct = {
+  id: BigNumberish;
+  openVersion: BigNumberish;
+  qty: BigNumberish;
+  openTimestamp: BigNumberish;
+  takerMargin: BigNumberish;
+  makerMargin: BigNumberish;
+  tradingFee: BigNumberish;
+};
+
+export type OpenPositionInfoStructOutput = [
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber
+] & {
+  id: BigNumber;
+  openVersion: BigNumber;
+  qty: BigNumber;
+  openTimestamp: BigNumber;
+  takerMargin: BigNumber;
+  makerMargin: BigNumber;
+  tradingFee: BigNumber;
 };
 
 export interface ChromaticAccountInterface extends utils.Interface {
@@ -237,9 +225,9 @@ export interface ChromaticAccountInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {
-    "ClaimPosition(address,uint256,(uint256,uint256,uint256,int256,uint256,bytes4))": EventFragment;
-    "ClosePosition(address,uint256,(uint256,uint256,uint256))": EventFragment;
-    "OpenPosition(address,uint256,(uint256,uint256,int256,uint256,uint256,uint256,uint256))": EventFragment;
+    "ClaimPosition(address,uint256,uint256,uint256,int256,uint256,bytes4)": EventFragment;
+    "ClosePosition(address,uint256,uint256,uint256)": EventFragment;
+    "OpenPosition(address,uint256,uint256,int256,uint256,uint256,uint256,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ClaimPosition"): EventFragment;
@@ -250,10 +238,14 @@ export interface ChromaticAccountInterface extends utils.Interface {
 export interface ClaimPositionEventObject {
   marketAddress: string;
   positionId: BigNumber;
-  position: ClaimPositionInfoStructOutput;
+  entryPrice: BigNumber;
+  exitPrice: BigNumber;
+  realizedPnl: BigNumber;
+  interest: BigNumber;
+  cause: string;
 }
 export type ClaimPositionEvent = TypedEvent<
-  [string, BigNumber, ClaimPositionInfoStructOutput],
+  [string, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, string],
   ClaimPositionEventObject
 >;
 
@@ -262,10 +254,11 @@ export type ClaimPositionEventFilter = TypedEventFilter<ClaimPositionEvent>;
 export interface ClosePositionEventObject {
   marketAddress: string;
   positionId: BigNumber;
-  position: ClosePositionInfoStructOutput;
+  closeVersion: BigNumber;
+  closeTimestamp: BigNumber;
 }
 export type ClosePositionEvent = TypedEvent<
-  [string, BigNumber, ClosePositionInfoStructOutput],
+  [string, BigNumber, BigNumber, BigNumber],
   ClosePositionEventObject
 >;
 
@@ -274,10 +267,24 @@ export type ClosePositionEventFilter = TypedEventFilter<ClosePositionEvent>;
 export interface OpenPositionEventObject {
   marketAddress: string;
   positionId: BigNumber;
-  position: OpenPositionInfoStructOutput;
+  openVersion: BigNumber;
+  qty: BigNumber;
+  openTimestamp: BigNumber;
+  takerMargin: BigNumber;
+  makerMargin: BigNumber;
+  tradingFee: BigNumber;
 }
 export type OpenPositionEvent = TypedEvent<
-  [string, BigNumber, OpenPositionInfoStructOutput],
+  [
+    string,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ],
   OpenPositionEventObject
 >;
 
@@ -665,37 +672,57 @@ export interface ChromaticAccount extends BaseContract {
   };
 
   filters: {
-    "ClaimPosition(address,uint256,(uint256,uint256,uint256,int256,uint256,bytes4))"(
+    "ClaimPosition(address,uint256,uint256,uint256,int256,uint256,bytes4)"(
       marketAddress?: string | null,
       positionId?: BigNumberish | null,
-      position?: null
+      entryPrice?: null,
+      exitPrice?: null,
+      realizedPnl?: null,
+      interest?: null,
+      cause?: null
     ): ClaimPositionEventFilter;
     ClaimPosition(
       marketAddress?: string | null,
       positionId?: BigNumberish | null,
-      position?: null
+      entryPrice?: null,
+      exitPrice?: null,
+      realizedPnl?: null,
+      interest?: null,
+      cause?: null
     ): ClaimPositionEventFilter;
 
-    "ClosePosition(address,uint256,(uint256,uint256,uint256))"(
+    "ClosePosition(address,uint256,uint256,uint256)"(
       marketAddress?: string | null,
       positionId?: BigNumberish | null,
-      position?: null
+      closeVersion?: null,
+      closeTimestamp?: null
     ): ClosePositionEventFilter;
     ClosePosition(
       marketAddress?: string | null,
       positionId?: BigNumberish | null,
-      position?: null
+      closeVersion?: null,
+      closeTimestamp?: null
     ): ClosePositionEventFilter;
 
-    "OpenPosition(address,uint256,(uint256,uint256,int256,uint256,uint256,uint256,uint256))"(
+    "OpenPosition(address,uint256,uint256,int256,uint256,uint256,uint256,uint256)"(
       marketAddress?: string | null,
       positionId?: BigNumberish | null,
-      position?: null
+      openVersion?: null,
+      qty?: null,
+      openTimestamp?: null,
+      takerMargin?: null,
+      makerMargin?: null,
+      tradingFee?: null
     ): OpenPositionEventFilter;
     OpenPosition(
       marketAddress?: string | null,
       positionId?: BigNumberish | null,
-      position?: null
+      openVersion?: null,
+      qty?: null,
+      openTimestamp?: null,
+      takerMargin?: null,
+      makerMargin?: null,
+      tradingFee?: null
     ): OpenPositionEventFilter;
   };
 

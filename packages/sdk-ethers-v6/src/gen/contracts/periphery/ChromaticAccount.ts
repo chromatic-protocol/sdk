@@ -23,6 +23,71 @@ import type {
   TypedContractMethod,
 } from "../../common";
 
+export type ClaimPositionInfoStruct = {
+  id: BigNumberish;
+  entryPrice: BigNumberish;
+  exitPrice: BigNumberish;
+  realizedPnl: BigNumberish;
+  interest: BigNumberish;
+  cause: BytesLike;
+};
+
+export type ClaimPositionInfoStructOutput = [
+  id: bigint,
+  entryPrice: bigint,
+  exitPrice: bigint,
+  realizedPnl: bigint,
+  interest: bigint,
+  cause: string
+] & {
+  id: bigint;
+  entryPrice: bigint;
+  exitPrice: bigint;
+  realizedPnl: bigint;
+  interest: bigint;
+  cause: string;
+};
+
+export type ClosePositionInfoStruct = {
+  id: BigNumberish;
+  closeVersion: BigNumberish;
+  closeTimestamp: BigNumberish;
+};
+
+export type ClosePositionInfoStructOutput = [
+  id: bigint,
+  closeVersion: bigint,
+  closeTimestamp: bigint
+] & { id: bigint; closeVersion: bigint; closeTimestamp: bigint };
+
+export type OpenPositionInfoStruct = {
+  id: BigNumberish;
+  openVersion: BigNumberish;
+  qty: BigNumberish;
+  openTimestamp: BigNumberish;
+  takerMargin: BigNumberish;
+  makerMargin: BigNumberish;
+  tradingFee: BigNumberish;
+};
+
+export type OpenPositionInfoStructOutput = [
+  id: bigint,
+  openVersion: bigint,
+  qty: bigint,
+  openTimestamp: bigint,
+  takerMargin: bigint,
+  makerMargin: bigint,
+  tradingFee: bigint
+] & {
+  id: bigint;
+  openVersion: bigint;
+  qty: bigint;
+  openTimestamp: bigint;
+  takerMargin: bigint;
+  makerMargin: bigint;
+  tradingFee: bigint;
+};
+
 export type BinMarginStruct = {
   tradingFeeRate: BigNumberish;
   amount: BigNumberish;
@@ -86,12 +151,7 @@ export interface ChromaticAccountInterface extends Interface {
   ): FunctionFragment;
 
   getEvent(
-    nameOrSignatureOrTopic:
-      | "ClaimPosition"
-      | "ClosePosition"
-      | "OpenPosition"
-      | "StopLoss"
-      | "TakeProfit"
+    nameOrSignatureOrTopic: "ClaimPosition" | "ClosePosition" | "OpenPosition"
   ): EventFragment;
 
   encodeFunctionData(
@@ -104,14 +164,7 @@ export interface ChromaticAccountInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "claimPositionCallback",
-    values: [
-      PositionStruct,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BytesLike
-    ]
+    values: [PositionStruct, ClaimPositionInfoStruct, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "closePosition",
@@ -184,27 +237,18 @@ export interface ChromaticAccountInterface extends Interface {
 export namespace ClaimPositionEvent {
   export type InputTuple = [
     marketAddress: AddressLike,
-    entryPrice: BigNumberish,
-    exitPrice: BigNumberish,
-    realizedPnl: BigNumberish,
-    interest: BigNumberish,
-    position: PositionStruct
+    positionId: BigNumberish,
+    position: ClaimPositionInfoStruct
   ];
   export type OutputTuple = [
     marketAddress: string,
-    entryPrice: bigint,
-    exitPrice: bigint,
-    realizedPnl: bigint,
-    interest: bigint,
-    position: PositionStructOutput
+    positionId: bigint,
+    position: ClaimPositionInfoStructOutput
   ];
   export interface OutputObject {
     marketAddress: string;
-    entryPrice: bigint;
-    exitPrice: bigint;
-    realizedPnl: bigint;
-    interest: bigint;
-    position: PositionStructOutput;
+    positionId: bigint;
+    position: ClaimPositionInfoStructOutput;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -215,15 +259,18 @@ export namespace ClaimPositionEvent {
 export namespace ClosePositionEvent {
   export type InputTuple = [
     marketAddress: AddressLike,
-    position: PositionStruct
+    positionId: BigNumberish,
+    position: ClosePositionInfoStruct
   ];
   export type OutputTuple = [
     marketAddress: string,
-    position: PositionStructOutput
+    positionId: bigint,
+    position: ClosePositionInfoStructOutput
   ];
   export interface OutputObject {
     marketAddress: string;
-    position: PositionStructOutput;
+    positionId: bigint;
+    position: ClosePositionInfoStructOutput;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -234,77 +281,18 @@ export namespace ClosePositionEvent {
 export namespace OpenPositionEvent {
   export type InputTuple = [
     marketAddress: AddressLike,
-    position: PositionStruct
+    positionId: BigNumberish,
+    position: OpenPositionInfoStruct
   ];
   export type OutputTuple = [
     marketAddress: string,
-    position: PositionStructOutput
+    positionId: bigint,
+    position: OpenPositionInfoStructOutput
   ];
   export interface OutputObject {
     marketAddress: string;
-    position: PositionStructOutput;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace StopLossEvent {
-  export type InputTuple = [
-    marketAddress: AddressLike,
-    entryPrice: BigNumberish,
-    exitPrice: BigNumberish,
-    realizedPnl: BigNumberish,
-    interest: BigNumberish,
-    position: PositionStruct
-  ];
-  export type OutputTuple = [
-    marketAddress: string,
-    entryPrice: bigint,
-    exitPrice: bigint,
-    realizedPnl: bigint,
-    interest: bigint,
-    position: PositionStructOutput
-  ];
-  export interface OutputObject {
-    marketAddress: string;
-    entryPrice: bigint;
-    exitPrice: bigint;
-    realizedPnl: bigint;
-    interest: bigint;
-    position: PositionStructOutput;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace TakeProfitEvent {
-  export type InputTuple = [
-    marketAddress: AddressLike,
-    entryPrice: BigNumberish,
-    exitPrice: BigNumberish,
-    realizedPnl: BigNumberish,
-    interest: BigNumberish,
-    position: PositionStruct
-  ];
-  export type OutputTuple = [
-    marketAddress: string,
-    entryPrice: bigint,
-    exitPrice: bigint,
-    realizedPnl: bigint,
-    interest: bigint,
-    position: PositionStructOutput
-  ];
-  export interface OutputObject {
-    marketAddress: string;
-    entryPrice: bigint;
-    exitPrice: bigint;
-    realizedPnl: bigint;
-    interest: bigint;
-    position: PositionStructOutput;
+    positionId: bigint;
+    position: OpenPositionInfoStructOutput;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -376,11 +364,8 @@ export interface ChromaticAccount extends BaseContract {
   claimPositionCallback: TypedContractMethod<
     [
       position: PositionStruct,
-      entryPrice: BigNumberish,
-      exitPrice: BigNumberish,
-      realizedPnl: BigNumberish,
-      interest: BigNumberish,
-      data: BytesLike
+      claimInfo: ClaimPositionInfoStruct,
+      arg2: BytesLike
     ],
     [void],
     "nonpayable"
@@ -449,7 +434,7 @@ export interface ChromaticAccount extends BaseContract {
       makerMargin: BigNumberish,
       maxAllowableTradingFee: BigNumberish
     ],
-    [PositionStructOutput],
+    [OpenPositionInfoStructOutput],
     "nonpayable"
   >;
 
@@ -503,11 +488,8 @@ export interface ChromaticAccount extends BaseContract {
   ): TypedContractMethod<
     [
       position: PositionStruct,
-      entryPrice: BigNumberish,
-      exitPrice: BigNumberish,
-      realizedPnl: BigNumberish,
-      interest: BigNumberish,
-      data: BytesLike
+      claimInfo: ClaimPositionInfoStruct,
+      arg2: BytesLike
     ],
     [void],
     "nonpayable"
@@ -546,7 +528,7 @@ export interface ChromaticAccount extends BaseContract {
       makerMargin: BigNumberish,
       maxAllowableTradingFee: BigNumberish
     ],
-    [PositionStructOutput],
+    [OpenPositionInfoStructOutput],
     "nonpayable"
   >;
   getFunction(
@@ -590,23 +572,9 @@ export interface ChromaticAccount extends BaseContract {
     OpenPositionEvent.OutputTuple,
     OpenPositionEvent.OutputObject
   >;
-  getEvent(
-    key: "StopLoss"
-  ): TypedContractEvent<
-    StopLossEvent.InputTuple,
-    StopLossEvent.OutputTuple,
-    StopLossEvent.OutputObject
-  >;
-  getEvent(
-    key: "TakeProfit"
-  ): TypedContractEvent<
-    TakeProfitEvent.InputTuple,
-    TakeProfitEvent.OutputTuple,
-    TakeProfitEvent.OutputObject
-  >;
 
   filters: {
-    "ClaimPosition(address,uint256,uint256,int256,uint256,tuple)": TypedContractEvent<
+    "ClaimPosition(address,uint256,tuple)": TypedContractEvent<
       ClaimPositionEvent.InputTuple,
       ClaimPositionEvent.OutputTuple,
       ClaimPositionEvent.OutputObject
@@ -617,7 +585,7 @@ export interface ChromaticAccount extends BaseContract {
       ClaimPositionEvent.OutputObject
     >;
 
-    "ClosePosition(address,tuple)": TypedContractEvent<
+    "ClosePosition(address,uint256,tuple)": TypedContractEvent<
       ClosePositionEvent.InputTuple,
       ClosePositionEvent.OutputTuple,
       ClosePositionEvent.OutputObject
@@ -628,7 +596,7 @@ export interface ChromaticAccount extends BaseContract {
       ClosePositionEvent.OutputObject
     >;
 
-    "OpenPosition(address,tuple)": TypedContractEvent<
+    "OpenPosition(address,uint256,tuple)": TypedContractEvent<
       OpenPositionEvent.InputTuple,
       OpenPositionEvent.OutputTuple,
       OpenPositionEvent.OutputObject
@@ -637,28 +605,6 @@ export interface ChromaticAccount extends BaseContract {
       OpenPositionEvent.InputTuple,
       OpenPositionEvent.OutputTuple,
       OpenPositionEvent.OutputObject
-    >;
-
-    "StopLoss(address,uint256,uint256,int256,uint256,tuple)": TypedContractEvent<
-      StopLossEvent.InputTuple,
-      StopLossEvent.OutputTuple,
-      StopLossEvent.OutputObject
-    >;
-    StopLoss: TypedContractEvent<
-      StopLossEvent.InputTuple,
-      StopLossEvent.OutputTuple,
-      StopLossEvent.OutputObject
-    >;
-
-    "TakeProfit(address,uint256,uint256,int256,uint256,tuple)": TypedContractEvent<
-      TakeProfitEvent.InputTuple,
-      TakeProfitEvent.OutputTuple,
-      TakeProfitEvent.OutputObject
-    >;
-    TakeProfit: TypedContractEvent<
-      TakeProfitEvent.InputTuple,
-      TakeProfitEvent.OutputTuple,
-      TakeProfitEvent.OutputObject
     >;
   };
 }

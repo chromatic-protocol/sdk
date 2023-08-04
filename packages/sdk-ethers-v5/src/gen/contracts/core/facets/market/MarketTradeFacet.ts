@@ -73,6 +73,46 @@ export type PositionStructOutput = [
   _feeProtocol: number;
 };
 
+export type ClosePositionInfoStruct = {
+  id: BigNumberish;
+  closeVersion: BigNumberish;
+  closeTimestamp: BigNumberish;
+};
+
+export type ClosePositionInfoStructOutput = [
+  BigNumber,
+  BigNumber,
+  BigNumber
+] & { id: BigNumber; closeVersion: BigNumber; closeTimestamp: BigNumber };
+
+export type OpenPositionInfoStruct = {
+  id: BigNumberish;
+  openVersion: BigNumberish;
+  qty: BigNumberish;
+  openTimestamp: BigNumberish;
+  takerMargin: BigNumberish;
+  makerMargin: BigNumberish;
+  tradingFee: BigNumberish;
+};
+
+export type OpenPositionInfoStructOutput = [
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber
+] & {
+  id: BigNumber;
+  openVersion: BigNumber;
+  qty: BigNumber;
+  openTimestamp: BigNumber;
+  takerMargin: BigNumber;
+  makerMargin: BigNumber;
+  tradingFee: BigNumber;
+};
+
 export interface MarketTradeFacetInterface extends utils.Interface {
   functions: {
     "claimPosition(uint256,address,bytes)": FunctionFragment;
@@ -330,7 +370,7 @@ export interface MarketTradeFacet extends BaseContract {
     closePosition(
       positionId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<PositionStructOutput>;
+    ): Promise<ClosePositionInfoStructOutput>;
 
     /**
      * Retrieves multiple positions by their IDs.
@@ -356,7 +396,7 @@ export interface MarketTradeFacet extends BaseContract {
       maxAllowableTradingFee: BigNumberish,
       data: BytesLike,
       overrides?: CallOverrides
-    ): Promise<PositionStructOutput>;
+    ): Promise<OpenPositionInfoStructOutput>;
   };
 
   filters: {

@@ -70,6 +70,46 @@ export type PositionStructOutput = [
   _feeProtocol: bigint;
 };
 
+export type ClosePositionInfoStruct = {
+  id: BigNumberish;
+  closeVersion: BigNumberish;
+  closeTimestamp: BigNumberish;
+};
+
+export type ClosePositionInfoStructOutput = [
+  id: bigint,
+  closeVersion: bigint,
+  closeTimestamp: bigint
+] & { id: bigint; closeVersion: bigint; closeTimestamp: bigint };
+
+export type OpenPositionInfoStruct = {
+  id: BigNumberish;
+  openVersion: BigNumberish;
+  qty: BigNumberish;
+  openTimestamp: BigNumberish;
+  takerMargin: BigNumberish;
+  makerMargin: BigNumberish;
+  tradingFee: BigNumberish;
+};
+
+export type OpenPositionInfoStructOutput = [
+  id: bigint,
+  openVersion: bigint,
+  qty: bigint,
+  openTimestamp: bigint,
+  takerMargin: bigint,
+  makerMargin: bigint,
+  tradingFee: bigint
+] & {
+  id: bigint;
+  openVersion: bigint;
+  qty: bigint;
+  openTimestamp: bigint;
+  takerMargin: bigint;
+  makerMargin: bigint;
+  tradingFee: bigint;
+};
+
 export interface MarketTradeFacetInterface extends Interface {
   getFunction(
     nameOrSignature:
@@ -247,7 +287,7 @@ export interface MarketTradeFacet extends BaseContract {
    */
   closePosition: TypedContractMethod<
     [positionId: BigNumberish],
-    [PositionStructOutput],
+    [ClosePositionInfoStructOutput],
     "nonpayable"
   >;
 
@@ -277,7 +317,7 @@ export interface MarketTradeFacet extends BaseContract {
       maxAllowableTradingFee: BigNumberish,
       data: BytesLike
     ],
-    [PositionStructOutput],
+    [OpenPositionInfoStructOutput],
     "nonpayable"
   >;
 
@@ -296,7 +336,7 @@ export interface MarketTradeFacet extends BaseContract {
     nameOrSignature: "closePosition"
   ): TypedContractMethod<
     [positionId: BigNumberish],
-    [PositionStructOutput],
+    [ClosePositionInfoStructOutput],
     "nonpayable"
   >;
   getFunction(
@@ -316,7 +356,7 @@ export interface MarketTradeFacet extends BaseContract {
       maxAllowableTradingFee: BigNumberish,
       data: BytesLike
     ],
-    [PositionStructOutput],
+    [OpenPositionInfoStructOutput],
     "nonpayable"
   >;
 

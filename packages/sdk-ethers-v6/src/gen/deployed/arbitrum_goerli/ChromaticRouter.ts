@@ -48,51 +48,32 @@ export type LpReceiptStructOutput = [
   tradingFeeRate: bigint;
 };
 
-export type BinMarginStruct = {
-  tradingFeeRate: BigNumberish;
-  amount: BigNumberish;
-};
-
-export type BinMarginStructOutput = [tradingFeeRate: bigint, amount: bigint] & {
-  tradingFeeRate: bigint;
-  amount: bigint;
-};
-
-export type PositionStruct = {
+export type OpenPositionInfoStruct = {
   id: BigNumberish;
   openVersion: BigNumberish;
-  closeVersion: BigNumberish;
   qty: BigNumberish;
   openTimestamp: BigNumberish;
-  closeTimestamp: BigNumberish;
   takerMargin: BigNumberish;
-  owner: AddressLike;
-  _binMargins: BinMarginStruct[];
-  _feeProtocol: BigNumberish;
+  makerMargin: BigNumberish;
+  tradingFee: BigNumberish;
 };
 
-export type PositionStructOutput = [
+export type OpenPositionInfoStructOutput = [
   id: bigint,
   openVersion: bigint,
-  closeVersion: bigint,
   qty: bigint,
   openTimestamp: bigint,
-  closeTimestamp: bigint,
   takerMargin: bigint,
-  owner: string,
-  _binMargins: BinMarginStructOutput[],
-  _feeProtocol: bigint
+  makerMargin: bigint,
+  tradingFee: bigint
 ] & {
   id: bigint;
   openVersion: bigint;
-  closeVersion: bigint;
   qty: bigint;
   openTimestamp: bigint;
-  closeTimestamp: bigint;
   takerMargin: bigint;
-  owner: string;
-  _binMargins: BinMarginStructOutput[];
-  _feeProtocol: bigint;
+  makerMargin: bigint;
+  tradingFee: bigint;
 };
 
 export interface ChromaticRouterInterface extends Interface {
@@ -557,7 +538,7 @@ export interface ChromaticRouter extends BaseContract {
       makerMargin: BigNumberish,
       maxAllowableTradingFee: BigNumberish
     ],
-    [PositionStructOutput],
+    [OpenPositionInfoStructOutput],
     "nonpayable"
   >;
 
@@ -779,7 +760,7 @@ export interface ChromaticRouter extends BaseContract {
       makerMargin: BigNumberish,
       maxAllowableTradingFee: BigNumberish
     ],
-    [PositionStructOutput],
+    [OpenPositionInfoStructOutput],
     "nonpayable"
   >;
   getFunction(

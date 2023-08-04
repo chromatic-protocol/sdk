@@ -1287,22 +1287,7 @@ const _abi = [
           },
           {
             internalType: "uint256",
-            name: "openVersion",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
             name: "closeVersion",
-            type: "uint256",
-          },
-          {
-            internalType: "int256",
-            name: "qty",
-            type: "int256",
-          },
-          {
-            internalType: "uint256",
-            name: "openTimestamp",
             type: "uint256",
           },
           {
@@ -1310,40 +1295,8 @@ const _abi = [
             name: "closeTimestamp",
             type: "uint256",
           },
-          {
-            internalType: "uint256",
-            name: "takerMargin",
-            type: "uint256",
-          },
-          {
-            internalType: "address",
-            name: "owner",
-            type: "address",
-          },
-          {
-            components: [
-              {
-                internalType: "uint16",
-                name: "tradingFeeRate",
-                type: "uint16",
-              },
-              {
-                internalType: "uint256",
-                name: "amount",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct BinMargin[]",
-            name: "_binMargins",
-            type: "tuple[]",
-          },
-          {
-            internalType: "uint8",
-            name: "_feeProtocol",
-            type: "uint8",
-          },
         ],
-        internalType: "struct Position",
+        internalType: "struct ClosePositionInfo",
         name: "",
         type: "tuple",
       },
@@ -1713,11 +1666,6 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "uint256",
-            name: "closeVersion",
-            type: "uint256",
-          },
-          {
             internalType: "int256",
             name: "qty",
             type: "int256",
@@ -1729,43 +1677,21 @@ const _abi = [
           },
           {
             internalType: "uint256",
-            name: "closeTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
             name: "takerMargin",
             type: "uint256",
           },
           {
-            internalType: "address",
-            name: "owner",
-            type: "address",
+            internalType: "uint256",
+            name: "makerMargin",
+            type: "uint256",
           },
           {
-            components: [
-              {
-                internalType: "uint16",
-                name: "tradingFeeRate",
-                type: "uint16",
-              },
-              {
-                internalType: "uint256",
-                name: "amount",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct BinMargin[]",
-            name: "_binMargins",
-            type: "tuple[]",
-          },
-          {
-            internalType: "uint8",
-            name: "_feeProtocol",
-            type: "uint8",
+            internalType: "uint256",
+            name: "tradingFee",
+            type: "uint256",
           },
         ],
-        internalType: "struct Position",
+        internalType: "struct OpenPositionInfo",
         name: "",
         type: "tuple",
       },

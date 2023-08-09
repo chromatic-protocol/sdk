@@ -35,6 +35,7 @@
     "build:esm": "rm -rf ./dist/esm && tsc --build --force tsconfig.build.json",
     "build": "yarn build:cjs && yarn build:esm",
     "clean": "rm -rf docs dist",
+    "pub": "yarn publish --access public",
     "docs:sdk": "cd site && yarn install && yarn clear && yarn build",
     "test": "jest --runInBand"
   },
@@ -52,5 +53,5 @@
     "segfault-handler": "^1.3.0",
     "typescript": "^5.1.6"
   },
-  "version": "0.1.0-rc.137"
+  "version": "0.1.0-rc.138"
 }

@@ -61,10 +61,11 @@
     "build:esm": "rm -rf ./dist/esm && tsc --build --force tsconfig.build.json",
     "build": "yarn build:cjs && yarn build:esm",
     "clean": "rm -rf docs dist",
+    "pub": "yarn publish --access public",
     "docs": "typedoc",
     "docs:markdown": "typedoc --plugin typedoc-plugin-markdown --out docs src/index.ts",
     "docs:sdk": "cd site && yarn install && yarn clear && yarn build",
     "test": "jest --runInBand"
   },
-  "version": "0.1.0-rc.137"
+  "version": "0.1.0-rc.138"
 }

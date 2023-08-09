@@ -1,4 +1,4 @@
-name: publish sdk-ethers-v5
+name: publish sdk and update docs
 
 on:
   pull_request:
@@ -27,7 +27,7 @@ permissions:
   packages: write
 
 jobs:
-  publish-viem:
+  publish:
     if: ${{ github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
     steps:
@@ -41,9 +41,9 @@ jobs:
         pre-release: true
         git-push: true
         skip-on-empty: false
-        version-file: packages/sdk-viem/package.json
+        version-file: packages/sdk-viem/package.json,packages/sdk-ethers-v5/package.json,packages/sdk-ethers-v6/package.json
         skip-tag: true
-        git-message: 'chore(release): sdk-viem@{version}'
+        git-message: 'chore(release): sdk@{version}'
         # skip-version-file: false
         # skip-commit: false
     - uses: actions/setup-node@v3
@@ -55,13 +55,12 @@ jobs:
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_CHROMATIC }}    
     
-    # TODO publish docs
+    # publish package to npm
     - name: build and publish
-      working-directory: ./packages/sdk-viem 
       run: |
         yarn install
-        yarn build
-        yarn publish --access public
+        yarn workspaces run build
+        yarn workspaces run pub
 
     # export markdown docs to docs repository
     - uses: chromatic-protocol/action-github-app-token@v1
@@ -73,160 +72,37 @@ jobs:
       with:
         repository: chromatic-protocol/docs
         ref: main
-        path: packages/sdk-viem/docs-repo
+        path: docs-repo
         token: ${{ steps.generate-token.outputs.token }}
     - name: export docs:sdk and cp
-      working-directory: ./packages/sdk-viem
       run: |
-        yarn docs:sdk
-        cp docs-repo/docs/sdk/reference/sdk-viem/_category_.yml site/docs/sdk/ 
+        yarn workspaces run docs:sdk
+        # update sdk-viem docs
+        cp docs-repo/docs/sdk/reference/sdk-viem/_category_.yml packages/sdk-viem/site/docs/sdk/ 
         rm -rf docs-repo/docs/sdk/reference/sdk-viem/*
-        cp -r site/docs/sdk/* docs-repo/docs/sdk/reference/sdk-viem/
+        cp -r packages/sdk-viem/site/docs/sdk/* docs-repo/docs/sdk/reference/sdk-viem/
+        # update sdk-ethers-v5 docs
+        cp docs-repo/docs/sdk/reference/sdk-ethers-v5/_category_.yml packages/sdk-ethers-v5/site/docs/sdk/ 
+        rm -rf docs-repo/docs/sdk/reference/sdk-ethers-v5/*
+        cp -r packages/sdk-ethers-v5/site/docs/sdk/* docs-repo/docs/sdk/reference/sdk-ethers-v5/
+        cp packages/sdk-ethers-v5/src/gen/deployedAddress.ts docs-repo/docs/contracts/reference/
+        # update sdk-ethers-v6 docs
+        cp docs-repo/docs/sdk/reference/sdk-ethers-v6/_category_.yml packages/sdk-ethers-v6/site/docs/sdk/ 
+        rm -rf docs-repo/docs/sdk/reference/sdk-ethers-v6/*
+        cp -r packages/sdk-ethers-v6/site/docs/sdk/* docs-repo/docs/sdk/reference/sdk-ethers-v6/
+        cp packages/sdk-ethers-v6/src/gen/deployedAddress.ts docs-repo/docs/contracts/reference/
+
     - name: pull-request
       uses: peter-evans/create-pull-request@v5
       with:
         base: main
-        branch: docs/sdk-viem
-        path: packages/sdk-viem/docs-repo
+        branch: docs/sdk
+        path: docs-repo
         add-paths: |
           docs/sdk/reference/sdk-viem/**
-        token: ${{ steps.generate-token.outputs.token }}
-        commit-message: ${{ github.event.pull_request.title }}
-        title: Changes from sdk-viem
-
-  publish-ethers-v5:
-    if: ${{ always() }}
-    needs: publish-viem
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3 # Checkout our working repository
-    - name: Conventional Changelog Action
-      id: changelog
-      uses: TriPSs/conventional-changelog-action@v3
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        output-file: false
-        pre-release: true
-        git-push: true
-        skip-on-empty: false
-        version-file: packages/sdk-ethers-v5/package.json
-        skip-tag: true
-        git-message: 'chore(release): sdk-ethers-v5@{version}'
-        # skip-version-file: false
-        # skip-commit: false
-    - uses: actions/setup-node@v3
-      id: setup-node
-      with:
-        node-version: 18.15
-        cache: yarn
-        registry-url: https://registry.npmjs.org
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_CHROMATIC }}    
-    - name: build and publish
-      working-directory: ./packages/sdk-ethers-v5 
-      run: |
-        yarn install
-        yarn build
-        yarn publish --access public
-    
-    # export markdown docs to docs repository
-    - uses: chromatic-protocol/action-github-app-token@v1
-      id: generate-token
-      with:
-        app_id: ${{ secrets.PR_ACTION_APP_ID }}
-        private_key: ${{ secrets.PR_ACTION_PRIVATE }}
-    - uses: actions/checkout@v3
-      with:
-        repository: chromatic-protocol/docs
-        ref: main
-        path: packages/sdk-ethers-v5/docs-repo
-        token: ${{ steps.generate-token.outputs.token }}
-    - name: export docs:sdk and cp
-      working-directory: ./packages/sdk-ethers-v5
-      run: |
-        yarn docs:sdk
-        cp docs-repo/docs/sdk/reference/sdk-ethers-v5/_category_.yml site/docs/sdk/ 
-        rm -rf docs-repo/docs/sdk/reference/sdk-ethers-v5/*
-        cp -r site/docs/sdk/* docs-repo/docs/sdk/reference/sdk-ethers-v5/
-        cp src/gen/deployedAddress.ts docs-repo/docs/contracts/reference/
-    - name: pull-request
-      uses: peter-evans/create-pull-request@v5
-      with:
-        base: main
-        branch: docs/sdk-ethers-v5
-        path: packages/sdk-ethers-v5/docs-repo
-        add-paths: |
           docs/sdk/reference/sdk-ethers-v5/**
-          docs/contracts/reference/deployedAddress.ts
-        token: ${{ steps.generate-token.outputs.token }}
-        commit-message: ${{ github.event.pull_request.title }}
-        title: Changes from sdk-ethers-v5
-
-  publish-ethers-v6:
-    if: ${{ always() }}
-    needs: [publish-viem, publish-ethers-v5]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3 # Checkout our working repository
-    - name: Conventional Changelog Action
-      id: changelog
-      uses: TriPSs/conventional-changelog-action@v3
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        output-file: false
-        pre-release: true
-        git-push: true
-        skip-on-empty: false
-        version-file: packages/sdk-ethers-v6/package.json
-        skip-tag: true
-        git-message: 'chore(release): sdk-ethers-v6@{version}'
-        # skip-version-file: false
-        # skip-commit: false
-    - uses: actions/setup-node@v3
-      id: setup-node
-      with:
-        node-version: 18.15
-        cache: yarn
-        registry-url: https://registry.npmjs.org
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_CHROMATIC }}    
-    - name: build and publish
-      working-directory: ./packages/sdk-ethers-v6 
-      run: |
-        yarn install
-        yarn build
-        yarn publish --access public
-    
-    # export markdown docs to docs repository
-    - uses: chromatic-protocol/action-github-app-token@v1
-      id: generate-token
-      with:
-        app_id: ${{ secrets.PR_ACTION_APP_ID }}
-        private_key: ${{ secrets.PR_ACTION_PRIVATE }}
-    - uses: actions/checkout@v3
-      with:
-        repository: chromatic-protocol/docs
-        ref: main
-        path: packages/sdk-ethers-v6/docs-repo
-        token: ${{ steps.generate-token.outputs.token }}
-    - name: export docs:sdk and cp
-      working-directory: ./packages/sdk-ethers-v6
-      run: |
-        yarn docs:sdk
-        cp docs-repo/docs/sdk/reference/sdk-ethers-v6/_category_.yml site/docs/sdk/ 
-        rm -rf docs-repo/docs/sdk/reference/sdk-ethers-v6/*
-        cp -r site/docs/sdk/* docs-repo/docs/sdk/reference/sdk-ethers-v6/
-        cp src/gen/deployedAddress.ts docs-repo/docs/contracts/reference/
-    - name: pull-request
-      uses: peter-evans/create-pull-request@v5
-      with:
-        base: main
-        branch: docs/sdk-ethers-v6
-        path: packages/sdk-ethers-v6/docs-repo
-        add-paths: |
           docs/sdk/reference/sdk-ethers-v6/**
           docs/contracts/reference/deployedAddress.ts
         token: ${{ steps.generate-token.outputs.token }}
         commit-message: ${{ github.event.pull_request.title }}
-        title: Changes from sdk-ethers-v6
-
+        title: Changes from sdk

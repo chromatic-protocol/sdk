@@ -97,24 +97,24 @@ export class ChromaticPosition {
       const positions = await this.contracts().market(marketAddress).getPositions(positionIds);
       const lensContract = this.contracts().lens;
       const oracleVersions = new Set(
-        positions.map((position) => [position.openVersion, position.closeVersion]).flat()
+        positions.map((position) => [position.openVersion + 1n, position.closeVersion + 1n]).flat()
       );
 
       const oracleVersionData = await Promise.all(
         [...oracleVersions].map((version) => lensContract.oracleVersion(marketAddress, version))
       );
-      logger("oracleVersionData", oracleVersionData);
 
       return positions.map((position) => {
         return {
           ...position,
           makerMargin: position._binMargins.reduce((acc, bin) => acc + bin.amount, BigInt(0)),
-          openPrice: oracleVersionData.find((oracle) => oracle.version == position.openVersion)
+          openPrice: oracleVersionData.find((oracle) => oracle.version == position.openVersion + 1n)
             ?.price,
           closePrice:
             position.closeVersion === 0n
               ? null
-              : oracleVersionData.find((oracle) => oracle.version == position.closeVersion)?.price,
+              : oracleVersionData.find((oracle) => oracle.version == position.closeVersion + 1n)
+                  ?.price,
         } as IPosition;
       });
     }, this._client.provider);

@@ -97,7 +97,9 @@ export class ChromaticPosition {
       const positions = await this.contracts().market(marketAddress).getPositions(positionIds);
       const lensContract = this.contracts().lens;
       const oracleVersions = new Set(
-        positions.map((position) => [position.openVersion, position.closeVersion]).flat()
+        positions
+          .map((position) => [position.openVersion.add(1), position.closeVersion.add(1)])
+          .flat()
       );
 
       const oracleVersionData = await Promise.all(
@@ -112,11 +114,13 @@ export class ChromaticPosition {
             (acc, bin) => acc.add(bin.amount),
             BigNumber.from(0)
           ),
-          openPrice: oracleVersionData.find((oracle) => oracle.version?.eq(position.openVersion))
-            ?.price,
+          openPrice: oracleVersionData.find((oracle) =>
+            oracle.version?.eq(position.openVersion.add(1))
+          )?.price,
           closePrice: position.closeVersion.eq(0)
             ? null
-            : oracleVersionData.find((oracle) => oracle.version?.eq(position.closeVersion))?.price,
+            : oracleVersionData.find((oracle) => oracle.version?.eq(position.closeVersion.add(1)))
+                ?.price,
         } as IPosition;
       });
     }, this._client.provider);

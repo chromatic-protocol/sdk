@@ -1,21 +1,5 @@
 import { Client } from "../Client";
-import {
-  chromaticAccountABI,
-  chromaticLensABI,
-  chromaticMarketFactoryABI,
-  chromaticRouterABI,
-  chromaticVaultABI,
-  clbTokenABI,
-  iChromaticMarketABI,
-  iOracleProviderABI,
-  marketDiamondCutFacetABI,
-  marketFacetBaseABI,
-  marketLiquidateFacetABI,
-  marketLiquidityFacetABI,
-  marketSettleFacetABI,
-  marketStateFacetABI,
-  marketTradeFacetABI,
-} from "../gen";
+import * as gen from "../gen";
 
 import {
   Abi,
@@ -90,7 +74,7 @@ export async function handleBytesError<T>(fn: () => Promise<T>): Promise<T> {
       const error = (e.cause as any).cause;
       if (error instanceof AbiErrorSignatureNotFoundError) {
         const signature = (error as any).signature;
-        if(signature){
+        if (errorSignitures[signature]) {
           throw Error(`call reverted with error: ${errorSignitures[signature]}`);
         }
       }
@@ -103,24 +87,11 @@ export async function handleBytesError<T>(fn: () => Promise<T>): Promise<T> {
 interface ErrorSignatures {
   [key: string]: string;
 }
-
-export const errorSignitures: ErrorSignatures = [
-  ...iChromaticMarketABI,
-  ...chromaticMarketFactoryABI,
-  ...chromaticVaultABI,
-  ...clbTokenABI,
-  ...iOracleProviderABI,
-  ...chromaticAccountABI,
-  ...chromaticRouterABI,
-  ...chromaticLensABI,
-  ...marketDiamondCutFacetABI,
-  ...marketFacetBaseABI,
-  ...marketLiquidateFacetABI,
-  ...marketLiquidityFacetABI,
-  ...marketSettleFacetABI,
-  ...marketStateFacetABI,
-  ...marketTradeFacetABI,
-]
+const allABIs = Object.entries(gen)
+  .filter(([key, value]) => key.includes("ABI") && value instanceof Array)
+  .map(([key, value]) => value)
+  .reduce((acc, curr) => acc.concat(curr), [] as Array<any>);
+export const errorSignitures: ErrorSignatures = allABIs
   .filter((abi) => abi.type === "error")
   .reduce((prevErrMap, currErrAbi) => {
     const errName = (currErrAbi as any)["name"];

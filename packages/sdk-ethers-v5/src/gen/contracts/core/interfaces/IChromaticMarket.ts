@@ -161,6 +161,16 @@ export declare namespace IMarketLiquidity {
     burningTokenAmount: BigNumber;
   };
 
+  export type LiquidityBinValueStruct = {
+    binValue: BigNumberish;
+    clbTokenTotalSupply: BigNumberish;
+  };
+
+  export type LiquidityBinValueStructOutput = [BigNumber, BigNumber] & {
+    binValue: BigNumber;
+    clbTokenTotalSupply: BigNumber;
+  };
+
   export type LiquidityBinStatusStruct = {
     liquidity: BigNumberish;
     freeLiquidity: BigNumberish;
@@ -217,7 +227,9 @@ export interface IChromaticMarketInterface extends utils.Interface {
     "getBinFreeLiquidity(int16)": FunctionFragment;
     "getBinLiquidity(int16)": FunctionFragment;
     "getBinValues(int16[])": FunctionFragment;
+    "getBinValuesAt(uint256,int16[])": FunctionFragment;
     "getLpReceipt(uint256)": FunctionFragment;
+    "getLpReceipts(uint256[])": FunctionFragment;
     "getPositions(uint256[])": FunctionFragment;
     "keeperFeePayer()": FunctionFragment;
     "liquidate(uint256,address,uint256)": FunctionFragment;
@@ -230,7 +242,8 @@ export interface IChromaticMarketInterface extends utils.Interface {
     "removeLiquidity(address,int16,bytes)": FunctionFragment;
     "removeLiquidityBatch(address,int16[],uint256[],bytes)": FunctionFragment;
     "setFeeProtocol(uint8)": FunctionFragment;
-    "settle()": FunctionFragment;
+    "settle(int16[])": FunctionFragment;
+    "settleAll()": FunctionFragment;
     "settlementToken()": FunctionFragment;
     "vault()": FunctionFragment;
     "withdrawLiquidity(uint256,bytes)": FunctionFragment;
@@ -257,7 +270,9 @@ export interface IChromaticMarketInterface extends utils.Interface {
       | "getBinFreeLiquidity"
       | "getBinLiquidity"
       | "getBinValues"
+      | "getBinValuesAt"
       | "getLpReceipt"
+      | "getLpReceipts"
       | "getPositions"
       | "keeperFeePayer"
       | "liquidate"
@@ -271,6 +286,7 @@ export interface IChromaticMarketInterface extends utils.Interface {
       | "removeLiquidityBatch"
       | "setFeeProtocol"
       | "settle"
+      | "settleAll"
       | "settlementToken"
       | "vault"
       | "withdrawLiquidity"
@@ -344,8 +360,16 @@ export interface IChromaticMarketInterface extends utils.Interface {
     values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
+    functionFragment: "getBinValuesAt",
+    values: [BigNumberish, BigNumberish[]]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getLpReceipt",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getLpReceipts",
+    values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "getPositions",
@@ -395,7 +419,11 @@ export interface IChromaticMarketInterface extends utils.Interface {
     functionFragment: "setFeeProtocol",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "settle", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "settle",
+    values: [BigNumberish[]]
+  ): string;
+  encodeFunctionData(functionFragment: "settleAll", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "settlementToken",
     values?: undefined
@@ -477,7 +505,15 @@ export interface IChromaticMarketInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getBinValuesAt",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getLpReceipt",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getLpReceipts",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -523,6 +559,7 @@ export interface IChromaticMarketInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "settle", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "settleAll", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "settlementToken",
     data: BytesLike
@@ -956,6 +993,21 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<[BigNumber[]] & { values: BigNumber[] }>;
 
     /**
+     * Retrieves the values of specific trading fee rates' bins in the liquidity pool at a specific oracle version.      The value of a bin represents the total valuation of the liquidity in the bin.
+     * @param oracleVersion The oracle version for which to retrieve the bin values.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the bin values.
+     */
+    getBinValuesAt(
+      oracleVersion: BigNumberish,
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<
+      [IMarketLiquidity.LiquidityBinValueStructOutput[]] & {
+        values: IMarketLiquidity.LiquidityBinValueStructOutput[];
+      }
+    >;
+
+    /**
      * Retrieves the liquidity receipt with the given receipt ID.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
      * @param receiptId The ID of the liquidity receipt to retrieve.
      */
@@ -963,6 +1015,15 @@ export interface IChromaticMarket extends BaseContract {
       receiptId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[LpReceiptStructOutput]>;
+
+    /**
+     * Retrieves the liquidity receipts with the given receipt IDs.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
+     * @param receiptIds The ID list of the liquidity receipt to retrieve.
+     */
+    getLpReceipts(
+      receiptIds: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<[LpReceiptStructOutput[]]>;
 
     /**
      * Retrieves multiple positions by their IDs.
@@ -1085,8 +1146,18 @@ export interface IChromaticMarket extends BaseContract {
     /**
      * This function is called to settle the market.
      * Executes the settlement process for the Chromatic market.
+     * @param feeRates The feeRate list of liquidity bin to settle.
      */
     settle(
+      feeRates: BigNumberish[],
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * This function is called to settle the market.
+     * Executes the settlement process for the Chromatic market.
+     */
+    settleAll(
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
@@ -1302,6 +1373,17 @@ export interface IChromaticMarket extends BaseContract {
   ): Promise<BigNumber[]>;
 
   /**
+   * Retrieves the values of specific trading fee rates' bins in the liquidity pool at a specific oracle version.      The value of a bin represents the total valuation of the liquidity in the bin.
+   * @param oracleVersion The oracle version for which to retrieve the bin values.
+   * @param tradingFeeRates The list of trading fee rates for which to retrieve the bin values.
+   */
+  getBinValuesAt(
+    oracleVersion: BigNumberish,
+    tradingFeeRates: BigNumberish[],
+    overrides?: CallOverrides
+  ): Promise<IMarketLiquidity.LiquidityBinValueStructOutput[]>;
+
+  /**
    * Retrieves the liquidity receipt with the given receipt ID.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
    * @param receiptId The ID of the liquidity receipt to retrieve.
    */
@@ -1309,6 +1391,15 @@ export interface IChromaticMarket extends BaseContract {
     receiptId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<LpReceiptStructOutput>;
+
+  /**
+   * Retrieves the liquidity receipts with the given receipt IDs.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
+   * @param receiptIds The ID list of the liquidity receipt to retrieve.
+   */
+  getLpReceipts(
+    receiptIds: BigNumberish[],
+    overrides?: CallOverrides
+  ): Promise<LpReceiptStructOutput[]>;
 
   /**
    * Retrieves multiple positions by their IDs.
@@ -1429,8 +1520,18 @@ export interface IChromaticMarket extends BaseContract {
   /**
    * This function is called to settle the market.
    * Executes the settlement process for the Chromatic market.
+   * @param feeRates The feeRate list of liquidity bin to settle.
    */
   settle(
+    feeRates: BigNumberish[],
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * This function is called to settle the market.
+   * Executes the settlement process for the Chromatic market.
+   */
+  settleAll(
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -1646,6 +1747,17 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<BigNumber[]>;
 
     /**
+     * Retrieves the values of specific trading fee rates' bins in the liquidity pool at a specific oracle version.      The value of a bin represents the total valuation of the liquidity in the bin.
+     * @param oracleVersion The oracle version for which to retrieve the bin values.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the bin values.
+     */
+    getBinValuesAt(
+      oracleVersion: BigNumberish,
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<IMarketLiquidity.LiquidityBinValueStructOutput[]>;
+
+    /**
      * Retrieves the liquidity receipt with the given receipt ID.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
      * @param receiptId The ID of the liquidity receipt to retrieve.
      */
@@ -1653,6 +1765,15 @@ export interface IChromaticMarket extends BaseContract {
       receiptId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput>;
+
+    /**
+     * Retrieves the liquidity receipts with the given receipt IDs.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
+     * @param receiptIds The ID list of the liquidity receipt to retrieve.
+     */
+    getLpReceipts(
+      receiptIds: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<LpReceiptStructOutput[]>;
 
     /**
      * Retrieves multiple positions by their IDs.
@@ -1773,8 +1894,15 @@ export interface IChromaticMarket extends BaseContract {
     /**
      * This function is called to settle the market.
      * Executes the settlement process for the Chromatic market.
+     * @param feeRates The feeRate list of liquidity bin to settle.
      */
-    settle(overrides?: CallOverrides): Promise<void>;
+    settle(feeRates: BigNumberish[], overrides?: CallOverrides): Promise<void>;
+
+    /**
+     * This function is called to settle the market.
+     * Executes the settlement process for the Chromatic market.
+     */
+    settleAll(overrides?: CallOverrides): Promise<void>;
 
     /**
      * Returns the settlement token of the market.
@@ -2130,11 +2258,31 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * Retrieves the values of specific trading fee rates' bins in the liquidity pool at a specific oracle version.      The value of a bin represents the total valuation of the liquidity in the bin.
+     * @param oracleVersion The oracle version for which to retrieve the bin values.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the bin values.
+     */
+    getBinValuesAt(
+      oracleVersion: BigNumberish,
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
      * Retrieves the liquidity receipt with the given receipt ID.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
      * @param receiptId The ID of the liquidity receipt to retrieve.
      */
     getLpReceipt(
       receiptId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Retrieves the liquidity receipts with the given receipt IDs.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
+     * @param receiptIds The ID list of the liquidity receipt to retrieve.
+     */
+    getLpReceipts(
+      receiptIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2255,8 +2403,18 @@ export interface IChromaticMarket extends BaseContract {
     /**
      * This function is called to settle the market.
      * Executes the settlement process for the Chromatic market.
+     * @param feeRates The feeRate list of liquidity bin to settle.
      */
-    settle(overrides?: Overrides & { from?: string }): Promise<BigNumber>;
+    settle(
+      feeRates: BigNumberish[],
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     * This function is called to settle the market.
+     * Executes the settlement process for the Chromatic market.
+     */
+    settleAll(overrides?: Overrides & { from?: string }): Promise<BigNumber>;
 
     /**
      * Returns the settlement token of the market.
@@ -2471,11 +2629,31 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * Retrieves the values of specific trading fee rates' bins in the liquidity pool at a specific oracle version.      The value of a bin represents the total valuation of the liquidity in the bin.
+     * @param oracleVersion The oracle version for which to retrieve the bin values.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the bin values.
+     */
+    getBinValuesAt(
+      oracleVersion: BigNumberish,
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
      * Retrieves the liquidity receipt with the given receipt ID.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
      * @param receiptId The ID of the liquidity receipt to retrieve.
      */
     getLpReceipt(
       receiptId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Retrieves the liquidity receipts with the given receipt IDs.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
+     * @param receiptIds The ID list of the liquidity receipt to retrieve.
+     */
+    getLpReceipts(
+      receiptIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2598,8 +2776,18 @@ export interface IChromaticMarket extends BaseContract {
     /**
      * This function is called to settle the market.
      * Executes the settlement process for the Chromatic market.
+     * @param feeRates The feeRate list of liquidity bin to settle.
      */
     settle(
+      feeRates: BigNumberish[],
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * This function is called to settle the market.
+     * Executes the settlement process for the Chromatic market.
+     */
+    settleAll(
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 

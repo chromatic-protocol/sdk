@@ -158,6 +158,16 @@ export declare namespace IMarketLiquidity {
     burningTokenAmount: bigint;
   };
 
+  export type LiquidityBinValueStruct = {
+    binValue: BigNumberish;
+    clbTokenTotalSupply: BigNumberish;
+  };
+
+  export type LiquidityBinValueStructOutput = [
+    binValue: bigint,
+    clbTokenTotalSupply: bigint
+  ] & { binValue: bigint; clbTokenTotalSupply: bigint };
+
   export type LiquidityBinStatusStruct = {
     liquidity: BigNumberish;
     freeLiquidity: BigNumberish;
@@ -215,7 +225,9 @@ export interface IChromaticMarketInterface extends Interface {
       | "getBinFreeLiquidity"
       | "getBinLiquidity"
       | "getBinValues"
+      | "getBinValuesAt"
       | "getLpReceipt"
+      | "getLpReceipts"
       | "getPositions"
       | "keeperFeePayer"
       | "liquidate"
@@ -229,6 +241,7 @@ export interface IChromaticMarketInterface extends Interface {
       | "removeLiquidityBatch"
       | "setFeeProtocol"
       | "settle"
+      | "settleAll"
       | "settlementToken"
       | "vault"
       | "withdrawLiquidity"
@@ -321,8 +334,16 @@ export interface IChromaticMarketInterface extends Interface {
     values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
+    functionFragment: "getBinValuesAt",
+    values: [BigNumberish, BigNumberish[]]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getLpReceipt",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getLpReceipts",
+    values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "getPositions",
@@ -372,7 +393,11 @@ export interface IChromaticMarketInterface extends Interface {
     functionFragment: "setFeeProtocol",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "settle", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "settle",
+    values: [BigNumberish[]]
+  ): string;
+  encodeFunctionData(functionFragment: "settleAll", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "settlementToken",
     values?: undefined
@@ -454,7 +479,15 @@ export interface IChromaticMarketInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getBinValuesAt",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getLpReceipt",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getLpReceipts",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -500,6 +533,7 @@ export interface IChromaticMarketInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "settle", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "settleAll", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "settlementToken",
     data: BytesLike
@@ -1009,12 +1043,33 @@ export interface IChromaticMarket extends BaseContract {
   >;
 
   /**
+   * Retrieves the values of specific trading fee rates' bins in the liquidity pool at a specific oracle version.      The value of a bin represents the total valuation of the liquidity in the bin.
+   * @param oracleVersion The oracle version for which to retrieve the bin values.
+   * @param tradingFeeRates The list of trading fee rates for which to retrieve the bin values.
+   */
+  getBinValuesAt: TypedContractMethod<
+    [oracleVersion: BigNumberish, tradingFeeRates: BigNumberish[]],
+    [IMarketLiquidity.LiquidityBinValueStructOutput[]],
+    "view"
+  >;
+
+  /**
    * Retrieves the liquidity receipt with the given receipt ID.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
    * @param receiptId The ID of the liquidity receipt to retrieve.
    */
   getLpReceipt: TypedContractMethod<
     [receiptId: BigNumberish],
     [LpReceiptStructOutput],
+    "view"
+  >;
+
+  /**
+   * Retrieves the liquidity receipts with the given receipt IDs.      It throws NotExistLpReceipt if the specified receipt ID does not exist.
+   * @param receiptIds The ID list of the liquidity receipt to retrieve.
+   */
+  getLpReceipts: TypedContractMethod<
+    [receiptIds: BigNumberish[]],
+    [LpReceiptStructOutput[]],
     "view"
   >;
 
@@ -1147,8 +1202,15 @@ export interface IChromaticMarket extends BaseContract {
   /**
    * This function is called to settle the market.
    * Executes the settlement process for the Chromatic market.
+   * @param feeRates The feeRate list of liquidity bin to settle.
    */
-  settle: TypedContractMethod<[], [void], "nonpayable">;
+  settle: TypedContractMethod<[feeRates: BigNumberish[]], [void], "nonpayable">;
+
+  /**
+   * This function is called to settle the market.
+   * Executes the settlement process for the Chromatic market.
+   */
+  settleAll: TypedContractMethod<[], [void], "nonpayable">;
 
   /**
    * Returns the settlement token of the market.
@@ -1286,10 +1348,24 @@ export interface IChromaticMarket extends BaseContract {
     nameOrSignature: "getBinValues"
   ): TypedContractMethod<[tradingFeeRates: BigNumberish[]], [bigint[]], "view">;
   getFunction(
+    nameOrSignature: "getBinValuesAt"
+  ): TypedContractMethod<
+    [oracleVersion: BigNumberish, tradingFeeRates: BigNumberish[]],
+    [IMarketLiquidity.LiquidityBinValueStructOutput[]],
+    "view"
+  >;
+  getFunction(
     nameOrSignature: "getLpReceipt"
   ): TypedContractMethod<
     [receiptId: BigNumberish],
     [LpReceiptStructOutput],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getLpReceipts"
+  ): TypedContractMethod<
+    [receiptIds: BigNumberish[]],
+    [LpReceiptStructOutput[]],
     "view"
   >;
   getFunction(
@@ -1373,6 +1449,9 @@ export interface IChromaticMarket extends BaseContract {
   ): TypedContractMethod<[_feeProtocol: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "settle"
+  ): TypedContractMethod<[feeRates: BigNumberish[]], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "settleAll"
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "settlementToken"

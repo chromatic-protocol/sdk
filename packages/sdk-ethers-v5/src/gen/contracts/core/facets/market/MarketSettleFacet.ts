@@ -4,6 +4,7 @@
 import type {
   BaseContract,
   BigNumber,
+  BigNumberish,
   BytesLike,
   CallOverrides,
   ContractTransaction,
@@ -23,14 +24,20 @@ import type {
 
 export interface MarketSettleFacetInterface extends utils.Interface {
   functions: {
-    "settle()": FunctionFragment;
+    "settle(int16[])": FunctionFragment;
+    "settleAll()": FunctionFragment;
   };
 
-  getFunction(nameOrSignatureOrTopic: "settle"): FunctionFragment;
+  getFunction(nameOrSignatureOrTopic: "settle" | "settleAll"): FunctionFragment;
 
-  encodeFunctionData(functionFragment: "settle", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "settle",
+    values: [BigNumberish[]]
+  ): string;
+  encodeFunctionData(functionFragment: "settleAll", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "settle", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "settleAll", data: BytesLike): Result;
 
   events: {};
 }
@@ -65,8 +72,18 @@ export interface MarketSettleFacet extends BaseContract {
     /**
      * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
      * Executes the settlement process for the Chromatic market.
+     * @param feeRates The feeRate list of liquidity bin to settle.
      */
     settle(
+      feeRates: BigNumberish[],
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
+     * Executes the settlement process for the Chromatic market.
+     */
+    settleAll(
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
   };
@@ -74,8 +91,18 @@ export interface MarketSettleFacet extends BaseContract {
   /**
    * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
    * Executes the settlement process for the Chromatic market.
+   * @param feeRates The feeRate list of liquidity bin to settle.
    */
   settle(
+    feeRates: BigNumberish[],
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
+   * Executes the settlement process for the Chromatic market.
+   */
+  settleAll(
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -83,8 +110,15 @@ export interface MarketSettleFacet extends BaseContract {
     /**
      * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
      * Executes the settlement process for the Chromatic market.
+     * @param feeRates The feeRate list of liquidity bin to settle.
      */
-    settle(overrides?: CallOverrides): Promise<void>;
+    settle(feeRates: BigNumberish[], overrides?: CallOverrides): Promise<void>;
+
+    /**
+     * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
+     * Executes the settlement process for the Chromatic market.
+     */
+    settleAll(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {};
@@ -93,16 +127,36 @@ export interface MarketSettleFacet extends BaseContract {
     /**
      * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
      * Executes the settlement process for the Chromatic market.
+     * @param feeRates The feeRate list of liquidity bin to settle.
      */
-    settle(overrides?: Overrides & { from?: string }): Promise<BigNumber>;
+    settle(
+      feeRates: BigNumberish[],
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
+     * Executes the settlement process for the Chromatic market.
+     */
+    settleAll(overrides?: Overrides & { from?: string }): Promise<BigNumber>;
   };
 
   populateTransaction: {
     /**
      * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
      * Executes the settlement process for the Chromatic market.
+     * @param feeRates The feeRate list of liquidity bin to settle.
      */
     settle(
+      feeRates: BigNumberish[],
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
+     * Executes the settlement process for the Chromatic market.
+     */
+    settleAll(
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
   };

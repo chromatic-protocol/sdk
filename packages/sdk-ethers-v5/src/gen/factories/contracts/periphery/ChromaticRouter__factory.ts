@@ -23,11 +23,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "NotExistLpReceipt",
-    type: "error",
-  },
-  {
-    inputs: [],
     name: "NotMarket",
     type: "error",
   },
@@ -285,8 +280,23 @@ const _abi = [
         type: "uint256[]",
       },
       {
+        internalType: "int16[]",
+        name: "",
+        type: "int16[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+      {
         internalType: "bytes",
-        name: "data",
+        name: "",
         type: "bytes",
       },
     ],
@@ -303,8 +313,23 @@ const _abi = [
         type: "uint256",
       },
       {
+        internalType: "int16",
+        name: "",
+        type: "int16",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
         internalType: "bytes",
-        name: "data",
+        name: "",
         type: "bytes",
       },
     ],
@@ -710,8 +735,23 @@ const _abi = [
         type: "uint256[]",
       },
       {
+        internalType: "int16[]",
+        name: "",
+        type: "int16[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+      {
         internalType: "bytes",
-        name: "data",
+        name: "",
         type: "bytes",
       },
     ],
@@ -728,8 +768,23 @@ const _abi = [
         type: "uint256",
       },
       {
+        internalType: "int16",
+        name: "",
+        type: "int16",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
         internalType: "bytes",
-        name: "data",
+        name: "",
         type: "bytes",
       },
     ],

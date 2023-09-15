@@ -68,6 +68,16 @@ export declare namespace IMarketLiquidity {
     burningTokenAmount: BigNumber;
   };
 
+  export type LiquidityBinValueStruct = {
+    binValue: BigNumberish;
+    clbTokenTotalSupply: BigNumberish;
+  };
+
+  export type LiquidityBinValueStructOutput = [BigNumber, BigNumber] & {
+    binValue: BigNumber;
+    clbTokenTotalSupply: BigNumber;
+  };
+
   export type LiquidityBinStatusStruct = {
     liquidity: BigNumberish;
     freeLiquidity: BigNumberish;
@@ -111,7 +121,9 @@ export interface MarketLiquidityLensFacetInterface extends utils.Interface {
     "getBinFreeLiquidity(int16)": FunctionFragment;
     "getBinLiquidity(int16)": FunctionFragment;
     "getBinValues(int16[])": FunctionFragment;
+    "getBinValuesAt(uint256,int16[])": FunctionFragment;
     "getLpReceipt(uint256)": FunctionFragment;
+    "getLpReceipts(uint256[])": FunctionFragment;
     "liquidityBinStatuses()": FunctionFragment;
     "pendingLiquidity(int16)": FunctionFragment;
     "pendingLiquidityBatch(int16[])": FunctionFragment;
@@ -124,7 +136,9 @@ export interface MarketLiquidityLensFacetInterface extends utils.Interface {
       | "getBinFreeLiquidity"
       | "getBinLiquidity"
       | "getBinValues"
+      | "getBinValuesAt"
       | "getLpReceipt"
+      | "getLpReceipts"
       | "liquidityBinStatuses"
       | "pendingLiquidity"
       | "pendingLiquidityBatch"
@@ -151,8 +165,16 @@ export interface MarketLiquidityLensFacetInterface extends utils.Interface {
     values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
+    functionFragment: "getBinValuesAt",
+    values: [BigNumberish, BigNumberish[]]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getLpReceipt",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getLpReceipts",
+    values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "liquidityBinStatuses",
@@ -188,7 +210,15 @@ export interface MarketLiquidityLensFacetInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getBinValuesAt",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getLpReceipt",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getLpReceipts",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -281,7 +311,22 @@ export interface MarketLiquidityLensFacet extends BaseContract {
     getBinValues(
       tradingFeeRates: BigNumberish[],
       overrides?: CallOverrides
-    ): Promise<[BigNumber[]]>;
+    ): Promise<[BigNumber[]] & { values: BigNumber[] }>;
+
+    /**
+     * Retrieves the values of specific trading fee rates' bins in the liquidity pool at a specific oracle version.      The value of a bin represents the total valuation of the liquidity in the bin.
+     * @param oracleVersion The oracle version for which to retrieve the bin values.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the bin values.
+     */
+    getBinValuesAt(
+      oracleVersion: BigNumberish,
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<
+      [IMarketLiquidity.LiquidityBinValueStructOutput[]] & {
+        values: IMarketLiquidity.LiquidityBinValueStructOutput[];
+      }
+    >;
 
     /**
      * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
@@ -291,6 +336,17 @@ export interface MarketLiquidityLensFacet extends BaseContract {
       receiptId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[LpReceiptStructOutput] & { receipt: LpReceiptStructOutput }>;
+
+    /**
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
+     * @param receiptIds The ID list of the liquidity receipt to retrieve.
+     */
+    getLpReceipts(
+      receiptIds: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<
+      [LpReceiptStructOutput[]] & { receipts: LpReceiptStructOutput[] }
+    >;
 
     /**
      * Retrieves the liquidity bin statuses for the caller's liquidity pool.
@@ -368,6 +424,17 @@ export interface MarketLiquidityLensFacet extends BaseContract {
   ): Promise<BigNumber[]>;
 
   /**
+   * Retrieves the values of specific trading fee rates' bins in the liquidity pool at a specific oracle version.      The value of a bin represents the total valuation of the liquidity in the bin.
+   * @param oracleVersion The oracle version for which to retrieve the bin values.
+   * @param tradingFeeRates The list of trading fee rates for which to retrieve the bin values.
+   */
+  getBinValuesAt(
+    oracleVersion: BigNumberish,
+    tradingFeeRates: BigNumberish[],
+    overrides?: CallOverrides
+  ): Promise<IMarketLiquidity.LiquidityBinValueStructOutput[]>;
+
+  /**
    * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
    * @param receiptId The ID of the liquidity receipt to retrieve.
    */
@@ -375,6 +442,15 @@ export interface MarketLiquidityLensFacet extends BaseContract {
     receiptId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<LpReceiptStructOutput>;
+
+  /**
+   * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
+   * @param receiptIds The ID list of the liquidity receipt to retrieve.
+   */
+  getLpReceipts(
+    receiptIds: BigNumberish[],
+    overrides?: CallOverrides
+  ): Promise<LpReceiptStructOutput[]>;
 
   /**
    * Retrieves the liquidity bin statuses for the caller's liquidity pool.
@@ -452,6 +528,17 @@ export interface MarketLiquidityLensFacet extends BaseContract {
     ): Promise<BigNumber[]>;
 
     /**
+     * Retrieves the values of specific trading fee rates' bins in the liquidity pool at a specific oracle version.      The value of a bin represents the total valuation of the liquidity in the bin.
+     * @param oracleVersion The oracle version for which to retrieve the bin values.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the bin values.
+     */
+    getBinValuesAt(
+      oracleVersion: BigNumberish,
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<IMarketLiquidity.LiquidityBinValueStructOutput[]>;
+
+    /**
      * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
      * @param receiptId The ID of the liquidity receipt to retrieve.
      */
@@ -459,6 +546,15 @@ export interface MarketLiquidityLensFacet extends BaseContract {
       receiptId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<LpReceiptStructOutput>;
+
+    /**
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
+     * @param receiptIds The ID list of the liquidity receipt to retrieve.
+     */
+    getLpReceipts(
+      receiptIds: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<LpReceiptStructOutput[]>;
 
     /**
      * Retrieves the liquidity bin statuses for the caller's liquidity pool.
@@ -539,11 +635,31 @@ export interface MarketLiquidityLensFacet extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * Retrieves the values of specific trading fee rates' bins in the liquidity pool at a specific oracle version.      The value of a bin represents the total valuation of the liquidity in the bin.
+     * @param oracleVersion The oracle version for which to retrieve the bin values.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the bin values.
+     */
+    getBinValuesAt(
+      oracleVersion: BigNumberish,
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
      * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
      * @param receiptId The ID of the liquidity receipt to retrieve.
      */
     getLpReceipt(
       receiptId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
+     * @param receiptIds The ID list of the liquidity receipt to retrieve.
+     */
+    getLpReceipts(
+      receiptIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -622,11 +738,31 @@ export interface MarketLiquidityLensFacet extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * Retrieves the values of specific trading fee rates' bins in the liquidity pool at a specific oracle version.      The value of a bin represents the total valuation of the liquidity in the bin.
+     * @param oracleVersion The oracle version for which to retrieve the bin values.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the bin values.
+     */
+    getBinValuesAt(
+      oracleVersion: BigNumberish,
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
      * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
      * @param receiptId The ID of the liquidity receipt to retrieve.
      */
     getLpReceipt(
       receiptId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
+     * @param receiptIds The ID list of the liquidity receipt to retrieve.
+     */
+    getLpReceipts(
+      receiptIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

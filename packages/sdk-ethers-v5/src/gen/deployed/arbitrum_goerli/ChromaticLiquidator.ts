@@ -36,6 +36,8 @@ export interface ChromaticLiquidatorInterface extends utils.Interface {
     "createClaimPositionTask(uint256)": FunctionFragment;
     "createLiquidationTask(uint256)": FunctionFragment;
     "dedicatedMsgSender()": FunctionFragment;
+    "getClaimPositionTaskId(address,uint256)": FunctionFragment;
+    "getLiquidationTaskId(address,uint256)": FunctionFragment;
     "liquidate(address,uint256)": FunctionFragment;
     "liquidationInterval()": FunctionFragment;
     "resolveClaimPosition(address,uint256)": FunctionFragment;
@@ -54,6 +56,8 @@ export interface ChromaticLiquidatorInterface extends utils.Interface {
       | "createClaimPositionTask"
       | "createLiquidationTask"
       | "dedicatedMsgSender"
+      | "getClaimPositionTaskId"
+      | "getLiquidationTaskId"
       | "liquidate"
       | "liquidationInterval"
       | "resolveClaimPosition"
@@ -90,6 +94,14 @@ export interface ChromaticLiquidatorInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "dedicatedMsgSender",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getClaimPositionTaskId",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getLiquidationTaskId",
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "liquidate",
@@ -143,6 +155,14 @@ export interface ChromaticLiquidatorInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "dedicatedMsgSender",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getClaimPositionTaskId",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getLiquidationTaskId",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "liquidate", data: BytesLike): Result;
@@ -282,6 +302,18 @@ export interface ChromaticLiquidator extends BaseContract {
 
     dedicatedMsgSender(overrides?: CallOverrides): Promise<[string]>;
 
+    getClaimPositionTaskId(
+      market: string,
+      positionId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string] & { taskId: string }>;
+
+    getLiquidationTaskId(
+      market: string,
+      positionId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string] & { taskId: string }>;
+
     /**
      * Liquidates a position in a market.
      * @param market The address of the market contract.
@@ -397,6 +429,18 @@ export interface ChromaticLiquidator extends BaseContract {
 
   dedicatedMsgSender(overrides?: CallOverrides): Promise<string>;
 
+  getClaimPositionTaskId(
+    market: string,
+    positionId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  getLiquidationTaskId(
+    market: string,
+    positionId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   /**
    * Liquidates a position in a market.
    * @param market The address of the market contract.
@@ -511,6 +555,18 @@ export interface ChromaticLiquidator extends BaseContract {
     ): Promise<void>;
 
     dedicatedMsgSender(overrides?: CallOverrides): Promise<string>;
+
+    getClaimPositionTaskId(
+      market: string,
+      positionId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    getLiquidationTaskId(
+      market: string,
+      positionId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     /**
      * Liquidates a position in a market.
@@ -644,6 +700,18 @@ export interface ChromaticLiquidator extends BaseContract {
 
     dedicatedMsgSender(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getClaimPositionTaskId(
+      market: string,
+      positionId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getLiquidationTaskId(
+      market: string,
+      positionId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     /**
      * Liquidates a position in a market.
      * @param market The address of the market contract.
@@ -759,6 +827,18 @@ export interface ChromaticLiquidator extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     dedicatedMsgSender(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getClaimPositionTaskId(
+      market: string,
+      positionId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getLiquidationTaskId(
+      market: string,
+      positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

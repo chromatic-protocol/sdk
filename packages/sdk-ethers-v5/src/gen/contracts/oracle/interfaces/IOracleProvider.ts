@@ -41,6 +41,7 @@ export interface IOracleProviderInterface extends utils.Interface {
     "atVersion(uint256)": FunctionFragment;
     "currentVersion()": FunctionFragment;
     "description()": FunctionFragment;
+    "oracleProviderName()": FunctionFragment;
     "sync()": FunctionFragment;
   };
 
@@ -49,6 +50,7 @@ export interface IOracleProviderInterface extends utils.Interface {
       | "atVersion"
       | "currentVersion"
       | "description"
+      | "oracleProviderName"
       | "sync"
   ): FunctionFragment;
 
@@ -64,6 +66,10 @@ export interface IOracleProviderInterface extends utils.Interface {
     functionFragment: "description",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "oracleProviderName",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "sync", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "atVersion", data: BytesLike): Result;
@@ -73,6 +79,10 @@ export interface IOracleProviderInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "description",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "oracleProviderName",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "sync", data: BytesLike): Result;
@@ -129,6 +139,11 @@ export interface IOracleProvider extends BaseContract {
     description(overrides?: CallOverrides): Promise<[string]>;
 
     /**
+     * Retrieves the name of the Oracle Provider.
+     */
+    oracleProviderName(overrides?: CallOverrides): Promise<[string]>;
+
+    /**
      * `sync` is expected to be called soon after a phase update occurs in the underlying proxy.      Phase updates should be detected using off-chain mechanism and should trigger a `sync` call      This is feasible in the short term due to how infrequent phase updates are, but phase update      and roundCount detection should eventually be implemented at the contract level.      Reverts if there is more than 1 phase to update in a single sync because we currently cannot      determine the startingRoundId for the intermediary phase.
      * Checks for a new price and updates the internal phase annotation state accordingly
      */
@@ -159,6 +174,11 @@ export interface IOracleProvider extends BaseContract {
   description(overrides?: CallOverrides): Promise<string>;
 
   /**
+   * Retrieves the name of the Oracle Provider.
+   */
+  oracleProviderName(overrides?: CallOverrides): Promise<string>;
+
+  /**
    * `sync` is expected to be called soon after a phase update occurs in the underlying proxy.      Phase updates should be detected using off-chain mechanism and should trigger a `sync` call      This is feasible in the short term due to how infrequent phase updates are, but phase update      and roundCount detection should eventually be implemented at the contract level.      Reverts if there is more than 1 phase to update in a single sync because we currently cannot      determine the startingRoundId for the intermediary phase.
    * Checks for a new price and updates the internal phase annotation state accordingly
    */
@@ -185,6 +205,11 @@ export interface IOracleProvider extends BaseContract {
      * Retrieves the description of the Oracle Provider.
      */
     description(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Retrieves the name of the Oracle Provider.
+     */
+    oracleProviderName(overrides?: CallOverrides): Promise<string>;
 
     /**
      * `sync` is expected to be called soon after a phase update occurs in the underlying proxy.      Phase updates should be detected using off-chain mechanism and should trigger a `sync` call      This is feasible in the short term due to how infrequent phase updates are, but phase update      and roundCount detection should eventually be implemented at the contract level.      Reverts if there is more than 1 phase to update in a single sync because we currently cannot      determine the startingRoundId for the intermediary phase.
@@ -218,6 +243,11 @@ export interface IOracleProvider extends BaseContract {
     description(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
+     * Retrieves the name of the Oracle Provider.
+     */
+    oracleProviderName(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
      * `sync` is expected to be called soon after a phase update occurs in the underlying proxy.      Phase updates should be detected using off-chain mechanism and should trigger a `sync` call      This is feasible in the short term due to how infrequent phase updates are, but phase update      and roundCount detection should eventually be implemented at the contract level.      Reverts if there is more than 1 phase to update in a single sync because we currently cannot      determine the startingRoundId for the intermediary phase.
      * Checks for a new price and updates the internal phase annotation state accordingly
      */
@@ -243,6 +273,13 @@ export interface IOracleProvider extends BaseContract {
      * Retrieves the description of the Oracle Provider.
      */
     description(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Retrieves the name of the Oracle Provider.
+     */
+    oracleProviderName(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     /**
      * `sync` is expected to be called soon after a phase update occurs in the underlying proxy.      Phase updates should be detected using off-chain mechanism and should trigger a `sync` call      This is feasible in the short term due to how infrequent phase updates are, but phase update      and roundCount detection should eventually be implemented at the contract level.      Reverts if there is more than 1 phase to update in a single sync because we currently cannot      determine the startingRoundId for the intermediary phase.

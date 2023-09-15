@@ -34,6 +34,8 @@ export interface ChromaticLiquidatorInterface extends Interface {
       | "createClaimPositionTask"
       | "createLiquidationTask"
       | "dedicatedMsgSender"
+      | "getClaimPositionTaskId"
+      | "getLiquidationTaskId"
       | "liquidate"
       | "liquidationInterval"
       | "resolveClaimPosition"
@@ -74,6 +76,14 @@ export interface ChromaticLiquidatorInterface extends Interface {
   encodeFunctionData(
     functionFragment: "dedicatedMsgSender",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getClaimPositionTaskId",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getLiquidationTaskId",
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "liquidate",
@@ -127,6 +137,14 @@ export interface ChromaticLiquidatorInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "dedicatedMsgSender",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getClaimPositionTaskId",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getLiquidationTaskId",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "liquidate", data: BytesLike): Result;
@@ -280,6 +298,18 @@ export interface ChromaticLiquidator extends BaseContract {
 
   dedicatedMsgSender: TypedContractMethod<[], [string], "view">;
 
+  getClaimPositionTaskId: TypedContractMethod<
+    [market: AddressLike, positionId: BigNumberish],
+    [string],
+    "view"
+  >;
+
+  getLiquidationTaskId: TypedContractMethod<
+    [market: AddressLike, positionId: BigNumberish],
+    [string],
+    "view"
+  >;
+
   /**
    * Liquidates a position in a market.
    * @param market The address of the market contract.
@@ -371,6 +401,20 @@ export interface ChromaticLiquidator extends BaseContract {
   getFunction(
     nameOrSignature: "dedicatedMsgSender"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "getClaimPositionTaskId"
+  ): TypedContractMethod<
+    [market: AddressLike, positionId: BigNumberish],
+    [string],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getLiquidationTaskId"
+  ): TypedContractMethod<
+    [market: AddressLike, positionId: BigNumberish],
+    [string],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "liquidate"
   ): TypedContractMethod<

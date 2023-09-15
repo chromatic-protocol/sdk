@@ -1409,6 +1409,42 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "oracleVersion",
+        type: "uint256",
+      },
+      {
+        internalType: "int16[]",
+        name: "tradingFeeRates",
+        type: "int16[]",
+      },
+    ],
+    name: "getBinValuesAt",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "binValue",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "clbTokenTotalSupply",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IMarketLiquidity.LiquidityBinValue[]",
+        name: "values",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "receiptId",
         type: "uint256",
       },
@@ -1451,6 +1487,57 @@ const _abi = [
         internalType: "struct LpReceipt",
         name: "",
         type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256[]",
+        name: "receiptIds",
+        type: "uint256[]",
+      },
+    ],
+    name: "getLpReceipts",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "oracleVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "recipient",
+            type: "address",
+          },
+          {
+            internalType: "enum LpAction",
+            name: "action",
+            type: "uint8",
+          },
+          {
+            internalType: "int16",
+            name: "tradingFeeRate",
+            type: "int16",
+          },
+        ],
+        internalType: "struct LpReceipt[]",
+        name: "",
+        type: "tuple[]",
       },
     ],
     stateMutability: "view",
@@ -1925,8 +2012,21 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
+    inputs: [
+      {
+        internalType: "int16[]",
+        name: "feeRates",
+        type: "int16[]",
+      },
+    ],
     name: "settle",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "settleAll",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

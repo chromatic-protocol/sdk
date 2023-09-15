@@ -36,8 +36,21 @@ const _abi = [
     type: "error",
   },
   {
-    inputs: [],
+    inputs: [
+      {
+        internalType: "int16[]",
+        name: "feeRates",
+        type: "int16[]",
+      },
+    ],
     name: "settle",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "settleAll",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

@@ -3,6 +3,7 @@
 /* eslint-disable */
 import type {
   BaseContract,
+  BigNumberish,
   BytesLike,
   FunctionFragment,
   Result,
@@ -20,11 +21,16 @@ import type {
 } from "../../../../common";
 
 export interface MarketSettleFacetInterface extends Interface {
-  getFunction(nameOrSignature: "settle"): FunctionFragment;
+  getFunction(nameOrSignature: "settle" | "settleAll"): FunctionFragment;
 
-  encodeFunctionData(functionFragment: "settle", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "settle",
+    values: [BigNumberish[]]
+  ): string;
+  encodeFunctionData(functionFragment: "settleAll", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "settle", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "settleAll", data: BytesLike): Result;
 }
 
 export interface MarketSettleFacet extends BaseContract {
@@ -73,8 +79,15 @@ export interface MarketSettleFacet extends BaseContract {
   /**
    * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
    * Executes the settlement process for the Chromatic market.
+   * @param feeRates The feeRate list of liquidity bin to settle.
    */
-  settle: TypedContractMethod<[], [void], "nonpayable">;
+  settle: TypedContractMethod<[feeRates: BigNumberish[]], [void], "nonpayable">;
+
+  /**
+   * This function settles the market by synchronizing the oracle version      and calling the settle function of the liquidity pool.
+   * Executes the settlement process for the Chromatic market.
+   */
+  settleAll: TypedContractMethod<[], [void], "nonpayable">;
 
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
@@ -82,6 +95,9 @@ export interface MarketSettleFacet extends BaseContract {
 
   getFunction(
     nameOrSignature: "settle"
+  ): TypedContractMethod<[feeRates: BigNumberish[]], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "settleAll"
   ): TypedContractMethod<[], [void], "nonpayable">;
 
   filters: {};

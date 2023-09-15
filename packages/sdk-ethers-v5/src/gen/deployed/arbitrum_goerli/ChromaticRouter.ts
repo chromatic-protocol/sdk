@@ -88,8 +88,8 @@ export interface ChromaticRouterInterface extends utils.Interface {
     "addLiquidityCallback(address,address,bytes)": FunctionFragment;
     "claimLiquidity(address,uint256)": FunctionFragment;
     "claimLiquidityBatch(address,uint256[])": FunctionFragment;
-    "claimLiquidityBatchCallback(uint256[],bytes)": FunctionFragment;
-    "claimLiquidityCallback(uint256,bytes)": FunctionFragment;
+    "claimLiquidityBatchCallback(uint256[],int16[],uint256[],uint256[],bytes)": FunctionFragment;
+    "claimLiquidityCallback(uint256,int16,uint256,uint256,bytes)": FunctionFragment;
     "claimPosition(address,uint256)": FunctionFragment;
     "closePosition(address,uint256)": FunctionFragment;
     "createAccount()": FunctionFragment;
@@ -103,8 +103,8 @@ export interface ChromaticRouterInterface extends utils.Interface {
     "removeLiquidityCallback(address,uint256,bytes)": FunctionFragment;
     "withdrawLiquidity(address,uint256)": FunctionFragment;
     "withdrawLiquidityBatch(address,uint256[])": FunctionFragment;
-    "withdrawLiquidityBatchCallback(uint256[],bytes)": FunctionFragment;
-    "withdrawLiquidityCallback(uint256,bytes)": FunctionFragment;
+    "withdrawLiquidityBatchCallback(uint256[],int16[],uint256[],uint256[],bytes)": FunctionFragment;
+    "withdrawLiquidityCallback(uint256,int16,uint256,uint256,bytes)": FunctionFragment;
   };
 
   getFunction(
@@ -165,11 +165,17 @@ export interface ChromaticRouterInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "claimLiquidityBatchCallback",
-    values: [BigNumberish[], BytesLike]
+    values: [
+      BigNumberish[],
+      BigNumberish[],
+      BigNumberish[],
+      BigNumberish[],
+      BytesLike
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "claimLiquidityCallback",
-    values: [BigNumberish, BytesLike]
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "claimPosition",
@@ -225,11 +231,17 @@ export interface ChromaticRouterInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawLiquidityBatchCallback",
-    values: [BigNumberish[], BytesLike]
+    values: [
+      BigNumberish[],
+      BigNumberish[],
+      BigNumberish[],
+      BigNumberish[],
+      BytesLike
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawLiquidityCallback",
-    values: [BigNumberish, BytesLike]
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish, BytesLike]
   ): string;
 
   decodeFunctionResult(
@@ -430,7 +442,7 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * This function allows the liquidity provider to claim their liquidity by calling the `claimLiquidity` function in the specified market contract.      Throws a `NotExistLpReceipt` error if the specified receipt ID does not exist for the liquidity provider in the given market.
+     * This function allows the liquidity provider to claim their liquidity by calling the `claimLiquidity` function in the specified market contract.
      * Claims liquidity from a ChromaticMarket contract.
      * @param market The address of the ChromaticMarket contract.
      * @param receiptId The ID of the LP receipt.
@@ -455,22 +467,34 @@ export interface ChromaticRouter extends BaseContract {
     /**
      * Handles the callback after claiming liquidity from the Chromatic protocol.
      * @param data Additional data associated with the liquidity claim.
+     * @param depositedAmounts The array of deposited liquidity amounts for each receipt in the batch.
+     * @param feeRates The array of trading fee rates associated with each claim in the batch.
+     * @param mintedCLBTokenAmounts The array of CLB token amounts minted for each receipt in the batch.
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     claimLiquidityBatchCallback(
       _receiptIds: BigNumberish[],
-      data: BytesLike,
+      arg1: BigNumberish[],
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * Handles the callback after claiming liquidity from the Chromatic protocol.
      * @param data Additional data associated with the liquidity claim.
+     * @param depositedAmount The amount of liquidity deposited.
+     * @param feeRate The trading fee rate associated with the liquidity claim.
+     * @param mintedCLBTokenAmount The amount of CLB tokens minted as liquidity.
      * @param receiptId The ID of the liquidity claim receipt.
      */
     claimLiquidityCallback(
       receiptId: BigNumberish,
-      data: BytesLike,
+      arg1: BigNumberish,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
@@ -603,7 +627,7 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * This function allows the liquidity provider to withdraw their liquidity by calling the `withdrawLiquidity` function in the specified market contract.      Throws a `NotExistLpReceipt` error if the specified receipt ID does not exist for the liquidity provider in the given market.
+     * This function allows the liquidity provider to withdraw their liquidity by calling the `withdrawLiquidity` function in the specified market contract.
      * Withdraws liquidity from a ChromaticMarket contract.
      * @param market The address of the ChromaticMarket contract.
      * @param receiptId The ID of the LP receipt.
@@ -627,23 +651,35 @@ export interface ChromaticRouter extends BaseContract {
 
     /**
      * Handles the callback after withdrawing liquidity from the Chromatic protocol.
+     * @param burnedCLBTokenAmounts The array of CLB token amounts burned for each receipt in the batch.
      * @param data Additional data associated with the liquidity withdrawal.
+     * @param feeRates The array of trading fee rates associated with each withdrawal in the batch.
      * @param receiptIds The array of the liquidity receipt IDs.
+     * @param withdrawnAmounts The array of withdrawn liquidity amounts for each receipt in the batch.
      */
     withdrawLiquidityBatchCallback(
       _receiptIds: BigNumberish[],
-      data: BytesLike,
+      arg1: BigNumberish[],
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * Handles the callback after withdrawing liquidity from the Chromatic protocol.
+     * @param burnedCLBTokenAmount The amount of CLB tokens burned during the withdrawal.
      * @param data Additional data associated with the liquidity withdrawal.
+     * @param feeRate The trading fee rate associated with the liquidity withdrawal.
      * @param receiptId The ID of the liquidity withdrawal receipt.
+     * @param withdrawnAmount The amount of liquidity that has been withdrawn.
      */
     withdrawLiquidityCallback(
       receiptId: BigNumberish,
-      data: BytesLike,
+      arg1: BigNumberish,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
   };
@@ -707,7 +743,7 @@ export interface ChromaticRouter extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * This function allows the liquidity provider to claim their liquidity by calling the `claimLiquidity` function in the specified market contract.      Throws a `NotExistLpReceipt` error if the specified receipt ID does not exist for the liquidity provider in the given market.
+   * This function allows the liquidity provider to claim their liquidity by calling the `claimLiquidity` function in the specified market contract.
    * Claims liquidity from a ChromaticMarket contract.
    * @param market The address of the ChromaticMarket contract.
    * @param receiptId The ID of the LP receipt.
@@ -732,22 +768,34 @@ export interface ChromaticRouter extends BaseContract {
   /**
    * Handles the callback after claiming liquidity from the Chromatic protocol.
    * @param data Additional data associated with the liquidity claim.
+   * @param depositedAmounts The array of deposited liquidity amounts for each receipt in the batch.
+   * @param feeRates The array of trading fee rates associated with each claim in the batch.
+   * @param mintedCLBTokenAmounts The array of CLB token amounts minted for each receipt in the batch.
    * @param receiptIds The array of the liquidity receipt IDs.
    */
   claimLiquidityBatchCallback(
     _receiptIds: BigNumberish[],
-    data: BytesLike,
+    arg1: BigNumberish[],
+    arg2: BigNumberish[],
+    arg3: BigNumberish[],
+    arg4: BytesLike,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * Handles the callback after claiming liquidity from the Chromatic protocol.
    * @param data Additional data associated with the liquidity claim.
+   * @param depositedAmount The amount of liquidity deposited.
+   * @param feeRate The trading fee rate associated with the liquidity claim.
+   * @param mintedCLBTokenAmount The amount of CLB tokens minted as liquidity.
    * @param receiptId The ID of the liquidity claim receipt.
    */
   claimLiquidityCallback(
     receiptId: BigNumberish,
-    data: BytesLike,
+    arg1: BigNumberish,
+    arg2: BigNumberish,
+    arg3: BigNumberish,
+    arg4: BytesLike,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -880,7 +928,7 @@ export interface ChromaticRouter extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * This function allows the liquidity provider to withdraw their liquidity by calling the `withdrawLiquidity` function in the specified market contract.      Throws a `NotExistLpReceipt` error if the specified receipt ID does not exist for the liquidity provider in the given market.
+   * This function allows the liquidity provider to withdraw their liquidity by calling the `withdrawLiquidity` function in the specified market contract.
    * Withdraws liquidity from a ChromaticMarket contract.
    * @param market The address of the ChromaticMarket contract.
    * @param receiptId The ID of the LP receipt.
@@ -904,23 +952,35 @@ export interface ChromaticRouter extends BaseContract {
 
   /**
    * Handles the callback after withdrawing liquidity from the Chromatic protocol.
+   * @param burnedCLBTokenAmounts The array of CLB token amounts burned for each receipt in the batch.
    * @param data Additional data associated with the liquidity withdrawal.
+   * @param feeRates The array of trading fee rates associated with each withdrawal in the batch.
    * @param receiptIds The array of the liquidity receipt IDs.
+   * @param withdrawnAmounts The array of withdrawn liquidity amounts for each receipt in the batch.
    */
   withdrawLiquidityBatchCallback(
     _receiptIds: BigNumberish[],
-    data: BytesLike,
+    arg1: BigNumberish[],
+    arg2: BigNumberish[],
+    arg3: BigNumberish[],
+    arg4: BytesLike,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * Handles the callback after withdrawing liquidity from the Chromatic protocol.
+   * @param burnedCLBTokenAmount The amount of CLB tokens burned during the withdrawal.
    * @param data Additional data associated with the liquidity withdrawal.
+   * @param feeRate The trading fee rate associated with the liquidity withdrawal.
    * @param receiptId The ID of the liquidity withdrawal receipt.
+   * @param withdrawnAmount The amount of liquidity that has been withdrawn.
    */
   withdrawLiquidityCallback(
     receiptId: BigNumberish,
-    data: BytesLike,
+    arg1: BigNumberish,
+    arg2: BigNumberish,
+    arg3: BigNumberish,
+    arg4: BytesLike,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -984,7 +1044,7 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<void>;
 
     /**
-     * This function allows the liquidity provider to claim their liquidity by calling the `claimLiquidity` function in the specified market contract.      Throws a `NotExistLpReceipt` error if the specified receipt ID does not exist for the liquidity provider in the given market.
+     * This function allows the liquidity provider to claim their liquidity by calling the `claimLiquidity` function in the specified market contract.
      * Claims liquidity from a ChromaticMarket contract.
      * @param market The address of the ChromaticMarket contract.
      * @param receiptId The ID of the LP receipt.
@@ -1009,22 +1069,34 @@ export interface ChromaticRouter extends BaseContract {
     /**
      * Handles the callback after claiming liquidity from the Chromatic protocol.
      * @param data Additional data associated with the liquidity claim.
+     * @param depositedAmounts The array of deposited liquidity amounts for each receipt in the batch.
+     * @param feeRates The array of trading fee rates associated with each claim in the batch.
+     * @param mintedCLBTokenAmounts The array of CLB token amounts minted for each receipt in the batch.
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     claimLiquidityBatchCallback(
       _receiptIds: BigNumberish[],
-      data: BytesLike,
+      arg1: BigNumberish[],
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
     /**
      * Handles the callback after claiming liquidity from the Chromatic protocol.
      * @param data Additional data associated with the liquidity claim.
+     * @param depositedAmount The amount of liquidity deposited.
+     * @param feeRate The trading fee rate associated with the liquidity claim.
+     * @param mintedCLBTokenAmount The amount of CLB tokens minted as liquidity.
      * @param receiptId The ID of the liquidity claim receipt.
      */
     claimLiquidityCallback(
       receiptId: BigNumberish,
-      data: BytesLike,
+      arg1: BigNumberish,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1155,7 +1227,7 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<void>;
 
     /**
-     * This function allows the liquidity provider to withdraw their liquidity by calling the `withdrawLiquidity` function in the specified market contract.      Throws a `NotExistLpReceipt` error if the specified receipt ID does not exist for the liquidity provider in the given market.
+     * This function allows the liquidity provider to withdraw their liquidity by calling the `withdrawLiquidity` function in the specified market contract.
      * Withdraws liquidity from a ChromaticMarket contract.
      * @param market The address of the ChromaticMarket contract.
      * @param receiptId The ID of the LP receipt.
@@ -1179,23 +1251,35 @@ export interface ChromaticRouter extends BaseContract {
 
     /**
      * Handles the callback after withdrawing liquidity from the Chromatic protocol.
+     * @param burnedCLBTokenAmounts The array of CLB token amounts burned for each receipt in the batch.
      * @param data Additional data associated with the liquidity withdrawal.
+     * @param feeRates The array of trading fee rates associated with each withdrawal in the batch.
      * @param receiptIds The array of the liquidity receipt IDs.
+     * @param withdrawnAmounts The array of withdrawn liquidity amounts for each receipt in the batch.
      */
     withdrawLiquidityBatchCallback(
       _receiptIds: BigNumberish[],
-      data: BytesLike,
+      arg1: BigNumberish[],
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
     /**
      * Handles the callback after withdrawing liquidity from the Chromatic protocol.
+     * @param burnedCLBTokenAmount The amount of CLB tokens burned during the withdrawal.
      * @param data Additional data associated with the liquidity withdrawal.
+     * @param feeRate The trading fee rate associated with the liquidity withdrawal.
      * @param receiptId The ID of the liquidity withdrawal receipt.
+     * @param withdrawnAmount The amount of liquidity that has been withdrawn.
      */
     withdrawLiquidityCallback(
       receiptId: BigNumberish,
-      data: BytesLike,
+      arg1: BigNumberish,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -1271,7 +1355,7 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * This function allows the liquidity provider to claim their liquidity by calling the `claimLiquidity` function in the specified market contract.      Throws a `NotExistLpReceipt` error if the specified receipt ID does not exist for the liquidity provider in the given market.
+     * This function allows the liquidity provider to claim their liquidity by calling the `claimLiquidity` function in the specified market contract.
      * Claims liquidity from a ChromaticMarket contract.
      * @param market The address of the ChromaticMarket contract.
      * @param receiptId The ID of the LP receipt.
@@ -1296,22 +1380,34 @@ export interface ChromaticRouter extends BaseContract {
     /**
      * Handles the callback after claiming liquidity from the Chromatic protocol.
      * @param data Additional data associated with the liquidity claim.
+     * @param depositedAmounts The array of deposited liquidity amounts for each receipt in the batch.
+     * @param feeRates The array of trading fee rates associated with each claim in the batch.
+     * @param mintedCLBTokenAmounts The array of CLB token amounts minted for each receipt in the batch.
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     claimLiquidityBatchCallback(
       _receiptIds: BigNumberish[],
-      data: BytesLike,
+      arg1: BigNumberish[],
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * Handles the callback after claiming liquidity from the Chromatic protocol.
      * @param data Additional data associated with the liquidity claim.
+     * @param depositedAmount The amount of liquidity deposited.
+     * @param feeRate The trading fee rate associated with the liquidity claim.
+     * @param mintedCLBTokenAmount The amount of CLB tokens minted as liquidity.
      * @param receiptId The ID of the liquidity claim receipt.
      */
     claimLiquidityCallback(
       receiptId: BigNumberish,
-      data: BytesLike,
+      arg1: BigNumberish,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
@@ -1444,7 +1540,7 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * This function allows the liquidity provider to withdraw their liquidity by calling the `withdrawLiquidity` function in the specified market contract.      Throws a `NotExistLpReceipt` error if the specified receipt ID does not exist for the liquidity provider in the given market.
+     * This function allows the liquidity provider to withdraw their liquidity by calling the `withdrawLiquidity` function in the specified market contract.
      * Withdraws liquidity from a ChromaticMarket contract.
      * @param market The address of the ChromaticMarket contract.
      * @param receiptId The ID of the LP receipt.
@@ -1468,23 +1564,35 @@ export interface ChromaticRouter extends BaseContract {
 
     /**
      * Handles the callback after withdrawing liquidity from the Chromatic protocol.
+     * @param burnedCLBTokenAmounts The array of CLB token amounts burned for each receipt in the batch.
      * @param data Additional data associated with the liquidity withdrawal.
+     * @param feeRates The array of trading fee rates associated with each withdrawal in the batch.
      * @param receiptIds The array of the liquidity receipt IDs.
+     * @param withdrawnAmounts The array of withdrawn liquidity amounts for each receipt in the batch.
      */
     withdrawLiquidityBatchCallback(
       _receiptIds: BigNumberish[],
-      data: BytesLike,
+      arg1: BigNumberish[],
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * Handles the callback after withdrawing liquidity from the Chromatic protocol.
+     * @param burnedCLBTokenAmount The amount of CLB tokens burned during the withdrawal.
      * @param data Additional data associated with the liquidity withdrawal.
+     * @param feeRate The trading fee rate associated with the liquidity withdrawal.
      * @param receiptId The ID of the liquidity withdrawal receipt.
+     * @param withdrawnAmount The amount of liquidity that has been withdrawn.
      */
     withdrawLiquidityCallback(
       receiptId: BigNumberish,
-      data: BytesLike,
+      arg1: BigNumberish,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
   };
@@ -1549,7 +1657,7 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * This function allows the liquidity provider to claim their liquidity by calling the `claimLiquidity` function in the specified market contract.      Throws a `NotExistLpReceipt` error if the specified receipt ID does not exist for the liquidity provider in the given market.
+     * This function allows the liquidity provider to claim their liquidity by calling the `claimLiquidity` function in the specified market contract.
      * Claims liquidity from a ChromaticMarket contract.
      * @param market The address of the ChromaticMarket contract.
      * @param receiptId The ID of the LP receipt.
@@ -1574,22 +1682,34 @@ export interface ChromaticRouter extends BaseContract {
     /**
      * Handles the callback after claiming liquidity from the Chromatic protocol.
      * @param data Additional data associated with the liquidity claim.
+     * @param depositedAmounts The array of deposited liquidity amounts for each receipt in the batch.
+     * @param feeRates The array of trading fee rates associated with each claim in the batch.
+     * @param mintedCLBTokenAmounts The array of CLB token amounts minted for each receipt in the batch.
      * @param receiptIds The array of the liquidity receipt IDs.
      */
     claimLiquidityBatchCallback(
       _receiptIds: BigNumberish[],
-      data: BytesLike,
+      arg1: BigNumberish[],
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      * Handles the callback after claiming liquidity from the Chromatic protocol.
      * @param data Additional data associated with the liquidity claim.
+     * @param depositedAmount The amount of liquidity deposited.
+     * @param feeRate The trading fee rate associated with the liquidity claim.
+     * @param mintedCLBTokenAmount The amount of CLB tokens minted as liquidity.
      * @param receiptId The ID of the liquidity claim receipt.
      */
     claimLiquidityCallback(
       receiptId: BigNumberish,
-      data: BytesLike,
+      arg1: BigNumberish,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
@@ -1722,7 +1842,7 @@ export interface ChromaticRouter extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * This function allows the liquidity provider to withdraw their liquidity by calling the `withdrawLiquidity` function in the specified market contract.      Throws a `NotExistLpReceipt` error if the specified receipt ID does not exist for the liquidity provider in the given market.
+     * This function allows the liquidity provider to withdraw their liquidity by calling the `withdrawLiquidity` function in the specified market contract.
      * Withdraws liquidity from a ChromaticMarket contract.
      * @param market The address of the ChromaticMarket contract.
      * @param receiptId The ID of the LP receipt.
@@ -1746,23 +1866,35 @@ export interface ChromaticRouter extends BaseContract {
 
     /**
      * Handles the callback after withdrawing liquidity from the Chromatic protocol.
+     * @param burnedCLBTokenAmounts The array of CLB token amounts burned for each receipt in the batch.
      * @param data Additional data associated with the liquidity withdrawal.
+     * @param feeRates The array of trading fee rates associated with each withdrawal in the batch.
      * @param receiptIds The array of the liquidity receipt IDs.
+     * @param withdrawnAmounts The array of withdrawn liquidity amounts for each receipt in the batch.
      */
     withdrawLiquidityBatchCallback(
       _receiptIds: BigNumberish[],
-      data: BytesLike,
+      arg1: BigNumberish[],
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      * Handles the callback after withdrawing liquidity from the Chromatic protocol.
+     * @param burnedCLBTokenAmount The amount of CLB tokens burned during the withdrawal.
      * @param data Additional data associated with the liquidity withdrawal.
+     * @param feeRate The trading fee rate associated with the liquidity withdrawal.
      * @param receiptId The ID of the liquidity withdrawal receipt.
+     * @param withdrawnAmount The amount of liquidity that has been withdrawn.
      */
     withdrawLiquidityCallback(
       receiptId: BigNumberish,
-      data: BytesLike,
+      arg1: BigNumberish,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
   };

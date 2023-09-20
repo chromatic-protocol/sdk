@@ -1667,7 +1667,7 @@ const _abi = [
     name: "liquidator",
     outputs: [
       {
-        internalType: "contract IChromaticLiquidator",
+        internalType: "contract ILiquidator",
         name: "",
         type: "address",
       },

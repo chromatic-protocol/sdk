@@ -17,28 +17,13 @@ const _abi = [
         type: "address",
       },
       {
-        internalType: "address",
-        name: "_automate",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "opsProxyFactory",
+        internalType: "contract IVaultEarningDistributor",
+        name: "_earningDistributor",
         type: "address",
       },
     ],
     stateMutability: "nonpayable",
     type: "constructor",
-  },
-  {
-    inputs: [],
-    name: "ExistMakerEarningDistributionTask",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "ExistMarketEarningDistributionTask",
-    type: "error",
   },
   {
     inputs: [],
@@ -48,6 +33,11 @@ const _abi = [
   {
     inputs: [],
     name: "NotEnoughFeePaid",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OnlyAccessableByEarningDistributor",
     type: "error",
   },
   {
@@ -391,19 +381,6 @@ const _abi = [
     type: "event",
   },
   {
-    inputs: [],
-    name: "automate",
-    outputs: [
-      {
-        internalType: "contract IAutomate",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "address",
@@ -456,23 +433,20 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "dedicatedMsgSender",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "address",
         name: "token",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "fee",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "keeper",
         type: "address",
       },
     ],
@@ -488,10 +462,46 @@ const _abi = [
         name: "market",
         type: "address",
       },
+      {
+        internalType: "uint256",
+        name: "fee",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "keeper",
+        type: "address",
+      },
     ],
     name: "distributeMarketEarning",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "earningDistributor",
+    outputs: [
+      {
+        internalType: "contract IVaultEarningDistributor",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "factory",
+    outputs: [
+      {
+        internalType: "contract IChromaticMarketFactory",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -552,6 +562,19 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "keeperFeePayer",
+    outputs: [
+      {
+        internalType: "contract IKeeperFeePayer",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -578,50 +601,12 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "makerEarningDistributionTaskIds",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
     name: "makerMarketBalances",
     outputs: [
       {
         internalType: "uint256",
         name: "",
         type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    name: "marketEarningDistributionTaskIds",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
       },
     ],
     stateMutability: "view",
@@ -828,54 +813,6 @@ const _abi = [
         internalType: "uint256",
         name: "",
         type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "token",
-        type: "address",
-      },
-    ],
-    name: "resolveMakerEarningDistribution",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "canExec",
-        type: "bool",
-      },
-      {
-        internalType: "bytes",
-        name: "execPayload",
-        type: "bytes",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "market",
-        type: "address",
-      },
-    ],
-    name: "resolveMarketEarningDistribution",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "canExec",
-        type: "bool",
-      },
-      {
-        internalType: "bytes",
-        name: "execPayload",
-        type: "bytes",
       },
     ],
     stateMutability: "view",

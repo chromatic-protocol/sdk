@@ -3,7 +3,7 @@
     "module": "esnext",
     "outDir": "./esm",
     "target": "esnext",
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "Node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "declaration": true,

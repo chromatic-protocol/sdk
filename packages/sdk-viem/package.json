@@ -44,7 +44,7 @@
     "url": "git+https://github.com/chromatic-protocol/sdk.git"
   },
   "dependencies": {
-    "viem": "^1.5.0"
+    "viem": "^1.12.1"
   },
   "devDependencies": {
     "@types/debug": "^4.1.8",

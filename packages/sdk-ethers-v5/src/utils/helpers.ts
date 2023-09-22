@@ -3,7 +3,6 @@ import { BigNumber, ethers } from "ethers";
 import {
   CLBToken__factory,
   ChromaticAccount__factory,
-  ChromaticLiquidator__factory,
   ChromaticMarketFactory__factory,
   ChromaticRouter__factory,
   ChromaticVault__factory,
@@ -105,7 +104,6 @@ export const errorSignitures: ErrorSignatures = [
   ...IOracleProvider__factory.abi,
   ...ChromaticAccount__factory.abi,
   ...ChromaticRouter__factory.abi,
-  ...ChromaticLiquidator__factory.abi,
 ]
   .filter((abi) => abi.type === "error")
   .reduce((prevErrMap, currErrAbi) => {

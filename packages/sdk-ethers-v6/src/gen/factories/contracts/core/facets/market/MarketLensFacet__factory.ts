@@ -4,14 +4,24 @@
 
 import { Contract, Interface, type ContractRunner } from "ethers";
 import type {
-  MarketLiquidityLensFacet,
-  MarketLiquidityLensFacetInterface,
-} from "../../../../../contracts/core/facets/market/MarketLiquidityLensFacet";
+  MarketLensFacet,
+  MarketLensFacetInterface,
+} from "../../../../../contracts/core/facets/market/MarketLensFacet";
 
 const _abi = [
   {
     inputs: [],
+    name: "ClaimPositionCallbackError",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "NotExistLpReceipt",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotExistPosition",
     type: "error",
   },
   {
@@ -72,8 +82,8 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct IMarketLiquidity.ClaimableLiquidity",
-        name: "",
+        internalType: "struct ClaimableLiquidity",
+        name: "liquidity",
         type: "tuple",
       },
     ],
@@ -123,8 +133,100 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct IMarketLiquidity.ClaimableLiquidity[]",
-        name: "",
+        internalType: "struct ClaimableLiquidity[]",
+        name: "liquidities",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "int16",
+        name: "tradingFeeRate",
+        type: "int16",
+      },
+    ],
+    name: "closingPosition",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "closeVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "totalQty",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "totalEntryAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "totalMakerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "totalTakerMargin",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct ClosingPosition",
+        name: "position",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "int16[]",
+        name: "tradingFeeRates",
+        type: "int16[]",
+      },
+    ],
+    name: "closingPositionBatch",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "closeVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "totalQty",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "totalEntryAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "totalMakerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "totalTakerMargin",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct ClosingPosition[]",
+        name: "positions",
         type: "tuple[]",
       },
     ],
@@ -216,7 +318,7 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct IMarketLiquidity.LiquidityBinValue[]",
+        internalType: "struct LiquidityBinValue[]",
         name: "values",
         type: "tuple[]",
       },
@@ -327,6 +429,172 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "positionId",
+        type: "uint256",
+      },
+    ],
+    name: "getPosition",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "openVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "qty",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "openTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "takerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "owner",
+            type: "address",
+          },
+          {
+            components: [
+              {
+                internalType: "uint16",
+                name: "tradingFeeRate",
+                type: "uint16",
+              },
+              {
+                internalType: "uint256",
+                name: "amount",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct BinMargin[]",
+            name: "_binMargins",
+            type: "tuple[]",
+          },
+          {
+            internalType: "uint8",
+            name: "_feeProtocol",
+            type: "uint8",
+          },
+        ],
+        internalType: "struct Position",
+        name: "position",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256[]",
+        name: "positionIds",
+        type: "uint256[]",
+      },
+    ],
+    name: "getPositions",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "openVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "qty",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "openTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "takerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "owner",
+            type: "address",
+          },
+          {
+            components: [
+              {
+                internalType: "uint16",
+                name: "tradingFeeRate",
+                type: "uint16",
+              },
+              {
+                internalType: "uint256",
+                name: "amount",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct BinMargin[]",
+            name: "_binMargins",
+            type: "tuple[]",
+          },
+          {
+            internalType: "uint8",
+            name: "_feeProtocol",
+            type: "uint8",
+          },
+        ],
+        internalType: "struct Position[]",
+        name: "positions",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "liquidityBinStatuses",
     outputs: [
@@ -353,8 +621,8 @@ const _abi = [
             type: "int16",
           },
         ],
-        internalType: "struct IMarketLiquidity.LiquidityBinStatus[]",
-        name: "",
+        internalType: "struct LiquidityBinStatus[]",
+        name: "statuses",
         type: "tuple[]",
       },
     ],
@@ -389,8 +657,8 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct IMarketLiquidity.PendingLiquidity",
-        name: "",
+        internalType: "struct PendingLiquidity",
+        name: "liquidity",
         type: "tuple",
       },
     ],
@@ -425,8 +693,90 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct IMarketLiquidity.PendingLiquidity[]",
-        name: "",
+        internalType: "struct PendingLiquidity[]",
+        name: "liquidities",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "int16",
+        name: "tradingFeeRate",
+        type: "int16",
+      },
+    ],
+    name: "pendingPosition",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "openVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "totalQty",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "totalMakerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "totalTakerMargin",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct PendingPosition",
+        name: "position",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "int16[]",
+        name: "tradingFeeRates",
+        type: "int16[]",
+      },
+    ],
+    name: "pendingPositionBatch",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "openVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "totalQty",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "totalMakerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "totalTakerMargin",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct PendingPosition[]",
+        name: "positions",
         type: "tuple[]",
       },
     ],
@@ -435,19 +785,15 @@ const _abi = [
   },
 ] as const;
 
-export class MarketLiquidityLensFacet__factory {
+export class MarketLensFacet__factory {
   static readonly abi = _abi;
-  static createInterface(): MarketLiquidityLensFacetInterface {
-    return new Interface(_abi) as MarketLiquidityLensFacetInterface;
+  static createInterface(): MarketLensFacetInterface {
+    return new Interface(_abi) as MarketLensFacetInterface;
   }
   static connect(
     address: string,
     runner?: ContractRunner | null
-  ): MarketLiquidityLensFacet {
-    return new Contract(
-      address,
-      _abi,
-      runner
-    ) as unknown as MarketLiquidityLensFacet;
+  ): MarketLensFacet {
+    return new Contract(address, _abi, runner) as unknown as MarketLensFacet;
   }
 }

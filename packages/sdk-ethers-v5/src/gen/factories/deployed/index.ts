@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as arbitrumGoerli from "./arbitrum_goerli";
+export * as mantleTestnet from "./mantle_testnet";

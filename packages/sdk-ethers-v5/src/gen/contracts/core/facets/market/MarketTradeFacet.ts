@@ -117,16 +117,11 @@ export interface MarketTradeFacetInterface extends utils.Interface {
   functions: {
     "claimPosition(uint256,address,bytes)": FunctionFragment;
     "closePosition(uint256)": FunctionFragment;
-    "getPositions(uint256[])": FunctionFragment;
     "openPosition(int256,uint256,uint256,uint256,bytes)": FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic:
-      | "claimPosition"
-      | "closePosition"
-      | "getPositions"
-      | "openPosition"
+    nameOrSignatureOrTopic: "claimPosition" | "closePosition" | "openPosition"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -136,10 +131,6 @@ export interface MarketTradeFacetInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "closePosition",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getPositions",
-    values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "openPosition",
@@ -152,10 +143,6 @@ export interface MarketTradeFacetInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "closePosition",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getPositions",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -273,17 +260,6 @@ export interface MarketTradeFacet extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * Retrieves multiple positions by their IDs.
-     * @param positionIds The IDs of the positions to retrieve.
-     */
-    getPositions(
-      positionIds: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<
-      [PositionStructOutput[]] & { _positions: PositionStructOutput[] }
-    >;
-
-    /**
      * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
      * @param data Additional data for the position callback.
      * @param makerMargin The margin amount provided by the maker.
@@ -324,15 +300,6 @@ export interface MarketTradeFacet extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * Retrieves multiple positions by their IDs.
-   * @param positionIds The IDs of the positions to retrieve.
-   */
-  getPositions(
-    positionIds: BigNumberish[],
-    overrides?: CallOverrides
-  ): Promise<PositionStructOutput[]>;
-
-  /**
    * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
    * @param data Additional data for the position callback.
    * @param makerMargin The margin amount provided by the maker.
@@ -371,15 +338,6 @@ export interface MarketTradeFacet extends BaseContract {
       positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<ClosePositionInfoStructOutput>;
-
-    /**
-     * Retrieves multiple positions by their IDs.
-     * @param positionIds The IDs of the positions to retrieve.
-     */
-    getPositions(
-      positionIds: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<PositionStructOutput[]>;
 
     /**
      * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
@@ -465,15 +423,6 @@ export interface MarketTradeFacet extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Retrieves multiple positions by their IDs.
-     * @param positionIds The IDs of the positions to retrieve.
-     */
-    getPositions(
-      positionIds: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
      * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
      * @param data Additional data for the position callback.
      * @param makerMargin The margin amount provided by the maker.
@@ -512,15 +461,6 @@ export interface MarketTradeFacet extends BaseContract {
     closePosition(
       positionId: BigNumberish,
       overrides?: Overrides & { from?: string }
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Retrieves multiple positions by their IDs.
-     * @param positionIds The IDs of the positions to retrieve.
-     */
-    getPositions(
-      positionIds: BigNumberish[],
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     /**

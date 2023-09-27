@@ -67,6 +67,11 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "AlreadySetMarketSettlement",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "AlreadySetVault",
     type: "error",
   },
@@ -276,6 +281,19 @@ const _abi = [
       },
     ],
     name: "SetLiquidator",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "marketSettlement",
+        type: "address",
+      },
+    ],
+    name: "SetMarketSettlement",
     type: "event",
   },
   {
@@ -833,6 +851,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "marketSettlement",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "parameters",
     outputs: [
       {
@@ -1019,6 +1050,19 @@ const _abi = [
       },
     ],
     name: "setLiquidator",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_marketSettlement",
+        type: "address",
+      },
+    ],
+    name: "setMarketSettlement",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

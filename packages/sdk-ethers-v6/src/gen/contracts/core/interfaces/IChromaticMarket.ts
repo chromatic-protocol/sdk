@@ -95,6 +95,28 @@ export type PositionStructOutput = [
   _feeProtocol: bigint;
 };
 
+export type ClaimableLiquidityStruct = {
+  mintingTokenAmountRequested: BigNumberish;
+  mintingCLBTokenAmount: BigNumberish;
+  burningCLBTokenAmountRequested: BigNumberish;
+  burningCLBTokenAmount: BigNumberish;
+  burningTokenAmount: BigNumberish;
+};
+
+export type ClaimableLiquidityStructOutput = [
+  mintingTokenAmountRequested: bigint,
+  mintingCLBTokenAmount: bigint,
+  burningCLBTokenAmountRequested: bigint,
+  burningCLBTokenAmount: bigint,
+  burningTokenAmount: bigint
+] & {
+  mintingTokenAmountRequested: bigint;
+  mintingCLBTokenAmount: bigint;
+  burningCLBTokenAmountRequested: bigint;
+  burningCLBTokenAmount: bigint;
+  burningTokenAmount: bigint;
+};
+
 export type ClosePositionInfoStruct = {
   id: BigNumberish;
   closeVersion: BigNumberish;
@@ -106,6 +128,57 @@ export type ClosePositionInfoStructOutput = [
   closeVersion: bigint,
   closeTimestamp: bigint
 ] & { id: bigint; closeVersion: bigint; closeTimestamp: bigint };
+
+export type ClosingPositionStruct = {
+  closeVersion: BigNumberish;
+  totalQty: BigNumberish;
+  totalEntryAmount: BigNumberish;
+  totalMakerMargin: BigNumberish;
+  totalTakerMargin: BigNumberish;
+};
+
+export type ClosingPositionStructOutput = [
+  closeVersion: bigint,
+  totalQty: bigint,
+  totalEntryAmount: bigint,
+  totalMakerMargin: bigint,
+  totalTakerMargin: bigint
+] & {
+  closeVersion: bigint;
+  totalQty: bigint;
+  totalEntryAmount: bigint;
+  totalMakerMargin: bigint;
+  totalTakerMargin: bigint;
+};
+
+export type LiquidityBinValueStruct = {
+  binValue: BigNumberish;
+  clbTokenTotalSupply: BigNumberish;
+};
+
+export type LiquidityBinValueStructOutput = [
+  binValue: bigint,
+  clbTokenTotalSupply: bigint
+] & { binValue: bigint; clbTokenTotalSupply: bigint };
+
+export type LiquidityBinStatusStruct = {
+  liquidity: BigNumberish;
+  freeLiquidity: BigNumberish;
+  binValue: BigNumberish;
+  tradingFeeRate: BigNumberish;
+};
+
+export type LiquidityBinStatusStructOutput = [
+  liquidity: bigint,
+  freeLiquidity: bigint,
+  binValue: bigint,
+  tradingFeeRate: bigint
+] & {
+  liquidity: bigint;
+  freeLiquidity: bigint;
+  binValue: bigint;
+  tradingFeeRate: bigint;
+};
 
 export type OpenPositionInfoStruct = {
   id: BigNumberish;
@@ -135,74 +208,40 @@ export type OpenPositionInfoStructOutput = [
   tradingFee: bigint;
 };
 
-export declare namespace IMarketLiquidity {
-  export type ClaimableLiquidityStruct = {
-    mintingTokenAmountRequested: BigNumberish;
-    mintingCLBTokenAmount: BigNumberish;
-    burningCLBTokenAmountRequested: BigNumberish;
-    burningCLBTokenAmount: BigNumberish;
-    burningTokenAmount: BigNumberish;
-  };
+export type PendingLiquidityStruct = {
+  oracleVersion: BigNumberish;
+  mintingTokenAmountRequested: BigNumberish;
+  burningCLBTokenAmountRequested: BigNumberish;
+};
 
-  export type ClaimableLiquidityStructOutput = [
-    mintingTokenAmountRequested: bigint,
-    mintingCLBTokenAmount: bigint,
-    burningCLBTokenAmountRequested: bigint,
-    burningCLBTokenAmount: bigint,
-    burningTokenAmount: bigint
-  ] & {
-    mintingTokenAmountRequested: bigint;
-    mintingCLBTokenAmount: bigint;
-    burningCLBTokenAmountRequested: bigint;
-    burningCLBTokenAmount: bigint;
-    burningTokenAmount: bigint;
-  };
+export type PendingLiquidityStructOutput = [
+  oracleVersion: bigint,
+  mintingTokenAmountRequested: bigint,
+  burningCLBTokenAmountRequested: bigint
+] & {
+  oracleVersion: bigint;
+  mintingTokenAmountRequested: bigint;
+  burningCLBTokenAmountRequested: bigint;
+};
 
-  export type LiquidityBinValueStruct = {
-    binValue: BigNumberish;
-    clbTokenTotalSupply: BigNumberish;
-  };
+export type PendingPositionStruct = {
+  openVersion: BigNumberish;
+  totalQty: BigNumberish;
+  totalMakerMargin: BigNumberish;
+  totalTakerMargin: BigNumberish;
+};
 
-  export type LiquidityBinValueStructOutput = [
-    binValue: bigint,
-    clbTokenTotalSupply: bigint
-  ] & { binValue: bigint; clbTokenTotalSupply: bigint };
-
-  export type LiquidityBinStatusStruct = {
-    liquidity: BigNumberish;
-    freeLiquidity: BigNumberish;
-    binValue: BigNumberish;
-    tradingFeeRate: BigNumberish;
-  };
-
-  export type LiquidityBinStatusStructOutput = [
-    liquidity: bigint,
-    freeLiquidity: bigint,
-    binValue: bigint,
-    tradingFeeRate: bigint
-  ] & {
-    liquidity: bigint;
-    freeLiquidity: bigint;
-    binValue: bigint;
-    tradingFeeRate: bigint;
-  };
-
-  export type PendingLiquidityStruct = {
-    oracleVersion: BigNumberish;
-    mintingTokenAmountRequested: BigNumberish;
-    burningCLBTokenAmountRequested: BigNumberish;
-  };
-
-  export type PendingLiquidityStructOutput = [
-    oracleVersion: bigint,
-    mintingTokenAmountRequested: bigint,
-    burningCLBTokenAmountRequested: bigint
-  ] & {
-    oracleVersion: bigint;
-    mintingTokenAmountRequested: bigint;
-    burningCLBTokenAmountRequested: bigint;
-  };
-}
+export type PendingPositionStructOutput = [
+  openVersion: bigint,
+  totalQty: bigint,
+  totalMakerMargin: bigint,
+  totalTakerMargin: bigint
+] & {
+  openVersion: bigint;
+  totalQty: bigint;
+  totalMakerMargin: bigint;
+  totalTakerMargin: bigint;
+};
 
 export interface IChromaticMarketInterface extends Interface {
   getFunction(
@@ -219,6 +258,8 @@ export interface IChromaticMarketInterface extends Interface {
       | "claimableLiquidityBatch"
       | "clbToken"
       | "closePosition"
+      | "closingPosition"
+      | "closingPositionBatch"
       | "distributeEarningToBins"
       | "factory"
       | "feeProtocol"
@@ -228,6 +269,7 @@ export interface IChromaticMarketInterface extends Interface {
       | "getBinValuesAt"
       | "getLpReceipt"
       | "getLpReceipts"
+      | "getPosition"
       | "getPositions"
       | "keeperFeePayer"
       | "liquidate"
@@ -237,6 +279,8 @@ export interface IChromaticMarketInterface extends Interface {
       | "oracleProvider"
       | "pendingLiquidity"
       | "pendingLiquidityBatch"
+      | "pendingPosition"
+      | "pendingPositionBatch"
       | "removeLiquidity"
       | "removeLiquidityBatch"
       | "setFeeProtocol"
@@ -313,6 +357,14 @@ export interface IChromaticMarketInterface extends Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "closingPosition",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "closingPositionBatch",
+    values: [BigNumberish[]]
+  ): string;
+  encodeFunctionData(
     functionFragment: "distributeEarningToBins",
     values: [BigNumberish, BigNumberish]
   ): string;
@@ -344,6 +396,10 @@ export interface IChromaticMarketInterface extends Interface {
   encodeFunctionData(
     functionFragment: "getLpReceipts",
     values: [BigNumberish[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getPosition",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getPositions",
@@ -379,6 +435,14 @@ export interface IChromaticMarketInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "pendingLiquidityBatch",
+    values: [BigNumberish[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "pendingPosition",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "pendingPositionBatch",
     values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
@@ -458,6 +522,14 @@ export interface IChromaticMarketInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "closingPosition",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "closingPositionBatch",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "distributeEarningToBins",
     data: BytesLike
   ): Result;
@@ -491,6 +563,10 @@ export interface IChromaticMarketInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getPosition",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getPositions",
     data: BytesLike
   ): Result;
@@ -518,6 +594,14 @@ export interface IChromaticMarketInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "pendingLiquidityBatch",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "pendingPosition",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "pendingPositionBatch",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -961,7 +1045,7 @@ export interface IChromaticMarket extends BaseContract {
    */
   claimableLiquidity: TypedContractMethod<
     [tradingFeeRate: BigNumberish, oracleVersion: BigNumberish],
-    [IMarketLiquidity.ClaimableLiquidityStructOutput],
+    [ClaimableLiquidityStructOutput],
     "view"
   >;
 
@@ -972,7 +1056,7 @@ export interface IChromaticMarket extends BaseContract {
    */
   claimableLiquidityBatch: TypedContractMethod<
     [tradingFeeRates: BigNumberish[], oracleVersion: BigNumberish],
-    [IMarketLiquidity.ClaimableLiquidityStructOutput[]],
+    [ClaimableLiquidityStructOutput[]],
     "view"
   >;
 
@@ -989,6 +1073,26 @@ export interface IChromaticMarket extends BaseContract {
     [positionId: BigNumberish],
     [ClosePositionInfoStructOutput],
     "nonpayable"
+  >;
+
+  /**
+   * Retrieves the closing position information for a specific trading fee rate from the associated LiquidityPool.
+   * @param tradingFeeRate The trading fee rate for which to retrieve the closing position.
+   */
+  closingPosition: TypedContractMethod<
+    [tradingFeeRate: BigNumberish],
+    [ClosingPositionStructOutput],
+    "view"
+  >;
+
+  /**
+   * Retrieves the closing position information for multiple trading fee rates from the associated LiquidityPool.
+   * @param tradingFeeRates The list of trading fee rates for which to retrieve the closing position.
+   */
+  closingPositionBatch: TypedContractMethod<
+    [tradingFeeRates: BigNumberish[]],
+    [ClosingPositionStructOutput[]],
+    "view"
   >;
 
   /**
@@ -1049,7 +1153,7 @@ export interface IChromaticMarket extends BaseContract {
    */
   getBinValuesAt: TypedContractMethod<
     [oracleVersion: BigNumberish, tradingFeeRates: BigNumberish[]],
-    [IMarketLiquidity.LiquidityBinValueStructOutput[]],
+    [LiquidityBinValueStructOutput[]],
     "view"
   >;
 
@@ -1070,6 +1174,16 @@ export interface IChromaticMarket extends BaseContract {
   getLpReceipts: TypedContractMethod<
     [receiptIds: BigNumberish[]],
     [LpReceiptStructOutput[]],
+    "view"
+  >;
+
+  /**
+   * Retrieves the position with the given position ID.      It throws NotExistPosition if the specified position ID does not exist.
+   * @param positionId The ID of the position to retrieve.
+   */
+  getPosition: TypedContractMethod<
+    [positionId: BigNumberish],
+    [PositionStructOutput],
     "view"
   >;
 
@@ -1110,7 +1224,7 @@ export interface IChromaticMarket extends BaseContract {
    */
   liquidityBinStatuses: TypedContractMethod<
     [],
-    [IMarketLiquidity.LiquidityBinStatusStructOutput[]],
+    [LiquidityBinStatusStructOutput[]],
     "view"
   >;
 
@@ -1145,7 +1259,7 @@ export interface IChromaticMarket extends BaseContract {
    */
   pendingLiquidity: TypedContractMethod<
     [tradingFeeRate: BigNumberish],
-    [IMarketLiquidity.PendingLiquidityStructOutput],
+    [PendingLiquidityStructOutput],
     "view"
   >;
 
@@ -1155,7 +1269,27 @@ export interface IChromaticMarket extends BaseContract {
    */
   pendingLiquidityBatch: TypedContractMethod<
     [tradingFeeRates: BigNumberish[]],
-    [IMarketLiquidity.PendingLiquidityStructOutput[]],
+    [PendingLiquidityStructOutput[]],
+    "view"
+  >;
+
+  /**
+   * Retrieves the pending position information for a specific trading fee rate from the associated LiquidityPool.
+   * @param tradingFeeRate The trading fee rate for which to retrieve the pending position.
+   */
+  pendingPosition: TypedContractMethod<
+    [tradingFeeRate: BigNumberish],
+    [PendingPositionStructOutput],
+    "view"
+  >;
+
+  /**
+   * Retrieves the pending position information for multiple trading fee rates from the associated LiquidityPool.
+   * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending position.
+   */
+  pendingPositionBatch: TypedContractMethod<
+    [tradingFeeRates: BigNumberish[]],
+    [PendingPositionStructOutput[]],
     "view"
   >;
 
@@ -1305,14 +1439,14 @@ export interface IChromaticMarket extends BaseContract {
     nameOrSignature: "claimableLiquidity"
   ): TypedContractMethod<
     [tradingFeeRate: BigNumberish, oracleVersion: BigNumberish],
-    [IMarketLiquidity.ClaimableLiquidityStructOutput],
+    [ClaimableLiquidityStructOutput],
     "view"
   >;
   getFunction(
     nameOrSignature: "claimableLiquidityBatch"
   ): TypedContractMethod<
     [tradingFeeRates: BigNumberish[], oracleVersion: BigNumberish],
-    [IMarketLiquidity.ClaimableLiquidityStructOutput[]],
+    [ClaimableLiquidityStructOutput[]],
     "view"
   >;
   getFunction(
@@ -1324,6 +1458,20 @@ export interface IChromaticMarket extends BaseContract {
     [positionId: BigNumberish],
     [ClosePositionInfoStructOutput],
     "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "closingPosition"
+  ): TypedContractMethod<
+    [tradingFeeRate: BigNumberish],
+    [ClosingPositionStructOutput],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "closingPositionBatch"
+  ): TypedContractMethod<
+    [tradingFeeRates: BigNumberish[]],
+    [ClosingPositionStructOutput[]],
+    "view"
   >;
   getFunction(
     nameOrSignature: "distributeEarningToBins"
@@ -1351,7 +1499,7 @@ export interface IChromaticMarket extends BaseContract {
     nameOrSignature: "getBinValuesAt"
   ): TypedContractMethod<
     [oracleVersion: BigNumberish, tradingFeeRates: BigNumberish[]],
-    [IMarketLiquidity.LiquidityBinValueStructOutput[]],
+    [LiquidityBinValueStructOutput[]],
     "view"
   >;
   getFunction(
@@ -1366,6 +1514,13 @@ export interface IChromaticMarket extends BaseContract {
   ): TypedContractMethod<
     [receiptIds: BigNumberish[]],
     [LpReceiptStructOutput[]],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getPosition"
+  ): TypedContractMethod<
+    [positionId: BigNumberish],
+    [PositionStructOutput],
     "view"
   >;
   getFunction(
@@ -1390,11 +1545,7 @@ export interface IChromaticMarket extends BaseContract {
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "liquidityBinStatuses"
-  ): TypedContractMethod<
-    [],
-    [IMarketLiquidity.LiquidityBinStatusStructOutput[]],
-    "view"
-  >;
+  ): TypedContractMethod<[], [LiquidityBinStatusStructOutput[]], "view">;
   getFunction(
     nameOrSignature: "openPosition"
   ): TypedContractMethod<
@@ -1415,14 +1566,28 @@ export interface IChromaticMarket extends BaseContract {
     nameOrSignature: "pendingLiquidity"
   ): TypedContractMethod<
     [tradingFeeRate: BigNumberish],
-    [IMarketLiquidity.PendingLiquidityStructOutput],
+    [PendingLiquidityStructOutput],
     "view"
   >;
   getFunction(
     nameOrSignature: "pendingLiquidityBatch"
   ): TypedContractMethod<
     [tradingFeeRates: BigNumberish[]],
-    [IMarketLiquidity.PendingLiquidityStructOutput[]],
+    [PendingLiquidityStructOutput[]],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "pendingPosition"
+  ): TypedContractMethod<
+    [tradingFeeRate: BigNumberish],
+    [PendingPositionStructOutput],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "pendingPositionBatch"
+  ): TypedContractMethod<
+    [tradingFeeRates: BigNumberish[]],
+    [PendingPositionStructOutput[]],
     "view"
   >;
   getFunction(

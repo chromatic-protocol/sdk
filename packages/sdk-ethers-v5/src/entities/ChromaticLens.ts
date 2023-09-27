@@ -1,7 +1,6 @@
 import { BigNumber } from "ethers";
 import type { Client } from "../Client";
 import { ChromaticLens__factory, getDeployedAddress } from "../gen";
-import { IMarketLiquidity } from "../gen/contracts/core/interfaces/IChromaticMarket";
 import { decodeTokenId, encodeTokenId, handleBytesError } from "../utils/helpers";
 import groupBy from "lodash/groupBy";
 /**

@@ -20,6 +20,60 @@ import type {
   OnEvent,
 } from "../../../../common";
 
+export type ClaimableLiquidityStruct = {
+  mintingTokenAmountRequested: BigNumberish;
+  mintingCLBTokenAmount: BigNumberish;
+  burningCLBTokenAmountRequested: BigNumberish;
+  burningCLBTokenAmount: BigNumberish;
+  burningTokenAmount: BigNumberish;
+};
+
+export type ClaimableLiquidityStructOutput = [
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber
+] & {
+  mintingTokenAmountRequested: BigNumber;
+  mintingCLBTokenAmount: BigNumber;
+  burningCLBTokenAmountRequested: BigNumber;
+  burningCLBTokenAmount: BigNumber;
+  burningTokenAmount: BigNumber;
+};
+
+export type ClosingPositionStruct = {
+  closeVersion: BigNumberish;
+  totalQty: BigNumberish;
+  totalEntryAmount: BigNumberish;
+  totalMakerMargin: BigNumberish;
+  totalTakerMargin: BigNumberish;
+};
+
+export type ClosingPositionStructOutput = [
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber
+] & {
+  closeVersion: BigNumber;
+  totalQty: BigNumber;
+  totalEntryAmount: BigNumber;
+  totalMakerMargin: BigNumber;
+  totalTakerMargin: BigNumber;
+};
+
+export type LiquidityBinValueStruct = {
+  binValue: BigNumberish;
+  clbTokenTotalSupply: BigNumberish;
+};
+
+export type LiquidityBinValueStructOutput = [BigNumber, BigNumber] & {
+  binValue: BigNumber;
+  clbTokenTotalSupply: BigNumber;
+};
+
 export type LpReceiptStruct = {
   id: BigNumberish;
   oracleVersion: BigNumberish;
@@ -45,103 +99,143 @@ export type LpReceiptStructOutput = [
   tradingFeeRate: number;
 };
 
-export declare namespace IMarketLiquidity {
-  export type ClaimableLiquidityStruct = {
-    mintingTokenAmountRequested: BigNumberish;
-    mintingCLBTokenAmount: BigNumberish;
-    burningCLBTokenAmountRequested: BigNumberish;
-    burningCLBTokenAmount: BigNumberish;
-    burningTokenAmount: BigNumberish;
-  };
+export type BinMarginStruct = {
+  tradingFeeRate: BigNumberish;
+  amount: BigNumberish;
+};
 
-  export type ClaimableLiquidityStructOutput = [
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber
-  ] & {
-    mintingTokenAmountRequested: BigNumber;
-    mintingCLBTokenAmount: BigNumber;
-    burningCLBTokenAmountRequested: BigNumber;
-    burningCLBTokenAmount: BigNumber;
-    burningTokenAmount: BigNumber;
-  };
+export type BinMarginStructOutput = [number, BigNumber] & {
+  tradingFeeRate: number;
+  amount: BigNumber;
+};
 
-  export type LiquidityBinValueStruct = {
-    binValue: BigNumberish;
-    clbTokenTotalSupply: BigNumberish;
-  };
+export type PositionStruct = {
+  id: BigNumberish;
+  openVersion: BigNumberish;
+  closeVersion: BigNumberish;
+  qty: BigNumberish;
+  openTimestamp: BigNumberish;
+  closeTimestamp: BigNumberish;
+  takerMargin: BigNumberish;
+  owner: string;
+  _binMargins: BinMarginStruct[];
+  _feeProtocol: BigNumberish;
+};
 
-  export type LiquidityBinValueStructOutput = [BigNumber, BigNumber] & {
-    binValue: BigNumber;
-    clbTokenTotalSupply: BigNumber;
-  };
+export type PositionStructOutput = [
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  string,
+  BinMarginStructOutput[],
+  number
+] & {
+  id: BigNumber;
+  openVersion: BigNumber;
+  closeVersion: BigNumber;
+  qty: BigNumber;
+  openTimestamp: BigNumber;
+  closeTimestamp: BigNumber;
+  takerMargin: BigNumber;
+  owner: string;
+  _binMargins: BinMarginStructOutput[];
+  _feeProtocol: number;
+};
 
-  export type LiquidityBinStatusStruct = {
-    liquidity: BigNumberish;
-    freeLiquidity: BigNumberish;
-    binValue: BigNumberish;
-    tradingFeeRate: BigNumberish;
-  };
+export type LiquidityBinStatusStruct = {
+  liquidity: BigNumberish;
+  freeLiquidity: BigNumberish;
+  binValue: BigNumberish;
+  tradingFeeRate: BigNumberish;
+};
 
-  export type LiquidityBinStatusStructOutput = [
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    number
-  ] & {
-    liquidity: BigNumber;
-    freeLiquidity: BigNumber;
-    binValue: BigNumber;
-    tradingFeeRate: number;
-  };
+export type LiquidityBinStatusStructOutput = [
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  number
+] & {
+  liquidity: BigNumber;
+  freeLiquidity: BigNumber;
+  binValue: BigNumber;
+  tradingFeeRate: number;
+};
 
-  export type PendingLiquidityStruct = {
-    oracleVersion: BigNumberish;
-    mintingTokenAmountRequested: BigNumberish;
-    burningCLBTokenAmountRequested: BigNumberish;
-  };
+export type PendingLiquidityStruct = {
+  oracleVersion: BigNumberish;
+  mintingTokenAmountRequested: BigNumberish;
+  burningCLBTokenAmountRequested: BigNumberish;
+};
 
-  export type PendingLiquidityStructOutput = [
-    BigNumber,
-    BigNumber,
-    BigNumber
-  ] & {
-    oracleVersion: BigNumber;
-    mintingTokenAmountRequested: BigNumber;
-    burningCLBTokenAmountRequested: BigNumber;
-  };
-}
+export type PendingLiquidityStructOutput = [BigNumber, BigNumber, BigNumber] & {
+  oracleVersion: BigNumber;
+  mintingTokenAmountRequested: BigNumber;
+  burningCLBTokenAmountRequested: BigNumber;
+};
 
-export interface MarketLiquidityLensFacetInterface extends utils.Interface {
+export type PendingPositionStruct = {
+  openVersion: BigNumberish;
+  totalQty: BigNumberish;
+  totalMakerMargin: BigNumberish;
+  totalTakerMargin: BigNumberish;
+};
+
+export type PendingPositionStructOutput = [
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber
+] & {
+  openVersion: BigNumber;
+  totalQty: BigNumber;
+  totalMakerMargin: BigNumber;
+  totalTakerMargin: BigNumber;
+};
+
+export interface MarketLensFacetInterface extends utils.Interface {
   functions: {
     "claimableLiquidity(int16,uint256)": FunctionFragment;
     "claimableLiquidityBatch(int16[],uint256)": FunctionFragment;
+    "closingPosition(int16)": FunctionFragment;
+    "closingPositionBatch(int16[])": FunctionFragment;
     "getBinFreeLiquidity(int16)": FunctionFragment;
     "getBinLiquidity(int16)": FunctionFragment;
     "getBinValues(int16[])": FunctionFragment;
     "getBinValuesAt(uint256,int16[])": FunctionFragment;
     "getLpReceipt(uint256)": FunctionFragment;
     "getLpReceipts(uint256[])": FunctionFragment;
+    "getPosition(uint256)": FunctionFragment;
+    "getPositions(uint256[])": FunctionFragment;
     "liquidityBinStatuses()": FunctionFragment;
     "pendingLiquidity(int16)": FunctionFragment;
     "pendingLiquidityBatch(int16[])": FunctionFragment;
+    "pendingPosition(int16)": FunctionFragment;
+    "pendingPositionBatch(int16[])": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
       | "claimableLiquidity"
       | "claimableLiquidityBatch"
+      | "closingPosition"
+      | "closingPositionBatch"
       | "getBinFreeLiquidity"
       | "getBinLiquidity"
       | "getBinValues"
       | "getBinValuesAt"
       | "getLpReceipt"
       | "getLpReceipts"
+      | "getPosition"
+      | "getPositions"
       | "liquidityBinStatuses"
       | "pendingLiquidity"
       | "pendingLiquidityBatch"
+      | "pendingPosition"
+      | "pendingPositionBatch"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -151,6 +245,14 @@ export interface MarketLiquidityLensFacetInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "claimableLiquidityBatch",
     values: [BigNumberish[], BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "closingPosition",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "closingPositionBatch",
+    values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "getBinFreeLiquidity",
@@ -177,6 +279,14 @@ export interface MarketLiquidityLensFacetInterface extends utils.Interface {
     values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
+    functionFragment: "getPosition",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getPositions",
+    values: [BigNumberish[]]
+  ): string;
+  encodeFunctionData(
     functionFragment: "liquidityBinStatuses",
     values?: undefined
   ): string;
@@ -188,6 +298,14 @@ export interface MarketLiquidityLensFacetInterface extends utils.Interface {
     functionFragment: "pendingLiquidityBatch",
     values: [BigNumberish[]]
   ): string;
+  encodeFunctionData(
+    functionFragment: "pendingPosition",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "pendingPositionBatch",
+    values: [BigNumberish[]]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "claimableLiquidity",
@@ -195,6 +313,14 @@ export interface MarketLiquidityLensFacetInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "claimableLiquidityBatch",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "closingPosition",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "closingPositionBatch",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -222,6 +348,14 @@ export interface MarketLiquidityLensFacetInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getPosition",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPositions",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "liquidityBinStatuses",
     data: BytesLike
   ): Result;
@@ -233,16 +367,24 @@ export interface MarketLiquidityLensFacetInterface extends utils.Interface {
     functionFragment: "pendingLiquidityBatch",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "pendingPosition",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "pendingPositionBatch",
+    data: BytesLike
+  ): Result;
 
   events: {};
 }
 
-export interface MarketLiquidityLensFacet extends BaseContract {
+export interface MarketLensFacet extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: MarketLiquidityLensFacetInterface;
+  interface: MarketLensFacetInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -273,7 +415,11 @@ export interface MarketLiquidityLensFacet extends BaseContract {
       tradingFeeRate: BigNumberish,
       oracleVersion: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[IMarketLiquidity.ClaimableLiquidityStructOutput]>;
+    ): Promise<
+      [ClaimableLiquidityStructOutput] & {
+        liquidity: ClaimableLiquidityStructOutput;
+      }
+    >;
 
     /**
      * Retrieves the claimable liquidity information for multiple trading fee rates and a specific oracle version from the associated LiquidityPool.
@@ -284,7 +430,35 @@ export interface MarketLiquidityLensFacet extends BaseContract {
       tradingFeeRates: BigNumberish[],
       oracleVersion: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[IMarketLiquidity.ClaimableLiquidityStructOutput[]]>;
+    ): Promise<
+      [ClaimableLiquidityStructOutput[]] & {
+        liquidities: ClaimableLiquidityStructOutput[];
+      }
+    >;
+
+    /**
+     * Retrieves the closing position information for a specific trading fee rate from the associated LiquidityPool.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the closing position.
+     */
+    closingPosition(
+      tradingFeeRate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [ClosingPositionStructOutput] & { position: ClosingPositionStructOutput }
+    >;
+
+    /**
+     * Retrieves the closing position information for multiple trading fee rates from the associated LiquidityPool.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the closing position.
+     */
+    closingPositionBatch(
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<
+      [ClosingPositionStructOutput[]] & {
+        positions: ClosingPositionStructOutput[];
+      }
+    >;
 
     /**
      * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
@@ -323,8 +497,8 @@ export interface MarketLiquidityLensFacet extends BaseContract {
       tradingFeeRates: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<
-      [IMarketLiquidity.LiquidityBinValueStructOutput[]] & {
-        values: IMarketLiquidity.LiquidityBinValueStructOutput[];
+      [LiquidityBinValueStructOutput[]] & {
+        values: LiquidityBinValueStructOutput[];
       }
     >;
 
@@ -349,11 +523,35 @@ export interface MarketLiquidityLensFacet extends BaseContract {
     >;
 
     /**
+     * Throws a `NotExistPosition` error if the position does not exist.
+     * @param positionId The ID of the position to retrieve.
+     */
+    getPosition(
+      positionId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[PositionStructOutput] & { position: PositionStructOutput }>;
+
+    /**
+     * Retrieves multiple positions by their IDs.
+     * @param positionIds The IDs of the positions to retrieve.
+     */
+    getPositions(
+      positionIds: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<
+      [PositionStructOutput[]] & { positions: PositionStructOutput[] }
+    >;
+
+    /**
      * Retrieves the liquidity bin statuses for the caller's liquidity pool.
      */
     liquidityBinStatuses(
       overrides?: CallOverrides
-    ): Promise<[IMarketLiquidity.LiquidityBinStatusStructOutput[]]>;
+    ): Promise<
+      [LiquidityBinStatusStructOutput[]] & {
+        statuses: LiquidityBinStatusStructOutput[];
+      }
+    >;
 
     /**
      * Retrieves the pending liquidity information for a specific trading fee rate from the associated LiquidityPool.
@@ -362,7 +560,11 @@ export interface MarketLiquidityLensFacet extends BaseContract {
     pendingLiquidity(
       tradingFeeRate: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[IMarketLiquidity.PendingLiquidityStructOutput]>;
+    ): Promise<
+      [PendingLiquidityStructOutput] & {
+        liquidity: PendingLiquidityStructOutput;
+      }
+    >;
 
     /**
      * Retrieves the pending liquidity information for multiple trading fee rates from the associated LiquidityPool.
@@ -371,7 +573,35 @@ export interface MarketLiquidityLensFacet extends BaseContract {
     pendingLiquidityBatch(
       tradingFeeRates: BigNumberish[],
       overrides?: CallOverrides
-    ): Promise<[IMarketLiquidity.PendingLiquidityStructOutput[]]>;
+    ): Promise<
+      [PendingLiquidityStructOutput[]] & {
+        liquidities: PendingLiquidityStructOutput[];
+      }
+    >;
+
+    /**
+     * Retrieves the pending position information for a specific trading fee rate from the associated LiquidityPool.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the pending position.
+     */
+    pendingPosition(
+      tradingFeeRate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [PendingPositionStructOutput] & { position: PendingPositionStructOutput }
+    >;
+
+    /**
+     * Retrieves the pending position information for multiple trading fee rates from the associated LiquidityPool.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending position.
+     */
+    pendingPositionBatch(
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<
+      [PendingPositionStructOutput[]] & {
+        positions: PendingPositionStructOutput[];
+      }
+    >;
   };
 
   /**
@@ -383,7 +613,7 @@ export interface MarketLiquidityLensFacet extends BaseContract {
     tradingFeeRate: BigNumberish,
     oracleVersion: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput>;
+  ): Promise<ClaimableLiquidityStructOutput>;
 
   /**
    * Retrieves the claimable liquidity information for multiple trading fee rates and a specific oracle version from the associated LiquidityPool.
@@ -394,7 +624,25 @@ export interface MarketLiquidityLensFacet extends BaseContract {
     tradingFeeRates: BigNumberish[],
     oracleVersion: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput[]>;
+  ): Promise<ClaimableLiquidityStructOutput[]>;
+
+  /**
+   * Retrieves the closing position information for a specific trading fee rate from the associated LiquidityPool.
+   * @param tradingFeeRate The trading fee rate for which to retrieve the closing position.
+   */
+  closingPosition(
+    tradingFeeRate: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<ClosingPositionStructOutput>;
+
+  /**
+   * Retrieves the closing position information for multiple trading fee rates from the associated LiquidityPool.
+   * @param tradingFeeRates The list of trading fee rates for which to retrieve the closing position.
+   */
+  closingPositionBatch(
+    tradingFeeRates: BigNumberish[],
+    overrides?: CallOverrides
+  ): Promise<ClosingPositionStructOutput[]>;
 
   /**
    * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
@@ -432,7 +680,7 @@ export interface MarketLiquidityLensFacet extends BaseContract {
     oracleVersion: BigNumberish,
     tradingFeeRates: BigNumberish[],
     overrides?: CallOverrides
-  ): Promise<IMarketLiquidity.LiquidityBinValueStructOutput[]>;
+  ): Promise<LiquidityBinValueStructOutput[]>;
 
   /**
    * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
@@ -453,11 +701,29 @@ export interface MarketLiquidityLensFacet extends BaseContract {
   ): Promise<LpReceiptStructOutput[]>;
 
   /**
+   * Throws a `NotExistPosition` error if the position does not exist.
+   * @param positionId The ID of the position to retrieve.
+   */
+  getPosition(
+    positionId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<PositionStructOutput>;
+
+  /**
+   * Retrieves multiple positions by their IDs.
+   * @param positionIds The IDs of the positions to retrieve.
+   */
+  getPositions(
+    positionIds: BigNumberish[],
+    overrides?: CallOverrides
+  ): Promise<PositionStructOutput[]>;
+
+  /**
    * Retrieves the liquidity bin statuses for the caller's liquidity pool.
    */
   liquidityBinStatuses(
     overrides?: CallOverrides
-  ): Promise<IMarketLiquidity.LiquidityBinStatusStructOutput[]>;
+  ): Promise<LiquidityBinStatusStructOutput[]>;
 
   /**
    * Retrieves the pending liquidity information for a specific trading fee rate from the associated LiquidityPool.
@@ -466,7 +732,7 @@ export interface MarketLiquidityLensFacet extends BaseContract {
   pendingLiquidity(
     tradingFeeRate: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<IMarketLiquidity.PendingLiquidityStructOutput>;
+  ): Promise<PendingLiquidityStructOutput>;
 
   /**
    * Retrieves the pending liquidity information for multiple trading fee rates from the associated LiquidityPool.
@@ -475,7 +741,25 @@ export interface MarketLiquidityLensFacet extends BaseContract {
   pendingLiquidityBatch(
     tradingFeeRates: BigNumberish[],
     overrides?: CallOverrides
-  ): Promise<IMarketLiquidity.PendingLiquidityStructOutput[]>;
+  ): Promise<PendingLiquidityStructOutput[]>;
+
+  /**
+   * Retrieves the pending position information for a specific trading fee rate from the associated LiquidityPool.
+   * @param tradingFeeRate The trading fee rate for which to retrieve the pending position.
+   */
+  pendingPosition(
+    tradingFeeRate: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<PendingPositionStructOutput>;
+
+  /**
+   * Retrieves the pending position information for multiple trading fee rates from the associated LiquidityPool.
+   * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending position.
+   */
+  pendingPositionBatch(
+    tradingFeeRates: BigNumberish[],
+    overrides?: CallOverrides
+  ): Promise<PendingPositionStructOutput[]>;
 
   callStatic: {
     /**
@@ -487,7 +771,7 @@ export interface MarketLiquidityLensFacet extends BaseContract {
       tradingFeeRate: BigNumberish,
       oracleVersion: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput>;
+    ): Promise<ClaimableLiquidityStructOutput>;
 
     /**
      * Retrieves the claimable liquidity information for multiple trading fee rates and a specific oracle version from the associated LiquidityPool.
@@ -498,7 +782,25 @@ export interface MarketLiquidityLensFacet extends BaseContract {
       tradingFeeRates: BigNumberish[],
       oracleVersion: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput[]>;
+    ): Promise<ClaimableLiquidityStructOutput[]>;
+
+    /**
+     * Retrieves the closing position information for a specific trading fee rate from the associated LiquidityPool.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the closing position.
+     */
+    closingPosition(
+      tradingFeeRate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<ClosingPositionStructOutput>;
+
+    /**
+     * Retrieves the closing position information for multiple trading fee rates from the associated LiquidityPool.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the closing position.
+     */
+    closingPositionBatch(
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<ClosingPositionStructOutput[]>;
 
     /**
      * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
@@ -536,7 +838,7 @@ export interface MarketLiquidityLensFacet extends BaseContract {
       oracleVersion: BigNumberish,
       tradingFeeRates: BigNumberish[],
       overrides?: CallOverrides
-    ): Promise<IMarketLiquidity.LiquidityBinValueStructOutput[]>;
+    ): Promise<LiquidityBinValueStructOutput[]>;
 
     /**
      * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
@@ -557,11 +859,29 @@ export interface MarketLiquidityLensFacet extends BaseContract {
     ): Promise<LpReceiptStructOutput[]>;
 
     /**
+     * Throws a `NotExistPosition` error if the position does not exist.
+     * @param positionId The ID of the position to retrieve.
+     */
+    getPosition(
+      positionId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PositionStructOutput>;
+
+    /**
+     * Retrieves multiple positions by their IDs.
+     * @param positionIds The IDs of the positions to retrieve.
+     */
+    getPositions(
+      positionIds: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<PositionStructOutput[]>;
+
+    /**
      * Retrieves the liquidity bin statuses for the caller's liquidity pool.
      */
     liquidityBinStatuses(
       overrides?: CallOverrides
-    ): Promise<IMarketLiquidity.LiquidityBinStatusStructOutput[]>;
+    ): Promise<LiquidityBinStatusStructOutput[]>;
 
     /**
      * Retrieves the pending liquidity information for a specific trading fee rate from the associated LiquidityPool.
@@ -570,7 +890,7 @@ export interface MarketLiquidityLensFacet extends BaseContract {
     pendingLiquidity(
       tradingFeeRate: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<IMarketLiquidity.PendingLiquidityStructOutput>;
+    ): Promise<PendingLiquidityStructOutput>;
 
     /**
      * Retrieves the pending liquidity information for multiple trading fee rates from the associated LiquidityPool.
@@ -579,7 +899,25 @@ export interface MarketLiquidityLensFacet extends BaseContract {
     pendingLiquidityBatch(
       tradingFeeRates: BigNumberish[],
       overrides?: CallOverrides
-    ): Promise<IMarketLiquidity.PendingLiquidityStructOutput[]>;
+    ): Promise<PendingLiquidityStructOutput[]>;
+
+    /**
+     * Retrieves the pending position information for a specific trading fee rate from the associated LiquidityPool.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the pending position.
+     */
+    pendingPosition(
+      tradingFeeRate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PendingPositionStructOutput>;
+
+    /**
+     * Retrieves the pending position information for multiple trading fee rates from the associated LiquidityPool.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending position.
+     */
+    pendingPositionBatch(
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<PendingPositionStructOutput[]>;
   };
 
   filters: {};
@@ -604,6 +942,24 @@ export interface MarketLiquidityLensFacet extends BaseContract {
     claimableLiquidityBatch(
       tradingFeeRates: BigNumberish[],
       oracleVersion: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Retrieves the closing position information for a specific trading fee rate from the associated LiquidityPool.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the closing position.
+     */
+    closingPosition(
+      tradingFeeRate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Retrieves the closing position information for multiple trading fee rates from the associated LiquidityPool.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the closing position.
+     */
+    closingPositionBatch(
+      tradingFeeRates: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -664,6 +1020,24 @@ export interface MarketLiquidityLensFacet extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * Throws a `NotExistPosition` error if the position does not exist.
+     * @param positionId The ID of the position to retrieve.
+     */
+    getPosition(
+      positionId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Retrieves multiple positions by their IDs.
+     * @param positionIds The IDs of the positions to retrieve.
+     */
+    getPositions(
+      positionIds: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
      * Retrieves the liquidity bin statuses for the caller's liquidity pool.
      */
     liquidityBinStatuses(overrides?: CallOverrides): Promise<BigNumber>;
@@ -682,6 +1056,24 @@ export interface MarketLiquidityLensFacet extends BaseContract {
      * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending liquidity.
      */
     pendingLiquidityBatch(
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Retrieves the pending position information for a specific trading fee rate from the associated LiquidityPool.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the pending position.
+     */
+    pendingPosition(
+      tradingFeeRate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Retrieves the pending position information for multiple trading fee rates from the associated LiquidityPool.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending position.
+     */
+    pendingPositionBatch(
       tradingFeeRates: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -711,6 +1103,24 @@ export interface MarketLiquidityLensFacet extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * Retrieves the closing position information for a specific trading fee rate from the associated LiquidityPool.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the closing position.
+     */
+    closingPosition(
+      tradingFeeRate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Retrieves the closing position information for multiple trading fee rates from the associated LiquidityPool.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the closing position.
+     */
+    closingPositionBatch(
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
      * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
      * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
      */
@@ -767,6 +1177,24 @@ export interface MarketLiquidityLensFacet extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * Throws a `NotExistPosition` error if the position does not exist.
+     * @param positionId The ID of the position to retrieve.
+     */
+    getPosition(
+      positionId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Retrieves multiple positions by their IDs.
+     * @param positionIds The IDs of the positions to retrieve.
+     */
+    getPositions(
+      positionIds: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
      * Retrieves the liquidity bin statuses for the caller's liquidity pool.
      */
     liquidityBinStatuses(
@@ -787,6 +1215,24 @@ export interface MarketLiquidityLensFacet extends BaseContract {
      * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending liquidity.
      */
     pendingLiquidityBatch(
+      tradingFeeRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Retrieves the pending position information for a specific trading fee rate from the associated LiquidityPool.
+     * @param tradingFeeRate The trading fee rate for which to retrieve the pending position.
+     */
+    pendingPosition(
+      tradingFeeRate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Retrieves the pending position information for multiple trading fee rates from the associated LiquidityPool.
+     * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending position.
+     */
+    pendingPositionBatch(
       tradingFeeRates: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

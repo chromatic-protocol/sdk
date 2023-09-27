@@ -28,14 +28,14 @@ export type { MarketDiamondCutFacet } from "./contracts/core/facets/market/Marke
 export { MarketDiamondCutFacet__factory } from "./factories/contracts/core/facets/market/MarketDiamondCutFacet__factory";
 export type { MarketFacetBase } from "./contracts/core/facets/market/MarketFacetBase";
 export { MarketFacetBase__factory } from "./factories/contracts/core/facets/market/MarketFacetBase__factory";
+export type { MarketLensFacet } from "./contracts/core/facets/market/MarketLensFacet";
+export { MarketLensFacet__factory } from "./factories/contracts/core/facets/market/MarketLensFacet__factory";
 export type { MarketLiquidateFacet } from "./contracts/core/facets/market/MarketLiquidateFacet";
 export { MarketLiquidateFacet__factory } from "./factories/contracts/core/facets/market/MarketLiquidateFacet__factory";
 export type { MarketLiquidityFacet } from "./contracts/core/facets/market/MarketLiquidityFacet";
 export { MarketLiquidityFacet__factory } from "./factories/contracts/core/facets/market/MarketLiquidityFacet__factory";
 export type { MarketLiquidityFacetBase } from "./contracts/core/facets/market/MarketLiquidityFacetBase";
 export { MarketLiquidityFacetBase__factory } from "./factories/contracts/core/facets/market/MarketLiquidityFacetBase__factory";
-export type { MarketLiquidityLensFacet } from "./contracts/core/facets/market/MarketLiquidityLensFacet";
-export { MarketLiquidityLensFacet__factory } from "./factories/contracts/core/facets/market/MarketLiquidityLensFacet__factory";
 export type { MarketSettleFacet } from "./contracts/core/facets/market/MarketSettleFacet";
 export { MarketSettleFacet__factory } from "./factories/contracts/core/facets/market/MarketSettleFacet__factory";
 export type { MarketStateFacet } from "./contracts/core/facets/market/MarketStateFacet";

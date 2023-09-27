@@ -3,3 +3,5 @@
 /* eslint-disable */
 import type * as arbitrumGoerli from "./arbitrum_goerli";
 export type { arbitrumGoerli };
+import type * as mantleTestnet from "./mantle_testnet";
+export type { mantleTestnet };

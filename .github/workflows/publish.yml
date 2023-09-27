@@ -60,7 +60,7 @@ jobs:
       run: |
         yarn install
         yarn workspaces run build
-        yarn workspaces run pub
+        yarn workspaces run pub --network-timeout 600000
 
     # export markdown docs to docs repository
     - uses: chromatic-protocol/action-github-app-token@v1

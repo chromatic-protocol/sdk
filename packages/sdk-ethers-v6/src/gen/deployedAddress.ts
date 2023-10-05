@@ -33,6 +33,12 @@ export const deployedAddress: DeployedAddress = {
     "ChromaticRouter": "0x63ecE4C05B8fB272D16844E96702Ea2f26370982",
     "ChromaticVault": "0xA901DA770A472Caf6E6698261BB02ea58C5d3235"
   },
+  "anvil_mantle": {
+    "ChromaticLens": "0x8F4ec854Dd12F1fe79500a1f53D0cbB30f9b6134",
+    "ChromaticMarketFactory": "0xA56F946D6398Dd7d9D4D9B337Cf9E0F68982ca5B",
+    "ChromaticRouter": "0x71089Ba41e478702e1904692385Be3972B2cBf9e",
+    "ChromaticVault": "0xAD523115cd35a8d4E60B3C0953E0E0ac10418309"
+  },
   "arbitrum_goerli": {
     "ChromaticLens": "0xeF425Cce449e7D41D245ed8ac046bE6bD20D5056",
     "ChromaticMarketFactory": "0x6d207Df6ab10AF3119D67f2d889573850cDB50b4",

@@ -22,10 +22,10 @@ interface DeployedAddress {
  */
 export const deployedAddress: DeployedAddress = {
   "mantle_testnet": {
-    "ChromaticLens": "0xD61fc13e8ea0b3901559adE92DDDcf88A2E28d97",
-    "ChromaticMarketFactory": "0x98B529205423Cf20dd161BF715AE122653D4835a",
-    "ChromaticRouter": "0xf60F6B0c4A5470B265486094f95205CbC8e30752",
-    "ChromaticVault": "0x75ef69eB4b1b26894F5B37cf88847D491220F0Ea"
+    "ChromaticLens": "0x4481Ea5d904A44d1d6a01C65839363889ba16775",
+    "ChromaticMarketFactory": "0x513D01198a6808A0A7C456440dbF1E49539284Bc",
+    "ChromaticRouter": "0x7aD84659B4F798F913BE84f53192bBfa21b0d0a4",
+    "ChromaticVault": "0xB4c386Fc066765a23aBf82355A3FA15c94dDF281"
   },
   "anvil": {
     "ChromaticLens": "0x3576293Ba6Adacba1A81397db889558Dd91A8519",

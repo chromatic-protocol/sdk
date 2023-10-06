@@ -22,10 +22,10 @@ interface DeployedAddress {
  */
 export const deployedAddress: DeployedAddress = {
   "mantle_testnet": {
-    "ChromaticLens": "0x99e46e306f1511B4C59F676f0a167AD48C27269a",
-    "ChromaticMarketFactory": "0x9370741aB608C87668C4372Af84f662Be9792C32",
-    "ChromaticRouter": "0xbdccf23ee16Ea5BCa5462b26760Fc0fB8436d47D",
-    "ChromaticVault": "0x7F54039E7d2E11386d2c329004a8aCC47380AcA7"
+    "ChromaticLens": "0x1efa714DB1e3527cEf2e0403e28582b8a1e27733",
+    "ChromaticMarketFactory": "0xA575b950651007851d3cfE8e0E63BcCEf0a9632b",
+    "ChromaticRouter": "0xa3950696adc8A3eE61066942ca252028BbebDdB6",
+    "ChromaticVault": "0x1Bd6F9E45BdBb9D57EcE8260A77E28F4839DdA41"
   },
   "anvil": {
     "ChromaticLens": "0x3576293Ba6Adacba1A81397db889558Dd91A8519",
@@ -34,10 +34,10 @@ export const deployedAddress: DeployedAddress = {
     "ChromaticVault": "0xA901DA770A472Caf6E6698261BB02ea58C5d3235"
   },
   "anvil_mantle": {
-    "ChromaticLens": "0x8F4ec854Dd12F1fe79500a1f53D0cbB30f9b6134",
-    "ChromaticMarketFactory": "0xA56F946D6398Dd7d9D4D9B337Cf9E0F68982ca5B",
-    "ChromaticRouter": "0x71089Ba41e478702e1904692385Be3972B2cBf9e",
-    "ChromaticVault": "0xAD523115cd35a8d4E60B3C0953E0E0ac10418309"
+    "ChromaticLens": "0xdFdE6B33f13de2CA1A75A6F7169f50541B14f75b",
+    "ChromaticMarketFactory": "0x2b5A4e5493d4a54E717057B127cf0C000C876f9B",
+    "ChromaticRouter": "0x63fea6E447F120B8Faf85B53cdaD8348e645D80E",
+    "ChromaticVault": "0x5133BBdfCCa3Eb4F739D599ee4eC45cBCD0E16c5"
   },
   "arbitrum_goerli": {
     "ChromaticLens": "0xeF425Cce449e7D41D245ed8ac046bE6bD20D5056",

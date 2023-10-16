@@ -325,7 +325,7 @@ export interface ChromaticLens extends BaseContract {
   /**
    * Retrieves the OracleVersion for the specified oracle version in the given Chromatic market.
    * @param market The address of the Chromatic market contract.
-   * @param version An oracle versions.
+   * @param version An oracle version.
    */
   oracleVersion: TypedContractMethod<
     [market: AddressLike, version: BigNumberish],

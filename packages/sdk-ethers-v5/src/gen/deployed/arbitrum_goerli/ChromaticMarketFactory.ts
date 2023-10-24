@@ -77,7 +77,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "isRegisteredSettlementToken(address)": FunctionFragment;
     "keeperFeePayer()": FunctionFragment;
     "liquidator()": FunctionFragment;
-    "marketSettlement()": FunctionFragment;
     "parameters()": FunctionFragment;
     "registerOracleProvider(address,(uint32,uint32,uint8))": FunctionFragment;
     "registerSettlementToken(address,uint256,uint256,uint256,uint256,uint24)": FunctionFragment;
@@ -88,7 +87,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "setFlashLoanFeeRate(address,uint256)": FunctionFragment;
     "setKeeperFeePayer(address)": FunctionFragment;
     "setLiquidator(address)": FunctionFragment;
-    "setMarketSettlement(address)": FunctionFragment;
     "setMinimumMargin(address,uint256)": FunctionFragment;
     "setUniswapFeeTier(address,uint24)": FunctionFragment;
     "setVault(address)": FunctionFragment;
@@ -122,7 +120,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
       | "isRegisteredSettlementToken"
       | "keeperFeePayer"
       | "liquidator"
-      | "marketSettlement"
       | "parameters"
       | "registerOracleProvider"
       | "registerSettlementToken"
@@ -133,7 +130,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
       | "setFlashLoanFeeRate"
       | "setKeeperFeePayer"
       | "setLiquidator"
-      | "setMarketSettlement"
       | "setMinimumMargin"
       | "setUniswapFeeTier"
       | "setVault"
@@ -220,10 +216,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "marketSettlement",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "parameters",
     values?: undefined
   ): string;
@@ -268,10 +260,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setLiquidator",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setMarketSettlement",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -367,10 +355,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "liquidator", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "marketSettlement",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "parameters", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "registerOracleProvider",
@@ -406,10 +390,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setLiquidator",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setMarketSettlement",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -451,7 +431,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "SetFlashLoanFeeRate(address,uint256)": EventFragment;
     "SetKeeperFeePayer(address)": EventFragment;
     "SetLiquidator(address)": EventFragment;
-    "SetMarketSettlement(address)": EventFragment;
     "SetMinimumMargin(address,uint256)": EventFragment;
     "SetUniswapFeeTier(address,uint24)": EventFragment;
     "SetVault(address)": EventFragment;
@@ -475,7 +454,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "SetFlashLoanFeeRate"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetKeeperFeePayer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetLiquidator"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SetMarketSettlement"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetMinimumMargin"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetUniswapFeeTier"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetVault"): EventFragment;
@@ -588,17 +566,6 @@ export interface SetLiquidatorEventObject {
 export type SetLiquidatorEvent = TypedEvent<[string], SetLiquidatorEventObject>;
 
 export type SetLiquidatorEventFilter = TypedEventFilter<SetLiquidatorEvent>;
-
-export interface SetMarketSettlementEventObject {
-  marketSettlement: string;
-}
-export type SetMarketSettlementEvent = TypedEvent<
-  [string],
-  SetMarketSettlementEventObject
->;
-
-export type SetMarketSettlementEventFilter =
-  TypedEventFilter<SetMarketSettlementEvent>;
 
 export interface SetMinimumMarginEventObject {
   token: string;
@@ -889,11 +856,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     liquidator(overrides?: CallOverrides): Promise<[string]>;
 
     /**
-     * Returns the address of the market settlement task.
-     */
-    marketSettlement(overrides?: CallOverrides): Promise<[string]>;
-
-    /**
      * Called by the market constructor to fetch the parameters of the market Returns underlyingAsset The underlying asset of the market Returns settlementToken The settlement token of the market Returns vPoolCapacity Capacity of virtual future pool Returns vPoolA Amplification coefficient of virtual future pool, precise value
      * Get the parameters to be used in constructing the market, set transiently during market creation.
      */
@@ -990,16 +952,6 @@ export interface ChromaticMarketFactory extends BaseContract {
      */
     setLiquidator(
       _liquidator: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
-
-    /**
-     * This function can only be called by the DAO address.      Throws an `AlreadySetMarketSettlement` error if the market settlement task address has already been set.
-     * Sets the market settlement task address.
-     * @param _marketSettlement The market settlement task address.
-     */
-    setMarketSettlement(
-      _marketSettlement: string,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
@@ -1274,11 +1226,6 @@ export interface ChromaticMarketFactory extends BaseContract {
   liquidator(overrides?: CallOverrides): Promise<string>;
 
   /**
-   * Returns the address of the market settlement task.
-   */
-  marketSettlement(overrides?: CallOverrides): Promise<string>;
-
-  /**
    * Called by the market constructor to fetch the parameters of the market Returns underlyingAsset The underlying asset of the market Returns settlementToken The settlement token of the market Returns vPoolCapacity Capacity of virtual future pool Returns vPoolA Amplification coefficient of virtual future pool, precise value
    * Get the parameters to be used in constructing the market, set transiently during market creation.
    */
@@ -1375,16 +1322,6 @@ export interface ChromaticMarketFactory extends BaseContract {
    */
   setLiquidator(
     _liquidator: string,
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
-
-  /**
-   * This function can only be called by the DAO address.      Throws an `AlreadySetMarketSettlement` error if the market settlement task address has already been set.
-   * Sets the market settlement task address.
-   * @param _marketSettlement The market settlement task address.
-   */
-  setMarketSettlement(
-    _marketSettlement: string,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -1662,11 +1599,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     liquidator(overrides?: CallOverrides): Promise<string>;
 
     /**
-     * Returns the address of the market settlement task.
-     */
-    marketSettlement(overrides?: CallOverrides): Promise<string>;
-
-    /**
      * Called by the market constructor to fetch the parameters of the market Returns underlyingAsset The underlying asset of the market Returns settlementToken The settlement token of the market Returns vPoolCapacity Capacity of virtual future pool Returns vPoolA Amplification coefficient of virtual future pool, precise value
      * Get the parameters to be used in constructing the market, set transiently during market creation.
      */
@@ -1763,16 +1695,6 @@ export interface ChromaticMarketFactory extends BaseContract {
      */
     setLiquidator(
       _liquidator: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    /**
-     * This function can only be called by the DAO address.      Throws an `AlreadySetMarketSettlement` error if the market settlement task address has already been set.
-     * Sets the market settlement task address.
-     * @param _marketSettlement The market settlement task address.
-     */
-    setMarketSettlement(
-      _marketSettlement: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1947,13 +1869,6 @@ export interface ChromaticMarketFactory extends BaseContract {
       liquidator?: string | null
     ): SetLiquidatorEventFilter;
     SetLiquidator(liquidator?: string | null): SetLiquidatorEventFilter;
-
-    "SetMarketSettlement(address)"(
-      marketSettlement?: string | null
-    ): SetMarketSettlementEventFilter;
-    SetMarketSettlement(
-      marketSettlement?: string | null
-    ): SetMarketSettlementEventFilter;
 
     "SetMinimumMargin(address,uint256)"(
       token?: string | null,
@@ -2196,11 +2111,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     liquidator(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Returns the address of the market settlement task.
-     */
-    marketSettlement(overrides?: CallOverrides): Promise<BigNumber>;
-
-    /**
      * Called by the market constructor to fetch the parameters of the market Returns underlyingAsset The underlying asset of the market Returns settlementToken The settlement token of the market Returns vPoolCapacity Capacity of virtual future pool Returns vPoolA Amplification coefficient of virtual future pool, precise value
      * Get the parameters to be used in constructing the market, set transiently during market creation.
      */
@@ -2293,16 +2203,6 @@ export interface ChromaticMarketFactory extends BaseContract {
      */
     setLiquidator(
       _liquidator: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<BigNumber>;
-
-    /**
-     * This function can only be called by the DAO address.      Throws an `AlreadySetMarketSettlement` error if the market settlement task address has already been set.
-     * Sets the market settlement task address.
-     * @param _marketSettlement The market settlement task address.
-     */
-    setMarketSettlement(
-      _marketSettlement: string,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
@@ -2581,11 +2481,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     liquidator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Returns the address of the market settlement task.
-     */
-    marketSettlement(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    /**
      * Called by the market constructor to fetch the parameters of the market Returns underlyingAsset The underlying asset of the market Returns settlementToken The settlement token of the market Returns vPoolCapacity Capacity of virtual future pool Returns vPoolA Amplification coefficient of virtual future pool, precise value
      * Get the parameters to be used in constructing the market, set transiently during market creation.
      */
@@ -2682,16 +2577,6 @@ export interface ChromaticMarketFactory extends BaseContract {
      */
     setLiquidator(
       _liquidator: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * This function can only be called by the DAO address.      Throws an `AlreadySetMarketSettlement` error if the market settlement task address has already been set.
-     * Sets the market settlement task address.
-     * @param _marketSettlement The market settlement task address.
-     */
-    setMarketSettlement(
-      _marketSettlement: string,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 

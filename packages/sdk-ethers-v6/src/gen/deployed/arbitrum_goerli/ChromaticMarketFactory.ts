@@ -75,7 +75,6 @@ export interface ChromaticMarketFactoryInterface extends Interface {
       | "isRegisteredSettlementToken"
       | "keeperFeePayer"
       | "liquidator"
-      | "marketSettlement"
       | "parameters"
       | "registerOracleProvider"
       | "registerSettlementToken"
@@ -86,7 +85,6 @@ export interface ChromaticMarketFactoryInterface extends Interface {
       | "setFlashLoanFeeRate"
       | "setKeeperFeePayer"
       | "setLiquidator"
-      | "setMarketSettlement"
       | "setMinimumMargin"
       | "setUniswapFeeTier"
       | "setVault"
@@ -110,7 +108,6 @@ export interface ChromaticMarketFactoryInterface extends Interface {
       | "SetFlashLoanFeeRate"
       | "SetKeeperFeePayer"
       | "SetLiquidator"
-      | "SetMarketSettlement"
       | "SetMinimumMargin"
       | "SetUniswapFeeTier"
       | "SetVault"
@@ -195,10 +192,6 @@ export interface ChromaticMarketFactoryInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "marketSettlement",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "parameters",
     values?: undefined
   ): string;
@@ -246,10 +239,6 @@ export interface ChromaticMarketFactoryInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setLiquidator",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setMarketSettlement",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
@@ -351,10 +340,6 @@ export interface ChromaticMarketFactoryInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "liquidator", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "marketSettlement",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "parameters", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "registerOracleProvider",
@@ -390,10 +375,6 @@ export interface ChromaticMarketFactoryInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setLiquidator",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setMarketSettlement",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -572,18 +553,6 @@ export namespace SetLiquidatorEvent {
   export type OutputTuple = [liquidator: string];
   export interface OutputObject {
     liquidator: string;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace SetMarketSettlementEvent {
-  export type InputTuple = [marketSettlement: AddressLike];
-  export type OutputTuple = [marketSettlement: string];
-  export interface OutputObject {
-    marketSettlement: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -948,11 +917,6 @@ export interface ChromaticMarketFactory extends BaseContract {
   liquidator: TypedContractMethod<[], [string], "view">;
 
   /**
-   * Returns the address of the market settlement task.
-   */
-  marketSettlement: TypedContractMethod<[], [string], "view">;
-
-  /**
    * Called by the market constructor to fetch the parameters of the market Returns underlyingAsset The underlying asset of the market Returns settlementToken The settlement token of the market Returns vPoolCapacity Capacity of virtual future pool Returns vPoolA Amplification coefficient of virtual future pool, precise value
    * Get the parameters to be used in constructing the market, set transiently during market creation.
    */
@@ -1057,17 +1021,6 @@ export interface ChromaticMarketFactory extends BaseContract {
    */
   setLiquidator: TypedContractMethod<
     [_liquidator: AddressLike],
-    [void],
-    "nonpayable"
-  >;
-
-  /**
-   * This function can only be called by the DAO address.      Throws an `AlreadySetMarketSettlement` error if the market settlement task address has already been set.
-   * Sets the market settlement task address.
-   * @param _marketSettlement The market settlement task address.
-   */
-  setMarketSettlement: TypedContractMethod<
-    [_marketSettlement: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -1266,9 +1219,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     nameOrSignature: "liquidator"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "marketSettlement"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
     nameOrSignature: "parameters"
   ): TypedContractMethod<
     [],
@@ -1328,13 +1278,6 @@ export interface ChromaticMarketFactory extends BaseContract {
   getFunction(
     nameOrSignature: "setLiquidator"
   ): TypedContractMethod<[_liquidator: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "setMarketSettlement"
-  ): TypedContractMethod<
-    [_marketSettlement: AddressLike],
-    [void],
-    "nonpayable"
-  >;
   getFunction(
     nameOrSignature: "setMinimumMargin"
   ): TypedContractMethod<
@@ -1448,13 +1391,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     SetLiquidatorEvent.InputTuple,
     SetLiquidatorEvent.OutputTuple,
     SetLiquidatorEvent.OutputObject
-  >;
-  getEvent(
-    key: "SetMarketSettlement"
-  ): TypedContractEvent<
-    SetMarketSettlementEvent.InputTuple,
-    SetMarketSettlementEvent.OutputTuple,
-    SetMarketSettlementEvent.OutputObject
   >;
   getEvent(
     key: "SetMinimumMargin"
@@ -1611,17 +1547,6 @@ export interface ChromaticMarketFactory extends BaseContract {
       SetLiquidatorEvent.InputTuple,
       SetLiquidatorEvent.OutputTuple,
       SetLiquidatorEvent.OutputObject
-    >;
-
-    "SetMarketSettlement(address)": TypedContractEvent<
-      SetMarketSettlementEvent.InputTuple,
-      SetMarketSettlementEvent.OutputTuple,
-      SetMarketSettlementEvent.OutputObject
-    >;
-    SetMarketSettlement: TypedContractEvent<
-      SetMarketSettlementEvent.InputTuple,
-      SetMarketSettlementEvent.OutputTuple,
-      SetMarketSettlementEvent.OutputObject
     >;
 
     "SetMinimumMargin(address,uint256)": TypedContractEvent<

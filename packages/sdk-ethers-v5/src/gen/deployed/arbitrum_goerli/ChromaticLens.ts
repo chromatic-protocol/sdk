@@ -20,47 +20,6 @@ import type {
   OnEvent,
 } from "../../common";
 
-export type ClaimableLiquidityStruct = {
-  mintingTokenAmountRequested: BigNumberish;
-  mintingCLBTokenAmount: BigNumberish;
-  burningCLBTokenAmountRequested: BigNumberish;
-  burningCLBTokenAmount: BigNumberish;
-  burningTokenAmount: BigNumberish;
-};
-
-export type ClaimableLiquidityStructOutput = [
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  BigNumber
-] & {
-  mintingTokenAmountRequested: BigNumber;
-  mintingCLBTokenAmount: BigNumber;
-  burningCLBTokenAmountRequested: BigNumber;
-  burningCLBTokenAmount: BigNumber;
-  burningTokenAmount: BigNumber;
-};
-
-export type LiquidityBinStatusStruct = {
-  liquidity: BigNumberish;
-  freeLiquidity: BigNumberish;
-  binValue: BigNumberish;
-  tradingFeeRate: BigNumberish;
-};
-
-export type LiquidityBinStatusStructOutput = [
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  number
-] & {
-  liquidity: BigNumber;
-  freeLiquidity: BigNumber;
-  binValue: BigNumber;
-  tradingFeeRate: number;
-};
-
 export type LpReceiptStruct = {
   id: BigNumberish;
   oracleVersion: BigNumberish;
@@ -86,17 +45,64 @@ export type LpReceiptStructOutput = [
   tradingFeeRate: number;
 };
 
-export type PendingLiquidityStruct = {
-  oracleVersion: BigNumberish;
-  mintingTokenAmountRequested: BigNumberish;
-  burningCLBTokenAmountRequested: BigNumberish;
-};
+export declare namespace IMarketLiquidity {
+  export type ClaimableLiquidityStruct = {
+    mintingTokenAmountRequested: BigNumberish;
+    mintingCLBTokenAmount: BigNumberish;
+    burningCLBTokenAmountRequested: BigNumberish;
+    burningCLBTokenAmount: BigNumberish;
+    burningTokenAmount: BigNumberish;
+  };
 
-export type PendingLiquidityStructOutput = [BigNumber, BigNumber, BigNumber] & {
-  oracleVersion: BigNumber;
-  mintingTokenAmountRequested: BigNumber;
-  burningCLBTokenAmountRequested: BigNumber;
-};
+  export type ClaimableLiquidityStructOutput = [
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ] & {
+    mintingTokenAmountRequested: BigNumber;
+    mintingCLBTokenAmount: BigNumber;
+    burningCLBTokenAmountRequested: BigNumber;
+    burningCLBTokenAmount: BigNumber;
+    burningTokenAmount: BigNumber;
+  };
+
+  export type LiquidityBinStatusStruct = {
+    liquidity: BigNumberish;
+    freeLiquidity: BigNumberish;
+    binValue: BigNumberish;
+    tradingFeeRate: BigNumberish;
+  };
+
+  export type LiquidityBinStatusStructOutput = [
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    number
+  ] & {
+    liquidity: BigNumber;
+    freeLiquidity: BigNumber;
+    binValue: BigNumber;
+    tradingFeeRate: number;
+  };
+
+  export type PendingLiquidityStruct = {
+    oracleVersion: BigNumberish;
+    mintingTokenAmountRequested: BigNumberish;
+    burningCLBTokenAmountRequested: BigNumberish;
+  };
+
+  export type PendingLiquidityStructOutput = [
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ] & {
+    oracleVersion: BigNumber;
+    mintingTokenAmountRequested: BigNumber;
+    burningCLBTokenAmountRequested: BigNumber;
+  };
+}
 
 export declare namespace ChromaticLens {
   export type CLBBalanceStruct = {
@@ -261,7 +267,7 @@ export interface ChromaticLens extends BaseContract {
       tradingFeeRate: BigNumberish,
       _oracleVersion: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[ClaimableLiquidityStructOutput]>;
+    ): Promise<[IMarketLiquidity.ClaimableLiquidityStructOutput]>;
 
     /**
      * Retrieves the claimable liquidity information for a list of trading fee rates and a specific oracle version from the given Chromatic Market.
@@ -274,7 +280,7 @@ export interface ChromaticLens extends BaseContract {
       tradingFeeRates: BigNumberish[],
       _oracleVersion: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[ClaimableLiquidityStructOutput[]]>;
+    ): Promise<[IMarketLiquidity.ClaimableLiquidityStructOutput[]]>;
 
     /**
      * Retrieves the CLB token balances for the specified owner in the given Chromatic market.
@@ -294,7 +300,7 @@ export interface ChromaticLens extends BaseContract {
     liquidityBinStatuses(
       market: string,
       overrides?: CallOverrides
-    ): Promise<[LiquidityBinStatusStructOutput[]]>;
+    ): Promise<[IMarketLiquidity.LiquidityBinStatusStructOutput[]]>;
 
     /**
      * Retrieves the LP receipts for the specified owner in the given Chromatic market.
@@ -310,7 +316,7 @@ export interface ChromaticLens extends BaseContract {
     /**
      * Retrieves the OracleVersion for the specified oracle version in the given Chromatic market.
      * @param market The address of the Chromatic market contract.
-     * @param version An oracle version.
+     * @param version An oracle versions.
      */
     oracleVersion(
       market: string,
@@ -327,7 +333,7 @@ export interface ChromaticLens extends BaseContract {
       market: string,
       tradingFeeRate: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[PendingLiquidityStructOutput]>;
+    ): Promise<[IMarketLiquidity.PendingLiquidityStructOutput]>;
 
     /**
      * Retrieves the pending liquidity information for a list of trading fee rates in the given Chromatic market.
@@ -338,7 +344,7 @@ export interface ChromaticLens extends BaseContract {
       market: string,
       tradingFeeRates: BigNumberish[],
       overrides?: CallOverrides
-    ): Promise<[PendingLiquidityStructOutput[]]>;
+    ): Promise<[IMarketLiquidity.PendingLiquidityStructOutput[]]>;
   };
 
   /**
@@ -352,7 +358,7 @@ export interface ChromaticLens extends BaseContract {
     tradingFeeRate: BigNumberish,
     _oracleVersion: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<ClaimableLiquidityStructOutput>;
+  ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput>;
 
   /**
    * Retrieves the claimable liquidity information for a list of trading fee rates and a specific oracle version from the given Chromatic Market.
@@ -365,7 +371,7 @@ export interface ChromaticLens extends BaseContract {
     tradingFeeRates: BigNumberish[],
     _oracleVersion: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<ClaimableLiquidityStructOutput[]>;
+  ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput[]>;
 
   /**
    * Retrieves the CLB token balances for the specified owner in the given Chromatic market.
@@ -385,7 +391,7 @@ export interface ChromaticLens extends BaseContract {
   liquidityBinStatuses(
     market: string,
     overrides?: CallOverrides
-  ): Promise<LiquidityBinStatusStructOutput[]>;
+  ): Promise<IMarketLiquidity.LiquidityBinStatusStructOutput[]>;
 
   /**
    * Retrieves the LP receipts for the specified owner in the given Chromatic market.
@@ -401,7 +407,7 @@ export interface ChromaticLens extends BaseContract {
   /**
    * Retrieves the OracleVersion for the specified oracle version in the given Chromatic market.
    * @param market The address of the Chromatic market contract.
-   * @param version An oracle version.
+   * @param version An oracle versions.
    */
   oracleVersion(
     market: string,
@@ -418,7 +424,7 @@ export interface ChromaticLens extends BaseContract {
     market: string,
     tradingFeeRate: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<PendingLiquidityStructOutput>;
+  ): Promise<IMarketLiquidity.PendingLiquidityStructOutput>;
 
   /**
    * Retrieves the pending liquidity information for a list of trading fee rates in the given Chromatic market.
@@ -429,7 +435,7 @@ export interface ChromaticLens extends BaseContract {
     market: string,
     tradingFeeRates: BigNumberish[],
     overrides?: CallOverrides
-  ): Promise<PendingLiquidityStructOutput[]>;
+  ): Promise<IMarketLiquidity.PendingLiquidityStructOutput[]>;
 
   callStatic: {
     /**
@@ -443,7 +449,7 @@ export interface ChromaticLens extends BaseContract {
       tradingFeeRate: BigNumberish,
       _oracleVersion: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<ClaimableLiquidityStructOutput>;
+    ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput>;
 
     /**
      * Retrieves the claimable liquidity information for a list of trading fee rates and a specific oracle version from the given Chromatic Market.
@@ -456,7 +462,7 @@ export interface ChromaticLens extends BaseContract {
       tradingFeeRates: BigNumberish[],
       _oracleVersion: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<ClaimableLiquidityStructOutput[]>;
+    ): Promise<IMarketLiquidity.ClaimableLiquidityStructOutput[]>;
 
     /**
      * Retrieves the CLB token balances for the specified owner in the given Chromatic market.
@@ -476,7 +482,7 @@ export interface ChromaticLens extends BaseContract {
     liquidityBinStatuses(
       market: string,
       overrides?: CallOverrides
-    ): Promise<LiquidityBinStatusStructOutput[]>;
+    ): Promise<IMarketLiquidity.LiquidityBinStatusStructOutput[]>;
 
     /**
      * Retrieves the LP receipts for the specified owner in the given Chromatic market.
@@ -492,7 +498,7 @@ export interface ChromaticLens extends BaseContract {
     /**
      * Retrieves the OracleVersion for the specified oracle version in the given Chromatic market.
      * @param market The address of the Chromatic market contract.
-     * @param version An oracle version.
+     * @param version An oracle versions.
      */
     oracleVersion(
       market: string,
@@ -509,7 +515,7 @@ export interface ChromaticLens extends BaseContract {
       market: string,
       tradingFeeRate: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<PendingLiquidityStructOutput>;
+    ): Promise<IMarketLiquidity.PendingLiquidityStructOutput>;
 
     /**
      * Retrieves the pending liquidity information for a list of trading fee rates in the given Chromatic market.
@@ -520,7 +526,7 @@ export interface ChromaticLens extends BaseContract {
       market: string,
       tradingFeeRates: BigNumberish[],
       overrides?: CallOverrides
-    ): Promise<PendingLiquidityStructOutput[]>;
+    ): Promise<IMarketLiquidity.PendingLiquidityStructOutput[]>;
   };
 
   filters: {};
@@ -586,7 +592,7 @@ export interface ChromaticLens extends BaseContract {
     /**
      * Retrieves the OracleVersion for the specified oracle version in the given Chromatic market.
      * @param market The address of the Chromatic market contract.
-     * @param version An oracle version.
+     * @param version An oracle versions.
      */
     oracleVersion(
       market: string,
@@ -678,7 +684,7 @@ export interface ChromaticLens extends BaseContract {
     /**
      * Retrieves the OracleVersion for the specified oracle version in the given Chromatic market.
      * @param market The address of the Chromatic market contract.
-     * @param version An oracle version.
+     * @param version An oracle versions.
      */
     oracleVersion(
       market: string,

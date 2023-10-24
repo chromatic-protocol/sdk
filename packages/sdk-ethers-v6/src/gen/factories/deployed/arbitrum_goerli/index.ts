@@ -5,4 +5,3 @@ export { ChromaticLens__factory } from "./ChromaticLens__factory";
 export { ChromaticMarketFactory__factory } from "./ChromaticMarketFactory__factory";
 export { ChromaticRouter__factory } from "./ChromaticRouter__factory";
 export { ChromaticVault__factory } from "./ChromaticVault__factory";
-export { TestSettlementToken__factory } from "./TestSettlementToken__factory";

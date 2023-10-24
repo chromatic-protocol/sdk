@@ -1,5 +1,9 @@
-import { ContractTransactionReceipt, Signer, ethers } from "ethers";
-import { IChromaticMarket__factory, IERC20__factory, TestSettlementToken__factory } from "../src/gen";
+import { NonceManager, Signer, ethers } from "ethers";
+import {
+  IChromaticMarket__factory,
+  IERC20__factory,
+  TestSettlementToken__factory,
+} from "../src/gen";
 
 export const MNEMONIC_JUNK = "test test test test test test test test test test test junk";
 export const ARBITRUM_GOERLI_WETH9 = "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3";
@@ -61,7 +65,7 @@ export function getSigner(param?: GetSignerParam): ethers.Signer {
     `m/44'/60'/0'/0/${param?.selectedAccount === undefined ? 0 : param!.selectedAccount!}`
   );
 
-  return new ethers.Wallet(wallet.privateKey, provider);
+  return new NonceManager(new ethers.Wallet(wallet.privateKey, provider)); // prevent NONCE_EXPIRED on ethers v6
 }
 
 export function getDefaultProvider(): ethers.JsonRpcProvider {
@@ -85,10 +89,10 @@ export async function wrapEth(param: WrapEthParam) {
 
 export async function faucetTestToken(param: FaucetParam) {
   const recipient = await param.signer.getAddress();
-  const testToken = TestSettlementToken__factory.connect(param.testToken, param.signer)
-  await (await testToken.faucet({gasLimit: 1e10})).wait()
+  const testToken = TestSettlementToken__factory.connect(param.testToken, param.signer);
+  await (await testToken.faucet({ gasLimit: 1e10 })).wait();
 
-  return testToken.balanceOf(recipient)
+  return testToken.balanceOf(recipient);
 }
 
 export async function updatePrice(param: UpdatePriceParam) {

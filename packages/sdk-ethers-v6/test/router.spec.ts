@@ -130,9 +130,9 @@ describe("router sdk test", () => {
     }
     console.log("getAccount", account);
 
-    const usdcBalance = await tokenContract.balanceOf(signer.getAddress());
-    console.log(usdcBalance);
-    await (await tokenContract.transfer(account, usdcBalance)).wait();
+    const testTokenBalance = await tokenContract.balanceOf(signer.getAddress());
+    console.log(testTokenBalance);
+    await (await tokenContract.transfer(account, testTokenBalance)).wait();
 
     const accountBalance = await tokenContract.balanceOf(account);
     console.log("accountBalance", accountBalance);

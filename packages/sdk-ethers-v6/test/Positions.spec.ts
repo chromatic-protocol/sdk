@@ -125,7 +125,8 @@ describe("postion sdk test", () => {
     const client = new Client("anvil", getSigner());
     const tokens = await client.marketFactory().registeredSettlementTokens();
     const markets = await client.marketFactory().getMarkets(tokens[0].address);
-    const positions = await client.position().getPositions(markets[0].address, [1]);
-    console.log(positions);
+    await expect(
+      async () => await client.position().getPositions(markets[0].address, [1000000000n])
+    ).rejects.toThrow("call reverted with error: NotExistPosition");
   });
 });

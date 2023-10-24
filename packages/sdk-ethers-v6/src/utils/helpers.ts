@@ -13,6 +13,7 @@ import {
   MarketLiquidityFacet__factory,
   MarketSettleFacet__factory,
   MarketStateFacet__factory,
+  MarketTradeFacetBase__factory,
   MarketTradeFacet__factory,
 } from "../gen";
 
@@ -57,6 +58,10 @@ export async function handleBytesError<T>(fn: () => Promise<T>, provider: Provid
       throw Error(`call reverted with error: ${e.revert.args[0]}`);
     }
 
+    if (`${e.message}`.indexOf("unknown custom error") > -1 && e.data) {
+      throw Error(parseHexError(e.data));
+    }
+
     /// When gasLimit and gasPrice are set
     const match = (e as Error).message.match(/transactionHash="([^"]+)"/);
     if (match) {
@@ -98,6 +103,7 @@ export const errorSignitures: ErrorSignatures = [
   ...MarketSettleFacet__factory.abi,
   ...MarketStateFacet__factory.abi,
   ...MarketTradeFacet__factory.abi,
+  ...MarketTradeFacetBase__factory.abi,
   ...IChromaticMarket__factory.abi,
   ...ChromaticMarketFactory__factory.abi,
   ...ChromaticVault__factory.abi,

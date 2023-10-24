@@ -48,6 +48,8 @@ export type { IOracleProviderRegistry } from "./contracts/core/interfaces/factor
 export { IOracleProviderRegistry__factory } from "./factories/contracts/core/interfaces/factory/IOracleProviderRegistry__factory";
 export type { IChromaticMarket } from "./contracts/core/interfaces/IChromaticMarket";
 export { IChromaticMarket__factory } from "./factories/contracts/core/interfaces/IChromaticMarket__factory";
+export type { TestSettlementToken } from "./contracts/mocks/TestSettlementToken";
+export { TestSettlementToken__factory } from "./factories/contracts/mocks/TestSettlementToken__factory";
 export type { IOracleProvider } from "./contracts/oracle/interfaces/IOracleProvider";
 export { IOracleProvider__factory } from "./factories/contracts/oracle/interfaces/IOracleProvider__factory";
 export type { ChromaticAccount } from "./contracts/periphery/ChromaticAccount";

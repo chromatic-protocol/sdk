@@ -2,5 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as core from "./core";
+export * as mocks from "./mocks";
 export * as oracle from "./oracle";
 export * as periphery from "./periphery";

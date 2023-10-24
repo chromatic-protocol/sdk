@@ -3,6 +3,8 @@
 /* eslint-disable */
 import type * as core from "./core";
 export type { core };
+import type * as mocks from "./mocks";
+export type { mocks };
 import type * as oracle from "./oracle";
 export type { oracle };
 import type * as periphery from "./periphery";

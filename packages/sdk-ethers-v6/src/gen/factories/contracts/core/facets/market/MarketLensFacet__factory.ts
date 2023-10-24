@@ -294,6 +294,42 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "oracleVersion",
+        type: "uint256",
+      },
+      {
+        internalType: "int16[]",
+        name: "tradingFeeRates",
+        type: "int16[]",
+      },
+    ],
+    name: "getBinValuesAt",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "binValue",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "clbTokenTotalSupply",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct LiquidityBinValue[]",
+        name: "values",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "receiptId",
         type: "uint256",
       },

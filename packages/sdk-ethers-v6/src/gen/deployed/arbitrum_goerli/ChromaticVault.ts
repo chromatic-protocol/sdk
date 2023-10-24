@@ -26,19 +26,20 @@ import type {
 export interface ChromaticVaultInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "automate"
       | "cancelMakerEarningDistributionTask"
       | "cancelMarketEarningDistributionTask"
       | "createMakerEarningDistributionTask"
       | "createMarketEarningDistributionTask"
+      | "dedicatedMsgSender"
       | "distributeMakerEarning"
       | "distributeMarketEarning"
-      | "earningDistributor"
-      | "factory"
       | "flashLoan"
       | "getPendingBinShare"
-      | "keeperFeePayer"
       | "makerBalances"
+      | "makerEarningDistributionTaskIds"
       | "makerMarketBalances"
+      | "marketEarningDistributionTaskIds"
       | "onAddLiquidity"
       | "onClaimPosition"
       | "onOpenPosition"
@@ -48,6 +49,8 @@ export interface ChromaticVaultInterface extends Interface {
       | "pendingMakerEarnings"
       | "pendingMarketEarnings"
       | "pendingWithdrawals"
+      | "resolveMakerEarningDistribution"
+      | "resolveMarketEarningDistribution"
       | "takerBalances"
       | "takerMarketBalances"
       | "transferKeeperFee"
@@ -69,6 +72,7 @@ export interface ChromaticVaultInterface extends Interface {
       | "TransferProtocolFee"
   ): EventFragment;
 
+  encodeFunctionData(functionFragment: "automate", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "cancelMakerEarningDistributionTask",
     values: [AddressLike]
@@ -86,18 +90,17 @@ export interface ChromaticVaultInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "dedicatedMsgSender",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "distributeMakerEarning",
-    values: [AddressLike, BigNumberish, AddressLike]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "distributeMarketEarning",
-    values: [AddressLike, BigNumberish, AddressLike]
+    values: [AddressLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "earningDistributor",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "factory", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "flashLoan",
     values: [AddressLike, BigNumberish, AddressLike, BytesLike]
@@ -107,15 +110,19 @@ export interface ChromaticVaultInterface extends Interface {
     values: [AddressLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "keeperFeePayer",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "makerBalances",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "makerEarningDistributionTaskIds",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "makerMarketBalances",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "marketEarningDistributionTaskIds",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
@@ -161,6 +168,14 @@ export interface ChromaticVaultInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "resolveMakerEarningDistribution",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "resolveMarketEarningDistribution",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "takerBalances",
     values: [AddressLike]
   ): string;
@@ -173,6 +188,7 @@ export interface ChromaticVaultInterface extends Interface {
     values: [AddressLike, AddressLike, BigNumberish, BigNumberish]
   ): string;
 
+  decodeFunctionResult(functionFragment: "automate", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "cancelMakerEarningDistributionTask",
     data: BytesLike
@@ -190,6 +206,10 @@ export interface ChromaticVaultInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "dedicatedMsgSender",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "distributeMakerEarning",
     data: BytesLike
   ): Result;
@@ -197,18 +217,9 @@ export interface ChromaticVaultInterface extends Interface {
     functionFragment: "distributeMarketEarning",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "earningDistributor",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "flashLoan", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getPendingBinShare",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "keeperFeePayer",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -216,7 +227,15 @@ export interface ChromaticVaultInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "makerEarningDistributionTaskIds",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "makerMarketBalances",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "marketEarningDistributionTaskIds",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -253,6 +272,14 @@ export interface ChromaticVaultInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "pendingWithdrawals",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "resolveMakerEarningDistribution",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "resolveMarketEarningDistribution",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -565,6 +592,8 @@ export interface ChromaticVault extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  automate: TypedContractMethod<[], [string], "view">;
+
   /**
    * Cancels a maker earning distribution task for a token.
    * @param token The address of the settlement token.
@@ -586,6 +615,7 @@ export interface ChromaticVault extends BaseContract {
   >;
 
   /**
+   * This function can only be called by the Chromatic factory contract or the DAO.      Throws an `ExistMakerEarningDistributionTask` error if a maker earning distribution task already exists for the token.
    * Creates a maker earning distribution task for a token.
    * @param token The address of the settlement token.
    */
@@ -596,6 +626,7 @@ export interface ChromaticVault extends BaseContract {
   >;
 
   /**
+   * This function can only be called by the Chromatic factory contract or the DAO.      Throws an `ExistMarketEarningDistributionTask` error if a market earning distribution task already exists for the market.
    * Creates a market earning distribution task for a market.
    * @param market The address of the market.
    */
@@ -605,33 +636,27 @@ export interface ChromaticVault extends BaseContract {
     "nonpayable"
   >;
 
+  dedicatedMsgSender: TypedContractMethod<[], [string], "view">;
+
   /**
    * Distributes the maker earning for a token to the each markets.
-   * @param fee The keeper fee amount.
-   * @param keeper The keeper address to receive fee.
    * @param token The address of the settlement token.
    */
   distributeMakerEarning: TypedContractMethod<
-    [token: AddressLike, fee: BigNumberish, keeper: AddressLike],
+    [token: AddressLike],
     [void],
     "nonpayable"
   >;
 
   /**
    * Distributes the market earning for a market to the each bins.
-   * @param fee The fee amount.
-   * @param keeper The keeper address to receive fee.
    * @param market The address of the market.
    */
   distributeMarketEarning: TypedContractMethod<
-    [market: AddressLike, fee: BigNumberish, keeper: AddressLike],
+    [market: AddressLike],
     [void],
     "nonpayable"
   >;
-
-  earningDistributor: TypedContractMethod<[], [string], "view">;
-
-  factory: TypedContractMethod<[], [string], "view">;
 
   /**
    * Throws a `NotEnoughBalance` error if the loan amount exceeds the available balance.      Throws a `NotEnoughFeePaid` error if the fee has not been paid by the recipient. Requirements: - The loan amount must not exceed the available balance after considering pending deposits and withdrawals. - The fee for the flash loan must be paid by the recipient. - The total amount paid must be distributed between the taker pool and maker pool according to their balances. - The amount paid to the taker pool must be transferred to the DAO treasury address. - The amount paid to the maker pool must be added to the pending maker earnings. Emits a `FlashLoan` event with details of the flash loan execution.
@@ -669,13 +694,23 @@ export interface ChromaticVault extends BaseContract {
     "view"
   >;
 
-  keeperFeePayer: TypedContractMethod<[], [string], "view">;
-
   makerBalances: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+
+  makerEarningDistributionTaskIds: TypedContractMethod<
+    [arg0: AddressLike],
+    [string],
+    "view"
+  >;
 
   makerMarketBalances: TypedContractMethod<
     [arg0: AddressLike],
     [bigint],
+    "view"
+  >;
+
+  marketEarningDistributionTaskIds: TypedContractMethod<
+    [arg0: AddressLike],
+    [string],
     "view"
   >;
 
@@ -787,6 +822,26 @@ export interface ChromaticVault extends BaseContract {
     "view"
   >;
 
+  /**
+   * Resolves the maker earning distribution for a specific token.
+   * @param token The address of the settlement token.
+   */
+  resolveMakerEarningDistribution: TypedContractMethod<
+    [token: AddressLike],
+    [[boolean, string] & { canExec: boolean; execPayload: string }],
+    "view"
+  >;
+
+  /**
+   * Resolves the market earning distribution for a market.
+   * @param market The address of the market.
+   */
+  resolveMarketEarningDistribution: TypedContractMethod<
+    [market: AddressLike],
+    [[boolean, string] & { canExec: boolean; execPayload: string }],
+    "view"
+  >;
+
   takerBalances: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
   takerMarketBalances: TypedContractMethod<
@@ -819,6 +874,9 @@ export interface ChromaticVault extends BaseContract {
   ): T;
 
   getFunction(
+    nameOrSignature: "automate"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
     nameOrSignature: "cancelMakerEarningDistributionTask"
   ): TypedContractMethod<[token: AddressLike], [void], "nonpayable">;
   getFunction(
@@ -831,25 +889,14 @@ export interface ChromaticVault extends BaseContract {
     nameOrSignature: "createMarketEarningDistributionTask"
   ): TypedContractMethod<[market: AddressLike], [void], "nonpayable">;
   getFunction(
+    nameOrSignature: "dedicatedMsgSender"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
     nameOrSignature: "distributeMakerEarning"
-  ): TypedContractMethod<
-    [token: AddressLike, fee: BigNumberish, keeper: AddressLike],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[token: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "distributeMarketEarning"
-  ): TypedContractMethod<
-    [market: AddressLike, fee: BigNumberish, keeper: AddressLike],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "earningDistributor"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "factory"
-  ): TypedContractMethod<[], [string], "view">;
+  ): TypedContractMethod<[market: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "flashLoan"
   ): TypedContractMethod<
@@ -874,14 +921,17 @@ export interface ChromaticVault extends BaseContract {
     "view"
   >;
   getFunction(
-    nameOrSignature: "keeperFeePayer"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
     nameOrSignature: "makerBalances"
   ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
   getFunction(
+    nameOrSignature: "makerEarningDistributionTaskIds"
+  ): TypedContractMethod<[arg0: AddressLike], [string], "view">;
+  getFunction(
     nameOrSignature: "makerMarketBalances"
   ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "marketEarningDistributionTaskIds"
+  ): TypedContractMethod<[arg0: AddressLike], [string], "view">;
   getFunction(
     nameOrSignature: "onAddLiquidity"
   ): TypedContractMethod<
@@ -949,6 +999,20 @@ export interface ChromaticVault extends BaseContract {
   getFunction(
     nameOrSignature: "pendingWithdrawals"
   ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "resolveMakerEarningDistribution"
+  ): TypedContractMethod<
+    [token: AddressLike],
+    [[boolean, string] & { canExec: boolean; execPayload: string }],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "resolveMarketEarningDistribution"
+  ): TypedContractMethod<
+    [market: AddressLike],
+    [[boolean, string] & { canExec: boolean; execPayload: string }],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "takerBalances"
   ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;

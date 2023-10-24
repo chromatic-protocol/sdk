@@ -28,20 +28,19 @@ import type {
 
 export interface ChromaticVaultInterface extends utils.Interface {
   functions: {
-    "automate()": FunctionFragment;
     "cancelMakerEarningDistributionTask(address)": FunctionFragment;
     "cancelMarketEarningDistributionTask(address)": FunctionFragment;
     "createMakerEarningDistributionTask(address)": FunctionFragment;
     "createMarketEarningDistributionTask(address)": FunctionFragment;
-    "dedicatedMsgSender()": FunctionFragment;
-    "distributeMakerEarning(address)": FunctionFragment;
-    "distributeMarketEarning(address)": FunctionFragment;
+    "distributeMakerEarning(address,uint256,address)": FunctionFragment;
+    "distributeMarketEarning(address,uint256,address)": FunctionFragment;
+    "earningDistributor()": FunctionFragment;
+    "factory()": FunctionFragment;
     "flashLoan(address,uint256,address,bytes)": FunctionFragment;
     "getPendingBinShare(address,address,uint256)": FunctionFragment;
+    "keeperFeePayer()": FunctionFragment;
     "makerBalances(address)": FunctionFragment;
-    "makerEarningDistributionTaskIds(address)": FunctionFragment;
     "makerMarketBalances(address)": FunctionFragment;
-    "marketEarningDistributionTaskIds(address)": FunctionFragment;
     "onAddLiquidity(address,uint256)": FunctionFragment;
     "onClaimPosition(address,uint256,address,uint256,uint256)": FunctionFragment;
     "onOpenPosition(address,uint256,uint256,uint256,uint256)": FunctionFragment;
@@ -51,8 +50,6 @@ export interface ChromaticVaultInterface extends utils.Interface {
     "pendingMakerEarnings(address)": FunctionFragment;
     "pendingMarketEarnings(address)": FunctionFragment;
     "pendingWithdrawals(address)": FunctionFragment;
-    "resolveMakerEarningDistribution(address)": FunctionFragment;
-    "resolveMarketEarningDistribution(address)": FunctionFragment;
     "takerBalances(address)": FunctionFragment;
     "takerMarketBalances(address)": FunctionFragment;
     "transferKeeperFee(address,address,uint256,uint256)": FunctionFragment;
@@ -60,20 +57,19 @@ export interface ChromaticVaultInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "automate"
       | "cancelMakerEarningDistributionTask"
       | "cancelMarketEarningDistributionTask"
       | "createMakerEarningDistributionTask"
       | "createMarketEarningDistributionTask"
-      | "dedicatedMsgSender"
       | "distributeMakerEarning"
       | "distributeMarketEarning"
+      | "earningDistributor"
+      | "factory"
       | "flashLoan"
       | "getPendingBinShare"
+      | "keeperFeePayer"
       | "makerBalances"
-      | "makerEarningDistributionTaskIds"
       | "makerMarketBalances"
-      | "marketEarningDistributionTaskIds"
       | "onAddLiquidity"
       | "onClaimPosition"
       | "onOpenPosition"
@@ -83,14 +79,11 @@ export interface ChromaticVaultInterface extends utils.Interface {
       | "pendingMakerEarnings"
       | "pendingMarketEarnings"
       | "pendingWithdrawals"
-      | "resolveMakerEarningDistribution"
-      | "resolveMarketEarningDistribution"
       | "takerBalances"
       | "takerMarketBalances"
       | "transferKeeperFee"
   ): FunctionFragment;
 
-  encodeFunctionData(functionFragment: "automate", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "cancelMakerEarningDistributionTask",
     values: [string]
@@ -108,17 +101,18 @@ export interface ChromaticVaultInterface extends utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "dedicatedMsgSender",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "distributeMakerEarning",
-    values: [string]
+    values: [string, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "distributeMarketEarning",
-    values: [string]
+    values: [string, BigNumberish, string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "earningDistributor",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "factory", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "flashLoan",
     values: [string, BigNumberish, string, BytesLike]
@@ -128,19 +122,15 @@ export interface ChromaticVaultInterface extends utils.Interface {
     values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "keeperFeePayer",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "makerBalances",
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "makerEarningDistributionTaskIds",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "makerMarketBalances",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "marketEarningDistributionTaskIds",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -180,14 +170,6 @@ export interface ChromaticVaultInterface extends utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "resolveMakerEarningDistribution",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "resolveMarketEarningDistribution",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "takerBalances",
     values: [string]
   ): string;
@@ -200,7 +182,6 @@ export interface ChromaticVaultInterface extends utils.Interface {
     values: [string, string, BigNumberish, BigNumberish]
   ): string;
 
-  decodeFunctionResult(functionFragment: "automate", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "cancelMakerEarningDistributionTask",
     data: BytesLike
@@ -218,10 +199,6 @@ export interface ChromaticVaultInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "dedicatedMsgSender",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "distributeMakerEarning",
     data: BytesLike
   ): Result;
@@ -229,9 +206,18 @@ export interface ChromaticVaultInterface extends utils.Interface {
     functionFragment: "distributeMarketEarning",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "earningDistributor",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "flashLoan", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getPendingBinShare",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "keeperFeePayer",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -239,15 +225,7 @@ export interface ChromaticVaultInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "makerEarningDistributionTaskIds",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "makerMarketBalances",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "marketEarningDistributionTaskIds",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -284,14 +262,6 @@ export interface ChromaticVaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "pendingWithdrawals",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "resolveMakerEarningDistribution",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "resolveMarketEarningDistribution",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -524,8 +494,6 @@ export interface ChromaticVault extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    automate(overrides?: CallOverrides): Promise<[string]>;
-
     /**
      * Cancels a maker earning distribution task for a token.
      * @param token The address of the settlement token.
@@ -545,7 +513,6 @@ export interface ChromaticVault extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * This function can only be called by the Chromatic factory contract or the DAO.      Throws an `ExistMakerEarningDistributionTask` error if a maker earning distribution task already exists for the token.
      * Creates a maker earning distribution task for a token.
      * @param token The address of the settlement token.
      */
@@ -555,7 +522,6 @@ export interface ChromaticVault extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * This function can only be called by the Chromatic factory contract or the DAO.      Throws an `ExistMarketEarningDistributionTask` error if a market earning distribution task already exists for the market.
      * Creates a market earning distribution task for a market.
      * @param market The address of the market.
      */
@@ -564,25 +530,35 @@ export interface ChromaticVault extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
-    dedicatedMsgSender(overrides?: CallOverrides): Promise<[string]>;
-
     /**
      * Distributes the maker earning for a token to the each markets.
+     * @param fee The keeper fee amount.
+     * @param keeper The keeper address to receive fee.
      * @param token The address of the settlement token.
      */
     distributeMakerEarning(
       token: string,
+      fee: BigNumberish,
+      keeper: string,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * Distributes the market earning for a market to the each bins.
+     * @param fee The fee amount.
+     * @param keeper The keeper address to receive fee.
      * @param market The address of the market.
      */
     distributeMarketEarning(
       market: string,
+      fee: BigNumberish,
+      keeper: string,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
+
+    earningDistributor(overrides?: CallOverrides): Promise<[string]>;
+
+    factory(overrides?: CallOverrides): Promise<[string]>;
 
     /**
      * Throws a `NotEnoughBalance` error if the loan amount exceeds the available balance.      Throws a `NotEnoughFeePaid` error if the fee has not been paid by the recipient. Requirements: - The loan amount must not exceed the available balance after considering pending deposits and withdrawals. - The fee for the flash loan must be paid by the recipient. - The total amount paid must be distributed between the taker pool and maker pool according to their balances. - The amount paid to the taker pool must be transferred to the DAO treasury address. - The amount paid to the maker pool must be added to the pending maker earnings. Emits a `FlashLoan` event with details of the flash loan execution.
@@ -614,25 +590,17 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    keeperFeePayer(overrides?: CallOverrides): Promise<[string]>;
+
     makerBalances(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    makerEarningDistributionTaskIds(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
     makerMarketBalances(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
-
-    marketEarningDistributionTaskIds(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
 
     /**
      * This function can only be called by a market contract.
@@ -730,24 +698,6 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    /**
-     * Resolves the maker earning distribution for a specific token.
-     * @param token The address of the settlement token.
-     */
-    resolveMakerEarningDistribution(
-      token: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
-
-    /**
-     * Resolves the market earning distribution for a market.
-     * @param market The address of the market.
-     */
-    resolveMarketEarningDistribution(
-      market: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
-
     takerBalances(
       arg0: string,
       overrides?: CallOverrides
@@ -775,8 +725,6 @@ export interface ChromaticVault extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  automate(overrides?: CallOverrides): Promise<string>;
-
   /**
    * Cancels a maker earning distribution task for a token.
    * @param token The address of the settlement token.
@@ -796,7 +744,6 @@ export interface ChromaticVault extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * This function can only be called by the Chromatic factory contract or the DAO.      Throws an `ExistMakerEarningDistributionTask` error if a maker earning distribution task already exists for the token.
    * Creates a maker earning distribution task for a token.
    * @param token The address of the settlement token.
    */
@@ -806,7 +753,6 @@ export interface ChromaticVault extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * This function can only be called by the Chromatic factory contract or the DAO.      Throws an `ExistMarketEarningDistributionTask` error if a market earning distribution task already exists for the market.
    * Creates a market earning distribution task for a market.
    * @param market The address of the market.
    */
@@ -815,25 +761,35 @@ export interface ChromaticVault extends BaseContract {
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
-  dedicatedMsgSender(overrides?: CallOverrides): Promise<string>;
-
   /**
    * Distributes the maker earning for a token to the each markets.
+   * @param fee The keeper fee amount.
+   * @param keeper The keeper address to receive fee.
    * @param token The address of the settlement token.
    */
   distributeMakerEarning(
     token: string,
+    fee: BigNumberish,
+    keeper: string,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * Distributes the market earning for a market to the each bins.
+   * @param fee The fee amount.
+   * @param keeper The keeper address to receive fee.
    * @param market The address of the market.
    */
   distributeMarketEarning(
     market: string,
+    fee: BigNumberish,
+    keeper: string,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
+
+  earningDistributor(overrides?: CallOverrides): Promise<string>;
+
+  factory(overrides?: CallOverrides): Promise<string>;
 
   /**
    * Throws a `NotEnoughBalance` error if the loan amount exceeds the available balance.      Throws a `NotEnoughFeePaid` error if the fee has not been paid by the recipient. Requirements: - The loan amount must not exceed the available balance after considering pending deposits and withdrawals. - The fee for the flash loan must be paid by the recipient. - The total amount paid must be distributed between the taker pool and maker pool according to their balances. - The amount paid to the taker pool must be transferred to the DAO treasury address. - The amount paid to the maker pool must be added to the pending maker earnings. Emits a `FlashLoan` event with details of the flash loan execution.
@@ -865,22 +821,14 @@ export interface ChromaticVault extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  makerBalances(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+  keeperFeePayer(overrides?: CallOverrides): Promise<string>;
 
-  makerEarningDistributionTaskIds(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<string>;
+  makerBalances(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   makerMarketBalances(
     arg0: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
-
-  marketEarningDistributionTaskIds(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<string>;
 
   /**
    * This function can only be called by a market contract.
@@ -975,24 +923,6 @@ export interface ChromaticVault extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  /**
-   * Resolves the maker earning distribution for a specific token.
-   * @param token The address of the settlement token.
-   */
-  resolveMakerEarningDistribution(
-    token: string,
-    overrides?: CallOverrides
-  ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
-
-  /**
-   * Resolves the market earning distribution for a market.
-   * @param market The address of the market.
-   */
-  resolveMarketEarningDistribution(
-    market: string,
-    overrides?: CallOverrides
-  ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
-
   takerBalances(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   takerMarketBalances(
@@ -1017,8 +947,6 @@ export interface ChromaticVault extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    automate(overrides?: CallOverrides): Promise<string>;
-
     /**
      * Cancels a maker earning distribution task for a token.
      * @param token The address of the settlement token.
@@ -1038,7 +966,6 @@ export interface ChromaticVault extends BaseContract {
     ): Promise<void>;
 
     /**
-     * This function can only be called by the Chromatic factory contract or the DAO.      Throws an `ExistMakerEarningDistributionTask` error if a maker earning distribution task already exists for the token.
      * Creates a maker earning distribution task for a token.
      * @param token The address of the settlement token.
      */
@@ -1048,7 +975,6 @@ export interface ChromaticVault extends BaseContract {
     ): Promise<void>;
 
     /**
-     * This function can only be called by the Chromatic factory contract or the DAO.      Throws an `ExistMarketEarningDistributionTask` error if a market earning distribution task already exists for the market.
      * Creates a market earning distribution task for a market.
      * @param market The address of the market.
      */
@@ -1057,25 +983,35 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    dedicatedMsgSender(overrides?: CallOverrides): Promise<string>;
-
     /**
      * Distributes the maker earning for a token to the each markets.
+     * @param fee The keeper fee amount.
+     * @param keeper The keeper address to receive fee.
      * @param token The address of the settlement token.
      */
     distributeMakerEarning(
       token: string,
+      fee: BigNumberish,
+      keeper: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     /**
      * Distributes the market earning for a market to the each bins.
+     * @param fee The fee amount.
+     * @param keeper The keeper address to receive fee.
      * @param market The address of the market.
      */
     distributeMarketEarning(
       market: string,
+      fee: BigNumberish,
+      keeper: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    earningDistributor(overrides?: CallOverrides): Promise<string>;
+
+    factory(overrides?: CallOverrides): Promise<string>;
 
     /**
      * Throws a `NotEnoughBalance` error if the loan amount exceeds the available balance.      Throws a `NotEnoughFeePaid` error if the fee has not been paid by the recipient. Requirements: - The loan amount must not exceed the available balance after considering pending deposits and withdrawals. - The fee for the flash loan must be paid by the recipient. - The total amount paid must be distributed between the taker pool and maker pool according to their balances. - The amount paid to the taker pool must be transferred to the DAO treasury address. - The amount paid to the maker pool must be added to the pending maker earnings. Emits a `FlashLoan` event with details of the flash loan execution.
@@ -1107,22 +1043,14 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    makerBalances(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+    keeperFeePayer(overrides?: CallOverrides): Promise<string>;
 
-    makerEarningDistributionTaskIds(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<string>;
+    makerBalances(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     makerMarketBalances(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    marketEarningDistributionTaskIds(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<string>;
 
     /**
      * This function can only be called by a market contract.
@@ -1219,24 +1147,6 @@ export interface ChromaticVault extends BaseContract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    /**
-     * Resolves the maker earning distribution for a specific token.
-     * @param token The address of the settlement token.
-     */
-    resolveMakerEarningDistribution(
-      token: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
-
-    /**
-     * Resolves the market earning distribution for a market.
-     * @param market The address of the market.
-     */
-    resolveMarketEarningDistribution(
-      market: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
 
     takerBalances(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1397,8 +1307,6 @@ export interface ChromaticVault extends BaseContract {
   };
 
   estimateGas: {
-    automate(overrides?: CallOverrides): Promise<BigNumber>;
-
     /**
      * Cancels a maker earning distribution task for a token.
      * @param token The address of the settlement token.
@@ -1418,7 +1326,6 @@ export interface ChromaticVault extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * This function can only be called by the Chromatic factory contract or the DAO.      Throws an `ExistMakerEarningDistributionTask` error if a maker earning distribution task already exists for the token.
      * Creates a maker earning distribution task for a token.
      * @param token The address of the settlement token.
      */
@@ -1428,7 +1335,6 @@ export interface ChromaticVault extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * This function can only be called by the Chromatic factory contract or the DAO.      Throws an `ExistMarketEarningDistributionTask` error if a market earning distribution task already exists for the market.
      * Creates a market earning distribution task for a market.
      * @param market The address of the market.
      */
@@ -1437,25 +1343,35 @@ export interface ChromaticVault extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
-    dedicatedMsgSender(overrides?: CallOverrides): Promise<BigNumber>;
-
     /**
      * Distributes the maker earning for a token to the each markets.
+     * @param fee The keeper fee amount.
+     * @param keeper The keeper address to receive fee.
      * @param token The address of the settlement token.
      */
     distributeMakerEarning(
       token: string,
+      fee: BigNumberish,
+      keeper: string,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * Distributes the market earning for a market to the each bins.
+     * @param fee The fee amount.
+     * @param keeper The keeper address to receive fee.
      * @param market The address of the market.
      */
     distributeMarketEarning(
       market: string,
+      fee: BigNumberish,
+      keeper: string,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
+
+    earningDistributor(overrides?: CallOverrides): Promise<BigNumber>;
+
+    factory(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * Throws a `NotEnoughBalance` error if the loan amount exceeds the available balance.      Throws a `NotEnoughFeePaid` error if the fee has not been paid by the recipient. Requirements: - The loan amount must not exceed the available balance after considering pending deposits and withdrawals. - The fee for the flash loan must be paid by the recipient. - The total amount paid must be distributed between the taker pool and maker pool according to their balances. - The amount paid to the taker pool must be transferred to the DAO treasury address. - The amount paid to the maker pool must be added to the pending maker earnings. Emits a `FlashLoan` event with details of the flash loan execution.
@@ -1487,19 +1403,11 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    keeperFeePayer(overrides?: CallOverrides): Promise<BigNumber>;
+
     makerBalances(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    makerEarningDistributionTaskIds(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     makerMarketBalances(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    marketEarningDistributionTaskIds(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1597,24 +1505,6 @@ export interface ChromaticVault extends BaseContract {
 
     pendingWithdrawals(
       arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
-     * Resolves the maker earning distribution for a specific token.
-     * @param token The address of the settlement token.
-     */
-    resolveMakerEarningDistribution(
-      token: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
-     * Resolves the market earning distribution for a market.
-     * @param market The address of the market.
-     */
-    resolveMarketEarningDistribution(
-      market: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1643,8 +1533,6 @@ export interface ChromaticVault extends BaseContract {
   };
 
   populateTransaction: {
-    automate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     /**
      * Cancels a maker earning distribution task for a token.
      * @param token The address of the settlement token.
@@ -1664,7 +1552,6 @@ export interface ChromaticVault extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * This function can only be called by the Chromatic factory contract or the DAO.      Throws an `ExistMakerEarningDistributionTask` error if a maker earning distribution task already exists for the token.
      * Creates a maker earning distribution task for a token.
      * @param token The address of the settlement token.
      */
@@ -1674,7 +1561,6 @@ export interface ChromaticVault extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * This function can only be called by the Chromatic factory contract or the DAO.      Throws an `ExistMarketEarningDistributionTask` error if a market earning distribution task already exists for the market.
      * Creates a market earning distribution task for a market.
      * @param market The address of the market.
      */
@@ -1683,27 +1569,37 @@ export interface ChromaticVault extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
-    dedicatedMsgSender(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     /**
      * Distributes the maker earning for a token to the each markets.
+     * @param fee The keeper fee amount.
+     * @param keeper The keeper address to receive fee.
      * @param token The address of the settlement token.
      */
     distributeMakerEarning(
       token: string,
+      fee: BigNumberish,
+      keeper: string,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      * Distributes the market earning for a market to the each bins.
+     * @param fee The fee amount.
+     * @param keeper The keeper address to receive fee.
      * @param market The address of the market.
      */
     distributeMarketEarning(
       market: string,
+      fee: BigNumberish,
+      keeper: string,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
+
+    earningDistributor(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
      * Throws a `NotEnoughBalance` error if the loan amount exceeds the available balance.      Throws a `NotEnoughFeePaid` error if the fee has not been paid by the recipient. Requirements: - The loan amount must not exceed the available balance after considering pending deposits and withdrawals. - The fee for the flash loan must be paid by the recipient. - The total amount paid must be distributed between the taker pool and maker pool according to their balances. - The amount paid to the taker pool must be transferred to the DAO treasury address. - The amount paid to the maker pool must be added to the pending maker earnings. Emits a `FlashLoan` event with details of the flash loan execution.
@@ -1735,22 +1631,14 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    keeperFeePayer(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     makerBalances(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    makerEarningDistributionTaskIds(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     makerMarketBalances(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    marketEarningDistributionTaskIds(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1848,24 +1736,6 @@ export interface ChromaticVault extends BaseContract {
 
     pendingWithdrawals(
       arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Resolves the maker earning distribution for a specific token.
-     * @param token The address of the settlement token.
-     */
-    resolveMakerEarningDistribution(
-      token: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Resolves the market earning distribution for a market.
-     * @param market The address of the market.
-     */
-    resolveMarketEarningDistribution(
-      market: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

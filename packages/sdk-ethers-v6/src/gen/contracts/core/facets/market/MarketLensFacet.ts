@@ -65,16 +65,6 @@ export type ClosingPositionStructOutput = [
   totalTakerMargin: bigint;
 };
 
-export type LiquidityBinValueStruct = {
-  binValue: BigNumberish;
-  clbTokenTotalSupply: BigNumberish;
-};
-
-export type LiquidityBinValueStructOutput = [
-  binValue: bigint,
-  clbTokenTotalSupply: bigint
-] & { binValue: bigint; clbTokenTotalSupply: bigint };
-
 export type LpReceiptStruct = {
   id: BigNumberish;
   oracleVersion: BigNumberish;
@@ -211,7 +201,6 @@ export interface MarketLensFacetInterface extends Interface {
       | "getBinFreeLiquidity"
       | "getBinLiquidity"
       | "getBinValues"
-      | "getBinValuesAt"
       | "getLpReceipt"
       | "getLpReceipts"
       | "getPosition"
@@ -250,10 +239,6 @@ export interface MarketLensFacetInterface extends Interface {
   encodeFunctionData(
     functionFragment: "getBinValues",
     values: [BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getBinValuesAt",
-    values: [BigNumberish, BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "getLpReceipt",
@@ -318,10 +303,6 @@ export interface MarketLensFacetInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getBinValues",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getBinValuesAt",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -478,17 +459,6 @@ export interface MarketLensFacet extends BaseContract {
   >;
 
   /**
-   * Retrieves the values of specific trading fee rates' bins in the liquidity pool at a specific oracle version.      The value of a bin represents the total valuation of the liquidity in the bin.
-   * @param oracleVersion The oracle version for which to retrieve the bin values.
-   * @param tradingFeeRates The list of trading fee rates for which to retrieve the bin values.
-   */
-  getBinValuesAt: TypedContractMethod<
-    [oracleVersion: BigNumberish, tradingFeeRates: BigNumberish[]],
-    [LiquidityBinValueStructOutput[]],
-    "view"
-  >;
-
-  /**
    * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
    * @param receiptId The ID of the liquidity receipt to retrieve.
    */
@@ -618,13 +588,6 @@ export interface MarketLensFacet extends BaseContract {
   getFunction(
     nameOrSignature: "getBinValues"
   ): TypedContractMethod<[tradingFeeRates: BigNumberish[]], [bigint[]], "view">;
-  getFunction(
-    nameOrSignature: "getBinValuesAt"
-  ): TypedContractMethod<
-    [oracleVersion: BigNumberish, tradingFeeRates: BigNumberish[]],
-    [LiquidityBinValueStructOutput[]],
-    "view"
-  >;
   getFunction(
     nameOrSignature: "getLpReceipt"
   ): TypedContractMethod<

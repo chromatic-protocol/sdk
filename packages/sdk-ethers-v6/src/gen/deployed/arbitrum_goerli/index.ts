@@ -5,3 +5,4 @@ export type { ChromaticLens } from "./ChromaticLens";
 export type { ChromaticMarketFactory } from "./ChromaticMarketFactory";
 export type { ChromaticRouter } from "./ChromaticRouter";
 export type { ChromaticVault } from "./ChromaticVault";
+export type { TestSettlementToken } from "./TestSettlementToken";

@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { Client } from "../src/Client";
 import { CLBToken__factory, IChromaticMarket__factory, IERC20__factory } from "../src/gen";
 import { encodeTokenId, handleBytesError } from "../src/utils/helpers";
-import { getSigner, swapToUSDC, updatePrice, waitTxMining } from "./testHelpers";
+import { getSigner, faucetTestToken, updatePrice, waitTxMining } from "./testHelpers";
 
 describe("router sdk test", () => {
   const signer = getSigner();
@@ -38,7 +38,7 @@ describe("router sdk test", () => {
       return CLBToken__factory.connect(clbTokenAddress, signer).totalSupply(encodeTokenId(feeRate));
     }
 
-    const usdc = tokens[0].address;
+    const testToken = tokens[0].address;
     const router = client.router();
 
     async function getLpReceiptIds() {
@@ -47,15 +47,13 @@ describe("router sdk test", () => {
 
     async function addAndClaimLiquidity(tradingFeeRate: number) {
       // swap
-      const { outputAmount, usdcBalance } = await swapToUSDC({
-        amount: ethers.utils.parseEther("10"),
-        signer: signer,
-        usdc: usdc,
-        fee: 3000,
+      const testTokenBalance = await faucetTestToken({
+        signer,
+        testToken,
       });
 
       // add liquidity - router
-      const amount = usdcBalance.div(2);
+      const amount = testTokenBalance.div(2);
       const clbBalanceBeforeAdd = await clbBalance(tradingFeeRate);
       const addTxReceipt = await waitTxMining(async () =>
         router.addLiquidities(marketAddress, [{ feeRate: tradingFeeRate, amount: amount }])
@@ -77,8 +75,8 @@ describe("router sdk test", () => {
 
     return {
       marketAddress,
-      token: usdc,
-      tokenContract: IERC20__factory.connect(usdc, signer),
+      token: testToken,
+      tokenContract: IERC20__factory.connect(testToken, signer),
       signerAddress,
       router,
       clbBalance,
@@ -210,7 +208,7 @@ describe("router sdk test", () => {
       }, signer.provider);
     }
     await expect(async () => await erc20TransferFromTx()).rejects.toThrow(
-      "call reverted with reason: ERC20: transfer amount exceeds balance"
+      "call reverted with reason: ERC20: insufficient allowance"
     );
 
     // revert Custom error

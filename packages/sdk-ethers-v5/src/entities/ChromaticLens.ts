@@ -127,7 +127,9 @@ export class ChromaticLens {
           tradingFeeRate: bin.tradingFeeRate,
           clbValue: totalSupplies[index].isZero()
             ? BigNumber.from(0)
-            : bin.binValue.mul(BigNumber.from(10 ** clbTokenDecimals)).div(totalSupplies[index]),
+            : bin.binValue
+                .mul(BigNumber.from(10).pow(clbTokenDecimals)) // https://docs.ethers.org/v5/troubleshooting/errors/#help-NUMERIC_FAULT-overflow
+                .div(totalSupplies[index]),
           liquidity: bin.liquidity,
           clbTokenTotalSupply: totalSupplies[index],
           freeLiquidity: bin.freeLiquidity,
@@ -183,7 +185,7 @@ export class ChromaticLens {
           clbValue: ownedBin.totalSupply.isZero()
             ? BigNumber.from(0)
             : (ownedBin.binValue || BigNumber.from(0))
-                .mul(10 ** clbTokenDecimals)
+                .mul(BigNumber.from(10).pow(clbTokenDecimals))
                 .div(ownedBin.totalSupply),
         } satisfies OwnedLiquidityBinResult;
       });

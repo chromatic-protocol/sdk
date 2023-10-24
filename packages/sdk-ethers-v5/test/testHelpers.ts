@@ -1,5 +1,9 @@
 import { BigNumber, ContractReceipt, Signer, ethers } from "ethers";
-import { IChromaticMarket__factory, IERC20__factory } from "../src/gen";
+import {
+  IChromaticMarket__factory,
+  IERC20__factory,
+  TestSettlementToken__factory,
+} from "../src/gen";
 
 export const MNEMONIC_JUNK = "test test test test test test test test test test test junk";
 export const ARBITRUM_GOERLI_WETH9 = "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3";
@@ -30,11 +34,9 @@ export interface WrapEthParam {
   amount: BigNumber;
 }
 
-export interface SwapToUSDCParam {
+export interface FaucetParam {
   signer: Signer;
-  usdc: string;
-  fee: number;
-  amount: BigNumber;
+  testToken: string;
 }
 
 export interface UpdatePriceParam {
@@ -75,107 +77,12 @@ export async function wrapEth(param: WrapEthParam) {
   await tx.wait();
 }
 
-export async function swapToUSDC(param: SwapToUSDCParam) {
+export async function faucetTestToken(param: FaucetParam) {
   const recipient = await param.signer.getAddress();
-  const ARBITRUM_GOERLI_SWAP_ROUTER = "0xF1596041557707B1bC0b3ffB34346c1D9Ce94E86";
+  const testToken = TestSettlementToken__factory.connect(param.testToken, param.signer);
+  await (await testToken.faucet({ gasLimit: 1e10 })).wait();
 
-  if ((await WETH9.balanceOf(recipient)).lt(param.amount)) {
-    await wrapEth({ signer: param.signer, amount: param.amount });
-  }
-
-  if ((await WETH9.allowance(recipient, ARBITRUM_GOERLI_SWAP_ROUTER)).lt(param.amount)) {
-    const approveTx = await WETH9.connect(param.signer)
-      .connect(param.signer)
-      .approve(ARBITRUM_GOERLI_SWAP_ROUTER, ethers.constants.MaxUint256);
-    await approveTx.wait();
-  }
-
-  const routerContract = new ethers.Contract(
-    ARBITRUM_GOERLI_SWAP_ROUTER,
-    [
-      {
-        inputs: [
-          {
-            components: [
-              {
-                internalType: "address",
-                name: "tokenIn",
-                type: "address",
-              },
-              {
-                internalType: "address",
-                name: "tokenOut",
-                type: "address",
-              },
-              {
-                internalType: "uint24",
-                name: "fee",
-                type: "uint24",
-              },
-              {
-                internalType: "address",
-                name: "recipient",
-                type: "address",
-              },
-              {
-                internalType: "uint256",
-                name: "deadline",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "amountIn",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "amountOutMinimum",
-                type: "uint256",
-              },
-              {
-                internalType: "uint160",
-                name: "sqrtPriceLimitX96",
-                type: "uint160",
-              },
-            ],
-            internalType: "struct ISwapRouter.ExactInputSingleParams",
-            name: "params",
-            type: "tuple",
-          },
-        ],
-        name: "exactInputSingle",
-        outputs: [
-          {
-            internalType: "uint256",
-            name: "amountOut",
-            type: "uint256",
-          },
-        ],
-        stateMutability: "payable",
-        type: "function",
-      },
-    ],
-    param.signer
-  );
-
-  const swapTx = await routerContract.exactInputSingle({
-    tokenIn: ARBITRUM_GOERLI_WETH9,
-    tokenOut: param.usdc,
-    fee: param.fee,
-    recipient: recipient,
-    deadline: ethers.constants.MaxUint256,
-    amountIn: param.amount,
-    amountOutMinimum: 0,
-    sqrtPriceLimitX96: 0,
-  });
-
-  const receipt = await swapTx.wait();
-  const usdcEvent = receipt.logs.find((log) => log.address == param.usdc);
-
-  return {
-    outputAmount: BigNumber.from(usdcEvent.data),
-    usdcBalance: await IERC20__factory.connect(param.usdc, param.signer).balanceOf(recipient),
-  };
+  return testToken.balanceOf(recipient);
 }
 
 export async function updatePrice(param: UpdatePriceParam) {

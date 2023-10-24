@@ -57,6 +57,12 @@ export async function handleBytesError<T>(fn: () => Promise<T>, provider: Provid
       throw Error(parseHexError(revertMatch[1]));
     }
 
+    // call revert exception [ See: https://links.ethers.org/v5-errors-CALL_EXCEPTION ] (method="getPositions(uint256[])", data="0x5690b016", errorArgs=null, errorName=null, errorSignature=null, reason=null, code=CALL_EXCEPTION, version=abi/5.7.0)
+    if(`${e.code}`.indexOf('CALL_EXCEPTION')>-1 && `${e.data}`.length == 10){
+      throw Error(parseHexError(e.data));
+    }
+    // CALL_EXCEPTION
+
     /// When gasLimit and gasPrice are set
     const match = (e as Error).message.match(/transactionHash="([^"]+)"/);
     if (match) {

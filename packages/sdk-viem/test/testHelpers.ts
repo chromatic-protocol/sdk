@@ -1,25 +1,29 @@
-import { Address, WalletClient, createPublicClient, createWalletClient, getContract, http } from "viem";
+import {
+  Address,
+  WalletClient,
+  createPublicClient,
+  createWalletClient,
+  getContract,
+  http,
+} from "viem";
 import { mnemonicToAccount } from "viem/accounts";
 import { hardhat } from "viem/chains";
 import { Client } from "../src/Client";
-import { ierc20ABI } from "../src/gen";
+import { ierc20ABI, testSettlementTokenABI } from "../src/gen";
 import { MAX_UINT256 } from "../src/utils/helpers";
 
 export const MNEMONIC_JUNK = "test test test test test test test test test test test junk";
 export const ARBITRUM_GOERLI_WETH9 = "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3";
 export const ARBITRUM_GOERLI_SWAP_ROUTER = "0xF1596041557707B1bC0b3ffB34346c1D9Ce94E86";
 
-
 export interface WrapEthParam {
   client: Client;
   amount: bigint;
 }
 
-export interface SwapToUSDCParam {
+export interface FaucetParam {
   client: Client;
-  usdc: Address;
-  fee: number;
-  amount: bigint;
+  testToken: Address;
 }
 
 export interface UpdatePriceParam {
@@ -61,7 +65,7 @@ export async function wrapEth(param: WrapEthParam) {
     walletClient: param.client.walletClient,
   });
 
-  const { request } = await WETH9.simulate.deposit([], {
+  const { request } = await WETH9.simulate.deposit({
     value: param.amount,
     account: param.client.walletClient!.account,
   });
@@ -69,124 +73,18 @@ export async function wrapEth(param: WrapEthParam) {
   await param.client.publicClient!.waitForTransactionReceipt({ hash });
 }
 
-export async function swapToUSDC(param: SwapToUSDCParam) {
-  const recipient = param.client.walletClient!.account!.address;
-
-  const WETH9 = getContract({
-    abi: ierc20ABI,
-    address: ARBITRUM_GOERLI_WETH9,
+export async function faucetTestToken(param: FaucetParam) {
+  const account = param.client.walletClient!.account!.address!;
+  const testToken = getContract({
+    address: param.testToken,
+    abi: testSettlementTokenABI,
     publicClient: param.client.publicClient,
     walletClient: param.client.walletClient,
   });
+  const { request } = await testToken.simulate.faucet({ account });
+  await param.client.walletClient!.writeContract({ ...request, gas: BigInt(1e10) });
 
-  if ((await WETH9.read.balanceOf([recipient])) < param.amount) {
-    await wrapEth({ client: param.client, amount: param.amount });
-  }
-
-  if ((await WETH9.read.allowance([recipient, ARBITRUM_GOERLI_SWAP_ROUTER])) < param.amount) {
-    const { request } = await WETH9.simulate.approve([ARBITRUM_GOERLI_SWAP_ROUTER, MAX_UINT256], {
-      account: param.client.walletClient!.account,
-    });
-    const hash = await param.client.walletClient!.writeContract(request);
-    await param.client.publicClient!.waitForTransactionReceipt({ hash });
-  }
-
-  const uniswapRouter = getContract({
-    abi: [
-      {
-        inputs: [
-          {
-            components: [
-              {
-                internalType: "address",
-                name: "tokenIn",
-                type: "address",
-              },
-              {
-                internalType: "address",
-                name: "tokenOut",
-                type: "address",
-              },
-              {
-                internalType: "uint24",
-                name: "fee",
-                type: "uint24",
-              },
-              {
-                internalType: "address",
-                name: "recipient",
-                type: "address",
-              },
-              {
-                internalType: "uint256",
-                name: "deadline",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "amountIn",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "amountOutMinimum",
-                type: "uint256",
-              },
-              {
-                internalType: "uint160",
-                name: "sqrtPriceLimitX96",
-                type: "uint160",
-              },
-            ],
-            internalType: "struct ISwapRouter.ExactInputSingleParams",
-            name: "params",
-            type: "tuple",
-          },
-        ],
-        name: "exactInputSingle",
-        outputs: [
-          {
-            internalType: "uint256",
-            name: "amountOut",
-            type: "uint256",
-          },
-        ],
-        stateMutability: "payable",
-        type: "function",
-      },
-    ],
-    address: ARBITRUM_GOERLI_SWAP_ROUTER,
-    publicClient: param.client.publicClient,
-    walletClient: param.client.walletClient,
-  });
-
-  const { request } = await uniswapRouter.simulate.exactInputSingle(
-    [
-      {
-        tokenIn: ARBITRUM_GOERLI_WETH9,
-        tokenOut: param.usdc,
-        fee: param.fee,
-        recipient: recipient,
-        deadline: MAX_UINT256,
-        amountIn: param.amount,
-        amountOutMinimum: 0,
-        sqrtPriceLimitX96: 0,
-      },
-    ],
-    { account: param.client.walletClient!.account, value: 0n }
-  );
-
-  const hash = await param.client.walletClient!.writeContract({ ...request, value: 0n });
-  await param.client.publicClient!.waitForTransactionReceipt({ hash });
-
-  return {
-    usdcBalance: await getContract({
-      abi: ierc20ABI,
-      address: param.usdc,
-      publicClient: param.client.publicClient,
-      walletClient: param.client.walletClient,
-    }).read.balanceOf([recipient]),
-  };
+  return await testToken.read.balanceOf([account]);
 }
 
 export async function updatePrice(param: UpdatePriceParam) {

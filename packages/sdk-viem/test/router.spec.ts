@@ -2,7 +2,7 @@ import * as segFaultHandler from "segfault-handler";
 import { getContract, parseEther, zeroAddress } from "viem";
 import { ierc20ABI } from "../src/gen";
 import { encodeTokenId } from "../src/utils/helpers";
-import { swapToUSDC, testClient, updatePrice } from "./testHelpers";
+import { faucetTestToken, testClient, updatePrice } from "./testHelpers";
 //TODO fix segmentation fault error
 segFaultHandler.registerHandler("crash.log");
 
@@ -31,20 +31,16 @@ describe("router sdk test", () => {
       return await clbToken.read.totalSupply([encodeTokenId(feeRate)]);
     }
 
-    const usdc = tokens[0].address;
+    
     const router = client.router();
 
     async function addAndClaimLiquidity(tradingFeeRate: number) {
-      // swap
-      const { usdcBalance } = await swapToUSDC({
-        amount: parseEther("10"),
-        client: client,
-        usdc: usdc,
-        fee: 3000,
-      });
+
+      const tokenBalance = await faucetTestToken({ client, testToken: tokens[0].address });
+      expect(tokenBalance).toBeGreaterThan(0n)
 
       // add liquidity - router
-      const amount = usdcBalance / 2n;
+      const amount = tokenBalance / 2n;
       const clbBalanceBeforeAdd = await clbBalance(tradingFeeRate);
       const addTxReceipt = await router.addLiquidities(market.address, [
         { feeRate: tradingFeeRate, amount: amount },
@@ -71,7 +67,7 @@ describe("router sdk test", () => {
 
     return {
       market,
-      token: usdc,
+      token: tokens[0].address,
       account,
       router,
       clbBalance,

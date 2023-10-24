@@ -1,10 +1,5 @@
 import { BigNumber } from "ethers";
-import { parseEther } from "viem";
-import {
-  swapToUSDC,
-  testClient,
-  updatePrice,
-} from "./testHelpers";
+import { faucetTestToken, testClient, updatePrice } from "./testHelpers";
 
 describe("lens sdk test", () => {
   const client = testClient();
@@ -15,34 +10,32 @@ describe("lens sdk test", () => {
     if (markets.length == 0) {
       throw new Error(`market is not registered (token : ${tokens[0].address})`);
     }
-
     return { market: markets[0].address, token: tokens[0].address, router: client.router() };
   }
 
   test("ownedLiquidityBins", async () => {
     const { market, token } = await getContracts();
     await updatePrice({ market, client, price: 1000 });
-    const beforeBins = await client.lens().ownedLiquidityBins(market, client.walletClient?.account?.address);
+    const beforeBins = await client
+      .lens()
+      .ownedLiquidityBins(market, client.walletClient?.account?.address);
 
-    const {  usdcBalance } = await swapToUSDC({
-      amount: parseEther("10"),
-      client,
-      usdc: token,
-      // usdc: "0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892",
-      fee: 3000,
-    });
+    const tokenBalance = await faucetTestToken({ client, testToken: token });
+    expect(tokenBalance).toBeGreaterThan(0n)
 
-    console.log("USDC balance", usdcBalance);
+    console.log("Test token balance", tokenBalance);
 
-    await client.router().addLiquidities(market, [{ feeRate: 100, amount: usdcBalance/ 2n }])
-    const lpReceipts = await client.lens().lpReceipts(market)
+    await client.router().addLiquidities(market, [{ feeRate: 100, amount: tokenBalance / 2n }]);
+    const lpReceipts = await client.lens().lpReceipts(market);
 
     console.log("lpReceipts", lpReceipts);
 
     await updatePrice({ market, client, price: 1000 });
-    await client.router().claimLiquidites(market, [lpReceipts[lpReceipts.length-1].id]);
+    await client.router().claimLiquidites(market, [lpReceipts[lpReceipts.length - 1].id]);
 
-    const afterBins = await client.lens().ownedLiquidityBins(market, client.walletClient?.account?.address);
+    const afterBins = await client
+      .lens()
+      .ownedLiquidityBins(market, client.walletClient?.account?.address);
     console.log("beforeBins", beforeBins);
     console.log("afterBins", afterBins);
     if (beforeBins.length == 0) {

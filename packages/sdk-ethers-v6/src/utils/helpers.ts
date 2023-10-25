@@ -9,11 +9,15 @@ import {
   IOracleProvider__factory,
   MarketDiamondCutFacet__factory,
   MarketFacetBase__factory,
+  MarketLensFacet__factory,
   MarketLiquidateFacet__factory,
+  MarketLiquidityFacetBase__factory,
   MarketLiquidityFacet__factory,
   MarketSettleFacet__factory,
   MarketStateFacet__factory,
+  MarketTradeFacetBase__factory,
   MarketTradeFacet__factory,
+  TestSettlementToken__factory,
 } from "../gen";
 
 import debug from "debug";
@@ -57,6 +61,10 @@ export async function handleBytesError<T>(fn: () => Promise<T>, provider: Provid
       throw Error(`call reverted with error: ${e.revert.args[0]}`);
     }
 
+    if (`${e.message}`.indexOf("unknown custom error") > -1 && e.data) {
+      throw Error(parseHexError(e.data));
+    }
+
     /// When gasLimit and gasPrice are set
     const match = (e as Error).message.match(/transactionHash="([^"]+)"/);
     if (match) {
@@ -93,11 +101,14 @@ interface ErrorSignatures {
 export const errorSignitures: ErrorSignatures = [
   ...MarketDiamondCutFacet__factory.abi,
   ...MarketFacetBase__factory.abi,
+  ...MarketLensFacet__factory.abi,
   ...MarketLiquidateFacet__factory.abi,
   ...MarketLiquidityFacet__factory.abi,
+  ...MarketLiquidityFacetBase__factory.abi,
   ...MarketSettleFacet__factory.abi,
   ...MarketStateFacet__factory.abi,
   ...MarketTradeFacet__factory.abi,
+  ...MarketTradeFacetBase__factory.abi,
   ...IChromaticMarket__factory.abi,
   ...ChromaticMarketFactory__factory.abi,
   ...ChromaticVault__factory.abi,
@@ -105,6 +116,7 @@ export const errorSignitures: ErrorSignatures = [
   ...IOracleProvider__factory.abi,
   ...ChromaticAccount__factory.abi,
   ...ChromaticRouter__factory.abi,
+  ...TestSettlementToken__factory.abi,
 ]
   .filter((abi) => abi.type === "error")
   .reduce((prevErrMap, currErrAbi) => {

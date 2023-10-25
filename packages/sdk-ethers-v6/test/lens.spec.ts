@@ -1,11 +1,6 @@
 import { ethers } from "ethers";
 import { Client } from "../src/Client";
-import {
-  getSigner,
-  swapToUSDC,
-  updatePrice,
-  waitTxMining,
-} from "./testHelpers";
+import { getSigner, faucetTestToken, updatePrice } from "./testHelpers";
 
 describe("lens sdk test", () => {
   const signer = getSigner();
@@ -26,20 +21,21 @@ describe("lens sdk test", () => {
     await updatePrice({ market, signer, price: 1000 });
     const beforeBins = await client.lens().ownedLiquidityBins(market, await signer.getAddress());
 
-    const { outputAmount, usdcBalance } = await swapToUSDC({
-      amount: ethers.parseEther("10"),
+    const tokenBalance = await faucetTestToken({
       signer: signer,
-      usdc: token,
-      // usdc: "0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892",
-      fee: 3000,
+      testToken: token,
     });
 
-    console.log("USDC balance", usdcBalance);
+    console.log("Test token balance", tokenBalance);
 
-    const addLiqfn = () =>
-      client.router().addLiquidities(market, [{ feeRate: 100, amount: usdcBalance / 2n }]);
-    const txReceipt = await waitTxMining(addLiqfn);
-    const lpReceiptIds = await client.router().contracts().router()["getLpReceiptIds(address)"](market)
+    const txReceipt = await client
+      .router()
+      .addLiquidities(market, [{ feeRate: 100, amount: tokenBalance / 2n }]);
+    const lpReceiptIds = await client
+      .router()
+      .contracts()
+      .router()
+      ["getLpReceiptIds(address)"](market);
 
     await updatePrice({ market, signer, price: 1000 });
     await client.router().claimLiquidites(market, [lpReceiptIds[lpReceiptIds.length - 1]]);
@@ -52,8 +48,7 @@ describe("lens sdk test", () => {
     } else {
       const targetBeforeBin = beforeBins.find((b) => b.tradingFeeRate == 100);
       const targetAbterBin = afterBins.find((b) => b.tradingFeeRate == 100);
-      const beforeClbBalance =
-        targetBeforeBin === undefined ? 0n : targetBeforeBin.clbBalance;
+      const beforeClbBalance = targetBeforeBin === undefined ? 0n : targetBeforeBin.clbBalance;
       expect(beforeClbBalance < targetAbterBin.clbBalance).toEqual(true);
     }
   }, 60000);

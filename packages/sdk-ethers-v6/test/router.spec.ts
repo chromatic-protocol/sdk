@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { Client } from "../src/Client";
 import { CLBToken__factory, IChromaticMarket__factory, IERC20__factory } from "../src/gen";
 import { encodeTokenId, handleBytesError } from "../src/utils/helpers";
-import { getSigner, swapToUSDC, updatePrice, waitTxMining } from "./testHelpers";
+import { getSigner, faucetTestToken, updatePrice } from "./testHelpers";
 
 describe("router sdk test", () => {
   const signer = getSigner();
@@ -37,7 +37,7 @@ describe("router sdk test", () => {
       return CLBToken__factory.connect(clbTokenAddress, signer).totalSupply(encodeTokenId(feeRate));
     }
 
-    const usdc = tokens[0].address;
+    const testTokenAddress = tokens[0].address;
     const router = client.router();
 
     async function getLpReceiptIds() {
@@ -46,27 +46,21 @@ describe("router sdk test", () => {
 
     async function addAndClaimLiquidity(tradingFeeRate: number) {
       // swap
-      const { outputAmount, usdcBalance } = await swapToUSDC({
-        amount: ethers.parseEther("10"),
+      const tokenBalance = await faucetTestToken({
         signer: signer,
-        usdc: usdc,
-        fee: 3000,
+        testToken: testTokenAddress,
       });
 
       // add liquidity - router
-      const amount = usdcBalance / 2n;
+      const amount = tokenBalance / 2n;
       const clbBalanceBeforeAdd = await clbBalance(tradingFeeRate);
-      const addTxReceipt = await waitTxMining(async () =>
-        router.addLiquidities(marketAddress, [{ feeRate: tradingFeeRate, amount: amount }])
-      );
+      const addTxReceipt = await router.addLiquidities(marketAddress, [{ feeRate: tradingFeeRate, amount: amount }]);
 
       const lpReceiptIds = await getLpReceiptIds();
 
       // claimLiquidity - router
       await updatePrice({ market: marketAddress, signer, price: 1000 });
-      await waitTxMining(() =>
-        router.claimLiquidites(marketAddress, [lpReceiptIds[lpReceiptIds.length - 1]])
-      );
+      await router.claimLiquidites(marketAddress, [lpReceiptIds[lpReceiptIds.length - 1]]);
 
       // balance check - ClbToken
       const clbBalanceAfterAdd = await clbBalance(tradingFeeRate);
@@ -76,8 +70,8 @@ describe("router sdk test", () => {
 
     return {
       marketAddress,
-      token: usdc,
-      tokenContract: IERC20__factory.connect(usdc, signer),
+      token: testTokenAddress,
+      tokenContract: IERC20__factory.connect(testTokenAddress, signer),
       signerAddress,
       router,
       clbBalance,
@@ -99,18 +93,14 @@ describe("router sdk test", () => {
     const { clbBalanceAfterAdd } = await addAndClaimLiquidity(tradingFeeRate);
 
     // removeLiquidity - router
-    const removeTxReceipt = await waitTxMining(async () =>
-      router.removeLiquidities(marketAddress, [
-        { feeRate: tradingFeeRate, clbTokenAmount: clbBalanceAfterAdd },
-      ])
-    );
+    const removeTxReceipt =  await router.removeLiquidities(marketAddress, [
+      { feeRate: tradingFeeRate, clbTokenAmount: clbBalanceAfterAdd },
+    ])
     const lpReceiptIds = await getLpReceiptIds();
 
     // withdrawLiquidity - router
     await updatePrice({ market: marketAddress, signer, price: 1000 });
-    await waitTxMining(() =>
-      router.withdrawLiquidities(marketAddress, [lpReceiptIds[lpReceiptIds.length - 1]])
-    );
+    await router.withdrawLiquidities(marketAddress, [lpReceiptIds[lpReceiptIds.length - 1]]);
 
     // balance check - ClbToken
     expect((await clbBalance(tradingFeeRate)) < clbBalanceAfterAdd).toEqual(true);
@@ -134,18 +124,15 @@ describe("router sdk test", () => {
 
     let account = await client.account().getAccount();
     if (account === ethers.ZeroAddress) {
-      await waitTxMining(() => client.account().createAccount());
+      await client.account().createAccount();
       account = await client.account().getAccount();
       console.log("Account created", account);
     }
     console.log("getAccount", account);
 
-    const usdcBalance = await tokenContract.balanceOf(signer.getAddress());
-    console.log(usdcBalance);
-    await waitTxMining(async () => {
-      const tx = await tokenContract.transfer(account, usdcBalance);
-      return tx.wait();
-    });
+    const testTokenBalance = await tokenContract.balanceOf(signer.getAddress());
+    console.log(testTokenBalance);
+    await (await tokenContract.transfer(account, testTokenBalance)).wait();
 
     const accountBalance = await tokenContract.balanceOf(account);
     console.log("accountBalance", accountBalance);
@@ -155,14 +142,12 @@ describe("router sdk test", () => {
     );
     // 0xd0e30db0
     const beforeOpenPositions = await getPositions();
-    await waitTxMining(() => {
-      const takerMargin = accountBalance / 3n;
-      return router.openPosition(marketAddress, {
-        quantity: takerMargin, // x1 leverage
-        takerMargin,
-        makerMargin: bin100[0].freeLiquidity / 2n,
-        maxAllowableTradingFee: bin100[0].freeLiquidity / 2n / 10n,
-      });
+    const takerMargin = accountBalance / 3n;
+    await router.openPosition(marketAddress, {
+      quantity: takerMargin, // x1 leverage
+      takerMargin,
+      makerMargin: bin100[0].freeLiquidity / 2n,
+      maxAllowableTradingFee: bin100[0].freeLiquidity / 2n / 10n,
     });
 
     const afterOpenPositions = await getPositions();
@@ -173,9 +158,7 @@ describe("router sdk test", () => {
 
     await updatePrice({ market: marketAddress, signer, price: 1100 });
 
-    await waitTxMining(() =>
-      router.closePosition(marketAddress, afterOpenPositions[afterOpenPositions.length - 1].id)
-    );
+    await router.closePosition(marketAddress, afterOpenPositions[afterOpenPositions.length - 1].id);
 
     const positions = await getPositions();
     const position = positions[positions.length - 1];
@@ -183,7 +166,7 @@ describe("router sdk test", () => {
 
     await updatePrice({ market: marketAddress, signer, price: 1200 });
 
-    await waitTxMining(() => router.claimPosition(marketAddress, position.id));
+    await router.claimPosition(marketAddress, position.id);
 
     expect((await getPositions()).filter((pos) => pos.id === position.id).length).toEqual(0);
   }, 60000);
@@ -201,7 +184,7 @@ describe("router sdk test", () => {
       }, signer.provider);
     }
     await expect(async () => await erc20TransferFromTx()).rejects.toThrow(
-      "call reverted with reason: ERC20: transfer amount exceeds balance"
+      "call reverted with reason: ERC20: insufficient allowance"
     );
 
     // revert Custom error

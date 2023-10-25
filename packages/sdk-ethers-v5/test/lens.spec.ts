@@ -1,11 +1,6 @@
 import { BigNumber, ethers } from "ethers";
 import { Client } from "../src/Client";
-import {
-  getSigner,
-  swapToUSDC,
-  updatePrice,
-  waitTxMining,
-} from "./testHelpers";
+import { getSigner, faucetTestToken, updatePrice, waitTxMining } from "./testHelpers";
 
 describe("lens sdk test", () => {
   const signer = getSigner();
@@ -26,20 +21,21 @@ describe("lens sdk test", () => {
     await updatePrice({ market, signer, price: 1000 });
     const beforeBins = await client.lens().ownedLiquidityBins(market, await signer.getAddress());
 
-    const { outputAmount, usdcBalance } = await swapToUSDC({
-      amount: ethers.utils.parseEther("10"),
-      signer: signer,
-      usdc: token,
-      // usdc: "0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892",
-      fee: 3000,
+    const tokenBalance = await faucetTestToken({
+      signer,
+      testToken: token,
     });
 
-    console.log("USDC balance", usdcBalance);
+    console.log("Test token balance", tokenBalance);
 
     const addLiqfn = () =>
-      client.router().addLiquidities(market, [{ feeRate: 100, amount: usdcBalance.div(2) }]);
+      client.router().addLiquidities(market, [{ feeRate: 100, amount: tokenBalance.div(2) }]);
     const txReceipt = await waitTxMining(addLiqfn);
-    const lpReceiptIds = await client.router().contracts().router()["getLpReceiptIds(address)"](market)
+    const lpReceiptIds = await client
+      .router()
+      .contracts()
+      .router()
+      ["getLpReceiptIds(address)"](market);
 
     await updatePrice({ market, signer, price: 1000 });
     await client.router().claimLiquidites(market, [lpReceiptIds[lpReceiptIds.length - 1]]);

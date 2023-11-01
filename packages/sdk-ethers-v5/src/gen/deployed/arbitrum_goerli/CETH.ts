@@ -26,7 +26,7 @@ import type {
   OnEvent,
 } from "../../common";
 
-export interface TestSettlementTokenInterface extends utils.Interface {
+export interface CETHInterface extends utils.Interface {
   functions: {
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
@@ -243,12 +243,12 @@ export type TransferEvent = TypedEvent<
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
-export interface TestSettlementToken extends BaseContract {
+export interface CETH extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: TestSettlementTokenInterface;
+  interface: CETHInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,

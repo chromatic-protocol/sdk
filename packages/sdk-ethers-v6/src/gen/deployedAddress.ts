@@ -38,6 +38,7 @@ export const deployedAddress: DeployedAddress = {
     "ChromaticMarketFactory": "0x9dC7D734A59febe5c3DEe8615dbF9d2081BD9F5c",
     "ChromaticRouter": "0x3049A7a2A004E1C77Bc15fF802c86B458d830499",
     "ChromaticVault": "0x9357Cbd2A5069f5C40b3a8E8B821C69b8045BC52",
-    "TestSettlementToken": "0x73e7aee5a708029fa6DC208437DA1429a944E6FA"
+    "cBTC": "0xD968052A0444597371Aa702b7166BC137E42Ac0B",
+    "cETH": "0x73e7aee5a708029fa6DC208437DA1429a944E6FA"
   }
 }

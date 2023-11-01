@@ -23,7 +23,7 @@ import type {
   TypedContractMethod,
 } from "../../common";
 
-export interface TestSettlementTokenInterface extends Interface {
+export interface CETHInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "allowance"
@@ -225,11 +225,11 @@ export namespace TransferEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface TestSettlementToken extends BaseContract {
-  connect(runner?: ContractRunner | null): TestSettlementToken;
+export interface CETH extends BaseContract {
+  connect(runner?: ContractRunner | null): CETH;
   waitForDeployment(): Promise<this>;
 
-  interface: TestSettlementTokenInterface;
+  interface: CETHInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,

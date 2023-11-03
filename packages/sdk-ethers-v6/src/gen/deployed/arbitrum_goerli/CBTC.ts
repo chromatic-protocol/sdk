@@ -35,6 +35,7 @@ export interface CBTCInterface extends Interface {
       | "faucetAmount"
       | "faucetMinInterval"
       | "increaseAllowance"
+      | "lastFaucetTimestamp"
       | "mint"
       | "name"
       | "owner"
@@ -83,6 +84,10 @@ export interface CBTCInterface extends Interface {
   encodeFunctionData(
     functionFragment: "increaseAllowance",
     values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "lastFaucetTimestamp",
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "mint",
@@ -141,6 +146,10 @@ export interface CBTCInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "increaseAllowance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "lastFaucetTimestamp",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
@@ -320,6 +329,12 @@ export interface CBTC extends BaseContract {
     "nonpayable"
   >;
 
+  lastFaucetTimestamp: TypedContractMethod<
+    [arg0: AddressLike],
+    [bigint],
+    "view"
+  >;
+
   mint: TypedContractMethod<
     [recipient: AddressLike, amount: BigNumberish],
     [void],
@@ -441,6 +456,9 @@ export interface CBTC extends BaseContract {
     [boolean],
     "nonpayable"
   >;
+  getFunction(
+    nameOrSignature: "lastFaucetTimestamp"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "mint"
   ): TypedContractMethod<

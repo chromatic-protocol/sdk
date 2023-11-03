@@ -37,6 +37,7 @@ export interface TestSettlementTokenInterface extends utils.Interface {
     "faucetAmount()": FunctionFragment;
     "faucetMinInterval()": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
+    "lastFaucetTimestamp(address)": FunctionFragment;
     "mint(address,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
@@ -63,6 +64,7 @@ export interface TestSettlementTokenInterface extends utils.Interface {
       | "faucetAmount"
       | "faucetMinInterval"
       | "increaseAllowance"
+      | "lastFaucetTimestamp"
       | "mint"
       | "name"
       | "owner"
@@ -104,6 +106,10 @@ export interface TestSettlementTokenInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "increaseAllowance",
     values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "lastFaucetTimestamp",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "mint",
@@ -162,6 +168,10 @@ export interface TestSettlementTokenInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "increaseAllowance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "lastFaucetTimestamp",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
@@ -324,6 +334,11 @@ export interface TestSettlementToken extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
+    lastFaucetTimestamp(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     mint(
       recipient: string,
       amount: BigNumberish,
@@ -459,6 +474,11 @@ export interface TestSettlementToken extends BaseContract {
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
+  lastFaucetTimestamp(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   mint(
     recipient: string,
     amount: BigNumberish,
@@ -591,6 +611,11 @@ export interface TestSettlementToken extends BaseContract {
       addedValue: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    lastFaucetTimestamp(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     mint(
       recipient: string,
@@ -751,6 +776,11 @@ export interface TestSettlementToken extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
+    lastFaucetTimestamp(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     mint(
       recipient: string,
       amount: BigNumberish,
@@ -888,6 +918,11 @@ export interface TestSettlementToken extends BaseContract {
       spender: string,
       addedValue: BigNumberish,
       overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    lastFaucetTimestamp(
+      arg0: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     mint(

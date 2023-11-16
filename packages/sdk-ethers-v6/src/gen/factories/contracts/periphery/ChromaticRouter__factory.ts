@@ -26,6 +26,11 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [],
+    name: "OnlyAccessableByDao",
+    type: "error",
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -42,6 +47,43 @@ const _abi = [
       },
     ],
     name: "AccountCreated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "marketAddress",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "trader",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "tradingFee",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "tradingFeeUSD",
+        type: "uint256",
+      },
+    ],
+    name: "OpenPosition",
     type: "event",
   },
   {

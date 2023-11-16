@@ -326,6 +326,25 @@ const _abi = [
       },
       {
         indexed: true,
+        internalType: "address",
+        name: "oracleProvider",
+        type: "address",
+      },
+    ],
+    name: "SetSettlementTokenOracleProvider",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        indexed: true,
         internalType: "uint24",
         name: "uniswapFeeTier",
         type: "uint24",
@@ -358,12 +377,18 @@ const _abi = [
       },
       {
         indexed: true,
+        internalType: "address",
+        name: "oracleProvider",
+        type: "address",
+      },
+      {
+        indexed: false,
         internalType: "uint256",
         name: "minimumMargin",
         type: "uint256",
       },
       {
-        indexed: true,
+        indexed: false,
         internalType: "uint256",
         name: "interestRate",
         type: "uint256",
@@ -755,6 +780,25 @@ const _abi = [
         type: "address",
       },
     ],
+    name: "getSettlementTokenOracleProvider",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
     name: "getUniswapFeeTier",
     outputs: [
       {
@@ -923,6 +967,11 @@ const _abi = [
         type: "address",
       },
       {
+        internalType: "address",
+        name: "oracleProvider",
+        type: "address",
+      },
+      {
         internalType: "uint256",
         name: "minimumMargin",
         type: "uint256",
@@ -1081,6 +1130,24 @@ const _abi = [
       },
     ],
     name: "setMinimumMargin",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "oracleProvider",
+        type: "address",
+      },
+    ],
+    name: "setSettlementTokenOracleProvider",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

@@ -105,7 +105,9 @@ export interface ChromaticRouterInterface extends Interface {
       | "withdrawLiquidityCallback"
   ): FunctionFragment;
 
-  getEvent(nameOrSignatureOrTopic: "AccountCreated"): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: "AccountCreated" | "OpenPosition"
+  ): EventFragment;
 
   encodeFunctionData(
     functionFragment: "accountBase",
@@ -323,6 +325,34 @@ export namespace AccountCreatedEvent {
   export interface OutputObject {
     account: string;
     owner: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace OpenPositionEvent {
+  export type InputTuple = [
+    marketAddress: AddressLike,
+    trader: AddressLike,
+    account: AddressLike,
+    tradingFee: BigNumberish,
+    tradingFeeUSD: BigNumberish
+  ];
+  export type OutputTuple = [
+    marketAddress: string,
+    trader: string,
+    account: string,
+    tradingFee: bigint,
+    tradingFeeUSD: bigint
+  ];
+  export interface OutputObject {
+    marketAddress: string;
+    trader: string;
+    account: string;
+    tradingFee: bigint;
+    tradingFeeUSD: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -909,6 +939,13 @@ export interface ChromaticRouter extends BaseContract {
     AccountCreatedEvent.OutputTuple,
     AccountCreatedEvent.OutputObject
   >;
+  getEvent(
+    key: "OpenPosition"
+  ): TypedContractEvent<
+    OpenPositionEvent.InputTuple,
+    OpenPositionEvent.OutputTuple,
+    OpenPositionEvent.OutputObject
+  >;
 
   filters: {
     "AccountCreated(address,address)": TypedContractEvent<
@@ -920,6 +957,17 @@ export interface ChromaticRouter extends BaseContract {
       AccountCreatedEvent.InputTuple,
       AccountCreatedEvent.OutputTuple,
       AccountCreatedEvent.OutputObject
+    >;
+
+    "OpenPosition(address,address,address,uint256,uint256)": TypedContractEvent<
+      OpenPositionEvent.InputTuple,
+      OpenPositionEvent.OutputTuple,
+      OpenPositionEvent.OutputObject
+    >;
+    OpenPosition: TypedContractEvent<
+      OpenPositionEvent.InputTuple,
+      OpenPositionEvent.OutputTuple,
+      OpenPositionEvent.OutputObject
     >;
   };
 }

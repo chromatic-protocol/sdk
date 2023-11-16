@@ -340,9 +340,11 @@ export interface ChromaticRouterInterface extends utils.Interface {
 
   events: {
     "AccountCreated(address,address)": EventFragment;
+    "OpenPosition(address,address,address,uint256,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "AccountCreated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OpenPosition"): EventFragment;
 }
 
 export interface AccountCreatedEventObject {
@@ -355,6 +357,20 @@ export type AccountCreatedEvent = TypedEvent<
 >;
 
 export type AccountCreatedEventFilter = TypedEventFilter<AccountCreatedEvent>;
+
+export interface OpenPositionEventObject {
+  marketAddress: string;
+  trader: string;
+  account: string;
+  tradingFee: BigNumber;
+  tradingFeeUSD: BigNumber;
+}
+export type OpenPositionEvent = TypedEvent<
+  [string, string, string, BigNumber, BigNumber],
+  OpenPositionEventObject
+>;
+
+export type OpenPositionEventFilter = TypedEventFilter<OpenPositionEvent>;
 
 export interface ChromaticRouter extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -1293,6 +1309,21 @@ export interface ChromaticRouter extends BaseContract {
       account?: string | null,
       owner?: string | null
     ): AccountCreatedEventFilter;
+
+    "OpenPosition(address,address,address,uint256,uint256)"(
+      marketAddress?: string | null,
+      trader?: string | null,
+      account?: string | null,
+      tradingFee?: null,
+      tradingFeeUSD?: null
+    ): OpenPositionEventFilter;
+    OpenPosition(
+      marketAddress?: string | null,
+      trader?: string | null,
+      account?: string | null,
+      tradingFee?: null,
+      tradingFeeUSD?: null
+    ): OpenPositionEventFilter;
   };
 
   estimateGas: {

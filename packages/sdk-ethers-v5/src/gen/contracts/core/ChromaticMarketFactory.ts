@@ -71,6 +71,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "getMarketsBySettlmentToken(address)": FunctionFragment;
     "getMinimumMargin(address)": FunctionFragment;
     "getOracleProviderProperties(address)": FunctionFragment;
+    "getSettlementTokenOracleProvider(address)": FunctionFragment;
     "getUniswapFeeTier(address)": FunctionFragment;
     "isRegisteredMarket(address)": FunctionFragment;
     "isRegisteredOracleProvider(address)": FunctionFragment;
@@ -80,7 +81,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "marketSettlement()": FunctionFragment;
     "parameters()": FunctionFragment;
     "registerOracleProvider(address,(uint32,uint32,uint8))": FunctionFragment;
-    "registerSettlementToken(address,uint256,uint256,uint256,uint256,uint24)": FunctionFragment;
+    "registerSettlementToken(address,address,uint256,uint256,uint256,uint256,uint24)": FunctionFragment;
     "registeredOracleProviders()": FunctionFragment;
     "registeredSettlementTokens()": FunctionFragment;
     "removeLastInterestRateRecord(address)": FunctionFragment;
@@ -90,6 +91,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "setLiquidator(address)": FunctionFragment;
     "setMarketSettlement(address)": FunctionFragment;
     "setMinimumMargin(address,uint256)": FunctionFragment;
+    "setSettlementTokenOracleProvider(address,address)": FunctionFragment;
     "setUniswapFeeTier(address,uint24)": FunctionFragment;
     "setVault(address)": FunctionFragment;
     "treasury()": FunctionFragment;
@@ -116,6 +118,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
       | "getMarketsBySettlmentToken"
       | "getMinimumMargin"
       | "getOracleProviderProperties"
+      | "getSettlementTokenOracleProvider"
       | "getUniswapFeeTier"
       | "isRegisteredMarket"
       | "isRegisteredOracleProvider"
@@ -135,6 +138,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
       | "setLiquidator"
       | "setMarketSettlement"
       | "setMinimumMargin"
+      | "setSettlementTokenOracleProvider"
       | "setUniswapFeeTier"
       | "setVault"
       | "treasury"
@@ -196,6 +200,10 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
+    functionFragment: "getSettlementTokenOracleProvider",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getUniswapFeeTier",
     values: [string]
   ): string;
@@ -234,6 +242,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "registerSettlementToken",
     values: [
+      string,
       string,
       BigNumberish,
       BigNumberish,
@@ -277,6 +286,10 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "setMinimumMargin",
     values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setSettlementTokenOracleProvider",
+    values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "setUniswapFeeTier",
@@ -344,6 +357,10 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getOracleProviderProperties",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getSettlementTokenOracleProvider",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -417,6 +434,10 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setSettlementTokenOracleProvider",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setUniswapFeeTier",
     data: BytesLike
   ): Result;
@@ -453,9 +474,10 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "SetLiquidator(address)": EventFragment;
     "SetMarketSettlement(address)": EventFragment;
     "SetMinimumMargin(address,uint256)": EventFragment;
+    "SetSettlementTokenOracleProvider(address,address)": EventFragment;
     "SetUniswapFeeTier(address,uint24)": EventFragment;
     "SetVault(address)": EventFragment;
-    "SettlementTokenRegistered(address,uint256,uint256,uint256,uint256,uint24)": EventFragment;
+    "SettlementTokenRegistered(address,address,uint256,uint256,uint256,uint256,uint24)": EventFragment;
     "UpdateDao(address)": EventFragment;
     "UpdateLeverageLevel(address,uint8)": EventFragment;
     "UpdateTakeProfitBPSRange(address,uint32,uint32)": EventFragment;
@@ -477,6 +499,9 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "SetLiquidator"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetMarketSettlement"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetMinimumMargin"): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: "SetSettlementTokenOracleProvider"
+  ): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetUniswapFeeTier"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetVault"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SettlementTokenRegistered"): EventFragment;
@@ -612,6 +637,18 @@ export type SetMinimumMarginEvent = TypedEvent<
 export type SetMinimumMarginEventFilter =
   TypedEventFilter<SetMinimumMarginEvent>;
 
+export interface SetSettlementTokenOracleProviderEventObject {
+  token: string;
+  oracleProvider: string;
+}
+export type SetSettlementTokenOracleProviderEvent = TypedEvent<
+  [string, string],
+  SetSettlementTokenOracleProviderEventObject
+>;
+
+export type SetSettlementTokenOracleProviderEventFilter =
+  TypedEventFilter<SetSettlementTokenOracleProviderEvent>;
+
 export interface SetUniswapFeeTierEventObject {
   token: string;
   uniswapFeeTier: number;
@@ -633,6 +670,7 @@ export type SetVaultEventFilter = TypedEventFilter<SetVaultEvent>;
 
 export interface SettlementTokenRegisteredEventObject {
   token: string;
+  oracleProvider: string;
   minimumMargin: BigNumber;
   interestRate: BigNumber;
   flashLoanFeeRate: BigNumber;
@@ -640,7 +678,7 @@ export interface SettlementTokenRegisteredEventObject {
   uniswapFeeTier: number;
 }
 export type SettlementTokenRegisteredEvent = TypedEvent<
-  [string, BigNumber, BigNumber, BigNumber, BigNumber, number],
+  [string, string, BigNumber, BigNumber, BigNumber, BigNumber, number],
   SettlementTokenRegisteredEventObject
 >;
 
@@ -843,6 +881,15 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<[IOracleProviderRegistry.OracleProviderPropertiesStructOutput]>;
 
     /**
+     * Gets the oracle provider address for a settlement token.
+     * @param token The address of the settlement token.
+     */
+    getSettlementTokenOracleProvider(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
+    /**
      * Gets the Uniswap fee tier for a settlement token.
      * @param token The address of the settlement token.
      */
@@ -916,11 +963,13 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param flashLoanFeeRate The flash loan fee rate for the settlement token.
      * @param interestRate The interest rate for the settlement token.
      * @param minimumMargin The minimum margin for the settlement token.
+     * @param oracleProvider The oracle provider address for the settlement token.
      * @param token The address of the settlement token to register.
      * @param uniswapFeeTier The Uniswap fee tier for the settlement token.
      */
     registerSettlementToken(
       token: string,
+      oracleProvider: string,
       minimumMargin: BigNumberish,
       interestRate: BigNumberish,
       flashLoanFeeRate: BigNumberish,
@@ -1012,6 +1061,18 @@ export interface ChromaticMarketFactory extends BaseContract {
     setMinimumMargin(
       token: string,
       minimumMargin: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the oracle provider address for a settlement token.
+     * @param oracleProvider The new oracle provider address for the settlement token.
+     * @param token The address of the settlement token.
+     */
+    setSettlementTokenOracleProvider(
+      token: string,
+      oracleProvider: string,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
@@ -1231,6 +1292,15 @@ export interface ChromaticMarketFactory extends BaseContract {
   ): Promise<IOracleProviderRegistry.OracleProviderPropertiesStructOutput>;
 
   /**
+   * Gets the oracle provider address for a settlement token.
+   * @param token The address of the settlement token.
+   */
+  getSettlementTokenOracleProvider(
+    token: string,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  /**
    * Gets the Uniswap fee tier for a settlement token.
    * @param token The address of the settlement token.
    */
@@ -1301,11 +1371,13 @@ export interface ChromaticMarketFactory extends BaseContract {
    * @param flashLoanFeeRate The flash loan fee rate for the settlement token.
    * @param interestRate The interest rate for the settlement token.
    * @param minimumMargin The minimum margin for the settlement token.
+   * @param oracleProvider The oracle provider address for the settlement token.
    * @param token The address of the settlement token to register.
    * @param uniswapFeeTier The Uniswap fee tier for the settlement token.
    */
   registerSettlementToken(
     token: string,
+    oracleProvider: string,
     minimumMargin: BigNumberish,
     interestRate: BigNumberish,
     flashLoanFeeRate: BigNumberish,
@@ -1397,6 +1469,18 @@ export interface ChromaticMarketFactory extends BaseContract {
   setMinimumMargin(
     token: string,
     minimumMargin: BigNumberish,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * This function can only be called by the DAO address.
+   * Sets the oracle provider address for a settlement token.
+   * @param oracleProvider The new oracle provider address for the settlement token.
+   * @param token The address of the settlement token.
+   */
+  setSettlementTokenOracleProvider(
+    token: string,
+    oracleProvider: string,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -1616,6 +1700,15 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<IOracleProviderRegistry.OracleProviderPropertiesStructOutput>;
 
     /**
+     * Gets the oracle provider address for a settlement token.
+     * @param token The address of the settlement token.
+     */
+    getSettlementTokenOracleProvider(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    /**
      * Gets the Uniswap fee tier for a settlement token.
      * @param token The address of the settlement token.
      */
@@ -1689,11 +1782,13 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param flashLoanFeeRate The flash loan fee rate for the settlement token.
      * @param interestRate The interest rate for the settlement token.
      * @param minimumMargin The minimum margin for the settlement token.
+     * @param oracleProvider The oracle provider address for the settlement token.
      * @param token The address of the settlement token to register.
      * @param uniswapFeeTier The Uniswap fee tier for the settlement token.
      */
     registerSettlementToken(
       token: string,
+      oracleProvider: string,
       minimumMargin: BigNumberish,
       interestRate: BigNumberish,
       flashLoanFeeRate: BigNumberish,
@@ -1785,6 +1880,18 @@ export interface ChromaticMarketFactory extends BaseContract {
     setMinimumMargin(
       token: string,
       minimumMargin: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the oracle provider address for a settlement token.
+     * @param oracleProvider The new oracle provider address for the settlement token.
+     * @param token The address of the settlement token.
+     */
+    setSettlementTokenOracleProvider(
+      token: string,
+      oracleProvider: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1964,6 +2071,15 @@ export interface ChromaticMarketFactory extends BaseContract {
       minimumMargin?: BigNumberish | null
     ): SetMinimumMarginEventFilter;
 
+    "SetSettlementTokenOracleProvider(address,address)"(
+      token?: string | null,
+      oracleProvider?: string | null
+    ): SetSettlementTokenOracleProviderEventFilter;
+    SetSettlementTokenOracleProvider(
+      token?: string | null,
+      oracleProvider?: string | null
+    ): SetSettlementTokenOracleProviderEventFilter;
+
     "SetUniswapFeeTier(address,uint24)"(
       token?: string | null,
       uniswapFeeTier?: BigNumberish | null
@@ -1976,18 +2092,20 @@ export interface ChromaticMarketFactory extends BaseContract {
     "SetVault(address)"(vault?: string | null): SetVaultEventFilter;
     SetVault(vault?: string | null): SetVaultEventFilter;
 
-    "SettlementTokenRegistered(address,uint256,uint256,uint256,uint256,uint24)"(
+    "SettlementTokenRegistered(address,address,uint256,uint256,uint256,uint256,uint24)"(
       token?: string | null,
-      minimumMargin?: BigNumberish | null,
-      interestRate?: BigNumberish | null,
+      oracleProvider?: string | null,
+      minimumMargin?: null,
+      interestRate?: null,
       flashLoanFeeRate?: null,
       earningDistributionThreshold?: null,
       uniswapFeeTier?: null
     ): SettlementTokenRegisteredEventFilter;
     SettlementTokenRegistered(
       token?: string | null,
-      minimumMargin?: BigNumberish | null,
-      interestRate?: BigNumberish | null,
+      oracleProvider?: string | null,
+      minimumMargin?: null,
+      interestRate?: null,
       flashLoanFeeRate?: null,
       earningDistributionThreshold?: null,
       uniswapFeeTier?: null
@@ -2150,6 +2268,15 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * Gets the oracle provider address for a settlement token.
+     * @param token The address of the settlement token.
+     */
+    getSettlementTokenOracleProvider(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
      * Gets the Uniswap fee tier for a settlement token.
      * @param token The address of the settlement token.
      */
@@ -2219,11 +2346,13 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param flashLoanFeeRate The flash loan fee rate for the settlement token.
      * @param interestRate The interest rate for the settlement token.
      * @param minimumMargin The minimum margin for the settlement token.
+     * @param oracleProvider The oracle provider address for the settlement token.
      * @param token The address of the settlement token to register.
      * @param uniswapFeeTier The Uniswap fee tier for the settlement token.
      */
     registerSettlementToken(
       token: string,
+      oracleProvider: string,
       minimumMargin: BigNumberish,
       interestRate: BigNumberish,
       flashLoanFeeRate: BigNumberish,
@@ -2315,6 +2444,18 @@ export interface ChromaticMarketFactory extends BaseContract {
     setMinimumMargin(
       token: string,
       minimumMargin: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the oracle provider address for a settlement token.
+     * @param oracleProvider The new oracle provider address for the settlement token.
+     * @param token The address of the settlement token.
+     */
+    setSettlementTokenOracleProvider(
+      token: string,
+      oracleProvider: string,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
@@ -2535,6 +2676,15 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * Gets the oracle provider address for a settlement token.
+     * @param token The address of the settlement token.
+     */
+    getSettlementTokenOracleProvider(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
      * Gets the Uniswap fee tier for a settlement token.
      * @param token The address of the settlement token.
      */
@@ -2604,11 +2754,13 @@ export interface ChromaticMarketFactory extends BaseContract {
      * @param flashLoanFeeRate The flash loan fee rate for the settlement token.
      * @param interestRate The interest rate for the settlement token.
      * @param minimumMargin The minimum margin for the settlement token.
+     * @param oracleProvider The oracle provider address for the settlement token.
      * @param token The address of the settlement token to register.
      * @param uniswapFeeTier The Uniswap fee tier for the settlement token.
      */
     registerSettlementToken(
       token: string,
+      oracleProvider: string,
       minimumMargin: BigNumberish,
       interestRate: BigNumberish,
       flashLoanFeeRate: BigNumberish,
@@ -2704,6 +2856,18 @@ export interface ChromaticMarketFactory extends BaseContract {
     setMinimumMargin(
       token: string,
       minimumMargin: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * This function can only be called by the DAO address.
+     * Sets the oracle provider address for a settlement token.
+     * @param oracleProvider The new oracle provider address for the settlement token.
+     * @param token The address of the settlement token.
+     */
+    setSettlementTokenOracleProvider(
+      token: string,
+      oracleProvider: string,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 

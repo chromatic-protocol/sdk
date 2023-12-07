@@ -26,23 +26,17 @@ import type {
   OnEvent,
 } from "../../common";
 
-export declare namespace IOracleProviderRegistry {
-  export type OracleProviderPropertiesStruct = {
-    minTakeProfitBPS: BigNumberish;
-    maxTakeProfitBPS: BigNumberish;
-    leverageLevel: BigNumberish;
-  };
+export type OracleProviderPropertiesStruct = {
+  minTakeProfitBPS: BigNumberish;
+  maxTakeProfitBPS: BigNumberish;
+  leverageLevel: BigNumberish;
+};
 
-  export type OracleProviderPropertiesStructOutput = [
-    number,
-    number,
-    number
-  ] & {
-    minTakeProfitBPS: number;
-    maxTakeProfitBPS: number;
-    leverageLevel: number;
-  };
-}
+export type OracleProviderPropertiesStructOutput = [number, number, number] & {
+  minTakeProfitBPS: number;
+  maxTakeProfitBPS: number;
+  leverageLevel: number;
+};
 
 export declare namespace InterestRate {
   export type RecordStruct = {
@@ -237,7 +231,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "registerOracleProvider",
-    values: [string, IOracleProviderRegistry.OracleProviderPropertiesStruct]
+    values: [string, OracleProviderPropertiesStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "registerSettlementToken",
@@ -551,10 +545,10 @@ export type MarketCreatedEventFilter = TypedEventFilter<MarketCreatedEvent>;
 
 export interface OracleProviderRegisteredEventObject {
   oracleProvider: string;
-  properties: IOracleProviderRegistry.OracleProviderPropertiesStructOutput;
+  properties: OracleProviderPropertiesStructOutput;
 }
 export type OracleProviderRegisteredEvent = TypedEvent<
-  [string, IOracleProviderRegistry.OracleProviderPropertiesStructOutput],
+  [string, OracleProviderPropertiesStructOutput],
   OracleProviderRegisteredEventObject
 >;
 
@@ -878,7 +872,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     getOracleProviderProperties(
       oracleProvider: string,
       overrides?: CallOverrides
-    ): Promise<[IOracleProviderRegistry.OracleProviderPropertiesStructOutput]>;
+    ): Promise<[OracleProviderPropertiesStructOutput]>;
 
     /**
      * Gets the oracle provider address for a settlement token.
@@ -952,7 +946,7 @@ export interface ChromaticMarketFactory extends BaseContract {
 
     registerOracleProvider(
       oracleProvider: string,
-      properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
+      properties: OracleProviderPropertiesStruct,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
@@ -1289,7 +1283,7 @@ export interface ChromaticMarketFactory extends BaseContract {
   getOracleProviderProperties(
     oracleProvider: string,
     overrides?: CallOverrides
-  ): Promise<IOracleProviderRegistry.OracleProviderPropertiesStructOutput>;
+  ): Promise<OracleProviderPropertiesStructOutput>;
 
   /**
    * Gets the oracle provider address for a settlement token.
@@ -1360,7 +1354,7 @@ export interface ChromaticMarketFactory extends BaseContract {
 
   registerOracleProvider(
     oracleProvider: string,
-    properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
+    properties: OracleProviderPropertiesStruct,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -1697,7 +1691,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     getOracleProviderProperties(
       oracleProvider: string,
       overrides?: CallOverrides
-    ): Promise<IOracleProviderRegistry.OracleProviderPropertiesStructOutput>;
+    ): Promise<OracleProviderPropertiesStructOutput>;
 
     /**
      * Gets the oracle provider address for a settlement token.
@@ -1771,7 +1765,7 @@ export interface ChromaticMarketFactory extends BaseContract {
 
     registerOracleProvider(
       oracleProvider: string,
-      properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
+      properties: OracleProviderPropertiesStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2335,7 +2329,7 @@ export interface ChromaticMarketFactory extends BaseContract {
 
     registerOracleProvider(
       oracleProvider: string,
-      properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
+      properties: OracleProviderPropertiesStruct,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
@@ -2743,7 +2737,7 @@ export interface ChromaticMarketFactory extends BaseContract {
 
     registerOracleProvider(
       oracleProvider: string,
-      properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
+      properties: OracleProviderPropertiesStruct,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 

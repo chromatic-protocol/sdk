@@ -23,23 +23,21 @@ import type {
   TypedContractMethod,
 } from "../../../../common";
 
-export declare namespace IOracleProviderRegistry {
-  export type OracleProviderPropertiesStruct = {
-    minTakeProfitBPS: BigNumberish;
-    maxTakeProfitBPS: BigNumberish;
-    leverageLevel: BigNumberish;
-  };
+export type OracleProviderPropertiesStruct = {
+  minTakeProfitBPS: BigNumberish;
+  maxTakeProfitBPS: BigNumberish;
+  leverageLevel: BigNumberish;
+};
 
-  export type OracleProviderPropertiesStructOutput = [
-    minTakeProfitBPS: bigint,
-    maxTakeProfitBPS: bigint,
-    leverageLevel: bigint
-  ] & {
-    minTakeProfitBPS: bigint;
-    maxTakeProfitBPS: bigint;
-    leverageLevel: bigint;
-  };
-}
+export type OracleProviderPropertiesStructOutput = [
+  minTakeProfitBPS: bigint,
+  maxTakeProfitBPS: bigint,
+  leverageLevel: bigint
+] & {
+  minTakeProfitBPS: bigint;
+  maxTakeProfitBPS: bigint;
+  leverageLevel: bigint;
+};
 
 export interface IOracleProviderRegistryInterface extends Interface {
   getFunction(
@@ -71,10 +69,7 @@ export interface IOracleProviderRegistryInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "registerOracleProvider",
-    values: [
-      AddressLike,
-      IOracleProviderRegistry.OracleProviderPropertiesStruct
-    ]
+    values: [AddressLike, OracleProviderPropertiesStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "registeredOracleProviders",
@@ -126,15 +121,15 @@ export interface IOracleProviderRegistryInterface extends Interface {
 export namespace OracleProviderRegisteredEvent {
   export type InputTuple = [
     oracleProvider: AddressLike,
-    properties: IOracleProviderRegistry.OracleProviderPropertiesStruct
+    properties: OracleProviderPropertiesStruct
   ];
   export type OutputTuple = [
     oracleProvider: string,
-    properties: IOracleProviderRegistry.OracleProviderPropertiesStructOutput
+    properties: OracleProviderPropertiesStructOutput
   ];
   export interface OutputObject {
     oracleProvider: string;
-    properties: IOracleProviderRegistry.OracleProviderPropertiesStructOutput;
+    properties: OracleProviderPropertiesStructOutput;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -238,7 +233,7 @@ export interface IOracleProviderRegistry extends BaseContract {
    */
   getOracleProviderProperties: TypedContractMethod<
     [oracleProvider: AddressLike],
-    [IOracleProviderRegistry.OracleProviderPropertiesStructOutput],
+    [OracleProviderPropertiesStructOutput],
     "view"
   >;
 
@@ -253,10 +248,7 @@ export interface IOracleProviderRegistry extends BaseContract {
   >;
 
   registerOracleProvider: TypedContractMethod<
-    [
-      oracleProvider: AddressLike,
-      properties: IOracleProviderRegistry.OracleProviderPropertiesStruct
-    ],
+    [oracleProvider: AddressLike, properties: OracleProviderPropertiesStruct],
     [void],
     "nonpayable"
   >;
@@ -312,7 +304,7 @@ export interface IOracleProviderRegistry extends BaseContract {
     nameOrSignature: "getOracleProviderProperties"
   ): TypedContractMethod<
     [oracleProvider: AddressLike],
-    [IOracleProviderRegistry.OracleProviderPropertiesStructOutput],
+    [OracleProviderPropertiesStructOutput],
     "view"
   >;
   getFunction(
@@ -321,10 +313,7 @@ export interface IOracleProviderRegistry extends BaseContract {
   getFunction(
     nameOrSignature: "registerOracleProvider"
   ): TypedContractMethod<
-    [
-      oracleProvider: AddressLike,
-      properties: IOracleProviderRegistry.OracleProviderPropertiesStruct
-    ],
+    [oracleProvider: AddressLike, properties: OracleProviderPropertiesStruct],
     [void],
     "nonpayable"
   >;

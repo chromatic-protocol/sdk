@@ -26,23 +26,17 @@ import type {
   OnEvent,
 } from "../../../../common";
 
-export declare namespace IOracleProviderRegistry {
-  export type OracleProviderPropertiesStruct = {
-    minTakeProfitBPS: BigNumberish;
-    maxTakeProfitBPS: BigNumberish;
-    leverageLevel: BigNumberish;
-  };
+export type OracleProviderPropertiesStruct = {
+  minTakeProfitBPS: BigNumberish;
+  maxTakeProfitBPS: BigNumberish;
+  leverageLevel: BigNumberish;
+};
 
-  export type OracleProviderPropertiesStructOutput = [
-    number,
-    number,
-    number
-  ] & {
-    minTakeProfitBPS: number;
-    maxTakeProfitBPS: number;
-    leverageLevel: number;
-  };
-}
+export type OracleProviderPropertiesStructOutput = [number, number, number] & {
+  minTakeProfitBPS: number;
+  maxTakeProfitBPS: number;
+  leverageLevel: number;
+};
 
 export interface IOracleProviderRegistryInterface extends utils.Interface {
   functions: {
@@ -76,7 +70,7 @@ export interface IOracleProviderRegistryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "registerOracleProvider",
-    values: [string, IOracleProviderRegistry.OracleProviderPropertiesStruct]
+    values: [string, OracleProviderPropertiesStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "registeredOracleProviders",
@@ -139,10 +133,10 @@ export interface IOracleProviderRegistryInterface extends utils.Interface {
 
 export interface OracleProviderRegisteredEventObject {
   oracleProvider: string;
-  properties: IOracleProviderRegistry.OracleProviderPropertiesStructOutput;
+  properties: OracleProviderPropertiesStructOutput;
 }
 export type OracleProviderRegisteredEvent = TypedEvent<
-  [string, IOracleProviderRegistry.OracleProviderPropertiesStructOutput],
+  [string, OracleProviderPropertiesStructOutput],
   OracleProviderRegisteredEventObject
 >;
 
@@ -219,7 +213,7 @@ export interface IOracleProviderRegistry extends BaseContract {
     getOracleProviderProperties(
       oracleProvider: string,
       overrides?: CallOverrides
-    ): Promise<[IOracleProviderRegistry.OracleProviderPropertiesStructOutput]>;
+    ): Promise<[OracleProviderPropertiesStructOutput]>;
 
     /**
      * Checks if an oracle provider is registered.
@@ -232,7 +226,7 @@ export interface IOracleProviderRegistry extends BaseContract {
 
     registerOracleProvider(
       oracleProvider: string,
-      properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
+      properties: OracleProviderPropertiesStruct,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
@@ -283,7 +277,7 @@ export interface IOracleProviderRegistry extends BaseContract {
   getOracleProviderProperties(
     oracleProvider: string,
     overrides?: CallOverrides
-  ): Promise<IOracleProviderRegistry.OracleProviderPropertiesStructOutput>;
+  ): Promise<OracleProviderPropertiesStructOutput>;
 
   /**
    * Checks if an oracle provider is registered.
@@ -296,7 +290,7 @@ export interface IOracleProviderRegistry extends BaseContract {
 
   registerOracleProvider(
     oracleProvider: string,
-    properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
+    properties: OracleProviderPropertiesStruct,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -347,7 +341,7 @@ export interface IOracleProviderRegistry extends BaseContract {
     getOracleProviderProperties(
       oracleProvider: string,
       overrides?: CallOverrides
-    ): Promise<IOracleProviderRegistry.OracleProviderPropertiesStructOutput>;
+    ): Promise<OracleProviderPropertiesStructOutput>;
 
     /**
      * Checks if an oracle provider is registered.
@@ -360,7 +354,7 @@ export interface IOracleProviderRegistry extends BaseContract {
 
     registerOracleProvider(
       oracleProvider: string,
-      properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
+      properties: OracleProviderPropertiesStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -463,7 +457,7 @@ export interface IOracleProviderRegistry extends BaseContract {
 
     registerOracleProvider(
       oracleProvider: string,
-      properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
+      properties: OracleProviderPropertiesStruct,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
@@ -528,7 +522,7 @@ export interface IOracleProviderRegistry extends BaseContract {
 
     registerOracleProvider(
       oracleProvider: string,
-      properties: IOracleProviderRegistry.OracleProviderPropertiesStruct,
+      properties: OracleProviderPropertiesStruct,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 

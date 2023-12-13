@@ -70,6 +70,7 @@ export type PositionStruct = {
   closeTimestamp: BigNumberish;
   takerMargin: BigNumberish;
   owner: string;
+  liquidator: string;
   _binMargins: BinMarginStruct[];
   _feeProtocol: BigNumberish;
 };
@@ -83,6 +84,7 @@ export type PositionStructOutput = [
   BigNumber,
   BigNumber,
   string,
+  string,
   BinMarginStructOutput[],
   number
 ] & {
@@ -94,6 +96,7 @@ export type PositionStructOutput = [
   closeTimestamp: BigNumber;
   takerMargin: BigNumber;
   owner: string;
+  liquidator: string;
   _binMargins: BinMarginStructOutput[];
   _feeProtocol: number;
 };
@@ -258,9 +261,7 @@ export interface IChromaticMarketInterface extends utils.Interface {
     "getLpReceipts(uint256[])": FunctionFragment;
     "getPosition(uint256)": FunctionFragment;
     "getPositions(uint256[])": FunctionFragment;
-    "keeperFeePayer()": FunctionFragment;
     "liquidate(uint256,address,uint256)": FunctionFragment;
-    "liquidator()": FunctionFragment;
     "liquidityBinStatuses()": FunctionFragment;
     "openPosition(int256,uint256,uint256,uint256,bytes)": FunctionFragment;
     "oracleProvider()": FunctionFragment;
@@ -305,9 +306,7 @@ export interface IChromaticMarketInterface extends utils.Interface {
       | "getLpReceipts"
       | "getPosition"
       | "getPositions"
-      | "keeperFeePayer"
       | "liquidate"
-      | "liquidator"
       | "liquidityBinStatuses"
       | "openPosition"
       | "oracleProvider"
@@ -417,16 +416,8 @@ export interface IChromaticMarketInterface extends utils.Interface {
     values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "keeperFeePayer",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "liquidate",
     values: [BigNumberish, string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "liquidator",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "liquidityBinStatuses",
@@ -577,12 +568,7 @@ export interface IChromaticMarketInterface extends utils.Interface {
     functionFragment: "getPositions",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "keeperFeePayer",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "liquidate", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "liquidator", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "liquidityBinStatuses",
     data: BytesLike
@@ -644,11 +630,11 @@ export interface IChromaticMarketInterface extends utils.Interface {
     "AddLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])": EventFragment;
     "ClaimLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256)": EventFragment;
     "ClaimLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[])": EventFragment;
-    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
-    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
-    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
-    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
-    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))": EventFragment;
+    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))": EventFragment;
+    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))": EventFragment;
+    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))": EventFragment;
+    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))": EventFragment;
     "RemoveLiquidity((uint256,uint256,uint256,address,uint8,int16))": EventFragment;
     "RemoveLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])": EventFragment;
     "SetFeeProtocol(uint8,uint8)": EventFragment;
@@ -1114,11 +1100,6 @@ export interface IChromaticMarket extends BaseContract {
     >;
 
     /**
-     * Returns the keeper fee payer contract for the market.
-     */
-    keeperFeePayer(overrides?: CallOverrides): Promise<[string]>;
-
-    /**
      * Liquidates a position.
      * @param keeper The address of the keeper performing the liquidation.
      * @param keeperFee The native token amount of the keeper's fee.
@@ -1130,11 +1111,6 @@ export interface IChromaticMarket extends BaseContract {
       keeperFee: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
-
-    /**
-     * Returns the liquidator contract for the market.
-     */
-    liquidator(overrides?: CallOverrides): Promise<[string]>;
 
     /**
      * Retrieves the liquidity bin statuses for the caller's liquidity pool.
@@ -1522,11 +1498,6 @@ export interface IChromaticMarket extends BaseContract {
   ): Promise<PositionStructOutput[]>;
 
   /**
-   * Returns the keeper fee payer contract for the market.
-   */
-  keeperFeePayer(overrides?: CallOverrides): Promise<string>;
-
-  /**
    * Liquidates a position.
    * @param keeper The address of the keeper performing the liquidation.
    * @param keeperFee The native token amount of the keeper's fee.
@@ -1538,11 +1509,6 @@ export interface IChromaticMarket extends BaseContract {
     keeperFee: BigNumberish,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
-
-  /**
-   * Returns the liquidator contract for the market.
-   */
-  liquidator(overrides?: CallOverrides): Promise<string>;
 
   /**
    * Retrieves the liquidity bin statuses for the caller's liquidity pool.
@@ -1930,11 +1896,6 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<PositionStructOutput[]>;
 
     /**
-     * Returns the keeper fee payer contract for the market.
-     */
-    keeperFeePayer(overrides?: CallOverrides): Promise<string>;
-
-    /**
      * Liquidates a position.
      * @param keeper The address of the keeper performing the liquidation.
      * @param keeperFee The native token amount of the keeper's fee.
@@ -1946,11 +1907,6 @@ export interface IChromaticMarket extends BaseContract {
       keeperFee: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    /**
-     * Returns the liquidator contract for the market.
-     */
-    liquidator(overrides?: CallOverrides): Promise<string>;
 
     /**
      * Retrieves the liquidity bin statuses for the caller's liquidity pool.
@@ -2129,7 +2085,7 @@ export interface IChromaticMarket extends BaseContract {
       clbTokenAmounts?: null
     ): ClaimLiquidityBatchEventFilter;
 
-    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))"(
       account?: string | null,
       pnl?: BigNumberish | null,
       interest?: BigNumberish | null,
@@ -2142,7 +2098,7 @@ export interface IChromaticMarket extends BaseContract {
       position?: null
     ): ClaimPositionEventFilter;
 
-    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))"(
       account?: string | null,
       pnl?: BigNumberish | null,
       interest?: BigNumberish | null,
@@ -2157,7 +2113,7 @@ export interface IChromaticMarket extends BaseContract {
       position?: null
     ): ClaimPositionByKeeperEventFilter;
 
-    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))"(
       account?: string | null,
       position?: null
     ): ClosePositionEventFilter;
@@ -2166,7 +2122,7 @@ export interface IChromaticMarket extends BaseContract {
       position?: null
     ): ClosePositionEventFilter;
 
-    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))"(
       account?: string | null,
       pnl?: BigNumberish | null,
       interest?: BigNumberish | null,
@@ -2181,7 +2137,7 @@ export interface IChromaticMarket extends BaseContract {
       position?: null
     ): LiquidateEventFilter;
 
-    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))"(
       account?: string | null,
       position?: null
     ): OpenPositionEventFilter;
@@ -2475,11 +2431,6 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Returns the keeper fee payer contract for the market.
-     */
-    keeperFeePayer(overrides?: CallOverrides): Promise<BigNumber>;
-
-    /**
      * Liquidates a position.
      * @param keeper The address of the keeper performing the liquidation.
      * @param keeperFee The native token amount of the keeper's fee.
@@ -2491,11 +2442,6 @@ export interface IChromaticMarket extends BaseContract {
       keeperFee: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
-
-    /**
-     * Returns the liquidator contract for the market.
-     */
-    liquidator(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * Retrieves the liquidity bin statuses for the caller's liquidity pool.
@@ -2880,11 +2826,6 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Returns the keeper fee payer contract for the market.
-     */
-    keeperFeePayer(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    /**
      * Liquidates a position.
      * @param keeper The address of the keeper performing the liquidation.
      * @param keeperFee The native token amount of the keeper's fee.
@@ -2896,11 +2837,6 @@ export interface IChromaticMarket extends BaseContract {
       keeperFee: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
-
-    /**
-     * Returns the liquidator contract for the market.
-     */
-    liquidator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
      * Retrieves the liquidity bin statuses for the caller's liquidity pool.

@@ -23,23 +23,21 @@ import type {
   TypedContractMethod,
 } from "../../common";
 
-export declare namespace IOracleProviderRegistry {
-  export type OracleProviderPropertiesStruct = {
-    minTakeProfitBPS: BigNumberish;
-    maxTakeProfitBPS: BigNumberish;
-    leverageLevel: BigNumberish;
-  };
+export type OracleProviderPropertiesStruct = {
+  minTakeProfitBPS: BigNumberish;
+  maxTakeProfitBPS: BigNumberish;
+  leverageLevel: BigNumberish;
+};
 
-  export type OracleProviderPropertiesStructOutput = [
-    minTakeProfitBPS: bigint,
-    maxTakeProfitBPS: bigint,
-    leverageLevel: bigint
-  ] & {
-    minTakeProfitBPS: bigint;
-    maxTakeProfitBPS: bigint;
-    leverageLevel: bigint;
-  };
-}
+export type OracleProviderPropertiesStructOutput = [
+  minTakeProfitBPS: bigint,
+  maxTakeProfitBPS: bigint,
+  leverageLevel: bigint
+] & {
+  minTakeProfitBPS: bigint;
+  maxTakeProfitBPS: bigint;
+  leverageLevel: bigint;
+};
 
 export declare namespace InterestRate {
   export type RecordStruct = {
@@ -211,10 +209,7 @@ export interface ChromaticMarketFactoryInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "registerOracleProvider",
-    values: [
-      AddressLike,
-      IOracleProviderRegistry.OracleProviderPropertiesStruct
-    ]
+    values: [AddressLike, OracleProviderPropertiesStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "registerSettlementToken",
@@ -515,15 +510,15 @@ export namespace MarketCreatedEvent {
 export namespace OracleProviderRegisteredEvent {
   export type InputTuple = [
     oracleProvider: AddressLike,
-    properties: IOracleProviderRegistry.OracleProviderPropertiesStruct
+    properties: OracleProviderPropertiesStruct
   ];
   export type OutputTuple = [
     oracleProvider: string,
-    properties: IOracleProviderRegistry.OracleProviderPropertiesStructOutput
+    properties: OracleProviderPropertiesStructOutput
   ];
   export interface OutputObject {
     oracleProvider: string;
-    properties: IOracleProviderRegistry.OracleProviderPropertiesStructOutput;
+    properties: OracleProviderPropertiesStructOutput;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -929,7 +924,7 @@ export interface ChromaticMarketFactory extends BaseContract {
    */
   getOracleProviderProperties: TypedContractMethod<
     [oracleProvider: AddressLike],
-    [IOracleProviderRegistry.OracleProviderPropertiesStructOutput],
+    [OracleProviderPropertiesStructOutput],
     "view"
   >;
 
@@ -1009,10 +1004,7 @@ export interface ChromaticMarketFactory extends BaseContract {
   >;
 
   registerOracleProvider: TypedContractMethod<
-    [
-      oracleProvider: AddressLike,
-      properties: IOracleProviderRegistry.OracleProviderPropertiesStruct
-    ],
+    [oracleProvider: AddressLike, properties: OracleProviderPropertiesStruct],
     [void],
     "nonpayable"
   >;
@@ -1088,7 +1080,7 @@ export interface ChromaticMarketFactory extends BaseContract {
   >;
 
   /**
-   * This function can only be called by the DAO address.      Throws an `AlreadySetKeeperFeePayer` error if the keeper fee payer address has already been set.
+   * This function can only be called by the DAO address.
    * Sets the keeper fee payer address.
    * @param _keeperFeePayer The keeper fee payer address.
    */
@@ -1304,7 +1296,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     nameOrSignature: "getOracleProviderProperties"
   ): TypedContractMethod<
     [oracleProvider: AddressLike],
-    [IOracleProviderRegistry.OracleProviderPropertiesStructOutput],
+    [OracleProviderPropertiesStructOutput],
     "view"
   >;
   getFunction(
@@ -1341,10 +1333,7 @@ export interface ChromaticMarketFactory extends BaseContract {
   getFunction(
     nameOrSignature: "registerOracleProvider"
   ): TypedContractMethod<
-    [
-      oracleProvider: AddressLike,
-      properties: IOracleProviderRegistry.OracleProviderPropertiesStruct
-    ],
+    [oracleProvider: AddressLike, properties: OracleProviderPropertiesStruct],
     [void],
     "nonpayable"
   >;

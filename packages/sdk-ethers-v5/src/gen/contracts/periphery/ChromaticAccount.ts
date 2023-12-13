@@ -45,6 +45,7 @@ export type PositionStruct = {
   closeTimestamp: BigNumberish;
   takerMargin: BigNumberish;
   owner: string;
+  liquidator: string;
   _binMargins: BinMarginStruct[];
   _feeProtocol: BigNumberish;
 };
@@ -58,6 +59,7 @@ export type PositionStructOutput = [
   BigNumber,
   BigNumber,
   string,
+  string,
   BinMarginStructOutput[],
   number
 ] & {
@@ -69,6 +71,7 @@ export type PositionStructOutput = [
   closeTimestamp: BigNumber;
   takerMargin: BigNumber;
   owner: string;
+  liquidator: string;
   _binMargins: BinMarginStructOutput[];
   _feeProtocol: number;
 };
@@ -130,7 +133,7 @@ export interface ChromaticAccountInterface extends utils.Interface {
   functions: {
     "balance(address)": FunctionFragment;
     "claimPosition(address,uint256)": FunctionFragment;
-    "claimPositionCallback((uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8),(uint256,uint256,uint256,int256,uint256,bytes4),bytes)": FunctionFragment;
+    "claimPositionCallback((uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8),(uint256,uint256,uint256,int256,uint256,bytes4),bytes)": FunctionFragment;
     "closePosition(address,uint256)": FunctionFragment;
     "getPositionIds(address)": FunctionFragment;
     "hasPositionId(address,uint256)": FunctionFragment;

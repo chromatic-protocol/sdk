@@ -67,6 +67,7 @@ export type PositionStruct = {
   closeTimestamp: BigNumberish;
   takerMargin: BigNumberish;
   owner: AddressLike;
+  liquidator: AddressLike;
   _binMargins: BinMarginStruct[];
   _feeProtocol: BigNumberish;
 };
@@ -80,6 +81,7 @@ export type PositionStructOutput = [
   closeTimestamp: bigint,
   takerMargin: bigint,
   owner: string,
+  liquidator: string,
   _binMargins: BinMarginStructOutput[],
   _feeProtocol: bigint
 ] & {
@@ -91,6 +93,7 @@ export type PositionStructOutput = [
   closeTimestamp: bigint;
   takerMargin: bigint;
   owner: string;
+  liquidator: string;
   _binMargins: BinMarginStructOutput[];
   _feeProtocol: bigint;
 };
@@ -260,9 +263,7 @@ export interface IChromaticMarketInterface extends Interface {
       | "getLpReceipts"
       | "getPosition"
       | "getPositions"
-      | "keeperFeePayer"
       | "liquidate"
-      | "liquidator"
       | "liquidityBinStatuses"
       | "openPosition"
       | "oracleProvider"
@@ -391,16 +392,8 @@ export interface IChromaticMarketInterface extends Interface {
     values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "keeperFeePayer",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "liquidate",
     values: [BigNumberish, AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "liquidator",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "liquidityBinStatuses",
@@ -551,12 +544,7 @@ export interface IChromaticMarketInterface extends Interface {
     functionFragment: "getPositions",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "keeperFeePayer",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "liquidate", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "liquidator", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "liquidityBinStatuses",
     data: BytesLike
@@ -1168,11 +1156,6 @@ export interface IChromaticMarket extends BaseContract {
   >;
 
   /**
-   * Returns the keeper fee payer contract for the market.
-   */
-  keeperFeePayer: TypedContractMethod<[], [string], "view">;
-
-  /**
    * Liquidates a position.
    * @param keeper The address of the keeper performing the liquidation.
    * @param keeperFee The native token amount of the keeper's fee.
@@ -1183,11 +1166,6 @@ export interface IChromaticMarket extends BaseContract {
     [void],
     "nonpayable"
   >;
-
-  /**
-   * Returns the liquidator contract for the market.
-   */
-  liquidator: TypedContractMethod<[], [string], "view">;
 
   /**
    * Retrieves the liquidity bin statuses for the caller's liquidity pool.
@@ -1494,18 +1472,12 @@ export interface IChromaticMarket extends BaseContract {
     "view"
   >;
   getFunction(
-    nameOrSignature: "keeperFeePayer"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
     nameOrSignature: "liquidate"
   ): TypedContractMethod<
     [positionId: BigNumberish, keeper: AddressLike, keeperFee: BigNumberish],
     [void],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "liquidator"
-  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "liquidityBinStatuses"
   ): TypedContractMethod<[], [LiquidityBinStatusStructOutput[]], "view">;

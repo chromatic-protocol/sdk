@@ -31,8 +31,6 @@ export interface MarketStateFacetInterface extends utils.Interface {
     "clbToken()": FunctionFragment;
     "factory()": FunctionFragment;
     "feeProtocol()": FunctionFragment;
-    "keeperFeePayer()": FunctionFragment;
-    "liquidator()": FunctionFragment;
     "oracleProvider()": FunctionFragment;
     "setFeeProtocol(uint8)": FunctionFragment;
     "settlementToken()": FunctionFragment;
@@ -44,8 +42,6 @@ export interface MarketStateFacetInterface extends utils.Interface {
       | "clbToken"
       | "factory"
       | "feeProtocol"
-      | "keeperFeePayer"
-      | "liquidator"
       | "oracleProvider"
       | "setFeeProtocol"
       | "settlementToken"
@@ -56,14 +52,6 @@ export interface MarketStateFacetInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "factory", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "feeProtocol",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "keeperFeePayer",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "liquidator",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -86,11 +74,6 @@ export interface MarketStateFacetInterface extends utils.Interface {
     functionFragment: "feeProtocol",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "keeperFeePayer",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "liquidator", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "oracleProvider",
     data: BytesLike
@@ -170,20 +153,6 @@ export interface MarketStateFacet extends BaseContract {
     ): Promise<[number] & { _feeProtocol: number }>;
 
     /**
-     * Returns the keeper fee payer contract for the market.
-     */
-    keeperFeePayer(
-      overrides?: CallOverrides
-    ): Promise<[string] & { _keeperFeePayer: string }>;
-
-    /**
-     * Returns the liquidator contract for the market.
-     */
-    liquidator(
-      overrides?: CallOverrides
-    ): Promise<[string] & { _liquidator: string }>;
-
-    /**
      * Returns the oracle provider contract for the market.
      */
     oracleProvider(
@@ -228,16 +197,6 @@ export interface MarketStateFacet extends BaseContract {
   feeProtocol(overrides?: CallOverrides): Promise<number>;
 
   /**
-   * Returns the keeper fee payer contract for the market.
-   */
-  keeperFeePayer(overrides?: CallOverrides): Promise<string>;
-
-  /**
-   * Returns the liquidator contract for the market.
-   */
-  liquidator(overrides?: CallOverrides): Promise<string>;
-
-  /**
    * Returns the oracle provider contract for the market.
    */
   oracleProvider(overrides?: CallOverrides): Promise<string>;
@@ -276,16 +235,6 @@ export interface MarketStateFacet extends BaseContract {
      * Returns the denominator of the protocol's % share of the fees
      */
     feeProtocol(overrides?: CallOverrides): Promise<number>;
-
-    /**
-     * Returns the keeper fee payer contract for the market.
-     */
-    keeperFeePayer(overrides?: CallOverrides): Promise<string>;
-
-    /**
-     * Returns the liquidator contract for the market.
-     */
-    liquidator(overrides?: CallOverrides): Promise<string>;
 
     /**
      * Returns the oracle provider contract for the market.
@@ -340,16 +289,6 @@ export interface MarketStateFacet extends BaseContract {
     feeProtocol(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Returns the keeper fee payer contract for the market.
-     */
-    keeperFeePayer(overrides?: CallOverrides): Promise<BigNumber>;
-
-    /**
-     * Returns the liquidator contract for the market.
-     */
-    liquidator(overrides?: CallOverrides): Promise<BigNumber>;
-
-    /**
      * Returns the oracle provider contract for the market.
      */
     oracleProvider(overrides?: CallOverrides): Promise<BigNumber>;
@@ -389,16 +328,6 @@ export interface MarketStateFacet extends BaseContract {
      * Returns the denominator of the protocol's % share of the fees
      */
     feeProtocol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    /**
-     * Returns the keeper fee payer contract for the market.
-     */
-    keeperFeePayer(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    /**
-     * Returns the liquidator contract for the market.
-     */
-    liquidator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
      * Returns the oracle provider contract for the market.

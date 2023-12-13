@@ -38,9 +38,9 @@ export interface ChromaticVaultInterface extends utils.Interface {
     "factory()": FunctionFragment;
     "flashLoan(address,uint256,address,bytes)": FunctionFragment;
     "getPendingBinShare(address,address,uint256)": FunctionFragment;
-    "keeperFeePayer()": FunctionFragment;
     "makerBalances(address)": FunctionFragment;
     "makerMarketBalances(address)": FunctionFragment;
+    "migrateEarningDistributionTasks(address)": FunctionFragment;
     "onAddLiquidity(address,uint256)": FunctionFragment;
     "onClaimPosition(address,uint256,address,uint256,uint256)": FunctionFragment;
     "onOpenPosition(address,uint256,uint256,uint256,uint256)": FunctionFragment;
@@ -50,6 +50,7 @@ export interface ChromaticVaultInterface extends utils.Interface {
     "pendingMakerEarnings(address)": FunctionFragment;
     "pendingMarketEarnings(address)": FunctionFragment;
     "pendingWithdrawals(address)": FunctionFragment;
+    "setVaultEarningDistributor(address)": FunctionFragment;
     "takerBalances(address)": FunctionFragment;
     "takerMarketBalances(address)": FunctionFragment;
     "transferKeeperFee(address,address,uint256,uint256)": FunctionFragment;
@@ -67,9 +68,9 @@ export interface ChromaticVaultInterface extends utils.Interface {
       | "factory"
       | "flashLoan"
       | "getPendingBinShare"
-      | "keeperFeePayer"
       | "makerBalances"
       | "makerMarketBalances"
+      | "migrateEarningDistributionTasks"
       | "onAddLiquidity"
       | "onClaimPosition"
       | "onOpenPosition"
@@ -79,6 +80,7 @@ export interface ChromaticVaultInterface extends utils.Interface {
       | "pendingMakerEarnings"
       | "pendingMarketEarnings"
       | "pendingWithdrawals"
+      | "setVaultEarningDistributor"
       | "takerBalances"
       | "takerMarketBalances"
       | "transferKeeperFee"
@@ -122,15 +124,15 @@ export interface ChromaticVaultInterface extends utils.Interface {
     values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "keeperFeePayer",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "makerBalances",
     values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "makerMarketBalances",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "migrateEarningDistributionTasks",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -167,6 +169,10 @@ export interface ChromaticVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "pendingWithdrawals",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setVaultEarningDistributor",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -217,15 +223,15 @@ export interface ChromaticVaultInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "keeperFeePayer",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "makerBalances",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "makerMarketBalances",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "migrateEarningDistributionTasks",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -265,6 +271,10 @@ export interface ChromaticVaultInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setVaultEarningDistributor",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "takerBalances",
     data: BytesLike
   ): Result;
@@ -290,6 +300,7 @@ export interface ChromaticVaultInterface extends utils.Interface {
     "TransferKeeperFee(uint256,uint256)": EventFragment;
     "TransferKeeperFee(address,uint256,uint256)": EventFragment;
     "TransferProtocolFee(address,uint256,uint256)": EventFragment;
+    "VaultEarningDistributorSet(address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "FlashLoan"): EventFragment;
@@ -308,6 +319,7 @@ export interface ChromaticVaultInterface extends utils.Interface {
     nameOrSignatureOrTopic: "TransferKeeperFee(address,uint256,uint256)"
   ): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferProtocolFee"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "VaultEarningDistributorSet"): EventFragment;
 }
 
 export interface FlashLoanEventObject {
@@ -467,6 +479,18 @@ export type TransferProtocolFeeEvent = TypedEvent<
 export type TransferProtocolFeeEventFilter =
   TypedEventFilter<TransferProtocolFeeEvent>;
 
+export interface VaultEarningDistributorSetEventObject {
+  vaultEarningDistributor: string;
+  oldVaultEarningDistributor: string;
+}
+export type VaultEarningDistributorSetEvent = TypedEvent<
+  [string, string],
+  VaultEarningDistributorSetEventObject
+>;
+
+export type VaultEarningDistributorSetEventFilter =
+  TypedEventFilter<VaultEarningDistributorSetEvent>;
+
 export interface ChromaticVault extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
@@ -590,8 +614,6 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    keeperFeePayer(overrides?: CallOverrides): Promise<[string]>;
-
     makerBalances(
       arg0: string,
       overrides?: CallOverrides
@@ -601,6 +623,11 @@ export interface ChromaticVault extends BaseContract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    migrateEarningDistributionTasks(
+      oldEarningDistributor: string,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
 
     /**
      * This function can only be called by a market contract.
@@ -697,6 +724,14 @@ export interface ChromaticVault extends BaseContract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    /**
+     * This function can only be called by the DAO address.
+     */
+    setVaultEarningDistributor(
+      _earningDistributor: string,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
 
     takerBalances(
       arg0: string,
@@ -821,14 +856,17 @@ export interface ChromaticVault extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  keeperFeePayer(overrides?: CallOverrides): Promise<string>;
-
   makerBalances(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   makerMarketBalances(
     arg0: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  migrateEarningDistributionTasks(
+    oldEarningDistributor: string,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
 
   /**
    * This function can only be called by a market contract.
@@ -922,6 +960,14 @@ export interface ChromaticVault extends BaseContract {
     arg0: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  /**
+   * This function can only be called by the DAO address.
+   */
+  setVaultEarningDistributor(
+    _earningDistributor: string,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
 
   takerBalances(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1043,14 +1089,17 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    keeperFeePayer(overrides?: CallOverrides): Promise<string>;
-
     makerBalances(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     makerMarketBalances(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    migrateEarningDistributionTasks(
+      oldEarningDistributor: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     /**
      * This function can only be called by a market contract.
@@ -1147,6 +1196,14 @@ export interface ChromaticVault extends BaseContract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    /**
+     * This function can only be called by the DAO address.
+     */
+    setVaultEarningDistributor(
+      _earningDistributor: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     takerBalances(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1304,6 +1361,15 @@ export interface ChromaticVault extends BaseContract {
       positionId?: BigNumberish | null,
       amount?: BigNumberish | null
     ): TransferProtocolFeeEventFilter;
+
+    "VaultEarningDistributorSet(address,address)"(
+      vaultEarningDistributor?: string | null,
+      oldVaultEarningDistributor?: string | null
+    ): VaultEarningDistributorSetEventFilter;
+    VaultEarningDistributorSet(
+      vaultEarningDistributor?: string | null,
+      oldVaultEarningDistributor?: string | null
+    ): VaultEarningDistributorSetEventFilter;
   };
 
   estimateGas: {
@@ -1403,13 +1469,16 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    keeperFeePayer(overrides?: CallOverrides): Promise<BigNumber>;
-
     makerBalances(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     makerMarketBalances(
       arg0: string,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    migrateEarningDistributionTasks(
+      oldEarningDistributor: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1506,6 +1575,14 @@ export interface ChromaticVault extends BaseContract {
     pendingWithdrawals(
       arg0: string,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * This function can only be called by the DAO address.
+     */
+    setVaultEarningDistributor(
+      _earningDistributor: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     takerBalances(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
@@ -1631,8 +1708,6 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    keeperFeePayer(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     makerBalances(
       arg0: string,
       overrides?: CallOverrides
@@ -1641,6 +1716,11 @@ export interface ChromaticVault extends BaseContract {
     makerMarketBalances(
       arg0: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    migrateEarningDistributionTasks(
+      oldEarningDistributor: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1737,6 +1817,14 @@ export interface ChromaticVault extends BaseContract {
     pendingWithdrawals(
       arg0: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * This function can only be called by the DAO address.
+     */
+    setVaultEarningDistributor(
+      _earningDistributor: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     takerBalances(

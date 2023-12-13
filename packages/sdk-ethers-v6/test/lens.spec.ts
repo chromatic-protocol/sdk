@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { ethers, parseEther } from "ethers";
 import { Client } from "../src/Client";
 import { getSigner, faucetTestToken, updatePrice } from "./testHelpers";
 
@@ -30,7 +30,7 @@ describe("lens sdk test", () => {
 
     const txReceipt = await client
       .router()
-      .addLiquidities(market, [{ feeRate: 100, amount: tokenBalance / 2n }]);
+      .addLiquidities(market, [{ feeRate: 100, amount: parseEther("1") }]);
     const lpReceiptIds = await client
       .router()
       .contracts()

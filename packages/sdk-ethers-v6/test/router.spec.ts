@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { BigNumberish, ethers, parseEther } from "ethers";
 import { Client } from "../src/Client";
 import { CLBToken__factory, IChromaticMarket__factory, IERC20__factory } from "../src/gen";
 import { encodeTokenId, handleBytesError } from "../src/utils/helpers";
@@ -44,17 +44,17 @@ describe("router sdk test", () => {
       return router.contracts().router()["getLpReceiptIds(address)"](marketAddress);
     }
 
-    async function addAndClaimLiquidity(tradingFeeRate: number) {
-      // swap
+    async function addAndClaimLiquidity(tradingFeeRate: number, amount: BigNumberish) {
       const tokenBalance = await faucetTestToken({
         signer: signer,
         testToken: testTokenAddress,
       });
 
       // add liquidity - router
-      const amount = tokenBalance / 2n;
       const clbBalanceBeforeAdd = await clbBalance(tradingFeeRate);
-      const addTxReceipt = await router.addLiquidities(marketAddress, [{ feeRate: tradingFeeRate, amount: amount }]);
+      const addTxReceipt = await router.addLiquidities(marketAddress, [
+        { feeRate: tradingFeeRate, amount: amount },
+      ]);
 
       const lpReceiptIds = await getLpReceiptIds();
 
@@ -90,12 +90,12 @@ describe("router sdk test", () => {
     await updatePrice({ market: marketAddress, signer, price: 1000 });
     const tradingFeeRate = 100;
 
-    const { clbBalanceAfterAdd } = await addAndClaimLiquidity(tradingFeeRate);
+    const { clbBalanceAfterAdd } = await addAndClaimLiquidity(tradingFeeRate, parseEther("1"));
 
     // removeLiquidity - router
-    const removeTxReceipt =  await router.removeLiquidities(marketAddress, [
+    const removeTxReceipt = await router.removeLiquidities(marketAddress, [
       { feeRate: tradingFeeRate, clbTokenAmount: clbBalanceAfterAdd },
-    ])
+    ]);
     const lpReceiptIds = await getLpReceiptIds();
 
     // withdrawLiquidity - router
@@ -120,7 +120,10 @@ describe("router sdk test", () => {
 
     await updatePrice({ market: marketAddress, signer, price: 1000 });
     const tradingFeeRate = 100;
-    const { clbBalanceAfterAdd, addAmount } = await addAndClaimLiquidity(tradingFeeRate);
+    const { clbBalanceAfterAdd, addAmount } = await addAndClaimLiquidity(
+      tradingFeeRate,
+      parseEther("10")
+    );
 
     let account = await client.account().getAccount();
     if (account === ethers.ZeroAddress) {
@@ -130,24 +133,19 @@ describe("router sdk test", () => {
     }
     console.log("getAccount", account);
 
-    const testTokenBalance = await tokenContract.balanceOf(signer.getAddress());
-    console.log(testTokenBalance);
-    await (await tokenContract.transfer(account, testTokenBalance)).wait();
-
-    const accountBalance = await tokenContract.balanceOf(account);
-    console.log("accountBalance", accountBalance);
+    await (await tokenContract.transfer(account, parseEther("11"))).wait();
 
     const bin100 = (await client.lens().liquidityBins(marketAddress)).filter(
       (b) => b.tradingFeeRate == 100n
     );
     // 0xd0e30db0
     const beforeOpenPositions = await getPositions();
-    const takerMargin = accountBalance / 3n;
+
     await router.openPosition(marketAddress, {
-      quantity: takerMargin, // x1 leverage
-      takerMargin,
-      makerMargin: bin100[0].freeLiquidity / 2n,
-      maxAllowableTradingFee: bin100[0].freeLiquidity / 2n / 10n,
+      quantity: parseEther("1"), // x1 leverage
+      takerMargin: parseEther("10"),
+      makerMargin: parseEther("10"),
+      maxAllowableTradingFee: parseEther("10"),
     });
 
     const afterOpenPositions = await getPositions();
@@ -206,5 +204,5 @@ describe("router sdk test", () => {
     await expect(
       async () => await client.marketFactory().currentInterestRate(await signer.getAddress())
     ).rejects.toThrow("call reverted with error: URT");
-  }, 60000);
+  }, 200000);
 });

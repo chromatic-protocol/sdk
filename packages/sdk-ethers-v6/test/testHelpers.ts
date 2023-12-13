@@ -1,37 +1,11 @@
 import { NonceManager, Signer, ethers } from "ethers";
-import {
-  IChromaticMarket__factory,
-  IERC20__factory,
-  TestSettlementToken__factory,
-} from "../src/gen";
+import { IChromaticMarket__factory, TestSettlementToken__factory } from "../src/gen";
 
 export const MNEMONIC_JUNK = "test test test test test test test test test test test junk";
-export const ARBITRUM_GOERLI_WETH9 = "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3";
-export const ARBITRUM_GOERLI_SWAP_ROUTER = "0xF1596041557707B1bC0b3ffB34346c1D9Ce94E86";
-export const WETH9 = new ethers.Contract(
-  ARBITRUM_GOERLI_WETH9,
-  [
-    {
-      inputs: [],
-      name: "deposit",
-      outputs: [],
-      stateMutability: "payable",
-      type: "function",
-    },
-    ...IERC20__factory.abi,
-  ],
-  getDefaultProvider()
-);
-
 export interface GetSignerParam {
   mnemonic?: string;
   selectedAccount?: number;
   privateKey?: string;
-}
-
-export interface WrapEthParam {
-  signer: Signer;
-  amount: bigint;
 }
 
 export interface FaucetParam {
@@ -73,24 +47,16 @@ export function getDefaultProvider(): ethers.JsonRpcProvider {
   return new ethers.JsonRpcProvider("http://127.0.0.1:8545"); // "http://localhost:8545"; // default value
 }
 
-export async function wrapEth(param: WrapEthParam) {
-  const feeData = await param.signer.provider.getFeeData();
-
-  const tx = await (WETH9.connect(param.signer) as ethers.Contract).deposit({
-    value: param.amount,
-    maxFeePerGas: feeData.maxFeePerGas * 2n,
-    maxPriorityFeePerGas: feeData.maxPriorityFeePerGas * 2n,
-    gasLimit: 100_000_000,
-    nonce: await param.signer.getNonce(),
-  });
-
-  await tx.wait();
-}
-
 export async function faucetTestToken(param: FaucetParam) {
   const recipient = await param.signer.getAddress();
   const testToken = TestSettlementToken__factory.connect(param.testToken, param.signer);
-  await (await testToken.faucet({ gasLimit: 1e10 })).wait();
+  const interval = Number(await testToken.faucetMinInterval());
+  const lastTs = Number(await testToken.lastFaucetTimestamp(recipient));
+  const ts = (await param.signer.provider.getBlock("latest")).timestamp;
+  if (ts >= lastTs + interval) {
+    // e232c97a AlreadyFaucetedInInterval
+    await (await testToken.faucet()).wait();
+  }
 
   return testToken.balanceOf(recipient);
 }
@@ -98,13 +64,14 @@ export async function faucetTestToken(param: FaucetParam) {
 export async function updatePrice(param: UpdatePriceParam) {
   const market = IChromaticMarket__factory.connect(param.market, param.signer);
   const oracleProviderAddress = await market.oracleProvider();
+  console.log('oracleProviderAddress',oracleProviderAddress)
   const oracleProvider = new ethers.Contract(
     oracleProviderAddress,
     [
       {
         inputs: [
           {
-            internalType: "Fixed18",
+            internalType: "int256",
             name: "price",
             type: "int256",
           },

@@ -28,8 +28,6 @@ export interface MarketStateFacetInterface extends Interface {
       | "clbToken"
       | "factory"
       | "feeProtocol"
-      | "keeperFeePayer"
-      | "liquidator"
       | "oracleProvider"
       | "setFeeProtocol"
       | "settlementToken"
@@ -42,14 +40,6 @@ export interface MarketStateFacetInterface extends Interface {
   encodeFunctionData(functionFragment: "factory", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "feeProtocol",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "keeperFeePayer",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "liquidator",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -72,11 +62,6 @@ export interface MarketStateFacetInterface extends Interface {
     functionFragment: "feeProtocol",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "keeperFeePayer",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "liquidator", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "oracleProvider",
     data: BytesLike
@@ -167,16 +152,6 @@ export interface MarketStateFacet extends BaseContract {
   feeProtocol: TypedContractMethod<[], [bigint], "view">;
 
   /**
-   * Returns the keeper fee payer contract for the market.
-   */
-  keeperFeePayer: TypedContractMethod<[], [string], "view">;
-
-  /**
-   * Returns the liquidator contract for the market.
-   */
-  liquidator: TypedContractMethod<[], [string], "view">;
-
-  /**
    * Returns the oracle provider contract for the market.
    */
   oracleProvider: TypedContractMethod<[], [string], "view">;
@@ -214,12 +189,6 @@ export interface MarketStateFacet extends BaseContract {
   getFunction(
     nameOrSignature: "feeProtocol"
   ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "keeperFeePayer"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "liquidator"
-  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "oracleProvider"
   ): TypedContractMethod<[], [string], "view">;

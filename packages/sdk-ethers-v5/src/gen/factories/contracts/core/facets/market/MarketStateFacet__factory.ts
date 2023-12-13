@@ -85,32 +85,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "keeperFeePayer",
-    outputs: [
-      {
-        internalType: "contract IKeeperFeePayer",
-        name: "_keeperFeePayer",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "liquidator",
-    outputs: [
-      {
-        internalType: "contract ILiquidator",
-        name: "_liquidator",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "oracleProvider",
     outputs: [
       {

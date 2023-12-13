@@ -256,6 +256,11 @@ const _abi = [
             type: "address",
           },
           {
+            internalType: "address",
+            name: "liquidator",
+            type: "address",
+          },
+          {
             components: [
               {
                 internalType: "uint16",

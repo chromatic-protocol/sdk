@@ -45,6 +45,7 @@ export type PositionStruct = {
   closeTimestamp: BigNumberish;
   takerMargin: BigNumberish;
   owner: string;
+  liquidator: string;
   _binMargins: BinMarginStruct[];
   _feeProtocol: BigNumberish;
 };
@@ -58,6 +59,7 @@ export type PositionStructOutput = [
   BigNumber,
   BigNumber,
   string,
+  string,
   BinMarginStructOutput[],
   number
 ] & {
@@ -69,6 +71,7 @@ export type PositionStructOutput = [
   closeTimestamp: BigNumber;
   takerMargin: BigNumber;
   owner: string;
+  liquidator: string;
   _binMargins: BinMarginStructOutput[];
   _feeProtocol: number;
 };
@@ -151,9 +154,9 @@ export interface MarketTradeFacetInterface extends utils.Interface {
   ): Result;
 
   events: {
-    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
-    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
-    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))": EventFragment;
+    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))": EventFragment;
+    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))": EventFragment;
+    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))": EventFragment;
     "TransferProtocolFee(uint256,uint256)": EventFragment;
   };
 
@@ -358,7 +361,7 @@ export interface MarketTradeFacet extends BaseContract {
   };
 
   filters: {
-    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))"(
       account?: string | null,
       pnl?: BigNumberish | null,
       interest?: BigNumberish | null,
@@ -371,7 +374,7 @@ export interface MarketTradeFacet extends BaseContract {
       position?: null
     ): ClaimPositionEventFilter;
 
-    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))"(
       account?: string | null,
       position?: null
     ): ClosePositionEventFilter;
@@ -380,7 +383,7 @@ export interface MarketTradeFacet extends BaseContract {
       position?: null
     ): ClosePositionEventFilter;
 
-    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,(uint16,uint256)[],uint8))"(
+    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))"(
       account?: string | null,
       position?: null
     ): OpenPositionEventFilter;

@@ -1,25 +1,10 @@
-import {
-  Address,
-  WalletClient,
-  createPublicClient,
-  createWalletClient,
-  getContract,
-  http,
-} from "viem";
+import { Address, createPublicClient, createWalletClient, getContract, http } from "viem";
 import { mnemonicToAccount } from "viem/accounts";
 import { hardhat } from "viem/chains";
 import { Client } from "../src/Client";
-import { ierc20ABI, testSettlementTokenABI } from "../src/gen";
-import { MAX_UINT256 } from "../src/utils/helpers";
+import { testSettlementTokenABI } from "../src/gen";
 
 export const MNEMONIC_JUNK = "test test test test test test test test test test test junk";
-export const ARBITRUM_GOERLI_WETH9 = "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3";
-export const ARBITRUM_GOERLI_SWAP_ROUTER = "0xF1596041557707B1bC0b3ffB34346c1D9Ce94E86";
-
-export interface WrapEthParam {
-  client: Client;
-  amount: bigint;
-}
 
 export interface FaucetParam {
   client: Client;
@@ -49,30 +34,6 @@ export function testClient(): Client {
   return new Client({ publicClient, walletClient });
 }
 
-export async function wrapEth(param: WrapEthParam) {
-  const WETH9 = getContract({
-    abi: [
-      {
-        inputs: [],
-        name: "deposit",
-        outputs: [],
-        stateMutability: "payable",
-        type: "function",
-      },
-    ],
-    address: ARBITRUM_GOERLI_WETH9,
-    publicClient: param.client.publicClient,
-    walletClient: param.client.walletClient,
-  });
-
-  const { request } = await WETH9.simulate.deposit({
-    value: param.amount,
-    account: param.client.walletClient!.account,
-  });
-  const hash = await param.client.walletClient!.writeContract({ ...request, value: param.amount });
-  await param.client.publicClient!.waitForTransactionReceipt({ hash });
-}
-
 export async function faucetTestToken(param: FaucetParam) {
   const account = param.client.walletClient!.account!.address!;
   const testToken = getContract({
@@ -81,8 +42,15 @@ export async function faucetTestToken(param: FaucetParam) {
     publicClient: param.client.publicClient,
     walletClient: param.client.walletClient,
   });
-  const { request } = await testToken.simulate.faucet({ account });
-  await param.client.walletClient!.writeContract({ ...request, gas: BigInt(1e10) });
+
+  const interval = await testToken.read.faucetMinInterval();
+  const lastTs = await testToken.read.lastFaucetTimestamp([account]);
+  const ts = (await param.client.publicClient!.getBlock()).timestamp;
+  if (ts >= lastTs + interval) {
+    // e232c97a AlreadyFaucetedInInterval
+    const { request } = await testToken.simulate.faucet({ account });
+    await param.client.walletClient!.writeContract({ ...request, gas: BigInt(1e10) });
+  }
 
   return await testToken.read.balanceOf([account]);
 }
@@ -95,7 +63,7 @@ export async function updatePrice(param: UpdatePriceParam) {
       {
         inputs: [
           {
-            internalType: "Fixed18",
+            internalType: "int256",
             name: "price",
             type: "int256",
           },

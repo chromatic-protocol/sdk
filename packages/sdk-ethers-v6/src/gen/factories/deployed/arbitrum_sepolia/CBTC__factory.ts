@@ -17,7 +17,7 @@ import type { NonPayableOverrides } from "../../../common";
 import type {
   CBTC,
   CBTCInterface,
-} from "../../../deployed/arbitrum_goerli/CBTC";
+} from "../../../deployed/arbitrum_sepolia/CBTC";
 
 const _abi = [
   {

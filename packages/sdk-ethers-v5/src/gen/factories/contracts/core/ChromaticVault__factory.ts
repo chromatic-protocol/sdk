@@ -38,6 +38,11 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "OnlyAccessableByDao",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "OnlyAccessableByEarningDistributor",
     type: "error",
   },
@@ -382,6 +387,25 @@ const _abi = [
     type: "event",
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "vaultEarningDistributor",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "oldVaultEarningDistributor",
+        type: "address",
+      },
+    ],
+    name: "VaultEarningDistributorSet",
+    type: "event",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -563,19 +587,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "keeperFeePayer",
-    outputs: [
-      {
-        internalType: "contract IKeeperFeePayer",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "address",
@@ -611,6 +622,19 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IVaultEarningDistributor",
+        name: "oldEarningDistributor",
+        type: "address",
+      },
+    ],
+    name: "migrateEarningDistributionTasks",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -817,6 +841,19 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_earningDistributor",
+        type: "address",
+      },
+    ],
+    name: "setVaultEarningDistributor",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {

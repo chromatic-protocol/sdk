@@ -36,9 +36,9 @@ export interface ChromaticVaultInterface extends Interface {
       | "factory"
       | "flashLoan"
       | "getPendingBinShare"
-      | "keeperFeePayer"
       | "makerBalances"
       | "makerMarketBalances"
+      | "migrateEarningDistributionTasks"
       | "onAddLiquidity"
       | "onClaimPosition"
       | "onOpenPosition"
@@ -48,6 +48,7 @@ export interface ChromaticVaultInterface extends Interface {
       | "pendingMakerEarnings"
       | "pendingMarketEarnings"
       | "pendingWithdrawals"
+      | "setVaultEarningDistributor"
       | "takerBalances"
       | "takerMarketBalances"
       | "transferKeeperFee"
@@ -67,6 +68,7 @@ export interface ChromaticVaultInterface extends Interface {
       | "TransferKeeperFee(uint256,uint256)"
       | "TransferKeeperFee(address,uint256,uint256)"
       | "TransferProtocolFee"
+      | "VaultEarningDistributorSet"
   ): EventFragment;
 
   encodeFunctionData(
@@ -107,15 +109,15 @@ export interface ChromaticVaultInterface extends Interface {
     values: [AddressLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "keeperFeePayer",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "makerBalances",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "makerMarketBalances",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "migrateEarningDistributionTasks",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
@@ -158,6 +160,10 @@ export interface ChromaticVaultInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "pendingWithdrawals",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setVaultEarningDistributor",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
@@ -208,15 +214,15 @@ export interface ChromaticVaultInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "keeperFeePayer",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "makerBalances",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "makerMarketBalances",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "migrateEarningDistributionTasks",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -253,6 +259,10 @@ export interface ChromaticVaultInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "pendingWithdrawals",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setVaultEarningDistributor",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -522,6 +532,25 @@ export namespace TransferProtocolFeeEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace VaultEarningDistributorSetEvent {
+  export type InputTuple = [
+    vaultEarningDistributor: AddressLike,
+    oldVaultEarningDistributor: AddressLike
+  ];
+  export type OutputTuple = [
+    vaultEarningDistributor: string,
+    oldVaultEarningDistributor: string
+  ];
+  export interface OutputObject {
+    vaultEarningDistributor: string;
+    oldVaultEarningDistributor: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export interface ChromaticVault extends BaseContract {
   connect(runner?: ContractRunner | null): ChromaticVault;
   waitForDeployment(): Promise<this>;
@@ -669,14 +698,18 @@ export interface ChromaticVault extends BaseContract {
     "view"
   >;
 
-  keeperFeePayer: TypedContractMethod<[], [string], "view">;
-
   makerBalances: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
   makerMarketBalances: TypedContractMethod<
     [arg0: AddressLike],
     [bigint],
     "view"
+  >;
+
+  migrateEarningDistributionTasks: TypedContractMethod<
+    [oldEarningDistributor: AddressLike],
+    [void],
+    "nonpayable"
   >;
 
   /**
@@ -787,6 +820,15 @@ export interface ChromaticVault extends BaseContract {
     "view"
   >;
 
+  /**
+   * This function can only be called by the DAO address.
+   */
+  setVaultEarningDistributor: TypedContractMethod<
+    [_earningDistributor: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
   takerBalances: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
   takerMarketBalances: TypedContractMethod<
@@ -874,14 +916,18 @@ export interface ChromaticVault extends BaseContract {
     "view"
   >;
   getFunction(
-    nameOrSignature: "keeperFeePayer"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
     nameOrSignature: "makerBalances"
   ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "makerMarketBalances"
   ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "migrateEarningDistributionTasks"
+  ): TypedContractMethod<
+    [oldEarningDistributor: AddressLike],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "onAddLiquidity"
   ): TypedContractMethod<
@@ -949,6 +995,13 @@ export interface ChromaticVault extends BaseContract {
   getFunction(
     nameOrSignature: "pendingWithdrawals"
   ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "setVaultEarningDistributor"
+  ): TypedContractMethod<
+    [_earningDistributor: AddressLike],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "takerBalances"
   ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
@@ -1051,6 +1104,13 @@ export interface ChromaticVault extends BaseContract {
     TransferProtocolFeeEvent.InputTuple,
     TransferProtocolFeeEvent.OutputTuple,
     TransferProtocolFeeEvent.OutputObject
+  >;
+  getEvent(
+    key: "VaultEarningDistributorSet"
+  ): TypedContractEvent<
+    VaultEarningDistributorSetEvent.InputTuple,
+    VaultEarningDistributorSetEvent.OutputTuple,
+    VaultEarningDistributorSetEvent.OutputObject
   >;
 
   filters: {
@@ -1173,6 +1233,17 @@ export interface ChromaticVault extends BaseContract {
       TransferProtocolFeeEvent.InputTuple,
       TransferProtocolFeeEvent.OutputTuple,
       TransferProtocolFeeEvent.OutputObject
+    >;
+
+    "VaultEarningDistributorSet(address,address)": TypedContractEvent<
+      VaultEarningDistributorSetEvent.InputTuple,
+      VaultEarningDistributorSetEvent.OutputTuple,
+      VaultEarningDistributorSetEvent.OutputObject
+    >;
+    VaultEarningDistributorSet: TypedContractEvent<
+      VaultEarningDistributorSetEvent.InputTuple,
+      VaultEarningDistributorSetEvent.OutputTuple,
+      VaultEarningDistributorSetEvent.OutputObject
     >;
   };
 }

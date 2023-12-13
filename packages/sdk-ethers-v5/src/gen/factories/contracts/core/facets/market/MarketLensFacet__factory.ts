@@ -446,6 +446,11 @@ const _abi = [
             type: "address",
           },
           {
+            internalType: "address",
+            name: "liquidator",
+            type: "address",
+          },
+          {
             components: [
               {
                 internalType: "uint16",
@@ -526,6 +531,11 @@ const _abi = [
           {
             internalType: "address",
             name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "liquidator",
             type: "address",
           },
           {

@@ -109,6 +109,7 @@ export type PositionStruct = {
   closeTimestamp: BigNumberish;
   takerMargin: BigNumberish;
   owner: AddressLike;
+  liquidator: AddressLike;
   _binMargins: BinMarginStruct[];
   _feeProtocol: BigNumberish;
 };
@@ -122,6 +123,7 @@ export type PositionStructOutput = [
   closeTimestamp: bigint,
   takerMargin: bigint,
   owner: string,
+  liquidator: string,
   _binMargins: BinMarginStructOutput[],
   _feeProtocol: bigint
 ] & {
@@ -133,6 +135,7 @@ export type PositionStructOutput = [
   closeTimestamp: bigint;
   takerMargin: bigint;
   owner: string;
+  liquidator: string;
   _binMargins: BinMarginStructOutput[];
   _feeProtocol: bigint;
 };

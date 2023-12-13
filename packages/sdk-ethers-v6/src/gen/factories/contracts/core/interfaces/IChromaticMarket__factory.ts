@@ -265,6 +265,11 @@ const _abi = [
             type: "address",
           },
           {
+            internalType: "address",
+            name: "liquidator",
+            type: "address",
+          },
+          {
             components: [
               {
                 internalType: "uint16",
@@ -366,6 +371,11 @@ const _abi = [
             type: "address",
           },
           {
+            internalType: "address",
+            name: "liquidator",
+            type: "address",
+          },
+          {
             components: [
               {
                 internalType: "uint16",
@@ -446,6 +456,11 @@ const _abi = [
           {
             internalType: "address",
             name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "liquidator",
             type: "address",
           },
           {
@@ -550,6 +565,11 @@ const _abi = [
             type: "address",
           },
           {
+            internalType: "address",
+            name: "liquidator",
+            type: "address",
+          },
+          {
             components: [
               {
                 internalType: "uint16",
@@ -630,6 +650,11 @@ const _abi = [
           {
             internalType: "address",
             name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "liquidator",
             type: "address",
           },
           {
@@ -1652,6 +1677,11 @@ const _abi = [
             type: "address",
           },
           {
+            internalType: "address",
+            name: "liquidator",
+            type: "address",
+          },
+          {
             components: [
               {
                 internalType: "uint16",
@@ -1735,6 +1765,11 @@ const _abi = [
             type: "address",
           },
           {
+            internalType: "address",
+            name: "liquidator",
+            type: "address",
+          },
+          {
             components: [
               {
                 internalType: "uint16",
@@ -1766,19 +1801,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "keeperFeePayer",
-    outputs: [
-      {
-        internalType: "contract IKeeperFeePayer",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "uint256",
@@ -1799,19 +1821,6 @@ const _abi = [
     name: "liquidate",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "liquidator",
-    outputs: [
-      {
-        internalType: "contract ILiquidator",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
   {

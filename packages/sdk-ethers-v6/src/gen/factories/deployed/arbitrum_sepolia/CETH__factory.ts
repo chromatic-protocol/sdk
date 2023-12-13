@@ -17,7 +17,7 @@ import type { NonPayableOverrides } from "../../../common";
 import type {
   CETH,
   CETHInterface,
-} from "../../../deployed/arbitrum_goerli/CETH";
+} from "../../../deployed/arbitrum_sepolia/CETH";
 
 const _abi = [
   {

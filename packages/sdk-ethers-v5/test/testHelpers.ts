@@ -1,37 +1,15 @@
 import { BigNumber, ContractReceipt, Signer, ethers } from "ethers";
 import {
   IChromaticMarket__factory,
-  IERC20__factory,
   TestSettlementToken__factory,
 } from "../src/gen";
 
 export const MNEMONIC_JUNK = "test test test test test test test test test test test junk";
-export const ARBITRUM_GOERLI_WETH9 = "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3";
-export const ARBITRUM_GOERLI_SWAP_ROUTER = "0xF1596041557707B1bC0b3ffB34346c1D9Ce94E86";
-export const WETH9 = new ethers.Contract(
-  ARBITRUM_GOERLI_WETH9,
-  [
-    {
-      inputs: [],
-      name: "deposit",
-      outputs: [],
-      stateMutability: "payable",
-      type: "function",
-    },
-    ...IERC20__factory.abi,
-  ],
-  getDefaultProvider()
-);
 
 export interface GetSignerParam {
   mnemonic?: string;
   selectedAccount?: number;
   privateKey?: string;
-}
-
-export interface WrapEthParam {
-  signer: Signer;
-  amount: BigNumber;
 }
 
 export interface FaucetParam {
@@ -69,19 +47,16 @@ export function getDefaultProvider(): ethers.providers.JsonRpcProvider {
   return new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545"); // "http://localhost:8545"; // default value
 }
 
-export async function wrapEth(param: WrapEthParam) {
-  const tx = await WETH9.connect(param.signer).deposit({
-    value: param.amount,
-    gasPrice: await param.signer.getGasPrice(),
-  });
-  await tx.wait();
-}
-
 export async function faucetTestToken(param: FaucetParam) {
   const recipient = await param.signer.getAddress();
   const testToken = TestSettlementToken__factory.connect(param.testToken, param.signer);
-  await (await testToken.faucet({ gasLimit: 1e10 })).wait();
-
+  const interval = (await testToken.faucetMinInterval()).toNumber();
+  const lastTs = (await testToken.lastFaucetTimestamp(recipient)).toNumber();
+  const ts = (await param.signer.provider.getBlock("latest")).timestamp;
+  if (ts >= lastTs + interval) {
+    // e232c97a AlreadyFaucetedInInterval
+    await (await testToken.faucet()).wait();
+  }
   return testToken.balanceOf(recipient);
 }
 

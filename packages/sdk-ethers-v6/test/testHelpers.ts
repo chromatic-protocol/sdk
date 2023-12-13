@@ -64,7 +64,6 @@ export async function faucetTestToken(param: FaucetParam) {
 export async function updatePrice(param: UpdatePriceParam) {
   const market = IChromaticMarket__factory.connect(param.market, param.signer);
   const oracleProviderAddress = await market.oracleProvider();
-  console.log('oracleProviderAddress',oracleProviderAddress)
   const oracleProvider = new ethers.Contract(
     oracleProviderAddress,
     [
@@ -85,8 +84,11 @@ export async function updatePrice(param: UpdatePriceParam) {
     param.signer
   );
 
-  const tx = await oracleProvider.increaseVersion(BigInt(param.price.toString()) * BigInt(10 ** 8));
-
+  
+  const tx = await oracleProvider.increaseVersion(
+    BigInt(param.price.toString()) * BigInt(10 ** 8),
+    { gasLimit: BigInt(1e10) } // intrinsic gas too high
+  );
   await tx.wait();
 }
 

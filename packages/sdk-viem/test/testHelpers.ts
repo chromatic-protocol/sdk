@@ -63,7 +63,7 @@ export async function updatePrice(param: UpdatePriceParam) {
       {
         inputs: [
           {
-            internalType: "Fixed18",
+            internalType: "int256",
             name: "price",
             type: "int256",
           },

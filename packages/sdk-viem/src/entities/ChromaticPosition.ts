@@ -54,8 +54,9 @@ export interface IPosition {
   owner: string;
   /** The bin margins for the position, it represents the amount of collateral for each bin */
   _binMargins: IBinMargin[];
-  /** The denominator of the protocol's % share of the fees */
-  _feeProtocol: number;
+    
+  /** The protocol fee rate for the market */
+  _protocolFeeRate: number;
   /** The amount of maker's margin */
   makerMargin: bigint;
   /** The price of the underlying asset when position was closed. */

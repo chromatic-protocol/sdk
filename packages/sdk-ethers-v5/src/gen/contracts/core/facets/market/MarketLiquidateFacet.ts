@@ -46,8 +46,8 @@ export type PositionStruct = {
   takerMargin: BigNumberish;
   owner: string;
   liquidator: string;
+  _protocolFeeRate: BigNumberish;
   _binMargins: BinMarginStruct[];
-  _feeProtocol: BigNumberish;
 };
 
 export type PositionStructOutput = [
@@ -60,8 +60,8 @@ export type PositionStructOutput = [
   BigNumber,
   string,
   string,
-  BinMarginStructOutput[],
-  number
+  number,
+  BinMarginStructOutput[]
 ] & {
   id: BigNumber;
   openVersion: BigNumber;
@@ -72,8 +72,8 @@ export type PositionStructOutput = [
   takerMargin: BigNumber;
   owner: string;
   liquidator: string;
+  _protocolFeeRate: number;
   _binMargins: BinMarginStructOutput[];
-  _feeProtocol: number;
 };
 
 export interface MarketLiquidateFacetInterface extends utils.Interface {
@@ -124,8 +124,8 @@ export interface MarketLiquidateFacetInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "liquidate", data: BytesLike): Result;
 
   events: {
-    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))": EventFragment;
-    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))": EventFragment;
+    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
+    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ClaimPositionByKeeper"): EventFragment;
@@ -324,7 +324,7 @@ export interface MarketLiquidateFacet extends BaseContract {
   };
 
   filters: {
-    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))"(
+    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
       account?: string | null,
       pnl?: BigNumberish | null,
       interest?: BigNumberish | null,
@@ -339,7 +339,7 @@ export interface MarketLiquidateFacet extends BaseContract {
       position?: null
     ): ClaimPositionByKeeperEventFilter;
 
-    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))"(
+    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
       account?: string | null,
       pnl?: BigNumberish | null,
       interest?: BigNumberish | null,

@@ -68,8 +68,8 @@ export type PositionStruct = {
   takerMargin: BigNumberish;
   owner: AddressLike;
   liquidator: AddressLike;
+  _protocolFeeRate: BigNumberish;
   _binMargins: BinMarginStruct[];
-  _feeProtocol: BigNumberish;
 };
 
 export type PositionStructOutput = [
@@ -82,8 +82,8 @@ export type PositionStructOutput = [
   takerMargin: bigint,
   owner: string,
   liquidator: string,
-  _binMargins: BinMarginStructOutput[],
-  _feeProtocol: bigint
+  _protocolFeeRate: bigint,
+  _binMargins: BinMarginStructOutput[]
 ] & {
   id: bigint;
   openVersion: bigint;
@@ -94,8 +94,8 @@ export type PositionStructOutput = [
   takerMargin: bigint;
   owner: string;
   liquidator: string;
+  _protocolFeeRate: bigint;
   _binMargins: BinMarginStructOutput[];
-  _feeProtocol: bigint;
 };
 
 export type ClaimableLiquidityStruct = {
@@ -255,7 +255,6 @@ export interface IChromaticMarketInterface extends Interface {
       | "closingPositionBatch"
       | "distributeEarningToBins"
       | "factory"
-      | "feeProtocol"
       | "getBinFreeLiquidity"
       | "getBinLiquidity"
       | "getBinValues"
@@ -271,9 +270,10 @@ export interface IChromaticMarketInterface extends Interface {
       | "pendingLiquidityBatch"
       | "pendingPosition"
       | "pendingPositionBatch"
+      | "protocolFeeRate"
       | "removeLiquidity"
       | "removeLiquidityBatch"
-      | "setFeeProtocol"
+      | "setProtocolFeeRate"
       | "settle"
       | "settleAll"
       | "settlementToken"
@@ -293,9 +293,9 @@ export interface IChromaticMarketInterface extends Interface {
       | "ClosePosition"
       | "Liquidate"
       | "OpenPosition"
+      | "ProtocolFeeRateSet"
       | "RemoveLiquidity"
       | "RemoveLiquidityBatch"
-      | "SetFeeProtocol"
       | "TransferProtocolFee"
       | "WithdrawLiquidity"
       | "WithdrawLiquidityBatch"
@@ -360,10 +360,6 @@ export interface IChromaticMarketInterface extends Interface {
   ): string;
   encodeFunctionData(functionFragment: "factory", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "feeProtocol",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "getBinFreeLiquidity",
     values: [BigNumberish]
   ): string;
@@ -424,6 +420,10 @@ export interface IChromaticMarketInterface extends Interface {
     values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
+    functionFragment: "protocolFeeRate",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "removeLiquidity",
     values: [AddressLike, BigNumberish, BytesLike]
   ): string;
@@ -432,7 +432,7 @@ export interface IChromaticMarketInterface extends Interface {
     values: [AddressLike, BigNumberish[], BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "setFeeProtocol",
+    functionFragment: "setProtocolFeeRate",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -513,10 +513,6 @@ export interface IChromaticMarketInterface extends Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "feeProtocol",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "getBinFreeLiquidity",
     data: BytesLike
   ): Result;
@@ -574,6 +570,10 @@ export interface IChromaticMarketInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "protocolFeeRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "removeLiquidity",
     data: BytesLike
   ): Result;
@@ -582,7 +582,7 @@ export interface IChromaticMarketInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setFeeProtocol",
+    functionFragment: "setProtocolFeeRate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "settle", data: BytesLike): Result;
@@ -771,6 +771,25 @@ export namespace OpenPositionEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace ProtocolFeeRateSetEvent {
+  export type InputTuple = [
+    protocolFeeRateOld: BigNumberish,
+    protocolFeeRateNew: BigNumberish
+  ];
+  export type OutputTuple = [
+    protocolFeeRateOld: bigint,
+    protocolFeeRateNew: bigint
+  ];
+  export interface OutputObject {
+    protocolFeeRateOld: bigint;
+    protocolFeeRateNew: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace RemoveLiquidityEvent {
   export type InputTuple = [receipt: LpReceiptStruct];
   export type OutputTuple = [receipt: LpReceiptStructOutput];
@@ -788,22 +807,6 @@ export namespace RemoveLiquidityBatchEvent {
   export type OutputTuple = [receipts: LpReceiptStructOutput[]];
   export interface OutputObject {
     receipts: LpReceiptStructOutput[];
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace SetFeeProtocolEvent {
-  export type InputTuple = [
-    feeProtocolOld: BigNumberish,
-    feeProtocolNew: BigNumberish
-  ];
-  export type OutputTuple = [feeProtocolOld: bigint, feeProtocolNew: bigint];
-  export interface OutputObject {
-    feeProtocolOld: bigint;
-    feeProtocolNew: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -1081,11 +1084,6 @@ export interface IChromaticMarket extends BaseContract {
   factory: TypedContractMethod<[], [string], "view">;
 
   /**
-   * Returns the denominator of the protocol's % share of the fees
-   */
-  feeProtocol: TypedContractMethod<[], [bigint], "view">;
-
-  /**
    * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
    * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
    */
@@ -1242,6 +1240,11 @@ export interface IChromaticMarket extends BaseContract {
   >;
 
   /**
+   * Returns the protocol fee rate
+   */
+  protocolFeeRate: TypedContractMethod<[], [bigint], "view">;
+
+  /**
    * Removes liquidity from the market.
    * @param data Additional data for the liquidity callback.
    * @param recipient The address to receive the removed liquidity.
@@ -1272,11 +1275,11 @@ export interface IChromaticMarket extends BaseContract {
   >;
 
   /**
-   * Set the denominator of the protocol's % share of the fees
-   * @param _feeProtocol new protocol fee for the market
+   * Set the new protocol fee rate
+   * @param _protocolFeeRate new protocol fee rate for the market
    */
-  setFeeProtocol: TypedContractMethod<
-    [_feeProtocol: BigNumberish],
+  setProtocolFeeRate: TypedContractMethod<
+    [_protocolFeeRate: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -1432,9 +1435,6 @@ export interface IChromaticMarket extends BaseContract {
     nameOrSignature: "factory"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "feeProtocol"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
     nameOrSignature: "getBinFreeLiquidity"
   ): TypedContractMethod<[tradingFeeRate: BigNumberish], [bigint], "view">;
   getFunction(
@@ -1526,6 +1526,9 @@ export interface IChromaticMarket extends BaseContract {
     "view"
   >;
   getFunction(
+    nameOrSignature: "protocolFeeRate"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "removeLiquidity"
   ): TypedContractMethod<
     [recipient: AddressLike, tradingFeeRate: BigNumberish, data: BytesLike],
@@ -1545,8 +1548,12 @@ export interface IChromaticMarket extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "setFeeProtocol"
-  ): TypedContractMethod<[_feeProtocol: BigNumberish], [void], "nonpayable">;
+    nameOrSignature: "setProtocolFeeRate"
+  ): TypedContractMethod<
+    [_protocolFeeRate: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "settle"
   ): TypedContractMethod<[feeRates: BigNumberish[]], [void], "nonpayable">;
@@ -1638,6 +1645,13 @@ export interface IChromaticMarket extends BaseContract {
     OpenPositionEvent.OutputObject
   >;
   getEvent(
+    key: "ProtocolFeeRateSet"
+  ): TypedContractEvent<
+    ProtocolFeeRateSetEvent.InputTuple,
+    ProtocolFeeRateSetEvent.OutputTuple,
+    ProtocolFeeRateSetEvent.OutputObject
+  >;
+  getEvent(
     key: "RemoveLiquidity"
   ): TypedContractEvent<
     RemoveLiquidityEvent.InputTuple,
@@ -1650,13 +1664,6 @@ export interface IChromaticMarket extends BaseContract {
     RemoveLiquidityBatchEvent.InputTuple,
     RemoveLiquidityBatchEvent.OutputTuple,
     RemoveLiquidityBatchEvent.OutputObject
-  >;
-  getEvent(
-    key: "SetFeeProtocol"
-  ): TypedContractEvent<
-    SetFeeProtocolEvent.InputTuple,
-    SetFeeProtocolEvent.OutputTuple,
-    SetFeeProtocolEvent.OutputObject
   >;
   getEvent(
     key: "TransferProtocolFee"
@@ -1780,6 +1787,17 @@ export interface IChromaticMarket extends BaseContract {
       OpenPositionEvent.OutputObject
     >;
 
+    "ProtocolFeeRateSet(uint16,uint16)": TypedContractEvent<
+      ProtocolFeeRateSetEvent.InputTuple,
+      ProtocolFeeRateSetEvent.OutputTuple,
+      ProtocolFeeRateSetEvent.OutputObject
+    >;
+    ProtocolFeeRateSet: TypedContractEvent<
+      ProtocolFeeRateSetEvent.InputTuple,
+      ProtocolFeeRateSetEvent.OutputTuple,
+      ProtocolFeeRateSetEvent.OutputObject
+    >;
+
     "RemoveLiquidity(tuple)": TypedContractEvent<
       RemoveLiquidityEvent.InputTuple,
       RemoveLiquidityEvent.OutputTuple,
@@ -1800,17 +1818,6 @@ export interface IChromaticMarket extends BaseContract {
       RemoveLiquidityBatchEvent.InputTuple,
       RemoveLiquidityBatchEvent.OutputTuple,
       RemoveLiquidityBatchEvent.OutputObject
-    >;
-
-    "SetFeeProtocol(uint8,uint8)": TypedContractEvent<
-      SetFeeProtocolEvent.InputTuple,
-      SetFeeProtocolEvent.OutputTuple,
-      SetFeeProtocolEvent.OutputObject
-    >;
-    SetFeeProtocol: TypedContractEvent<
-      SetFeeProtocolEvent.InputTuple,
-      SetFeeProtocolEvent.OutputTuple,
-      SetFeeProtocolEvent.OutputObject
     >;
 
     "TransferProtocolFee(uint256,uint256)": TypedContractEvent<

@@ -27,27 +27,27 @@ export interface MarketStateFacetInterface extends Interface {
     nameOrSignature:
       | "clbToken"
       | "factory"
-      | "feeProtocol"
       | "oracleProvider"
-      | "setFeeProtocol"
+      | "protocolFeeRate"
+      | "setProtocolFeeRate"
       | "settlementToken"
       | "vault"
   ): FunctionFragment;
 
-  getEvent(nameOrSignatureOrTopic: "SetFeeProtocol"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ProtocolFeeRateSet"): EventFragment;
 
   encodeFunctionData(functionFragment: "clbToken", values?: undefined): string;
   encodeFunctionData(functionFragment: "factory", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "feeProtocol",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "oracleProvider",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "setFeeProtocol",
+    functionFragment: "protocolFeeRate",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setProtocolFeeRate",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -59,15 +59,15 @@ export interface MarketStateFacetInterface extends Interface {
   decodeFunctionResult(functionFragment: "clbToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "feeProtocol",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "oracleProvider",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setFeeProtocol",
+    functionFragment: "protocolFeeRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setProtocolFeeRate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -77,15 +77,18 @@ export interface MarketStateFacetInterface extends Interface {
   decodeFunctionResult(functionFragment: "vault", data: BytesLike): Result;
 }
 
-export namespace SetFeeProtocolEvent {
+export namespace ProtocolFeeRateSetEvent {
   export type InputTuple = [
-    feeProtocolOld: BigNumberish,
-    feeProtocolNew: BigNumberish
+    protocolFeeRateOld: BigNumberish,
+    protocolFeeRateNew: BigNumberish
   ];
-  export type OutputTuple = [feeProtocolOld: bigint, feeProtocolNew: bigint];
+  export type OutputTuple = [
+    protocolFeeRateOld: bigint,
+    protocolFeeRateNew: bigint
+  ];
   export interface OutputObject {
-    feeProtocolOld: bigint;
-    feeProtocolNew: bigint;
+    protocolFeeRateOld: bigint;
+    protocolFeeRateNew: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -147,21 +150,21 @@ export interface MarketStateFacet extends BaseContract {
   factory: TypedContractMethod<[], [string], "view">;
 
   /**
-   * Returns the denominator of the protocol's % share of the fees
-   */
-  feeProtocol: TypedContractMethod<[], [bigint], "view">;
-
-  /**
    * Returns the oracle provider contract for the market.
    */
   oracleProvider: TypedContractMethod<[], [string], "view">;
 
   /**
-   * Set the denominator of the protocol's % share of the fees
-   * @param _feeProtocol new protocol fee for the market
+   * Returns the protocol fee rate
    */
-  setFeeProtocol: TypedContractMethod<
-    [_feeProtocol: BigNumberish],
+  protocolFeeRate: TypedContractMethod<[], [bigint], "view">;
+
+  /**
+   * Set the new protocol fee rate
+   * @param _protocolFeeRate new protocol fee rate for the market
+   */
+  setProtocolFeeRate: TypedContractMethod<
+    [_protocolFeeRate: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -187,14 +190,18 @@ export interface MarketStateFacet extends BaseContract {
     nameOrSignature: "factory"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "feeProtocol"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
     nameOrSignature: "oracleProvider"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "setFeeProtocol"
-  ): TypedContractMethod<[_feeProtocol: BigNumberish], [void], "nonpayable">;
+    nameOrSignature: "protocolFeeRate"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "setProtocolFeeRate"
+  ): TypedContractMethod<
+    [_protocolFeeRate: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "settlementToken"
   ): TypedContractMethod<[], [string], "view">;
@@ -203,23 +210,23 @@ export interface MarketStateFacet extends BaseContract {
   ): TypedContractMethod<[], [string], "view">;
 
   getEvent(
-    key: "SetFeeProtocol"
+    key: "ProtocolFeeRateSet"
   ): TypedContractEvent<
-    SetFeeProtocolEvent.InputTuple,
-    SetFeeProtocolEvent.OutputTuple,
-    SetFeeProtocolEvent.OutputObject
+    ProtocolFeeRateSetEvent.InputTuple,
+    ProtocolFeeRateSetEvent.OutputTuple,
+    ProtocolFeeRateSetEvent.OutputObject
   >;
 
   filters: {
-    "SetFeeProtocol(uint8,uint8)": TypedContractEvent<
-      SetFeeProtocolEvent.InputTuple,
-      SetFeeProtocolEvent.OutputTuple,
-      SetFeeProtocolEvent.OutputObject
+    "ProtocolFeeRateSet(uint16,uint16)": TypedContractEvent<
+      ProtocolFeeRateSetEvent.InputTuple,
+      ProtocolFeeRateSetEvent.OutputTuple,
+      ProtocolFeeRateSetEvent.OutputObject
     >;
-    SetFeeProtocol: TypedContractEvent<
-      SetFeeProtocolEvent.InputTuple,
-      SetFeeProtocolEvent.OutputTuple,
-      SetFeeProtocolEvent.OutputObject
+    ProtocolFeeRateSet: TypedContractEvent<
+      ProtocolFeeRateSetEvent.InputTuple,
+      ProtocolFeeRateSetEvent.OutputTuple,
+      ProtocolFeeRateSetEvent.OutputObject
     >;
   };
 }

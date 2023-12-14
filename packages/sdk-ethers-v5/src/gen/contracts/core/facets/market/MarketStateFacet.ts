@@ -30,9 +30,9 @@ export interface MarketStateFacetInterface extends utils.Interface {
   functions: {
     "clbToken()": FunctionFragment;
     "factory()": FunctionFragment;
-    "feeProtocol()": FunctionFragment;
     "oracleProvider()": FunctionFragment;
-    "setFeeProtocol(uint8)": FunctionFragment;
+    "protocolFeeRate()": FunctionFragment;
+    "setProtocolFeeRate(uint16)": FunctionFragment;
     "settlementToken()": FunctionFragment;
     "vault()": FunctionFragment;
   };
@@ -41,9 +41,9 @@ export interface MarketStateFacetInterface extends utils.Interface {
     nameOrSignatureOrTopic:
       | "clbToken"
       | "factory"
-      | "feeProtocol"
       | "oracleProvider"
-      | "setFeeProtocol"
+      | "protocolFeeRate"
+      | "setProtocolFeeRate"
       | "settlementToken"
       | "vault"
   ): FunctionFragment;
@@ -51,15 +51,15 @@ export interface MarketStateFacetInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "clbToken", values?: undefined): string;
   encodeFunctionData(functionFragment: "factory", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "feeProtocol",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "oracleProvider",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "setFeeProtocol",
+    functionFragment: "protocolFeeRate",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setProtocolFeeRate",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -71,15 +71,15 @@ export interface MarketStateFacetInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "clbToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "feeProtocol",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "oracleProvider",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setFeeProtocol",
+    functionFragment: "protocolFeeRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setProtocolFeeRate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -89,22 +89,23 @@ export interface MarketStateFacetInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "vault", data: BytesLike): Result;
 
   events: {
-    "SetFeeProtocol(uint8,uint8)": EventFragment;
+    "ProtocolFeeRateSet(uint16,uint16)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "SetFeeProtocol"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ProtocolFeeRateSet"): EventFragment;
 }
 
-export interface SetFeeProtocolEventObject {
-  feeProtocolOld: number;
-  feeProtocolNew: number;
+export interface ProtocolFeeRateSetEventObject {
+  protocolFeeRateOld: number;
+  protocolFeeRateNew: number;
 }
-export type SetFeeProtocolEvent = TypedEvent<
+export type ProtocolFeeRateSetEvent = TypedEvent<
   [number, number],
-  SetFeeProtocolEventObject
+  ProtocolFeeRateSetEventObject
 >;
 
-export type SetFeeProtocolEventFilter = TypedEventFilter<SetFeeProtocolEvent>;
+export type ProtocolFeeRateSetEventFilter =
+  TypedEventFilter<ProtocolFeeRateSetEvent>;
 
 export interface MarketStateFacet extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -146,13 +147,6 @@ export interface MarketStateFacet extends BaseContract {
     ): Promise<[string] & { _factory: string }>;
 
     /**
-     * Returns the denominator of the protocol's % share of the fees
-     */
-    feeProtocol(
-      overrides?: CallOverrides
-    ): Promise<[number] & { _feeProtocol: number }>;
-
-    /**
      * Returns the oracle provider contract for the market.
      */
     oracleProvider(
@@ -160,11 +154,18 @@ export interface MarketStateFacet extends BaseContract {
     ): Promise<[string] & { _provider: string }>;
 
     /**
-     * Set the denominator of the protocol's % share of the fees
-     * @param _feeProtocol new protocol fee for the market
+     * Returns the protocol fee rate
      */
-    setFeeProtocol(
-      _feeProtocol: BigNumberish,
+    protocolFeeRate(
+      overrides?: CallOverrides
+    ): Promise<[number] & { _protocolFeeRate: number }>;
+
+    /**
+     * Set the new protocol fee rate
+     * @param _protocolFeeRate new protocol fee rate for the market
+     */
+    setProtocolFeeRate(
+      _protocolFeeRate: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
@@ -192,21 +193,21 @@ export interface MarketStateFacet extends BaseContract {
   factory(overrides?: CallOverrides): Promise<string>;
 
   /**
-   * Returns the denominator of the protocol's % share of the fees
-   */
-  feeProtocol(overrides?: CallOverrides): Promise<number>;
-
-  /**
    * Returns the oracle provider contract for the market.
    */
   oracleProvider(overrides?: CallOverrides): Promise<string>;
 
   /**
-   * Set the denominator of the protocol's % share of the fees
-   * @param _feeProtocol new protocol fee for the market
+   * Returns the protocol fee rate
    */
-  setFeeProtocol(
-    _feeProtocol: BigNumberish,
+  protocolFeeRate(overrides?: CallOverrides): Promise<number>;
+
+  /**
+   * Set the new protocol fee rate
+   * @param _protocolFeeRate new protocol fee rate for the market
+   */
+  setProtocolFeeRate(
+    _protocolFeeRate: BigNumberish,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -232,21 +233,21 @@ export interface MarketStateFacet extends BaseContract {
     factory(overrides?: CallOverrides): Promise<string>;
 
     /**
-     * Returns the denominator of the protocol's % share of the fees
-     */
-    feeProtocol(overrides?: CallOverrides): Promise<number>;
-
-    /**
      * Returns the oracle provider contract for the market.
      */
     oracleProvider(overrides?: CallOverrides): Promise<string>;
 
     /**
-     * Set the denominator of the protocol's % share of the fees
-     * @param _feeProtocol new protocol fee for the market
+     * Returns the protocol fee rate
      */
-    setFeeProtocol(
-      _feeProtocol: BigNumberish,
+    protocolFeeRate(overrides?: CallOverrides): Promise<number>;
+
+    /**
+     * Set the new protocol fee rate
+     * @param _protocolFeeRate new protocol fee rate for the market
+     */
+    setProtocolFeeRate(
+      _protocolFeeRate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -262,14 +263,14 @@ export interface MarketStateFacet extends BaseContract {
   };
 
   filters: {
-    "SetFeeProtocol(uint8,uint8)"(
-      feeProtocolOld?: null,
-      feeProtocolNew?: null
-    ): SetFeeProtocolEventFilter;
-    SetFeeProtocol(
-      feeProtocolOld?: null,
-      feeProtocolNew?: null
-    ): SetFeeProtocolEventFilter;
+    "ProtocolFeeRateSet(uint16,uint16)"(
+      protocolFeeRateOld?: null,
+      protocolFeeRateNew?: null
+    ): ProtocolFeeRateSetEventFilter;
+    ProtocolFeeRateSet(
+      protocolFeeRateOld?: null,
+      protocolFeeRateNew?: null
+    ): ProtocolFeeRateSetEventFilter;
   };
 
   estimateGas: {
@@ -284,21 +285,21 @@ export interface MarketStateFacet extends BaseContract {
     factory(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Returns the denominator of the protocol's % share of the fees
-     */
-    feeProtocol(overrides?: CallOverrides): Promise<BigNumber>;
-
-    /**
      * Returns the oracle provider contract for the market.
      */
     oracleProvider(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Set the denominator of the protocol's % share of the fees
-     * @param _feeProtocol new protocol fee for the market
+     * Returns the protocol fee rate
      */
-    setFeeProtocol(
-      _feeProtocol: BigNumberish,
+    protocolFeeRate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Set the new protocol fee rate
+     * @param _protocolFeeRate new protocol fee rate for the market
+     */
+    setProtocolFeeRate(
+      _protocolFeeRate: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
@@ -325,21 +326,21 @@ export interface MarketStateFacet extends BaseContract {
     factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Returns the denominator of the protocol's % share of the fees
-     */
-    feeProtocol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    /**
      * Returns the oracle provider contract for the market.
      */
     oracleProvider(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Set the denominator of the protocol's % share of the fees
-     * @param _feeProtocol new protocol fee for the market
+     * Returns the protocol fee rate
      */
-    setFeeProtocol(
-      _feeProtocol: BigNumberish,
+    protocolFeeRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Set the new protocol fee rate
+     * @param _protocolFeeRate new protocol fee rate for the market
+     */
+    setProtocolFeeRate(
+      _protocolFeeRate: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 

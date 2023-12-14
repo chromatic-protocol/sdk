@@ -153,6 +153,11 @@ const _abi = [
             type: "address",
           },
           {
+            internalType: "uint16",
+            name: "_protocolFeeRate",
+            type: "uint16",
+          },
+          {
             components: [
               {
                 internalType: "uint16",
@@ -168,11 +173,6 @@ const _abi = [
             internalType: "struct BinMargin[]",
             name: "_binMargins",
             type: "tuple[]",
-          },
-          {
-            internalType: "uint8",
-            name: "_feeProtocol",
-            type: "uint8",
           },
         ],
         indexed: false,
@@ -241,6 +241,11 @@ const _abi = [
             type: "address",
           },
           {
+            internalType: "uint16",
+            name: "_protocolFeeRate",
+            type: "uint16",
+          },
+          {
             components: [
               {
                 internalType: "uint16",
@@ -256,11 +261,6 @@ const _abi = [
             internalType: "struct BinMargin[]",
             name: "_binMargins",
             type: "tuple[]",
-          },
-          {
-            internalType: "uint8",
-            name: "_feeProtocol",
-            type: "uint8",
           },
         ],
         indexed: false,
@@ -329,6 +329,11 @@ const _abi = [
             type: "address",
           },
           {
+            internalType: "uint16",
+            name: "_protocolFeeRate",
+            type: "uint16",
+          },
+          {
             components: [
               {
                 internalType: "uint16",
@@ -344,11 +349,6 @@ const _abi = [
             internalType: "struct BinMargin[]",
             name: "_binMargins",
             type: "tuple[]",
-          },
-          {
-            internalType: "uint8",
-            name: "_feeProtocol",
-            type: "uint8",
           },
         ],
         indexed: false,

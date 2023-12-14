@@ -30,18 +30,18 @@ const _abi = [
     inputs: [
       {
         indexed: false,
-        internalType: "uint8",
-        name: "feeProtocolOld",
-        type: "uint8",
+        internalType: "uint16",
+        name: "protocolFeeRateOld",
+        type: "uint16",
       },
       {
         indexed: false,
-        internalType: "uint8",
-        name: "feeProtocolNew",
-        type: "uint8",
+        internalType: "uint16",
+        name: "protocolFeeRateNew",
+        type: "uint16",
       },
     ],
-    name: "SetFeeProtocol",
+    name: "ProtocolFeeRateSet",
     type: "event",
   },
   {
@@ -72,19 +72,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "feeProtocol",
-    outputs: [
-      {
-        internalType: "uint8",
-        name: "_feeProtocol",
-        type: "uint8",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "oracleProvider",
     outputs: [
       {
@@ -97,14 +84,27 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
+    inputs: [],
+    name: "protocolFeeRate",
+    outputs: [
       {
-        internalType: "uint8",
-        name: "_feeProtocol",
-        type: "uint8",
+        internalType: "uint16",
+        name: "_protocolFeeRate",
+        type: "uint16",
       },
     ],
-    name: "setFeeProtocol",
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint16",
+        name: "_protocolFeeRate",
+        type: "uint16",
+      },
+    ],
+    name: "setProtocolFeeRate",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

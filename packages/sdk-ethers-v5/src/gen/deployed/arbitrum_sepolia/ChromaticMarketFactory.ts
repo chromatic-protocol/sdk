@@ -57,6 +57,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "createMarket(address,address)": FunctionFragment;
     "currentInterestRate(address)": FunctionFragment;
     "dao()": FunctionFragment;
+    "defaultProtocolFeeRate()": FunctionFragment;
     "getEarningDistributionThreshold(address)": FunctionFragment;
     "getFlashLoanFeeRate(address)": FunctionFragment;
     "getInterestRateRecords(address)": FunctionFragment;
@@ -81,8 +82,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "removeLastInterestRateRecord(address)": FunctionFragment;
     "setEarningDistributionThreshold(address,uint256)": FunctionFragment;
     "setFlashLoanFeeRate(address,uint256)": FunctionFragment;
-    "setKeeperFeePayer(address)": FunctionFragment;
-    "setLiquidator(address)": FunctionFragment;
     "setMarketSettlement(address)": FunctionFragment;
     "setMinimumMargin(address,uint256)": FunctionFragment;
     "setSettlementTokenOracleProvider(address,address)": FunctionFragment;
@@ -91,7 +90,10 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "treasury()": FunctionFragment;
     "unregisterOracleProvider(address)": FunctionFragment;
     "updateDao(address)": FunctionFragment;
+    "updateDefaultProtocolFeeRate(uint16)": FunctionFragment;
+    "updateKeeperFeePayer(address)": FunctionFragment;
     "updateLeverageLevel(address,uint8)": FunctionFragment;
+    "updateLiquidator(address)": FunctionFragment;
     "updateTakeProfitBPSRange(address,uint32,uint32)": FunctionFragment;
     "updateTreasury(address)": FunctionFragment;
     "vault()": FunctionFragment;
@@ -104,6 +106,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
       | "createMarket"
       | "currentInterestRate"
       | "dao"
+      | "defaultProtocolFeeRate"
       | "getEarningDistributionThreshold"
       | "getFlashLoanFeeRate"
       | "getInterestRateRecords"
@@ -128,8 +131,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
       | "removeLastInterestRateRecord"
       | "setEarningDistributionThreshold"
       | "setFlashLoanFeeRate"
-      | "setKeeperFeePayer"
-      | "setLiquidator"
       | "setMarketSettlement"
       | "setMinimumMargin"
       | "setSettlementTokenOracleProvider"
@@ -138,7 +139,10 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
       | "treasury"
       | "unregisterOracleProvider"
       | "updateDao"
+      | "updateDefaultProtocolFeeRate"
+      | "updateKeeperFeePayer"
       | "updateLeverageLevel"
+      | "updateLiquidator"
       | "updateTakeProfitBPSRange"
       | "updateTreasury"
       | "vault"
@@ -161,6 +165,10 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "dao", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "defaultProtocolFeeRate",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "getEarningDistributionThreshold",
     values: [string]
@@ -266,14 +274,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "setKeeperFeePayer",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setLiquidator",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "setMarketSettlement",
     values: [string]
   ): string;
@@ -297,8 +297,20 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "updateDao", values: [string]): string;
   encodeFunctionData(
+    functionFragment: "updateDefaultProtocolFeeRate",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateKeeperFeePayer",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "updateLeverageLevel",
     values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateLiquidator",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "updateTakeProfitBPSRange",
@@ -327,6 +339,10 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "dao", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "defaultProtocolFeeRate",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getEarningDistributionThreshold",
     data: BytesLike
@@ -412,14 +428,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setKeeperFeePayer",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setLiquidator",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "setMarketSettlement",
     data: BytesLike
   ): Result;
@@ -443,7 +451,19 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "updateDao", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "updateDefaultProtocolFeeRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateKeeperFeePayer",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "updateLeverageLevel",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateLiquidator",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -457,31 +477,38 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "vault", data: BytesLike): Result;
 
   events: {
+    "DaoUpdated(address,address)": EventFragment;
+    "DefaultProtocolFeeRateUpdated(uint16,uint16)": EventFragment;
     "InterestRateRecordAppended(address,uint256,uint256)": EventFragment;
+    "KeeperFeePayerUpdated(address,address)": EventFragment;
     "LastInterestRateRecordRemoved(address,uint256,uint256)": EventFragment;
+    "LiquidatorUpdated(address,address)": EventFragment;
     "MarketCreated(address,address,address)": EventFragment;
     "OracleProviderRegistered(address,(uint32,uint32,uint8))": EventFragment;
     "OracleProviderUnregistered(address)": EventFragment;
     "SetEarningDistributionThreshold(address,uint256)": EventFragment;
     "SetFlashLoanFeeRate(address,uint256)": EventFragment;
-    "SetKeeperFeePayer(address)": EventFragment;
-    "SetLiquidator(address)": EventFragment;
     "SetMarketSettlement(address)": EventFragment;
     "SetMinimumMargin(address,uint256)": EventFragment;
     "SetSettlementTokenOracleProvider(address,address)": EventFragment;
     "SetUniswapFeeTier(address,uint24)": EventFragment;
     "SetVault(address)": EventFragment;
     "SettlementTokenRegistered(address,address,uint256,uint256,uint256,uint256,uint24)": EventFragment;
-    "UpdateDao(address)": EventFragment;
+    "TreasuryUpdated(address,address)": EventFragment;
     "UpdateLeverageLevel(address,uint8)": EventFragment;
     "UpdateTakeProfitBPSRange(address,uint32,uint32)": EventFragment;
-    "UpdateTreasury(address)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "DaoUpdated"): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: "DefaultProtocolFeeRateUpdated"
+  ): EventFragment;
   getEvent(nameOrSignatureOrTopic: "InterestRateRecordAppended"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "KeeperFeePayerUpdated"): EventFragment;
   getEvent(
     nameOrSignatureOrTopic: "LastInterestRateRecordRemoved"
   ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "LiquidatorUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "MarketCreated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OracleProviderRegistered"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OracleProviderUnregistered"): EventFragment;
@@ -489,8 +516,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     nameOrSignatureOrTopic: "SetEarningDistributionThreshold"
   ): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetFlashLoanFeeRate"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SetKeeperFeePayer"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SetLiquidator"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetMarketSettlement"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetMinimumMargin"): EventFragment;
   getEvent(
@@ -499,11 +524,33 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "SetUniswapFeeTier"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetVault"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SettlementTokenRegistered"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "UpdateDao"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TreasuryUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UpdateLeverageLevel"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UpdateTakeProfitBPSRange"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "UpdateTreasury"): EventFragment;
 }
+
+export interface DaoUpdatedEventObject {
+  daoOld: string;
+  daoNew: string;
+}
+export type DaoUpdatedEvent = TypedEvent<
+  [string, string],
+  DaoUpdatedEventObject
+>;
+
+export type DaoUpdatedEventFilter = TypedEventFilter<DaoUpdatedEvent>;
+
+export interface DefaultProtocolFeeRateUpdatedEventObject {
+  defaultProtocolFeeRateOld: number;
+  defaultProtocolFeeRateNew: number;
+}
+export type DefaultProtocolFeeRateUpdatedEvent = TypedEvent<
+  [number, number],
+  DefaultProtocolFeeRateUpdatedEventObject
+>;
+
+export type DefaultProtocolFeeRateUpdatedEventFilter =
+  TypedEventFilter<DefaultProtocolFeeRateUpdatedEvent>;
 
 export interface InterestRateRecordAppendedEventObject {
   token: string;
@@ -518,6 +565,18 @@ export type InterestRateRecordAppendedEvent = TypedEvent<
 export type InterestRateRecordAppendedEventFilter =
   TypedEventFilter<InterestRateRecordAppendedEvent>;
 
+export interface KeeperFeePayerUpdatedEventObject {
+  keeperFeePayerOld: string;
+  keeperFeePayerNew: string;
+}
+export type KeeperFeePayerUpdatedEvent = TypedEvent<
+  [string, string],
+  KeeperFeePayerUpdatedEventObject
+>;
+
+export type KeeperFeePayerUpdatedEventFilter =
+  TypedEventFilter<KeeperFeePayerUpdatedEvent>;
+
 export interface LastInterestRateRecordRemovedEventObject {
   token: string;
   annualRateBPS: BigNumber;
@@ -530,6 +589,18 @@ export type LastInterestRateRecordRemovedEvent = TypedEvent<
 
 export type LastInterestRateRecordRemovedEventFilter =
   TypedEventFilter<LastInterestRateRecordRemovedEvent>;
+
+export interface LiquidatorUpdatedEventObject {
+  liquidatorOld: string;
+  liquidatorNew: string;
+}
+export type LiquidatorUpdatedEvent = TypedEvent<
+  [string, string],
+  LiquidatorUpdatedEventObject
+>;
+
+export type LiquidatorUpdatedEventFilter =
+  TypedEventFilter<LiquidatorUpdatedEvent>;
 
 export interface MarketCreatedEventObject {
   oracleProvider: string;
@@ -589,24 +660,6 @@ export type SetFlashLoanFeeRateEvent = TypedEvent<
 
 export type SetFlashLoanFeeRateEventFilter =
   TypedEventFilter<SetFlashLoanFeeRateEvent>;
-
-export interface SetKeeperFeePayerEventObject {
-  keeperFeePayer: string;
-}
-export type SetKeeperFeePayerEvent = TypedEvent<
-  [string],
-  SetKeeperFeePayerEventObject
->;
-
-export type SetKeeperFeePayerEventFilter =
-  TypedEventFilter<SetKeeperFeePayerEvent>;
-
-export interface SetLiquidatorEventObject {
-  liquidator: string;
-}
-export type SetLiquidatorEvent = TypedEvent<[string], SetLiquidatorEventObject>;
-
-export type SetLiquidatorEventFilter = TypedEventFilter<SetLiquidatorEvent>;
 
 export interface SetMarketSettlementEventObject {
   marketSettlement: string;
@@ -679,12 +732,16 @@ export type SettlementTokenRegisteredEvent = TypedEvent<
 export type SettlementTokenRegisteredEventFilter =
   TypedEventFilter<SettlementTokenRegisteredEvent>;
 
-export interface UpdateDaoEventObject {
-  dao: string;
+export interface TreasuryUpdatedEventObject {
+  treasuryOld: string;
+  treasuryNew: string;
 }
-export type UpdateDaoEvent = TypedEvent<[string], UpdateDaoEventObject>;
+export type TreasuryUpdatedEvent = TypedEvent<
+  [string, string],
+  TreasuryUpdatedEventObject
+>;
 
-export type UpdateDaoEventFilter = TypedEventFilter<UpdateDaoEvent>;
+export type TreasuryUpdatedEventFilter = TypedEventFilter<TreasuryUpdatedEvent>;
 
 export interface UpdateLeverageLevelEventObject {
   oracleProvider: string;
@@ -710,16 +767,6 @@ export type UpdateTakeProfitBPSRangeEvent = TypedEvent<
 
 export type UpdateTakeProfitBPSRangeEventFilter =
   TypedEventFilter<UpdateTakeProfitBPSRangeEvent>;
-
-export interface UpdateTreasuryEventObject {
-  treasury: string;
-}
-export type UpdateTreasuryEvent = TypedEvent<
-  [string],
-  UpdateTreasuryEventObject
->;
-
-export type UpdateTreasuryEventFilter = TypedEventFilter<UpdateTreasuryEvent>;
 
 export interface ChromaticMarketFactory extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -802,6 +849,11 @@ export interface ChromaticMarketFactory extends BaseContract {
      * Returns the address of the DAO.
      */
     dao(overrides?: CallOverrides): Promise<[string]>;
+
+    /**
+     * Returns the default protocol fee rate.
+     */
+    defaultProtocolFeeRate(overrides?: CallOverrides): Promise<[number]>;
 
     /**
      * Gets the earning distribution threshold for a settlement token.
@@ -935,13 +987,17 @@ export interface ChromaticMarketFactory extends BaseContract {
     marketSettlement(overrides?: CallOverrides): Promise<[string]>;
 
     /**
-     * Called by the market constructor to fetch the parameters of the market Returns underlyingAsset The underlying asset of the market Returns settlementToken The settlement token of the market Returns vPoolCapacity Capacity of virtual future pool Returns vPoolA Amplification coefficient of virtual future pool, precise value
+     * Called by the market constructor to fetch the parameters of the market Returns underlyingAsset The underlying asset of the market Returns settlementToken The settlement token of the market Returns protocolFeeRate The protocol fee rate of the market Returns vPoolCapacity Capacity of virtual future pool Returns vPoolA Amplification coefficient of virtual future pool, precise value
      * Get the parameters to be used in constructing the market, set transiently during market creation.
      */
     parameters(
       overrides?: CallOverrides
     ): Promise<
-      [string, string] & { oracleProvider: string; settlementToken: string }
+      [string, string, number] & {
+        oracleProvider: string;
+        settlementToken: string;
+        protocolFeeRate: number;
+      }
     >;
 
     registerOracleProvider(
@@ -1013,26 +1069,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     setFlashLoanFeeRate(
       token: string,
       flashLoanFeeRate: BigNumberish,
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
-
-    /**
-     * This function can only be called by the DAO address.
-     * Sets the keeper fee payer address.
-     * @param _keeperFeePayer The keeper fee payer address.
-     */
-    setKeeperFeePayer(
-      _keeperFeePayer: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
-
-    /**
-     * This function can only be called by the DAO address.      Throws an `AlreadySetLiquidator` error if the liquidator address has already been set.
-     * Sets the liquidator address.
-     * @param _liquidator The liquidator address.
-     */
-    setLiquidator(
-      _liquidator: string,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
@@ -1118,6 +1154,26 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
+     * This function can only be called by the DAO address.
+     * Updates the default protocl fee rate.
+     * @param _defaultProtocolFeeRate The new default protocol fee rate.
+     */
+    updateDefaultProtocolFeeRate(
+      _defaultProtocolFeeRate: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * This function can only be called by the DAO address.
+     * Updates the keeper fee payer address.
+     * @param _keeperFeePayer The new keeper fee payer address.
+     */
+    updateKeeperFeePayer(
+      _keeperFeePayer: string,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
      * This function can only be called by the DAO and registered oracle providers.
      * Updates the leverage level of an oracle provider in the registry.
      * @param level The new leverage level to be set for the oracle provider.
@@ -1126,6 +1182,16 @@ export interface ChromaticMarketFactory extends BaseContract {
     updateLeverageLevel(
       oracleProvider: string,
       level: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * This function can only be called by the DAO address.
+     * Updates the liquidator address.
+     * @param _liquidator The new liquidator address.
+     */
+    updateLiquidator(
+      _liquidator: string,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
@@ -1213,6 +1279,11 @@ export interface ChromaticMarketFactory extends BaseContract {
    * Returns the address of the DAO.
    */
   dao(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Returns the default protocol fee rate.
+   */
+  defaultProtocolFeeRate(overrides?: CallOverrides): Promise<number>;
 
   /**
    * Gets the earning distribution threshold for a settlement token.
@@ -1343,13 +1414,17 @@ export interface ChromaticMarketFactory extends BaseContract {
   marketSettlement(overrides?: CallOverrides): Promise<string>;
 
   /**
-   * Called by the market constructor to fetch the parameters of the market Returns underlyingAsset The underlying asset of the market Returns settlementToken The settlement token of the market Returns vPoolCapacity Capacity of virtual future pool Returns vPoolA Amplification coefficient of virtual future pool, precise value
+   * Called by the market constructor to fetch the parameters of the market Returns underlyingAsset The underlying asset of the market Returns settlementToken The settlement token of the market Returns protocolFeeRate The protocol fee rate of the market Returns vPoolCapacity Capacity of virtual future pool Returns vPoolA Amplification coefficient of virtual future pool, precise value
    * Get the parameters to be used in constructing the market, set transiently during market creation.
    */
   parameters(
     overrides?: CallOverrides
   ): Promise<
-    [string, string] & { oracleProvider: string; settlementToken: string }
+    [string, string, number] & {
+      oracleProvider: string;
+      settlementToken: string;
+      protocolFeeRate: number;
+    }
   >;
 
   registerOracleProvider(
@@ -1421,26 +1496,6 @@ export interface ChromaticMarketFactory extends BaseContract {
   setFlashLoanFeeRate(
     token: string,
     flashLoanFeeRate: BigNumberish,
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
-
-  /**
-   * This function can only be called by the DAO address.
-   * Sets the keeper fee payer address.
-   * @param _keeperFeePayer The keeper fee payer address.
-   */
-  setKeeperFeePayer(
-    _keeperFeePayer: string,
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
-
-  /**
-   * This function can only be called by the DAO address.      Throws an `AlreadySetLiquidator` error if the liquidator address has already been set.
-   * Sets the liquidator address.
-   * @param _liquidator The liquidator address.
-   */
-  setLiquidator(
-    _liquidator: string,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -1526,6 +1581,26 @@ export interface ChromaticMarketFactory extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
+   * This function can only be called by the DAO address.
+   * Updates the default protocl fee rate.
+   * @param _defaultProtocolFeeRate The new default protocol fee rate.
+   */
+  updateDefaultProtocolFeeRate(
+    _defaultProtocolFeeRate: BigNumberish,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * This function can only be called by the DAO address.
+   * Updates the keeper fee payer address.
+   * @param _keeperFeePayer The new keeper fee payer address.
+   */
+  updateKeeperFeePayer(
+    _keeperFeePayer: string,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
    * This function can only be called by the DAO and registered oracle providers.
    * Updates the leverage level of an oracle provider in the registry.
    * @param level The new leverage level to be set for the oracle provider.
@@ -1534,6 +1609,16 @@ export interface ChromaticMarketFactory extends BaseContract {
   updateLeverageLevel(
     oracleProvider: string,
     level: BigNumberish,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * This function can only be called by the DAO address.
+   * Updates the liquidator address.
+   * @param _liquidator The new liquidator address.
+   */
+  updateLiquidator(
+    _liquidator: string,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -1621,6 +1706,11 @@ export interface ChromaticMarketFactory extends BaseContract {
      * Returns the address of the DAO.
      */
     dao(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Returns the default protocol fee rate.
+     */
+    defaultProtocolFeeRate(overrides?: CallOverrides): Promise<number>;
 
     /**
      * Gets the earning distribution threshold for a settlement token.
@@ -1754,13 +1844,17 @@ export interface ChromaticMarketFactory extends BaseContract {
     marketSettlement(overrides?: CallOverrides): Promise<string>;
 
     /**
-     * Called by the market constructor to fetch the parameters of the market Returns underlyingAsset The underlying asset of the market Returns settlementToken The settlement token of the market Returns vPoolCapacity Capacity of virtual future pool Returns vPoolA Amplification coefficient of virtual future pool, precise value
+     * Called by the market constructor to fetch the parameters of the market Returns underlyingAsset The underlying asset of the market Returns settlementToken The settlement token of the market Returns protocolFeeRate The protocol fee rate of the market Returns vPoolCapacity Capacity of virtual future pool Returns vPoolA Amplification coefficient of virtual future pool, precise value
      * Get the parameters to be used in constructing the market, set transiently during market creation.
      */
     parameters(
       overrides?: CallOverrides
     ): Promise<
-      [string, string] & { oracleProvider: string; settlementToken: string }
+      [string, string, number] & {
+        oracleProvider: string;
+        settlementToken: string;
+        protocolFeeRate: number;
+      }
     >;
 
     registerOracleProvider(
@@ -1832,26 +1926,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     setFlashLoanFeeRate(
       token: string,
       flashLoanFeeRate: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    /**
-     * This function can only be called by the DAO address.
-     * Sets the keeper fee payer address.
-     * @param _keeperFeePayer The keeper fee payer address.
-     */
-    setKeeperFeePayer(
-      _keeperFeePayer: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    /**
-     * This function can only be called by the DAO address.      Throws an `AlreadySetLiquidator` error if the liquidator address has already been set.
-     * Sets the liquidator address.
-     * @param _liquidator The liquidator address.
-     */
-    setLiquidator(
-      _liquidator: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1931,6 +2005,26 @@ export interface ChromaticMarketFactory extends BaseContract {
     updateDao(_dao: string, overrides?: CallOverrides): Promise<void>;
 
     /**
+     * This function can only be called by the DAO address.
+     * Updates the default protocl fee rate.
+     * @param _defaultProtocolFeeRate The new default protocol fee rate.
+     */
+    updateDefaultProtocolFeeRate(
+      _defaultProtocolFeeRate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * This function can only be called by the DAO address.
+     * Updates the keeper fee payer address.
+     * @param _keeperFeePayer The new keeper fee payer address.
+     */
+    updateKeeperFeePayer(
+      _keeperFeePayer: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
      * This function can only be called by the DAO and registered oracle providers.
      * Updates the leverage level of an oracle provider in the registry.
      * @param level The new leverage level to be set for the oracle provider.
@@ -1939,6 +2033,16 @@ export interface ChromaticMarketFactory extends BaseContract {
     updateLeverageLevel(
       oracleProvider: string,
       level: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * This function can only be called by the DAO address.
+     * Updates the liquidator address.
+     * @param _liquidator The new liquidator address.
+     */
+    updateLiquidator(
+      _liquidator: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1970,6 +2074,24 @@ export interface ChromaticMarketFactory extends BaseContract {
   };
 
   filters: {
+    "DaoUpdated(address,address)"(
+      daoOld?: string | null,
+      daoNew?: string | null
+    ): DaoUpdatedEventFilter;
+    DaoUpdated(
+      daoOld?: string | null,
+      daoNew?: string | null
+    ): DaoUpdatedEventFilter;
+
+    "DefaultProtocolFeeRateUpdated(uint16,uint16)"(
+      defaultProtocolFeeRateOld?: BigNumberish | null,
+      defaultProtocolFeeRateNew?: BigNumberish | null
+    ): DefaultProtocolFeeRateUpdatedEventFilter;
+    DefaultProtocolFeeRateUpdated(
+      defaultProtocolFeeRateOld?: BigNumberish | null,
+      defaultProtocolFeeRateNew?: BigNumberish | null
+    ): DefaultProtocolFeeRateUpdatedEventFilter;
+
     "InterestRateRecordAppended(address,uint256,uint256)"(
       token?: string | null,
       annualRateBPS?: BigNumberish | null,
@@ -1981,6 +2103,15 @@ export interface ChromaticMarketFactory extends BaseContract {
       beginTimestamp?: BigNumberish | null
     ): InterestRateRecordAppendedEventFilter;
 
+    "KeeperFeePayerUpdated(address,address)"(
+      keeperFeePayerOld?: string | null,
+      keeperFeePayerNew?: string | null
+    ): KeeperFeePayerUpdatedEventFilter;
+    KeeperFeePayerUpdated(
+      keeperFeePayerOld?: string | null,
+      keeperFeePayerNew?: string | null
+    ): KeeperFeePayerUpdatedEventFilter;
+
     "LastInterestRateRecordRemoved(address,uint256,uint256)"(
       token?: string | null,
       annualRateBPS?: BigNumberish | null,
@@ -1991,6 +2122,15 @@ export interface ChromaticMarketFactory extends BaseContract {
       annualRateBPS?: BigNumberish | null,
       beginTimestamp?: BigNumberish | null
     ): LastInterestRateRecordRemovedEventFilter;
+
+    "LiquidatorUpdated(address,address)"(
+      liquidatorOld?: string | null,
+      liquidatorNew?: string | null
+    ): LiquidatorUpdatedEventFilter;
+    LiquidatorUpdated(
+      liquidatorOld?: string | null,
+      liquidatorNew?: string | null
+    ): LiquidatorUpdatedEventFilter;
 
     "MarketCreated(address,address,address)"(
       oracleProvider?: string | null,
@@ -2036,18 +2176,6 @@ export interface ChromaticMarketFactory extends BaseContract {
       token?: string | null,
       flashLoanFeeRate?: BigNumberish | null
     ): SetFlashLoanFeeRateEventFilter;
-
-    "SetKeeperFeePayer(address)"(
-      keeperFeePayer?: string | null
-    ): SetKeeperFeePayerEventFilter;
-    SetKeeperFeePayer(
-      keeperFeePayer?: string | null
-    ): SetKeeperFeePayerEventFilter;
-
-    "SetLiquidator(address)"(
-      liquidator?: string | null
-    ): SetLiquidatorEventFilter;
-    SetLiquidator(liquidator?: string | null): SetLiquidatorEventFilter;
 
     "SetMarketSettlement(address)"(
       marketSettlement?: string | null
@@ -2105,8 +2233,14 @@ export interface ChromaticMarketFactory extends BaseContract {
       uniswapFeeTier?: null
     ): SettlementTokenRegisteredEventFilter;
 
-    "UpdateDao(address)"(dao?: string | null): UpdateDaoEventFilter;
-    UpdateDao(dao?: string | null): UpdateDaoEventFilter;
+    "TreasuryUpdated(address,address)"(
+      treasuryOld?: string | null,
+      treasuryNew?: string | null
+    ): TreasuryUpdatedEventFilter;
+    TreasuryUpdated(
+      treasuryOld?: string | null,
+      treasuryNew?: string | null
+    ): TreasuryUpdatedEventFilter;
 
     "UpdateLeverageLevel(address,uint8)"(
       oracleProvider?: string | null,
@@ -2127,11 +2261,6 @@ export interface ChromaticMarketFactory extends BaseContract {
       minTakeProfitBPS?: BigNumberish | null,
       maxTakeProfitBPS?: BigNumberish | null
     ): UpdateTakeProfitBPSRangeEventFilter;
-
-    "UpdateTreasury(address)"(
-      treasury?: string | null
-    ): UpdateTreasuryEventFilter;
-    UpdateTreasury(treasury?: string | null): UpdateTreasuryEventFilter;
   };
 
   estimateGas: {
@@ -2189,6 +2318,11 @@ export interface ChromaticMarketFactory extends BaseContract {
      * Returns the address of the DAO.
      */
     dao(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Returns the default protocol fee rate.
+     */
+    defaultProtocolFeeRate(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * Gets the earning distribution threshold for a settlement token.
@@ -2322,7 +2456,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     marketSettlement(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Called by the market constructor to fetch the parameters of the market Returns underlyingAsset The underlying asset of the market Returns settlementToken The settlement token of the market Returns vPoolCapacity Capacity of virtual future pool Returns vPoolA Amplification coefficient of virtual future pool, precise value
+     * Called by the market constructor to fetch the parameters of the market Returns underlyingAsset The underlying asset of the market Returns settlementToken The settlement token of the market Returns protocolFeeRate The protocol fee rate of the market Returns vPoolCapacity Capacity of virtual future pool Returns vPoolA Amplification coefficient of virtual future pool, precise value
      * Get the parameters to be used in constructing the market, set transiently during market creation.
      */
     parameters(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2396,26 +2530,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     setFlashLoanFeeRate(
       token: string,
       flashLoanFeeRate: BigNumberish,
-      overrides?: Overrides & { from?: string }
-    ): Promise<BigNumber>;
-
-    /**
-     * This function can only be called by the DAO address.
-     * Sets the keeper fee payer address.
-     * @param _keeperFeePayer The keeper fee payer address.
-     */
-    setKeeperFeePayer(
-      _keeperFeePayer: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<BigNumber>;
-
-    /**
-     * This function can only be called by the DAO address.      Throws an `AlreadySetLiquidator` error if the liquidator address has already been set.
-     * Sets the liquidator address.
-     * @param _liquidator The liquidator address.
-     */
-    setLiquidator(
-      _liquidator: string,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
@@ -2501,6 +2615,26 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * This function can only be called by the DAO address.
+     * Updates the default protocl fee rate.
+     * @param _defaultProtocolFeeRate The new default protocol fee rate.
+     */
+    updateDefaultProtocolFeeRate(
+      _defaultProtocolFeeRate: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     * This function can only be called by the DAO address.
+     * Updates the keeper fee payer address.
+     * @param _keeperFeePayer The new keeper fee payer address.
+     */
+    updateKeeperFeePayer(
+      _keeperFeePayer: string,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
      * This function can only be called by the DAO and registered oracle providers.
      * Updates the leverage level of an oracle provider in the registry.
      * @param level The new leverage level to be set for the oracle provider.
@@ -2509,6 +2643,16 @@ export interface ChromaticMarketFactory extends BaseContract {
     updateLeverageLevel(
       oracleProvider: string,
       level: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     * This function can only be called by the DAO address.
+     * Updates the liquidator address.
+     * @param _liquidator The new liquidator address.
+     */
+    updateLiquidator(
+      _liquidator: string,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
@@ -2597,6 +2741,13 @@ export interface ChromaticMarketFactory extends BaseContract {
      * Returns the address of the DAO.
      */
     dao(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Returns the default protocol fee rate.
+     */
+    defaultProtocolFeeRate(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     /**
      * Gets the earning distribution threshold for a settlement token.
@@ -2730,7 +2881,7 @@ export interface ChromaticMarketFactory extends BaseContract {
     marketSettlement(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Called by the market constructor to fetch the parameters of the market Returns underlyingAsset The underlying asset of the market Returns settlementToken The settlement token of the market Returns vPoolCapacity Capacity of virtual future pool Returns vPoolA Amplification coefficient of virtual future pool, precise value
+     * Called by the market constructor to fetch the parameters of the market Returns underlyingAsset The underlying asset of the market Returns settlementToken The settlement token of the market Returns protocolFeeRate The protocol fee rate of the market Returns vPoolCapacity Capacity of virtual future pool Returns vPoolA Amplification coefficient of virtual future pool, precise value
      * Get the parameters to be used in constructing the market, set transiently during market creation.
      */
     parameters(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -2808,26 +2959,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     setFlashLoanFeeRate(
       token: string,
       flashLoanFeeRate: BigNumberish,
-      overrides?: Overrides & { from?: string }
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * This function can only be called by the DAO address.
-     * Sets the keeper fee payer address.
-     * @param _keeperFeePayer The keeper fee payer address.
-     */
-    setKeeperFeePayer(
-      _keeperFeePayer: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * This function can only be called by the DAO address.      Throws an `AlreadySetLiquidator` error if the liquidator address has already been set.
-     * Sets the liquidator address.
-     * @param _liquidator The liquidator address.
-     */
-    setLiquidator(
-      _liquidator: string,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
@@ -2913,6 +3044,26 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * This function can only be called by the DAO address.
+     * Updates the default protocl fee rate.
+     * @param _defaultProtocolFeeRate The new default protocol fee rate.
+     */
+    updateDefaultProtocolFeeRate(
+      _defaultProtocolFeeRate: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * This function can only be called by the DAO address.
+     * Updates the keeper fee payer address.
+     * @param _keeperFeePayer The new keeper fee payer address.
+     */
+    updateKeeperFeePayer(
+      _keeperFeePayer: string,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
      * This function can only be called by the DAO and registered oracle providers.
      * Updates the leverage level of an oracle provider in the registry.
      * @param level The new leverage level to be set for the oracle provider.
@@ -2921,6 +3072,16 @@ export interface ChromaticMarketFactory extends BaseContract {
     updateLeverageLevel(
       oracleProvider: string,
       level: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * This function can only be called by the DAO address.
+     * Updates the liquidator address.
+     * @param _liquidator The new liquidator address.
+     */
+    updateLiquidator(
+      _liquidator: string,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 

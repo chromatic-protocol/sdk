@@ -71,8 +71,8 @@ export type PositionStruct = {
   takerMargin: BigNumberish;
   owner: string;
   liquidator: string;
+  _protocolFeeRate: BigNumberish;
   _binMargins: BinMarginStruct[];
-  _feeProtocol: BigNumberish;
 };
 
 export type PositionStructOutput = [
@@ -85,8 +85,8 @@ export type PositionStructOutput = [
   BigNumber,
   string,
   string,
-  BinMarginStructOutput[],
-  number
+  number,
+  BinMarginStructOutput[]
 ] & {
   id: BigNumber;
   openVersion: BigNumber;
@@ -97,8 +97,8 @@ export type PositionStructOutput = [
   takerMargin: BigNumber;
   owner: string;
   liquidator: string;
+  _protocolFeeRate: number;
   _binMargins: BinMarginStructOutput[];
-  _feeProtocol: number;
 };
 
 export type ClaimableLiquidityStruct = {
@@ -253,7 +253,6 @@ export interface IChromaticMarketInterface extends utils.Interface {
     "closingPositionBatch(int16[])": FunctionFragment;
     "distributeEarningToBins(uint256,uint256)": FunctionFragment;
     "factory()": FunctionFragment;
-    "feeProtocol()": FunctionFragment;
     "getBinFreeLiquidity(int16)": FunctionFragment;
     "getBinLiquidity(int16)": FunctionFragment;
     "getBinValues(int16[])": FunctionFragment;
@@ -269,9 +268,10 @@ export interface IChromaticMarketInterface extends utils.Interface {
     "pendingLiquidityBatch(int16[])": FunctionFragment;
     "pendingPosition(int16)": FunctionFragment;
     "pendingPositionBatch(int16[])": FunctionFragment;
+    "protocolFeeRate()": FunctionFragment;
     "removeLiquidity(address,int16,bytes)": FunctionFragment;
     "removeLiquidityBatch(address,int16[],uint256[],bytes)": FunctionFragment;
-    "setFeeProtocol(uint8)": FunctionFragment;
+    "setProtocolFeeRate(uint16)": FunctionFragment;
     "settle(int16[])": FunctionFragment;
     "settleAll()": FunctionFragment;
     "settlementToken()": FunctionFragment;
@@ -298,7 +298,6 @@ export interface IChromaticMarketInterface extends utils.Interface {
       | "closingPositionBatch"
       | "distributeEarningToBins"
       | "factory"
-      | "feeProtocol"
       | "getBinFreeLiquidity"
       | "getBinLiquidity"
       | "getBinValues"
@@ -314,9 +313,10 @@ export interface IChromaticMarketInterface extends utils.Interface {
       | "pendingLiquidityBatch"
       | "pendingPosition"
       | "pendingPositionBatch"
+      | "protocolFeeRate"
       | "removeLiquidity"
       | "removeLiquidityBatch"
-      | "setFeeProtocol"
+      | "setProtocolFeeRate"
       | "settle"
       | "settleAll"
       | "settlementToken"
@@ -384,10 +384,6 @@ export interface IChromaticMarketInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "factory", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "feeProtocol",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "getBinFreeLiquidity",
     values: [BigNumberish]
   ): string;
@@ -448,6 +444,10 @@ export interface IChromaticMarketInterface extends utils.Interface {
     values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
+    functionFragment: "protocolFeeRate",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "removeLiquidity",
     values: [string, BigNumberish, BytesLike]
   ): string;
@@ -456,7 +456,7 @@ export interface IChromaticMarketInterface extends utils.Interface {
     values: [string, BigNumberish[], BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "setFeeProtocol",
+    functionFragment: "setProtocolFeeRate",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -537,10 +537,6 @@ export interface IChromaticMarketInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "feeProtocol",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "getBinFreeLiquidity",
     data: BytesLike
   ): Result;
@@ -598,6 +594,10 @@ export interface IChromaticMarketInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "protocolFeeRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "removeLiquidity",
     data: BytesLike
   ): Result;
@@ -606,7 +606,7 @@ export interface IChromaticMarketInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setFeeProtocol",
+    functionFragment: "setProtocolFeeRate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "settle", data: BytesLike): Result;
@@ -630,14 +630,14 @@ export interface IChromaticMarketInterface extends utils.Interface {
     "AddLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])": EventFragment;
     "ClaimLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256)": EventFragment;
     "ClaimLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[])": EventFragment;
-    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))": EventFragment;
-    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))": EventFragment;
-    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))": EventFragment;
-    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))": EventFragment;
-    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))": EventFragment;
+    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
+    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
+    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
+    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
+    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
+    "ProtocolFeeRateSet(uint16,uint16)": EventFragment;
     "RemoveLiquidity((uint256,uint256,uint256,address,uint8,int16))": EventFragment;
     "RemoveLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])": EventFragment;
-    "SetFeeProtocol(uint8,uint8)": EventFragment;
     "TransferProtocolFee(uint256,uint256)": EventFragment;
     "WithdrawLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256,uint256)": EventFragment;
     "WithdrawLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[],uint256[])": EventFragment;
@@ -652,9 +652,9 @@ export interface IChromaticMarketInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "ClosePosition"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Liquidate"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OpenPosition"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ProtocolFeeRateSet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveLiquidity"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveLiquidityBatch"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SetFeeProtocol"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferProtocolFee"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "WithdrawLiquidity"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "WithdrawLiquidityBatch"): EventFragment;
@@ -768,6 +768,18 @@ export type OpenPositionEvent = TypedEvent<
 
 export type OpenPositionEventFilter = TypedEventFilter<OpenPositionEvent>;
 
+export interface ProtocolFeeRateSetEventObject {
+  protocolFeeRateOld: number;
+  protocolFeeRateNew: number;
+}
+export type ProtocolFeeRateSetEvent = TypedEvent<
+  [number, number],
+  ProtocolFeeRateSetEventObject
+>;
+
+export type ProtocolFeeRateSetEventFilter =
+  TypedEventFilter<ProtocolFeeRateSetEvent>;
+
 export interface RemoveLiquidityEventObject {
   receipt: LpReceiptStructOutput;
 }
@@ -788,17 +800,6 @@ export type RemoveLiquidityBatchEvent = TypedEvent<
 
 export type RemoveLiquidityBatchEventFilter =
   TypedEventFilter<RemoveLiquidityBatchEvent>;
-
-export interface SetFeeProtocolEventObject {
-  feeProtocolOld: number;
-  feeProtocolNew: number;
-}
-export type SetFeeProtocolEvent = TypedEvent<
-  [number, number],
-  SetFeeProtocolEventObject
->;
-
-export type SetFeeProtocolEventFilter = TypedEventFilter<SetFeeProtocolEvent>;
 
 export interface TransferProtocolFeeEventObject {
   positionId: BigNumber;
@@ -1030,11 +1031,6 @@ export interface IChromaticMarket extends BaseContract {
     factory(overrides?: CallOverrides): Promise<[string]>;
 
     /**
-     * Returns the denominator of the protocol's % share of the fees
-     */
-    feeProtocol(overrides?: CallOverrides): Promise<[number]>;
-
-    /**
      * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
      * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
      */
@@ -1178,6 +1174,11 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<[PendingPositionStructOutput[]]>;
 
     /**
+     * Returns the protocol fee rate
+     */
+    protocolFeeRate(overrides?: CallOverrides): Promise<[number]>;
+
+    /**
      * Removes liquidity from the market.
      * @param data Additional data for the liquidity callback.
      * @param recipient The address to receive the removed liquidity.
@@ -1206,11 +1207,11 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * Set the denominator of the protocol's % share of the fees
-     * @param _feeProtocol new protocol fee for the market
+     * Set the new protocol fee rate
+     * @param _protocolFeeRate new protocol fee rate for the market
      */
-    setFeeProtocol(
-      _feeProtocol: BigNumberish,
+    setProtocolFeeRate(
+      _protocolFeeRate: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
@@ -1430,11 +1431,6 @@ export interface IChromaticMarket extends BaseContract {
   factory(overrides?: CallOverrides): Promise<string>;
 
   /**
-   * Returns the denominator of the protocol's % share of the fees
-   */
-  feeProtocol(overrides?: CallOverrides): Promise<number>;
-
-  /**
    * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
    * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
    */
@@ -1576,6 +1572,11 @@ export interface IChromaticMarket extends BaseContract {
   ): Promise<PendingPositionStructOutput[]>;
 
   /**
+   * Returns the protocol fee rate
+   */
+  protocolFeeRate(overrides?: CallOverrides): Promise<number>;
+
+  /**
    * Removes liquidity from the market.
    * @param data Additional data for the liquidity callback.
    * @param recipient The address to receive the removed liquidity.
@@ -1604,11 +1605,11 @@ export interface IChromaticMarket extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * Set the denominator of the protocol's % share of the fees
-   * @param _feeProtocol new protocol fee for the market
+   * Set the new protocol fee rate
+   * @param _protocolFeeRate new protocol fee rate for the market
    */
-  setFeeProtocol(
-    _feeProtocol: BigNumberish,
+  setProtocolFeeRate(
+    _protocolFeeRate: BigNumberish,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -1828,11 +1829,6 @@ export interface IChromaticMarket extends BaseContract {
     factory(overrides?: CallOverrides): Promise<string>;
 
     /**
-     * Returns the denominator of the protocol's % share of the fees
-     */
-    feeProtocol(overrides?: CallOverrides): Promise<number>;
-
-    /**
      * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
      * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
      */
@@ -1974,6 +1970,11 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<PendingPositionStructOutput[]>;
 
     /**
+     * Returns the protocol fee rate
+     */
+    protocolFeeRate(overrides?: CallOverrides): Promise<number>;
+
+    /**
      * Removes liquidity from the market.
      * @param data Additional data for the liquidity callback.
      * @param recipient The address to receive the removed liquidity.
@@ -2002,11 +2003,11 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<LpReceiptStructOutput[]>;
 
     /**
-     * Set the denominator of the protocol's % share of the fees
-     * @param _feeProtocol new protocol fee for the market
+     * Set the new protocol fee rate
+     * @param _protocolFeeRate new protocol fee rate for the market
      */
-    setFeeProtocol(
-      _feeProtocol: BigNumberish,
+    setProtocolFeeRate(
+      _protocolFeeRate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2085,7 +2086,7 @@ export interface IChromaticMarket extends BaseContract {
       clbTokenAmounts?: null
     ): ClaimLiquidityBatchEventFilter;
 
-    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))"(
+    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
       account?: string | null,
       pnl?: BigNumberish | null,
       interest?: BigNumberish | null,
@@ -2098,7 +2099,7 @@ export interface IChromaticMarket extends BaseContract {
       position?: null
     ): ClaimPositionEventFilter;
 
-    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))"(
+    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
       account?: string | null,
       pnl?: BigNumberish | null,
       interest?: BigNumberish | null,
@@ -2113,7 +2114,7 @@ export interface IChromaticMarket extends BaseContract {
       position?: null
     ): ClaimPositionByKeeperEventFilter;
 
-    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))"(
+    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
       account?: string | null,
       position?: null
     ): ClosePositionEventFilter;
@@ -2122,7 +2123,7 @@ export interface IChromaticMarket extends BaseContract {
       position?: null
     ): ClosePositionEventFilter;
 
-    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))"(
+    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
       account?: string | null,
       pnl?: BigNumberish | null,
       interest?: BigNumberish | null,
@@ -2137,7 +2138,7 @@ export interface IChromaticMarket extends BaseContract {
       position?: null
     ): LiquidateEventFilter;
 
-    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,(uint16,uint256)[],uint8))"(
+    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
       account?: string | null,
       position?: null
     ): OpenPositionEventFilter;
@@ -2145,6 +2146,15 @@ export interface IChromaticMarket extends BaseContract {
       account?: string | null,
       position?: null
     ): OpenPositionEventFilter;
+
+    "ProtocolFeeRateSet(uint16,uint16)"(
+      protocolFeeRateOld?: null,
+      protocolFeeRateNew?: null
+    ): ProtocolFeeRateSetEventFilter;
+    ProtocolFeeRateSet(
+      protocolFeeRateOld?: null,
+      protocolFeeRateNew?: null
+    ): ProtocolFeeRateSetEventFilter;
 
     "RemoveLiquidity((uint256,uint256,uint256,address,uint8,int16))"(
       receipt?: null
@@ -2155,15 +2165,6 @@ export interface IChromaticMarket extends BaseContract {
       receipts?: null
     ): RemoveLiquidityBatchEventFilter;
     RemoveLiquidityBatch(receipts?: null): RemoveLiquidityBatchEventFilter;
-
-    "SetFeeProtocol(uint8,uint8)"(
-      feeProtocolOld?: null,
-      feeProtocolNew?: null
-    ): SetFeeProtocolEventFilter;
-    SetFeeProtocol(
-      feeProtocolOld?: null,
-      feeProtocolNew?: null
-    ): SetFeeProtocolEventFilter;
 
     "TransferProtocolFee(uint256,uint256)"(
       positionId?: BigNumberish | null,
@@ -2363,11 +2364,6 @@ export interface IChromaticMarket extends BaseContract {
     factory(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Returns the denominator of the protocol's % share of the fees
-     */
-    feeProtocol(overrides?: CallOverrides): Promise<BigNumber>;
-
-    /**
      * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
      * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
      */
@@ -2507,6 +2503,11 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * Returns the protocol fee rate
+     */
+    protocolFeeRate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
      * Removes liquidity from the market.
      * @param data Additional data for the liquidity callback.
      * @param recipient The address to receive the removed liquidity.
@@ -2535,11 +2536,11 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Set the denominator of the protocol's % share of the fees
-     * @param _feeProtocol new protocol fee for the market
+     * Set the new protocol fee rate
+     * @param _protocolFeeRate new protocol fee rate for the market
      */
-    setFeeProtocol(
-      _feeProtocol: BigNumberish,
+    setProtocolFeeRate(
+      _protocolFeeRate: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
@@ -2758,11 +2759,6 @@ export interface IChromaticMarket extends BaseContract {
     factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Returns the denominator of the protocol's % share of the fees
-     */
-    feeProtocol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    /**
      * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
      * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
      */
@@ -2904,6 +2900,11 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * Returns the protocol fee rate
+     */
+    protocolFeeRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
      * Removes liquidity from the market.
      * @param data Additional data for the liquidity callback.
      * @param recipient The address to receive the removed liquidity.
@@ -2932,11 +2933,11 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Set the denominator of the protocol's % share of the fees
-     * @param _feeProtocol new protocol fee for the market
+     * Set the new protocol fee rate
+     * @param _protocolFeeRate new protocol fee rate for the market
      */
-    setFeeProtocol(
-      _feeProtocol: BigNumberish,
+    setProtocolFeeRate(
+      _protocolFeeRate: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 

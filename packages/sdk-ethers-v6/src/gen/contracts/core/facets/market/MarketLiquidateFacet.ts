@@ -43,8 +43,8 @@ export type PositionStruct = {
   takerMargin: BigNumberish;
   owner: AddressLike;
   liquidator: AddressLike;
+  _protocolFeeRate: BigNumberish;
   _binMargins: BinMarginStruct[];
-  _feeProtocol: BigNumberish;
 };
 
 export type PositionStructOutput = [
@@ -57,8 +57,8 @@ export type PositionStructOutput = [
   takerMargin: bigint,
   owner: string,
   liquidator: string,
-  _binMargins: BinMarginStructOutput[],
-  _feeProtocol: bigint
+  _protocolFeeRate: bigint,
+  _binMargins: BinMarginStructOutput[]
 ] & {
   id: bigint;
   openVersion: bigint;
@@ -69,8 +69,8 @@ export type PositionStructOutput = [
   takerMargin: bigint;
   owner: string;
   liquidator: string;
+  _protocolFeeRate: bigint;
   _binMargins: BinMarginStructOutput[];
-  _feeProtocol: bigint;
 };
 
 export interface MarketLiquidateFacetInterface extends Interface {

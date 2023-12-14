@@ -91,6 +91,44 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
+        name: "daoOld",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "daoNew",
+        type: "address",
+      },
+    ],
+    name: "DaoUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint16",
+        name: "defaultProtocolFeeRateOld",
+        type: "uint16",
+      },
+      {
+        indexed: true,
+        internalType: "uint16",
+        name: "defaultProtocolFeeRateNew",
+        type: "uint16",
+      },
+    ],
+    name: "DefaultProtocolFeeRateUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
         name: "token",
         type: "address",
       },
@@ -116,6 +154,25 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
+        name: "keeperFeePayerOld",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "keeperFeePayerNew",
+        type: "address",
+      },
+    ],
+    name: "KeeperFeePayerUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
         name: "token",
         type: "address",
       },
@@ -133,6 +190,25 @@ const _abi = [
       },
     ],
     name: "LastInterestRateRecordRemoved",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "liquidatorOld",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "liquidatorNew",
+        type: "address",
+      },
+    ],
+    name: "LiquidatorUpdated",
     type: "event",
   },
   {
@@ -245,32 +321,6 @@ const _abi = [
       },
     ],
     name: "SetFlashLoanFeeRate",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "keeperFeePayer",
-        type: "address",
-      },
-    ],
-    name: "SetKeeperFeePayer",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "liquidator",
-        type: "address",
-      },
-    ],
-    name: "SetLiquidator",
     type: "event",
   },
   {
@@ -411,11 +461,17 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "dao",
+        name: "treasuryOld",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "treasuryNew",
         type: "address",
       },
     ],
-    name: "UpdateDao",
+    name: "TreasuryUpdated",
     type: "event",
   },
   {
@@ -460,19 +516,6 @@ const _abi = [
       },
     ],
     name: "UpdateTakeProfitBPSRange",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "treasury",
-        type: "address",
-      },
-    ],
-    name: "UpdateTreasury",
     type: "event",
   },
   {
@@ -577,6 +620,19 @@ const _abi = [
         internalType: "address",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "defaultProtocolFeeRate",
+    outputs: [
+      {
+        internalType: "uint16",
+        name: "",
+        type: "uint16",
       },
     ],
     stateMutability: "view",
@@ -910,6 +966,11 @@ const _abi = [
         name: "settlementToken",
         type: "address",
       },
+      {
+        internalType: "uint16",
+        name: "protocolFeeRate",
+        type: "uint16",
+      },
     ],
     stateMutability: "view",
     type: "function",
@@ -1071,32 +1132,6 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "_keeperFeePayer",
-        type: "address",
-      },
-    ],
-    name: "setKeeperFeePayer",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "_liquidator",
-        type: "address",
-      },
-    ],
-    name: "setLiquidator",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
         name: "_marketSettlement",
         type: "address",
       },
@@ -1215,6 +1250,32 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "uint16",
+        name: "_defaultProtocolFeeRate",
+        type: "uint16",
+      },
+    ],
+    name: "updateDefaultProtocolFeeRate",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_keeperFeePayer",
+        type: "address",
+      },
+    ],
+    name: "updateKeeperFeePayer",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "oracleProvider",
         type: "address",
@@ -1226,6 +1287,19 @@ const _abi = [
       },
     ],
     name: "updateLeverageLevel",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_liquidator",
+        type: "address",
+      },
+    ],
+    name: "updateLiquidator",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

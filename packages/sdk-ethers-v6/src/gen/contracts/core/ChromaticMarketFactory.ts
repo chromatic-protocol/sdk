@@ -59,6 +59,7 @@ export interface ChromaticMarketFactoryInterface extends Interface {
       | "createMarket"
       | "currentInterestRate"
       | "dao"
+      | "defaultProtocolFeeRate"
       | "getEarningDistributionThreshold"
       | "getFlashLoanFeeRate"
       | "getInterestRateRecords"
@@ -83,8 +84,6 @@ export interface ChromaticMarketFactoryInterface extends Interface {
       | "removeLastInterestRateRecord"
       | "setEarningDistributionThreshold"
       | "setFlashLoanFeeRate"
-      | "setKeeperFeePayer"
-      | "setLiquidator"
       | "setMarketSettlement"
       | "setMinimumMargin"
       | "setSettlementTokenOracleProvider"
@@ -93,7 +92,10 @@ export interface ChromaticMarketFactoryInterface extends Interface {
       | "treasury"
       | "unregisterOracleProvider"
       | "updateDao"
+      | "updateDefaultProtocolFeeRate"
+      | "updateKeeperFeePayer"
       | "updateLeverageLevel"
+      | "updateLiquidator"
       | "updateTakeProfitBPSRange"
       | "updateTreasury"
       | "vault"
@@ -101,25 +103,26 @@ export interface ChromaticMarketFactoryInterface extends Interface {
 
   getEvent(
     nameOrSignatureOrTopic:
+      | "DaoUpdated"
+      | "DefaultProtocolFeeRateUpdated"
       | "InterestRateRecordAppended"
+      | "KeeperFeePayerUpdated"
       | "LastInterestRateRecordRemoved"
+      | "LiquidatorUpdated"
       | "MarketCreated"
       | "OracleProviderRegistered"
       | "OracleProviderUnregistered"
       | "SetEarningDistributionThreshold"
       | "SetFlashLoanFeeRate"
-      | "SetKeeperFeePayer"
-      | "SetLiquidator"
       | "SetMarketSettlement"
       | "SetMinimumMargin"
       | "SetSettlementTokenOracleProvider"
       | "SetUniswapFeeTier"
       | "SetVault"
       | "SettlementTokenRegistered"
-      | "UpdateDao"
+      | "TreasuryUpdated"
       | "UpdateLeverageLevel"
       | "UpdateTakeProfitBPSRange"
-      | "UpdateTreasury"
   ): EventFragment;
 
   encodeFunctionData(
@@ -139,6 +142,10 @@ export interface ChromaticMarketFactoryInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(functionFragment: "dao", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "defaultProtocolFeeRate",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "getEarningDistributionThreshold",
     values: [AddressLike]
@@ -244,14 +251,6 @@ export interface ChromaticMarketFactoryInterface extends Interface {
     values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "setKeeperFeePayer",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setLiquidator",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
     functionFragment: "setMarketSettlement",
     values: [AddressLike]
   ): string;
@@ -281,8 +280,20 @@ export interface ChromaticMarketFactoryInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "updateDefaultProtocolFeeRate",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateKeeperFeePayer",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "updateLeverageLevel",
     values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateLiquidator",
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "updateTakeProfitBPSRange",
@@ -311,6 +322,10 @@ export interface ChromaticMarketFactoryInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "dao", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "defaultProtocolFeeRate",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getEarningDistributionThreshold",
     data: BytesLike
@@ -396,14 +411,6 @@ export interface ChromaticMarketFactoryInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setKeeperFeePayer",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setLiquidator",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "setMarketSettlement",
     data: BytesLike
   ): Result;
@@ -427,7 +434,19 @@ export interface ChromaticMarketFactoryInterface extends Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "updateDao", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "updateDefaultProtocolFeeRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateKeeperFeePayer",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "updateLeverageLevel",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateLiquidator",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -439,6 +458,38 @@ export interface ChromaticMarketFactoryInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "vault", data: BytesLike): Result;
+}
+
+export namespace DaoUpdatedEvent {
+  export type InputTuple = [daoOld: AddressLike, daoNew: AddressLike];
+  export type OutputTuple = [daoOld: string, daoNew: string];
+  export interface OutputObject {
+    daoOld: string;
+    daoNew: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace DefaultProtocolFeeRateUpdatedEvent {
+  export type InputTuple = [
+    defaultProtocolFeeRateOld: BigNumberish,
+    defaultProtocolFeeRateNew: BigNumberish
+  ];
+  export type OutputTuple = [
+    defaultProtocolFeeRateOld: bigint,
+    defaultProtocolFeeRateNew: bigint
+  ];
+  export interface OutputObject {
+    defaultProtocolFeeRateOld: bigint;
+    defaultProtocolFeeRateNew: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
 
 export namespace InterestRateRecordAppendedEvent {
@@ -463,6 +514,25 @@ export namespace InterestRateRecordAppendedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace KeeperFeePayerUpdatedEvent {
+  export type InputTuple = [
+    keeperFeePayerOld: AddressLike,
+    keeperFeePayerNew: AddressLike
+  ];
+  export type OutputTuple = [
+    keeperFeePayerOld: string,
+    keeperFeePayerNew: string
+  ];
+  export interface OutputObject {
+    keeperFeePayerOld: string;
+    keeperFeePayerNew: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace LastInterestRateRecordRemovedEvent {
   export type InputTuple = [
     token: AddressLike,
@@ -478,6 +548,22 @@ export namespace LastInterestRateRecordRemovedEvent {
     token: string;
     annualRateBPS: bigint;
     beginTimestamp: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace LiquidatorUpdatedEvent {
+  export type InputTuple = [
+    liquidatorOld: AddressLike,
+    liquidatorNew: AddressLike
+  ];
+  export type OutputTuple = [liquidatorOld: string, liquidatorNew: string];
+  export interface OutputObject {
+    liquidatorOld: string;
+    liquidatorNew: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -563,30 +649,6 @@ export namespace SetFlashLoanFeeRateEvent {
   export interface OutputObject {
     token: string;
     flashLoanFeeRate: bigint;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace SetKeeperFeePayerEvent {
-  export type InputTuple = [keeperFeePayer: AddressLike];
-  export type OutputTuple = [keeperFeePayer: string];
-  export interface OutputObject {
-    keeperFeePayer: string;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace SetLiquidatorEvent {
-  export type InputTuple = [liquidator: AddressLike];
-  export type OutputTuple = [liquidator: string];
-  export interface OutputObject {
-    liquidator: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -691,11 +753,12 @@ export namespace SettlementTokenRegisteredEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace UpdateDaoEvent {
-  export type InputTuple = [dao: AddressLike];
-  export type OutputTuple = [dao: string];
+export namespace TreasuryUpdatedEvent {
+  export type InputTuple = [treasuryOld: AddressLike, treasuryNew: AddressLike];
+  export type OutputTuple = [treasuryOld: string, treasuryNew: string];
   export interface OutputObject {
-    dao: string;
+    treasuryOld: string;
+    treasuryNew: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -731,18 +794,6 @@ export namespace UpdateTakeProfitBPSRangeEvent {
     oracleProvider: string;
     minTakeProfitBPS: bigint;
     maxTakeProfitBPS: bigint;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace UpdateTreasuryEvent {
-  export type InputTuple = [treasury: AddressLike];
-  export type OutputTuple = [treasury: string];
-  export interface OutputObject {
-    treasury: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -854,6 +905,11 @@ export interface ChromaticMarketFactory extends BaseContract {
    * Returns the address of the DAO.
    */
   dao: TypedContractMethod<[], [string], "view">;
+
+  /**
+   * Returns the default protocol fee rate.
+   */
+  defaultProtocolFeeRate: TypedContractMethod<[], [bigint], "view">;
 
   /**
    * Gets the earning distribution threshold for a settlement token.
@@ -994,12 +1050,18 @@ export interface ChromaticMarketFactory extends BaseContract {
   marketSettlement: TypedContractMethod<[], [string], "view">;
 
   /**
-   * Called by the market constructor to fetch the parameters of the market Returns underlyingAsset The underlying asset of the market Returns settlementToken The settlement token of the market Returns vPoolCapacity Capacity of virtual future pool Returns vPoolA Amplification coefficient of virtual future pool, precise value
+   * Called by the market constructor to fetch the parameters of the market Returns underlyingAsset The underlying asset of the market Returns settlementToken The settlement token of the market Returns protocolFeeRate The protocol fee rate of the market Returns vPoolCapacity Capacity of virtual future pool Returns vPoolA Amplification coefficient of virtual future pool, precise value
    * Get the parameters to be used in constructing the market, set transiently during market creation.
    */
   parameters: TypedContractMethod<
     [],
-    [[string, string] & { oracleProvider: string; settlementToken: string }],
+    [
+      [string, string, bigint] & {
+        oracleProvider: string;
+        settlementToken: string;
+        protocolFeeRate: bigint;
+      }
+    ],
     "view"
   >;
 
@@ -1075,28 +1137,6 @@ export interface ChromaticMarketFactory extends BaseContract {
    */
   setFlashLoanFeeRate: TypedContractMethod<
     [token: AddressLike, flashLoanFeeRate: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
-
-  /**
-   * This function can only be called by the DAO address.
-   * Sets the keeper fee payer address.
-   * @param _keeperFeePayer The keeper fee payer address.
-   */
-  setKeeperFeePayer: TypedContractMethod<
-    [_keeperFeePayer: AddressLike],
-    [void],
-    "nonpayable"
-  >;
-
-  /**
-   * This function can only be called by the DAO address.      Throws an `AlreadySetLiquidator` error if the liquidator address has already been set.
-   * Sets the liquidator address.
-   * @param _liquidator The liquidator address.
-   */
-  setLiquidator: TypedContractMethod<
-    [_liquidator: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -1179,6 +1219,28 @@ export interface ChromaticMarketFactory extends BaseContract {
   updateDao: TypedContractMethod<[_dao: AddressLike], [void], "nonpayable">;
 
   /**
+   * This function can only be called by the DAO address.
+   * Updates the default protocl fee rate.
+   * @param _defaultProtocolFeeRate The new default protocol fee rate.
+   */
+  updateDefaultProtocolFeeRate: TypedContractMethod<
+    [_defaultProtocolFeeRate: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  /**
+   * This function can only be called by the DAO address.
+   * Updates the keeper fee payer address.
+   * @param _keeperFeePayer The new keeper fee payer address.
+   */
+  updateKeeperFeePayer: TypedContractMethod<
+    [_keeperFeePayer: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
+  /**
    * This function can only be called by the DAO and registered oracle providers.
    * Updates the leverage level of an oracle provider in the registry.
    * @param level The new leverage level to be set for the oracle provider.
@@ -1186,6 +1248,17 @@ export interface ChromaticMarketFactory extends BaseContract {
    */
   updateLeverageLevel: TypedContractMethod<
     [oracleProvider: AddressLike, level: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  /**
+   * This function can only be called by the DAO address.
+   * Updates the liquidator address.
+   * @param _liquidator The new liquidator address.
+   */
+  updateLiquidator: TypedContractMethod<
+    [_liquidator: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -1264,6 +1337,9 @@ export interface ChromaticMarketFactory extends BaseContract {
     nameOrSignature: "dao"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
+    nameOrSignature: "defaultProtocolFeeRate"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "getEarningDistributionThreshold"
   ): TypedContractMethod<[token: AddressLike], [bigint], "view">;
   getFunction(
@@ -1327,7 +1403,13 @@ export interface ChromaticMarketFactory extends BaseContract {
     nameOrSignature: "parameters"
   ): TypedContractMethod<
     [],
-    [[string, string] & { oracleProvider: string; settlementToken: string }],
+    [
+      [string, string, bigint] & {
+        oracleProvider: string;
+        settlementToken: string;
+        protocolFeeRate: bigint;
+      }
+    ],
     "view"
   >;
   getFunction(
@@ -1376,12 +1458,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "setKeeperFeePayer"
-  ): TypedContractMethod<[_keeperFeePayer: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "setLiquidator"
-  ): TypedContractMethod<[_liquidator: AddressLike], [void], "nonpayable">;
-  getFunction(
     nameOrSignature: "setMarketSettlement"
   ): TypedContractMethod<
     [_marketSettlement: AddressLike],
@@ -1422,12 +1498,25 @@ export interface ChromaticMarketFactory extends BaseContract {
     nameOrSignature: "updateDao"
   ): TypedContractMethod<[_dao: AddressLike], [void], "nonpayable">;
   getFunction(
+    nameOrSignature: "updateDefaultProtocolFeeRate"
+  ): TypedContractMethod<
+    [_defaultProtocolFeeRate: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "updateKeeperFeePayer"
+  ): TypedContractMethod<[_keeperFeePayer: AddressLike], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "updateLeverageLevel"
   ): TypedContractMethod<
     [oracleProvider: AddressLike, level: BigNumberish],
     [void],
     "nonpayable"
   >;
+  getFunction(
+    nameOrSignature: "updateLiquidator"
+  ): TypedContractMethod<[_liquidator: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "updateTakeProfitBPSRange"
   ): TypedContractMethod<
@@ -1447,6 +1536,20 @@ export interface ChromaticMarketFactory extends BaseContract {
   ): TypedContractMethod<[], [string], "view">;
 
   getEvent(
+    key: "DaoUpdated"
+  ): TypedContractEvent<
+    DaoUpdatedEvent.InputTuple,
+    DaoUpdatedEvent.OutputTuple,
+    DaoUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: "DefaultProtocolFeeRateUpdated"
+  ): TypedContractEvent<
+    DefaultProtocolFeeRateUpdatedEvent.InputTuple,
+    DefaultProtocolFeeRateUpdatedEvent.OutputTuple,
+    DefaultProtocolFeeRateUpdatedEvent.OutputObject
+  >;
+  getEvent(
     key: "InterestRateRecordAppended"
   ): TypedContractEvent<
     InterestRateRecordAppendedEvent.InputTuple,
@@ -1454,11 +1557,25 @@ export interface ChromaticMarketFactory extends BaseContract {
     InterestRateRecordAppendedEvent.OutputObject
   >;
   getEvent(
+    key: "KeeperFeePayerUpdated"
+  ): TypedContractEvent<
+    KeeperFeePayerUpdatedEvent.InputTuple,
+    KeeperFeePayerUpdatedEvent.OutputTuple,
+    KeeperFeePayerUpdatedEvent.OutputObject
+  >;
+  getEvent(
     key: "LastInterestRateRecordRemoved"
   ): TypedContractEvent<
     LastInterestRateRecordRemovedEvent.InputTuple,
     LastInterestRateRecordRemovedEvent.OutputTuple,
     LastInterestRateRecordRemovedEvent.OutputObject
+  >;
+  getEvent(
+    key: "LiquidatorUpdated"
+  ): TypedContractEvent<
+    LiquidatorUpdatedEvent.InputTuple,
+    LiquidatorUpdatedEvent.OutputTuple,
+    LiquidatorUpdatedEvent.OutputObject
   >;
   getEvent(
     key: "MarketCreated"
@@ -1494,20 +1611,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     SetFlashLoanFeeRateEvent.InputTuple,
     SetFlashLoanFeeRateEvent.OutputTuple,
     SetFlashLoanFeeRateEvent.OutputObject
-  >;
-  getEvent(
-    key: "SetKeeperFeePayer"
-  ): TypedContractEvent<
-    SetKeeperFeePayerEvent.InputTuple,
-    SetKeeperFeePayerEvent.OutputTuple,
-    SetKeeperFeePayerEvent.OutputObject
-  >;
-  getEvent(
-    key: "SetLiquidator"
-  ): TypedContractEvent<
-    SetLiquidatorEvent.InputTuple,
-    SetLiquidatorEvent.OutputTuple,
-    SetLiquidatorEvent.OutputObject
   >;
   getEvent(
     key: "SetMarketSettlement"
@@ -1552,11 +1655,11 @@ export interface ChromaticMarketFactory extends BaseContract {
     SettlementTokenRegisteredEvent.OutputObject
   >;
   getEvent(
-    key: "UpdateDao"
+    key: "TreasuryUpdated"
   ): TypedContractEvent<
-    UpdateDaoEvent.InputTuple,
-    UpdateDaoEvent.OutputTuple,
-    UpdateDaoEvent.OutputObject
+    TreasuryUpdatedEvent.InputTuple,
+    TreasuryUpdatedEvent.OutputTuple,
+    TreasuryUpdatedEvent.OutputObject
   >;
   getEvent(
     key: "UpdateLeverageLevel"
@@ -1572,15 +1675,30 @@ export interface ChromaticMarketFactory extends BaseContract {
     UpdateTakeProfitBPSRangeEvent.OutputTuple,
     UpdateTakeProfitBPSRangeEvent.OutputObject
   >;
-  getEvent(
-    key: "UpdateTreasury"
-  ): TypedContractEvent<
-    UpdateTreasuryEvent.InputTuple,
-    UpdateTreasuryEvent.OutputTuple,
-    UpdateTreasuryEvent.OutputObject
-  >;
 
   filters: {
+    "DaoUpdated(address,address)": TypedContractEvent<
+      DaoUpdatedEvent.InputTuple,
+      DaoUpdatedEvent.OutputTuple,
+      DaoUpdatedEvent.OutputObject
+    >;
+    DaoUpdated: TypedContractEvent<
+      DaoUpdatedEvent.InputTuple,
+      DaoUpdatedEvent.OutputTuple,
+      DaoUpdatedEvent.OutputObject
+    >;
+
+    "DefaultProtocolFeeRateUpdated(uint16,uint16)": TypedContractEvent<
+      DefaultProtocolFeeRateUpdatedEvent.InputTuple,
+      DefaultProtocolFeeRateUpdatedEvent.OutputTuple,
+      DefaultProtocolFeeRateUpdatedEvent.OutputObject
+    >;
+    DefaultProtocolFeeRateUpdated: TypedContractEvent<
+      DefaultProtocolFeeRateUpdatedEvent.InputTuple,
+      DefaultProtocolFeeRateUpdatedEvent.OutputTuple,
+      DefaultProtocolFeeRateUpdatedEvent.OutputObject
+    >;
+
     "InterestRateRecordAppended(address,uint256,uint256)": TypedContractEvent<
       InterestRateRecordAppendedEvent.InputTuple,
       InterestRateRecordAppendedEvent.OutputTuple,
@@ -1592,6 +1710,17 @@ export interface ChromaticMarketFactory extends BaseContract {
       InterestRateRecordAppendedEvent.OutputObject
     >;
 
+    "KeeperFeePayerUpdated(address,address)": TypedContractEvent<
+      KeeperFeePayerUpdatedEvent.InputTuple,
+      KeeperFeePayerUpdatedEvent.OutputTuple,
+      KeeperFeePayerUpdatedEvent.OutputObject
+    >;
+    KeeperFeePayerUpdated: TypedContractEvent<
+      KeeperFeePayerUpdatedEvent.InputTuple,
+      KeeperFeePayerUpdatedEvent.OutputTuple,
+      KeeperFeePayerUpdatedEvent.OutputObject
+    >;
+
     "LastInterestRateRecordRemoved(address,uint256,uint256)": TypedContractEvent<
       LastInterestRateRecordRemovedEvent.InputTuple,
       LastInterestRateRecordRemovedEvent.OutputTuple,
@@ -1601,6 +1730,17 @@ export interface ChromaticMarketFactory extends BaseContract {
       LastInterestRateRecordRemovedEvent.InputTuple,
       LastInterestRateRecordRemovedEvent.OutputTuple,
       LastInterestRateRecordRemovedEvent.OutputObject
+    >;
+
+    "LiquidatorUpdated(address,address)": TypedContractEvent<
+      LiquidatorUpdatedEvent.InputTuple,
+      LiquidatorUpdatedEvent.OutputTuple,
+      LiquidatorUpdatedEvent.OutputObject
+    >;
+    LiquidatorUpdated: TypedContractEvent<
+      LiquidatorUpdatedEvent.InputTuple,
+      LiquidatorUpdatedEvent.OutputTuple,
+      LiquidatorUpdatedEvent.OutputObject
     >;
 
     "MarketCreated(address,address,address)": TypedContractEvent<
@@ -1656,28 +1796,6 @@ export interface ChromaticMarketFactory extends BaseContract {
       SetFlashLoanFeeRateEvent.InputTuple,
       SetFlashLoanFeeRateEvent.OutputTuple,
       SetFlashLoanFeeRateEvent.OutputObject
-    >;
-
-    "SetKeeperFeePayer(address)": TypedContractEvent<
-      SetKeeperFeePayerEvent.InputTuple,
-      SetKeeperFeePayerEvent.OutputTuple,
-      SetKeeperFeePayerEvent.OutputObject
-    >;
-    SetKeeperFeePayer: TypedContractEvent<
-      SetKeeperFeePayerEvent.InputTuple,
-      SetKeeperFeePayerEvent.OutputTuple,
-      SetKeeperFeePayerEvent.OutputObject
-    >;
-
-    "SetLiquidator(address)": TypedContractEvent<
-      SetLiquidatorEvent.InputTuple,
-      SetLiquidatorEvent.OutputTuple,
-      SetLiquidatorEvent.OutputObject
-    >;
-    SetLiquidator: TypedContractEvent<
-      SetLiquidatorEvent.InputTuple,
-      SetLiquidatorEvent.OutputTuple,
-      SetLiquidatorEvent.OutputObject
     >;
 
     "SetMarketSettlement(address)": TypedContractEvent<
@@ -1746,15 +1864,15 @@ export interface ChromaticMarketFactory extends BaseContract {
       SettlementTokenRegisteredEvent.OutputObject
     >;
 
-    "UpdateDao(address)": TypedContractEvent<
-      UpdateDaoEvent.InputTuple,
-      UpdateDaoEvent.OutputTuple,
-      UpdateDaoEvent.OutputObject
+    "TreasuryUpdated(address,address)": TypedContractEvent<
+      TreasuryUpdatedEvent.InputTuple,
+      TreasuryUpdatedEvent.OutputTuple,
+      TreasuryUpdatedEvent.OutputObject
     >;
-    UpdateDao: TypedContractEvent<
-      UpdateDaoEvent.InputTuple,
-      UpdateDaoEvent.OutputTuple,
-      UpdateDaoEvent.OutputObject
+    TreasuryUpdated: TypedContractEvent<
+      TreasuryUpdatedEvent.InputTuple,
+      TreasuryUpdatedEvent.OutputTuple,
+      TreasuryUpdatedEvent.OutputObject
     >;
 
     "UpdateLeverageLevel(address,uint8)": TypedContractEvent<
@@ -1777,17 +1895,6 @@ export interface ChromaticMarketFactory extends BaseContract {
       UpdateTakeProfitBPSRangeEvent.InputTuple,
       UpdateTakeProfitBPSRangeEvent.OutputTuple,
       UpdateTakeProfitBPSRangeEvent.OutputObject
-    >;
-
-    "UpdateTreasury(address)": TypedContractEvent<
-      UpdateTreasuryEvent.InputTuple,
-      UpdateTreasuryEvent.OutputTuple,
-      UpdateTreasuryEvent.OutputObject
-    >;
-    UpdateTreasury: TypedContractEvent<
-      UpdateTreasuryEvent.InputTuple,
-      UpdateTreasuryEvent.OutputTuple,
-      UpdateTreasuryEvent.OutputObject
     >;
   };
 }

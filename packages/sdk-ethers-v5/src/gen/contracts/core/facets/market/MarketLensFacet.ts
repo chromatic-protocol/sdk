@@ -109,8 +109,8 @@ export type PositionStruct = {
   takerMargin: BigNumberish;
   owner: string;
   liquidator: string;
+  _protocolFeeRate: BigNumberish;
   _binMargins: BinMarginStruct[];
-  _feeProtocol: BigNumberish;
 };
 
 export type PositionStructOutput = [
@@ -123,8 +123,8 @@ export type PositionStructOutput = [
   BigNumber,
   string,
   string,
-  BinMarginStructOutput[],
-  number
+  number,
+  BinMarginStructOutput[]
 ] & {
   id: BigNumber;
   openVersion: BigNumber;
@@ -135,8 +135,8 @@ export type PositionStructOutput = [
   takerMargin: BigNumber;
   owner: string;
   liquidator: string;
+  _protocolFeeRate: number;
   _binMargins: BinMarginStructOutput[];
-  _feeProtocol: number;
 };
 
 export type LiquidityBinStatusStruct = {

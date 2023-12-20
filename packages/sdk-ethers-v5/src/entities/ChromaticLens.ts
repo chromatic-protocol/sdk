@@ -113,8 +113,10 @@ export class ChromaticLens {
    */
   async liquidityBins(marketAddress: string): Promise<LiquidityBinResult[]> {
     return await handleBytesError(async () => {
-      const totalLiquidityBins = await this.getContract().liquidityBinStatuses(marketAddress);
-      const clbToken = await this._client.market().clbToken(marketAddress);
+      const [totalLiquidityBins, clbToken] = await Promise.all([
+        this.getContract().liquidityBinStatuses(marketAddress),
+        this._client.market().clbToken(marketAddress),
+      ]);
       const tokenIds = totalLiquidityBins.map((bin) => encodeTokenId(bin.tradingFeeRate));
 
       const [totalSupplies, clbTokenDecimals] = await Promise.all([

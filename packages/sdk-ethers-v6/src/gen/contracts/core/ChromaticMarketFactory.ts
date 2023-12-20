@@ -84,7 +84,6 @@ export interface ChromaticMarketFactoryInterface extends Interface {
       | "removeLastInterestRateRecord"
       | "setEarningDistributionThreshold"
       | "setFlashLoanFeeRate"
-      | "setMarketSettlement"
       | "setMinimumMargin"
       | "setSettlementTokenOracleProvider"
       | "setUniswapFeeTier"
@@ -96,6 +95,7 @@ export interface ChromaticMarketFactoryInterface extends Interface {
       | "updateKeeperFeePayer"
       | "updateLeverageLevel"
       | "updateLiquidator"
+      | "updateMarketSettlement"
       | "updateTakeProfitBPSRange"
       | "updateTreasury"
       | "vault"
@@ -110,19 +110,19 @@ export interface ChromaticMarketFactoryInterface extends Interface {
       | "LastInterestRateRecordRemoved"
       | "LiquidatorUpdated"
       | "MarketCreated"
+      | "MarketSettlementUpdated"
       | "OracleProviderRegistered"
       | "OracleProviderUnregistered"
       | "SetEarningDistributionThreshold"
       | "SetFlashLoanFeeRate"
-      | "SetMarketSettlement"
       | "SetMinimumMargin"
       | "SetSettlementTokenOracleProvider"
       | "SetUniswapFeeTier"
-      | "SetVault"
       | "SettlementTokenRegistered"
       | "TreasuryUpdated"
       | "UpdateLeverageLevel"
       | "UpdateTakeProfitBPSRange"
+      | "VaultSet"
   ): EventFragment;
 
   encodeFunctionData(
@@ -251,10 +251,6 @@ export interface ChromaticMarketFactoryInterface extends Interface {
     values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "setMarketSettlement",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
     functionFragment: "setMinimumMargin",
     values: [AddressLike, BigNumberish]
   ): string;
@@ -293,6 +289,10 @@ export interface ChromaticMarketFactoryInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "updateLiquidator",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateMarketSettlement",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
@@ -411,10 +411,6 @@ export interface ChromaticMarketFactoryInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setMarketSettlement",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "setMinimumMargin",
     data: BytesLike
   ): Result;
@@ -447,6 +443,10 @@ export interface ChromaticMarketFactoryInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "updateLiquidator",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateMarketSettlement",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -593,6 +593,25 @@ export namespace MarketCreatedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace MarketSettlementUpdatedEvent {
+  export type InputTuple = [
+    marketSettlementOld: AddressLike,
+    marketSettlementNew: AddressLike
+  ];
+  export type OutputTuple = [
+    marketSettlementOld: string,
+    marketSettlementNew: string
+  ];
+  export interface OutputObject {
+    marketSettlementOld: string;
+    marketSettlementNew: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace OracleProviderRegisteredEvent {
   export type InputTuple = [
     oracleProvider: AddressLike,
@@ -656,18 +675,6 @@ export namespace SetFlashLoanFeeRateEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace SetMarketSettlementEvent {
-  export type InputTuple = [marketSettlement: AddressLike];
-  export type OutputTuple = [marketSettlement: string];
-  export interface OutputObject {
-    marketSettlement: string;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
 export namespace SetMinimumMarginEvent {
   export type InputTuple = [token: AddressLike, minimumMargin: BigNumberish];
   export type OutputTuple = [token: string, minimumMargin: bigint];
@@ -700,18 +707,6 @@ export namespace SetUniswapFeeTierEvent {
   export interface OutputObject {
     token: string;
     uniswapFeeTier: bigint;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace SetVaultEvent {
-  export type InputTuple = [vault: AddressLike];
-  export type OutputTuple = [vault: string];
-  export interface OutputObject {
-    vault: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -794,6 +789,18 @@ export namespace UpdateTakeProfitBPSRangeEvent {
     oracleProvider: string;
     minTakeProfitBPS: bigint;
     maxTakeProfitBPS: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace VaultSetEvent {
+  export type InputTuple = [vault: AddressLike];
+  export type OutputTuple = [vault: string];
+  export interface OutputObject {
+    vault: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -1142,17 +1149,6 @@ export interface ChromaticMarketFactory extends BaseContract {
   >;
 
   /**
-   * This function can only be called by the DAO address.      Throws an `AlreadySetMarketSettlement` error if the market settlement task address has already been set.
-   * Sets the market settlement task address.
-   * @param _marketSettlement The market settlement task address.
-   */
-  setMarketSettlement: TypedContractMethod<
-    [_marketSettlement: AddressLike],
-    [void],
-    "nonpayable"
-  >;
-
-  /**
    * This function can only be called by the DAO address.
    * Sets the minimum margin for a settlement token.
    * @param minimumMargin The new minimum margin for the settlement token.
@@ -1259,6 +1255,17 @@ export interface ChromaticMarketFactory extends BaseContract {
    */
   updateLiquidator: TypedContractMethod<
     [_liquidator: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
+  /**
+   * This function can only be called by the DAO address.
+   * Updates the market settlement task address.
+   * @param _marketSettlement The new market settlement task address.
+   */
+  updateMarketSettlement: TypedContractMethod<
+    [_marketSettlement: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -1458,13 +1465,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "setMarketSettlement"
-  ): TypedContractMethod<
-    [_marketSettlement: AddressLike],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
     nameOrSignature: "setMinimumMargin"
   ): TypedContractMethod<
     [token: AddressLike, minimumMargin: BigNumberish],
@@ -1517,6 +1517,13 @@ export interface ChromaticMarketFactory extends BaseContract {
   getFunction(
     nameOrSignature: "updateLiquidator"
   ): TypedContractMethod<[_liquidator: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "updateMarketSettlement"
+  ): TypedContractMethod<
+    [_marketSettlement: AddressLike],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "updateTakeProfitBPSRange"
   ): TypedContractMethod<
@@ -1585,6 +1592,13 @@ export interface ChromaticMarketFactory extends BaseContract {
     MarketCreatedEvent.OutputObject
   >;
   getEvent(
+    key: "MarketSettlementUpdated"
+  ): TypedContractEvent<
+    MarketSettlementUpdatedEvent.InputTuple,
+    MarketSettlementUpdatedEvent.OutputTuple,
+    MarketSettlementUpdatedEvent.OutputObject
+  >;
+  getEvent(
     key: "OracleProviderRegistered"
   ): TypedContractEvent<
     OracleProviderRegisteredEvent.InputTuple,
@@ -1613,13 +1627,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     SetFlashLoanFeeRateEvent.OutputObject
   >;
   getEvent(
-    key: "SetMarketSettlement"
-  ): TypedContractEvent<
-    SetMarketSettlementEvent.InputTuple,
-    SetMarketSettlementEvent.OutputTuple,
-    SetMarketSettlementEvent.OutputObject
-  >;
-  getEvent(
     key: "SetMinimumMargin"
   ): TypedContractEvent<
     SetMinimumMarginEvent.InputTuple,
@@ -1639,13 +1646,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     SetUniswapFeeTierEvent.InputTuple,
     SetUniswapFeeTierEvent.OutputTuple,
     SetUniswapFeeTierEvent.OutputObject
-  >;
-  getEvent(
-    key: "SetVault"
-  ): TypedContractEvent<
-    SetVaultEvent.InputTuple,
-    SetVaultEvent.OutputTuple,
-    SetVaultEvent.OutputObject
   >;
   getEvent(
     key: "SettlementTokenRegistered"
@@ -1674,6 +1674,13 @@ export interface ChromaticMarketFactory extends BaseContract {
     UpdateTakeProfitBPSRangeEvent.InputTuple,
     UpdateTakeProfitBPSRangeEvent.OutputTuple,
     UpdateTakeProfitBPSRangeEvent.OutputObject
+  >;
+  getEvent(
+    key: "VaultSet"
+  ): TypedContractEvent<
+    VaultSetEvent.InputTuple,
+    VaultSetEvent.OutputTuple,
+    VaultSetEvent.OutputObject
   >;
 
   filters: {
@@ -1754,6 +1761,17 @@ export interface ChromaticMarketFactory extends BaseContract {
       MarketCreatedEvent.OutputObject
     >;
 
+    "MarketSettlementUpdated(address,address)": TypedContractEvent<
+      MarketSettlementUpdatedEvent.InputTuple,
+      MarketSettlementUpdatedEvent.OutputTuple,
+      MarketSettlementUpdatedEvent.OutputObject
+    >;
+    MarketSettlementUpdated: TypedContractEvent<
+      MarketSettlementUpdatedEvent.InputTuple,
+      MarketSettlementUpdatedEvent.OutputTuple,
+      MarketSettlementUpdatedEvent.OutputObject
+    >;
+
     "OracleProviderRegistered(address,tuple)": TypedContractEvent<
       OracleProviderRegisteredEvent.InputTuple,
       OracleProviderRegisteredEvent.OutputTuple,
@@ -1798,17 +1816,6 @@ export interface ChromaticMarketFactory extends BaseContract {
       SetFlashLoanFeeRateEvent.OutputObject
     >;
 
-    "SetMarketSettlement(address)": TypedContractEvent<
-      SetMarketSettlementEvent.InputTuple,
-      SetMarketSettlementEvent.OutputTuple,
-      SetMarketSettlementEvent.OutputObject
-    >;
-    SetMarketSettlement: TypedContractEvent<
-      SetMarketSettlementEvent.InputTuple,
-      SetMarketSettlementEvent.OutputTuple,
-      SetMarketSettlementEvent.OutputObject
-    >;
-
     "SetMinimumMargin(address,uint256)": TypedContractEvent<
       SetMinimumMarginEvent.InputTuple,
       SetMinimumMarginEvent.OutputTuple,
@@ -1840,17 +1847,6 @@ export interface ChromaticMarketFactory extends BaseContract {
       SetUniswapFeeTierEvent.InputTuple,
       SetUniswapFeeTierEvent.OutputTuple,
       SetUniswapFeeTierEvent.OutputObject
-    >;
-
-    "SetVault(address)": TypedContractEvent<
-      SetVaultEvent.InputTuple,
-      SetVaultEvent.OutputTuple,
-      SetVaultEvent.OutputObject
-    >;
-    SetVault: TypedContractEvent<
-      SetVaultEvent.InputTuple,
-      SetVaultEvent.OutputTuple,
-      SetVaultEvent.OutputObject
     >;
 
     "SettlementTokenRegistered(address,address,uint256,uint256,uint256,uint256,uint24)": TypedContractEvent<
@@ -1895,6 +1891,17 @@ export interface ChromaticMarketFactory extends BaseContract {
       UpdateTakeProfitBPSRangeEvent.InputTuple,
       UpdateTakeProfitBPSRangeEvent.OutputTuple,
       UpdateTakeProfitBPSRangeEvent.OutputObject
+    >;
+
+    "VaultSet(address)": TypedContractEvent<
+      VaultSetEvent.InputTuple,
+      VaultSetEvent.OutputTuple,
+      VaultSetEvent.OutputObject
+    >;
+    VaultSet: TypedContractEvent<
+      VaultSetEvent.InputTuple,
+      VaultSetEvent.OutputTuple,
+      VaultSetEvent.OutputObject
     >;
   };
 }

@@ -82,7 +82,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "removeLastInterestRateRecord(address)": FunctionFragment;
     "setEarningDistributionThreshold(address,uint256)": FunctionFragment;
     "setFlashLoanFeeRate(address,uint256)": FunctionFragment;
-    "setMarketSettlement(address)": FunctionFragment;
     "setMinimumMargin(address,uint256)": FunctionFragment;
     "setSettlementTokenOracleProvider(address,address)": FunctionFragment;
     "setUniswapFeeTier(address,uint24)": FunctionFragment;
@@ -94,6 +93,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "updateKeeperFeePayer(address)": FunctionFragment;
     "updateLeverageLevel(address,uint8)": FunctionFragment;
     "updateLiquidator(address)": FunctionFragment;
+    "updateMarketSettlement(address)": FunctionFragment;
     "updateTakeProfitBPSRange(address,uint32,uint32)": FunctionFragment;
     "updateTreasury(address)": FunctionFragment;
     "vault()": FunctionFragment;
@@ -131,7 +131,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
       | "removeLastInterestRateRecord"
       | "setEarningDistributionThreshold"
       | "setFlashLoanFeeRate"
-      | "setMarketSettlement"
       | "setMinimumMargin"
       | "setSettlementTokenOracleProvider"
       | "setUniswapFeeTier"
@@ -143,6 +142,7 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
       | "updateKeeperFeePayer"
       | "updateLeverageLevel"
       | "updateLiquidator"
+      | "updateMarketSettlement"
       | "updateTakeProfitBPSRange"
       | "updateTreasury"
       | "vault"
@@ -274,10 +274,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "setMarketSettlement",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "setMinimumMargin",
     values: [string, BigNumberish]
   ): string;
@@ -310,6 +306,10 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "updateLiquidator",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateMarketSettlement",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -428,10 +428,6 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setMarketSettlement",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "setMinimumMargin",
     data: BytesLike
   ): Result;
@@ -467,6 +463,10 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "updateMarketSettlement",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "updateTakeProfitBPSRange",
     data: BytesLike
   ): Result;
@@ -484,19 +484,19 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
     "LastInterestRateRecordRemoved(address,uint256,uint256)": EventFragment;
     "LiquidatorUpdated(address,address)": EventFragment;
     "MarketCreated(address,address,address)": EventFragment;
+    "MarketSettlementUpdated(address,address)": EventFragment;
     "OracleProviderRegistered(address,(uint32,uint32,uint8))": EventFragment;
     "OracleProviderUnregistered(address)": EventFragment;
     "SetEarningDistributionThreshold(address,uint256)": EventFragment;
     "SetFlashLoanFeeRate(address,uint256)": EventFragment;
-    "SetMarketSettlement(address)": EventFragment;
     "SetMinimumMargin(address,uint256)": EventFragment;
     "SetSettlementTokenOracleProvider(address,address)": EventFragment;
     "SetUniswapFeeTier(address,uint24)": EventFragment;
-    "SetVault(address)": EventFragment;
     "SettlementTokenRegistered(address,address,uint256,uint256,uint256,uint256,uint24)": EventFragment;
     "TreasuryUpdated(address,address)": EventFragment;
     "UpdateLeverageLevel(address,uint8)": EventFragment;
     "UpdateTakeProfitBPSRange(address,uint32,uint32)": EventFragment;
+    "VaultSet(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "DaoUpdated"): EventFragment;
@@ -510,23 +510,23 @@ export interface ChromaticMarketFactoryInterface extends utils.Interface {
   ): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LiquidatorUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "MarketCreated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "MarketSettlementUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OracleProviderRegistered"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OracleProviderUnregistered"): EventFragment;
   getEvent(
     nameOrSignatureOrTopic: "SetEarningDistributionThreshold"
   ): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetFlashLoanFeeRate"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SetMarketSettlement"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetMinimumMargin"): EventFragment;
   getEvent(
     nameOrSignatureOrTopic: "SetSettlementTokenOracleProvider"
   ): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetUniswapFeeTier"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SetVault"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SettlementTokenRegistered"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TreasuryUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UpdateLeverageLevel"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UpdateTakeProfitBPSRange"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "VaultSet"): EventFragment;
 }
 
 export interface DaoUpdatedEventObject {
@@ -614,6 +614,18 @@ export type MarketCreatedEvent = TypedEvent<
 
 export type MarketCreatedEventFilter = TypedEventFilter<MarketCreatedEvent>;
 
+export interface MarketSettlementUpdatedEventObject {
+  marketSettlementOld: string;
+  marketSettlementNew: string;
+}
+export type MarketSettlementUpdatedEvent = TypedEvent<
+  [string, string],
+  MarketSettlementUpdatedEventObject
+>;
+
+export type MarketSettlementUpdatedEventFilter =
+  TypedEventFilter<MarketSettlementUpdatedEvent>;
+
 export interface OracleProviderRegisteredEventObject {
   oracleProvider: string;
   properties: OracleProviderPropertiesStructOutput;
@@ -661,17 +673,6 @@ export type SetFlashLoanFeeRateEvent = TypedEvent<
 export type SetFlashLoanFeeRateEventFilter =
   TypedEventFilter<SetFlashLoanFeeRateEvent>;
 
-export interface SetMarketSettlementEventObject {
-  marketSettlement: string;
-}
-export type SetMarketSettlementEvent = TypedEvent<
-  [string],
-  SetMarketSettlementEventObject
->;
-
-export type SetMarketSettlementEventFilter =
-  TypedEventFilter<SetMarketSettlementEvent>;
-
 export interface SetMinimumMarginEventObject {
   token: string;
   minimumMargin: BigNumber;
@@ -707,13 +708,6 @@ export type SetUniswapFeeTierEvent = TypedEvent<
 
 export type SetUniswapFeeTierEventFilter =
   TypedEventFilter<SetUniswapFeeTierEvent>;
-
-export interface SetVaultEventObject {
-  vault: string;
-}
-export type SetVaultEvent = TypedEvent<[string], SetVaultEventObject>;
-
-export type SetVaultEventFilter = TypedEventFilter<SetVaultEvent>;
 
 export interface SettlementTokenRegisteredEventObject {
   token: string;
@@ -767,6 +761,13 @@ export type UpdateTakeProfitBPSRangeEvent = TypedEvent<
 
 export type UpdateTakeProfitBPSRangeEventFilter =
   TypedEventFilter<UpdateTakeProfitBPSRangeEvent>;
+
+export interface VaultSetEventObject {
+  vault: string;
+}
+export type VaultSetEvent = TypedEvent<[string], VaultSetEventObject>;
+
+export type VaultSetEventFilter = TypedEventFilter<VaultSetEvent>;
 
 export interface ChromaticMarketFactory extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -1073,16 +1074,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * This function can only be called by the DAO address.      Throws an `AlreadySetMarketSettlement` error if the market settlement task address has already been set.
-     * Sets the market settlement task address.
-     * @param _marketSettlement The market settlement task address.
-     */
-    setMarketSettlement(
-      _marketSettlement: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
-
-    /**
      * This function can only be called by the DAO address.
      * Sets the minimum margin for a settlement token.
      * @param minimumMargin The new minimum margin for the settlement token.
@@ -1192,6 +1183,16 @@ export interface ChromaticMarketFactory extends BaseContract {
      */
     updateLiquidator(
       _liquidator: string,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * This function can only be called by the DAO address.
+     * Updates the market settlement task address.
+     * @param _marketSettlement The new market settlement task address.
+     */
+    updateMarketSettlement(
+      _marketSettlement: string,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
@@ -1500,16 +1501,6 @@ export interface ChromaticMarketFactory extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * This function can only be called by the DAO address.      Throws an `AlreadySetMarketSettlement` error if the market settlement task address has already been set.
-   * Sets the market settlement task address.
-   * @param _marketSettlement The market settlement task address.
-   */
-  setMarketSettlement(
-    _marketSettlement: string,
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
-
-  /**
    * This function can only be called by the DAO address.
    * Sets the minimum margin for a settlement token.
    * @param minimumMargin The new minimum margin for the settlement token.
@@ -1619,6 +1610,16 @@ export interface ChromaticMarketFactory extends BaseContract {
    */
   updateLiquidator(
     _liquidator: string,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * This function can only be called by the DAO address.
+   * Updates the market settlement task address.
+   * @param _marketSettlement The new market settlement task address.
+   */
+  updateMarketSettlement(
+    _marketSettlement: string,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -1930,16 +1931,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<void>;
 
     /**
-     * This function can only be called by the DAO address.      Throws an `AlreadySetMarketSettlement` error if the market settlement task address has already been set.
-     * Sets the market settlement task address.
-     * @param _marketSettlement The market settlement task address.
-     */
-    setMarketSettlement(
-      _marketSettlement: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    /**
      * This function can only be called by the DAO address.
      * Sets the minimum margin for a settlement token.
      * @param minimumMargin The new minimum margin for the settlement token.
@@ -2047,6 +2038,16 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<void>;
 
     /**
+     * This function can only be called by the DAO address.
+     * Updates the market settlement task address.
+     * @param _marketSettlement The new market settlement task address.
+     */
+    updateMarketSettlement(
+      _marketSettlement: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
      * This function can only be called by the DAO and registered oracle providers.
      * Updates the take-profit basis points range of an oracle provider.
      * @param maxTakeProfitBPS The new maximum take-profit basis points.
@@ -2143,6 +2144,15 @@ export interface ChromaticMarketFactory extends BaseContract {
       market?: string | null
     ): MarketCreatedEventFilter;
 
+    "MarketSettlementUpdated(address,address)"(
+      marketSettlementOld?: string | null,
+      marketSettlementNew?: string | null
+    ): MarketSettlementUpdatedEventFilter;
+    MarketSettlementUpdated(
+      marketSettlementOld?: string | null,
+      marketSettlementNew?: string | null
+    ): MarketSettlementUpdatedEventFilter;
+
     "OracleProviderRegistered(address,(uint32,uint32,uint8))"(
       oracleProvider?: string | null,
       properties?: null
@@ -2177,13 +2187,6 @@ export interface ChromaticMarketFactory extends BaseContract {
       flashLoanFeeRate?: BigNumberish | null
     ): SetFlashLoanFeeRateEventFilter;
 
-    "SetMarketSettlement(address)"(
-      marketSettlement?: string | null
-    ): SetMarketSettlementEventFilter;
-    SetMarketSettlement(
-      marketSettlement?: string | null
-    ): SetMarketSettlementEventFilter;
-
     "SetMinimumMargin(address,uint256)"(
       token?: string | null,
       minimumMargin?: BigNumberish | null
@@ -2210,9 +2213,6 @@ export interface ChromaticMarketFactory extends BaseContract {
       token?: string | null,
       uniswapFeeTier?: BigNumberish | null
     ): SetUniswapFeeTierEventFilter;
-
-    "SetVault(address)"(vault?: string | null): SetVaultEventFilter;
-    SetVault(vault?: string | null): SetVaultEventFilter;
 
     "SettlementTokenRegistered(address,address,uint256,uint256,uint256,uint256,uint24)"(
       token?: string | null,
@@ -2261,6 +2261,9 @@ export interface ChromaticMarketFactory extends BaseContract {
       minTakeProfitBPS?: BigNumberish | null,
       maxTakeProfitBPS?: BigNumberish | null
     ): UpdateTakeProfitBPSRangeEventFilter;
+
+    "VaultSet(address)"(vault?: string | null): VaultSetEventFilter;
+    VaultSet(vault?: string | null): VaultSetEventFilter;
   };
 
   estimateGas: {
@@ -2534,16 +2537,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * This function can only be called by the DAO address.      Throws an `AlreadySetMarketSettlement` error if the market settlement task address has already been set.
-     * Sets the market settlement task address.
-     * @param _marketSettlement The market settlement task address.
-     */
-    setMarketSettlement(
-      _marketSettlement: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<BigNumber>;
-
-    /**
      * This function can only be called by the DAO address.
      * Sets the minimum margin for a settlement token.
      * @param minimumMargin The new minimum margin for the settlement token.
@@ -2653,6 +2646,16 @@ export interface ChromaticMarketFactory extends BaseContract {
      */
     updateLiquidator(
       _liquidator: string,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     * This function can only be called by the DAO address.
+     * Updates the market settlement task address.
+     * @param _marketSettlement The new market settlement task address.
+     */
+    updateMarketSettlement(
+      _marketSettlement: string,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
@@ -2963,16 +2966,6 @@ export interface ChromaticMarketFactory extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * This function can only be called by the DAO address.      Throws an `AlreadySetMarketSettlement` error if the market settlement task address has already been set.
-     * Sets the market settlement task address.
-     * @param _marketSettlement The market settlement task address.
-     */
-    setMarketSettlement(
-      _marketSettlement: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<PopulatedTransaction>;
-
-    /**
      * This function can only be called by the DAO address.
      * Sets the minimum margin for a settlement token.
      * @param minimumMargin The new minimum margin for the settlement token.
@@ -3082,6 +3075,16 @@ export interface ChromaticMarketFactory extends BaseContract {
      */
     updateLiquidator(
       _liquidator: string,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * This function can only be called by the DAO address.
+     * Updates the market settlement task address.
+     * @param _marketSettlement The new market settlement task address.
+     */
+    updateMarketSettlement(
+      _marketSettlement: string,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 

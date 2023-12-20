@@ -57,11 +57,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "AlreadySetMarketSettlement",
-    type: "error",
-  },
-  {
-    inputs: [],
     name: "AlreadySetVault",
     type: "error",
   },
@@ -242,6 +237,25 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
+        name: "marketSettlementOld",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "marketSettlementNew",
+        type: "address",
+      },
+    ],
+    name: "MarketSettlementUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
         name: "oracleProvider",
         type: "address",
       },
@@ -329,19 +343,6 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "marketSettlement",
-        type: "address",
-      },
-    ],
-    name: "SetMarketSettlement",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
         name: "token",
         type: "address",
       },
@@ -391,19 +392,6 @@ const _abi = [
       },
     ],
     name: "SetUniswapFeeTier",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "vault",
-        type: "address",
-      },
-    ],
-    name: "SetVault",
     type: "event",
   },
   {
@@ -516,6 +504,19 @@ const _abi = [
       },
     ],
     name: "UpdateTakeProfitBPSRange",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "vault",
+        type: "address",
+      },
+    ],
+    name: "VaultSet",
     type: "event",
   },
   {
@@ -1132,19 +1133,6 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "_marketSettlement",
-        type: "address",
-      },
-    ],
-    name: "setMarketSettlement",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
         name: "token",
         type: "address",
       },
@@ -1300,6 +1288,19 @@ const _abi = [
       },
     ],
     name: "updateLiquidator",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_marketSettlement",
+        type: "address",
+      },
+    ],
+    name: "updateMarketSettlement",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

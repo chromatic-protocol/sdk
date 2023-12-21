@@ -1,10 +1,7 @@
-import * as segFaultHandler from "segfault-handler";
 import { getContract, parseEther, zeroAddress } from "viem";
 import { ierc20ABI } from "../src/gen";
 import { encodeTokenId } from "../src/utils/helpers";
 import { faucetTestToken, testClient, updatePrice } from "./testHelpers";
-//TODO fix segmentation fault error
-segFaultHandler.registerHandler("crash.log");
 
 describe("router sdk test", () => {
   const client = testClient();
@@ -31,13 +28,11 @@ describe("router sdk test", () => {
       return await clbToken.read.totalSupply([encodeTokenId(feeRate)]);
     }
 
-    
     const router = client.router();
 
     async function addAndClaimLiquidity(tradingFeeRate: number) {
-
       const tokenBalance = await faucetTestToken({ client, testToken: tokens[0].address });
-      expect(tokenBalance).toBeGreaterThan(0n)
+      expect(tokenBalance).toBeGreaterThan(0n);
 
       // add liquidity - router
       const amount = tokenBalance / 2n;

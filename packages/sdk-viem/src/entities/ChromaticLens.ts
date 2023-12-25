@@ -9,7 +9,13 @@ import {
 } from "../utils/helpers";
 import type { ContractChromaticLens } from "./types";
 import groupBy from "lodash/groupBy";
-import { lpGraphSdk } from "../lib/graphql";
+import { lpGraphSdk, subgraphSdk } from "../lib/graphql";
+import { GetBlockNumberParameters } from "viem";
+import {
+  GetChromaticMarketBinStatusesQuery,
+  LiquidityBinStatus,
+} from "../lib/graphql/sdk/subgraph";
+import { ClbTokenTotalSupply } from "../lib/graphql/sdk/position";
 /**
  * Represents the result of a liquidity bin.
  */
@@ -116,7 +122,12 @@ export class ChromaticLens {
       lens: this.getContract(),
     };
   }
-
+  findFromCLBTotalSupplies(bins: Partial<ClbTokenTotalSupply>[]) {
+    return (tokenId: bigint) => {
+      const result = bins.find((bin) => BigInt(bin.id || 0) === tokenId);
+      return BigInt(result?.amount || 0n) || 0n;
+    };
+  }
   /**
    * Retrieves the liquidity bins for a given market.
    * @param marketAddress The address of the Chromatic Market contract.
@@ -124,29 +135,29 @@ export class ChromaticLens {
    */
   async liquidityBins(marketAddress: Address) {
     return await handleBytesError(async () => {
-      const market = this._client.market();
-      lpGraphSdk.GetChromaticLp()
-      const totalLiquidityBins = await this.getContract().read.liquidityBinStatuses([
-        marketAddress,
-      ]);
-      const clbTokenContract = await market.contracts().clbToken(marketAddress);
-      const tokenIds = totalLiquidityBins.map((bin) => encodeTokenId(bin.tradingFeeRate));
+      const { chromaticMarketBinStatuses: result, clbtokens: clbTokens } =
+        await subgraphSdk.getChromaticMarketBinStatusesAndCLBMeta({
+          market: marketAddress,
+        });
+      const [{ decimals: clbTokenDecimals }] = clbTokens;
 
-      const [totalSupplies, clbTokenDecimals] = await Promise.all([
-        clbTokenContract.read.totalSupplyBatch([tokenIds]),
-        clbTokenContract.read.decimals(),
-      ]);
+      const [{ statuses, ...chromaticBinStatusMeta }] = result;
+      const blockNumber = chromaticBinStatusMeta.blockNumber;
 
-      return totalLiquidityBins.map((bin, index) => {
+      const { clbtokenTotalSupplies } = await subgraphSdk.getCLBTokenTotalSupplies({ blockNumber });
+      const totalAmountFinder = this.findFromCLBTotalSupplies(clbtokenTotalSupplies);
+      return statuses.map((binStatus) => {
+        const clbTotalSupply = totalAmountFinder(encodeTokenId(binStatus.tradingFeeRate));
         return {
-          tradingFeeRate: bin.tradingFeeRate,
+          tradingFeeRate: binStatus.tradingFeeRate,
           clbValue:
-            totalSupplies[index] == 0n
+            clbTotalSupply == 0n
               ? 0n
-              : (bin.binValue * 10n ** BigInt(clbTokenDecimals)) / totalSupplies[index],
-          liquidity: bin.liquidity,
-          clbTokenTotalSupply: totalSupplies[index],
-          freeLiquidity: bin.freeLiquidity,
+              : (BigInt(binStatus.binValue || 0n) * 10n ** BigInt(clbTokenDecimals)) /
+                clbTotalSupply,
+          liquidity: binStatus.liquidity,
+          clbTokenTotalSupply: clbTotalSupply,
+          freeLiquidity: binStatus.freeLiquidity,
         };
       });
     });
@@ -165,37 +176,41 @@ export class ChromaticLens {
       if (!ownerAddress) {
         checkWalletClient(this._client);
       }
+      const { chromaticMarketBinStatuses: result, clbtokens: clbTokens } =
+        await subgraphSdk.getChromaticMarketBinStatusesAndCLBMeta({
+          market: marketAddress,
+        });
 
-      const clbTokenContract = await this._client.market().contracts().clbToken(marketAddress);
-      const [clbTokenDecimals, totalLiquidityBins, ownedLiquidities] = await Promise.all([
-        clbTokenContract.read.decimals(),
-        lens.read.liquidityBinStatuses([marketAddress]),
+      const [{ decimals: clbTokenDecimals }] = clbTokens;
+      const [{ statuses: binStatuses, ...chromaticBinStatusMeta }] = result;
+      const blockNumber = chromaticBinStatusMeta.blockNumber;
+      const { clbtokenTotalSupplies } = await subgraphSdk.getCLBTokenTotalSupplies({ blockNumber });
+      const totalAmountFinder = this.findFromCLBTotalSupplies(clbtokenTotalSupplies);
+      const [ownedLiquidities] = await Promise.all([
         lens.read.clbBalanceOf([
           marketAddress,
           ownerAddress ?? this._client.walletClient!.account!.address,
         ]),
       ]);
-
-      // tokenId parsing then get tradingFee
-      // data merge mapping by tradingFee
-      const results = ownedLiquidities.map((ownedBin) => {
-        const tradingFeeRate = decodeTokenId(ownedBin.tokenId);
-        const targetTotalLiqBin = totalLiquidityBins.find(
-          (bin) => bin.tradingFeeRate === tradingFeeRate
-        )!;
-        // totalSupplyBatch
+      const results = ownedLiquidities.map((ownedLiquidity) => {
+        const clbTotalSupply = totalAmountFinder(ownedLiquidity.tokenId);
+        const tradingFeeRate = decodeTokenId(ownedLiquidity.tokenId);
+        const liquidityStatus = binStatuses.find(
+          (binStatus) => binStatus.tradingFeeRate === tradingFeeRate
+        );
         return {
-          tradingFeeRate,
-          liquidity: targetTotalLiqBin.liquidity,
-          freeLiquidity: targetTotalLiqBin.freeLiquidity,
-          binValue: ownedBin.binValue,
-          clbTotalSupply: ownedBin.totalSupply,
+          // tokenId: ownedLiquidity.tokenId,
+          tradingFeeRate: tradingFeeRate,
+          liquidity: BigInt(liquidityStatus?.liquidity || 0n),
+          binValue: BigInt(ownedLiquidity.binValue || 0n),
+          freeLiquidity: BigInt(liquidityStatus?.freeLiquidity || 0n),
+          clbTotalSupply,
           clbValue:
-            ownedBin.totalSupply == 0n
+            clbTotalSupply == 0n
               ? 0n
-              : ((ownedBin.binValue || 0n) * 10n ** BigInt(clbTokenDecimals)) /
-                ownedBin.totalSupply,
-          clbBalance: ownedBin.balance,
+              : (BigInt(ownedLiquidity.binValue || 0n) * 10n ** BigInt(clbTokenDecimals)) /
+                clbTotalSupply,
+          clbBalance: ownedLiquidity.balance,
         } satisfies OwnedLiquidityBinResult;
       });
       return results.filter((bin) => bin.clbBalance > 0n);
@@ -213,6 +228,7 @@ export class ChromaticLens {
     params: { tradingFeeRate: number; oracleVersion: bigint }[]
   ) {
     return await handleBytesError(async () => {
+      //TODO use subgraph data?
       const groupedByOV = groupBy(params, (p) => p.oracleVersion);
 
       // Get claimable liquidities for each oracleVersion and tradingFeeRate
@@ -264,6 +280,7 @@ export class ChromaticLens {
     tradingFeeRates: number[]
   ): Promise<Array<PendingLiquidityResult>> {
     return await handleBytesError(async () => {
+      //TODO use subgraph data?
       const uniqTradingFeeRates = Array.from(new Set(tradingFeeRates));
       const pendingLiquidities = await this.getContract().read.pendingLiquidityBatch([
         marketAddress,
@@ -284,6 +301,7 @@ export class ChromaticLens {
    */
   async lpReceipts(marketAddress: Address, owner?: Address) {
     return await handleBytesError(async () => {
+       //TODO use subgraph data?
       checkWalletClient(this._client);
       return await this.getContract().read.lpReceipts([
         marketAddress,

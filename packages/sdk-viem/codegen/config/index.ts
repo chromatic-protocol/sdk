@@ -41,6 +41,12 @@ const loadConfig: CodegenConfig = {
       plugins: PLUGINS,
       config: CONFIG,
     },
+    [`${GENERATED_PATH}/subgraph.ts`]: {
+      documents: "codegen/subgraph.ts",
+      schema: `${SUBGRAPH_API_URL}/chromatic-subgraph`,
+      plugins: PLUGINS,
+      config: CONFIG,
+    },
     [`${GENERATED_PATH}/performance.ts`]: {
       documents: "codegen/performance.ts",
       schema: `${HASURA_API_URL}`,

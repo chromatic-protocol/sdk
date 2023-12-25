@@ -7,7 +7,8 @@ import * as Analytics from "./sdk/analytics";
 import * as Lp from "./sdk/lp";
 import * as Performance from "./sdk/performance";
 import * as Position from "./sdk/position";
-
+import * as Subgraph from "./sdk/subgraph";
+import JSONbig from "json-bigint";
 type UrlMap = {
   operations: string[];
   url: string;
@@ -24,6 +25,10 @@ const urlMap: UrlMap = [
   {
     operations: getOperations(Lp),
     url: `${SUBGRAPH_API_URL}/chromatic-lp`,
+  },
+  {
+    operations: getOperations(Subgraph),
+    url: `${SUBGRAPH_API_URL}/chromatic-subgraph`,
   },
   {
     operations: getOperations(Performance),
@@ -54,11 +59,12 @@ const getRequestMiddleware =
 
 const graphClient = new GraphQLClient("", {
   requestMiddleware: getRequestMiddleware(urlMap),
+  jsonSerializer: JSONbig({ useNativeBigInt: true }),
 });
 
 const lpGraphSdk = Lp.getSdk(graphClient);
 const performanceSdk = Performance.getSdk(graphClient);
 const analyticsSdk = Analytics.getSdk(graphClient);
 const positionSdk = Position.getSdk(graphClient);
-
-export { analyticsSdk, lpGraphSdk, performanceSdk, positionSdk };
+const subgraphSdk = Subgraph.getSdk(graphClient);
+export { analyticsSdk, lpGraphSdk, performanceSdk, positionSdk, subgraphSdk };

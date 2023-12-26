@@ -2094,13 +2094,6 @@ export type GetChromaticMarketBinStatusesAndClbMetaQueryVariables = Exact<{
 
 export type GetChromaticMarketBinStatusesAndClbMetaQuery = { __typename?: 'Query', chromaticMarketBinStatuses: Array<{ __typename?: 'ChromaticMarketBinStatus', id: string, longBinValue: string, longFreeLiquidity: string, longLiquidity: string, market: `0x${string}`, shortBinValue: string, shortFreeLiquidity: string, shortLiquidity: string, blockNumber: string, statuses: Array<{ __typename?: 'LiquidityBinStatus', binValue: string, freeLiquidity: string, id: string, liquidity: string, tradingFeeRate: number }> }>, clbtokens: Array<{ __typename?: 'CLBToken', decimals: number, market: `0x${string}`, id: `0x${string}` }> };
 
-export type GetClbTokenTotalSuppliesQueryVariables = Exact<{
-  blockNumber?: InputMaybe<Scalars['BigInt']['input']>;
-}>;
-
-
-export type GetClbTokenTotalSuppliesQuery = { __typename?: 'Query', clbtokenTotalSupplies: Array<{ __typename?: 'CLBTokenTotalSupply', id: string, token: `0x${string}`, tokenId: string, blockNumber: string, amount: string }> };
-
 export type GetMarketMetaQueryVariables = Exact<{
   id?: InputMaybe<Scalars['ID']['input']>;
 }>;
@@ -2140,21 +2133,6 @@ export const GetChromaticMarketBinStatusesAndClbMetaDocument = gql`
     decimals
     market
     id
-  }
-}
-    `;
-export const GetClbTokenTotalSuppliesDocument = gql`
-    query getCLBTokenTotalSupplies($blockNumber: BigInt) {
-  clbtokenTotalSupplies(
-    orderDirection: desc
-    orderBy: blockNumber
-    where: {blockNumber: $blockNumber}
-  ) {
-    id
-    token
-    tokenId
-    blockNumber
-    amount
   }
 }
     `;
@@ -2199,9 +2177,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
   return {
     getChromaticMarketBinStatusesAndCLBMeta(variables?: GetChromaticMarketBinStatusesAndClbMetaQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<GetChromaticMarketBinStatusesAndClbMetaQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetChromaticMarketBinStatusesAndClbMetaQuery>(GetChromaticMarketBinStatusesAndClbMetaDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getChromaticMarketBinStatusesAndCLBMeta', 'query', variables);
-    },
-    getCLBTokenTotalSupplies(variables?: GetClbTokenTotalSuppliesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<GetClbTokenTotalSuppliesQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetClbTokenTotalSuppliesQuery>(GetClbTokenTotalSuppliesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getCLBTokenTotalSupplies', 'query', variables);
     },
     getMarketMeta(variables?: GetMarketMetaQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<GetMarketMetaQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetMarketMetaQuery>(GetMarketMetaDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getMarketMeta', 'query', variables);

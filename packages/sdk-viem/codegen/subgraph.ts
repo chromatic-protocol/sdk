@@ -28,22 +28,6 @@ export const getLiquidityBinStatuses = gql`
   }
 `;
 
-export const getCLBTokenTotalSupplies = gql`
-  query getCLBTokenTotalSupplies($blockNumber: BigInt) {
-    clbtokenTotalSupplies(
-      orderDirection: desc
-      orderBy: blockNumber
-      where: { blockNumber: $blockNumber }
-    ) {
-      id
-      token
-      tokenId
-      blockNumber
-      amount
-    }
-  }
-`;
-
 export const getMarketMeta = gql`
   query getMarketMeta($id: ID = "") {
     chromaticMarket(id: $id) {
@@ -59,7 +43,7 @@ export const getMarketMeta = gql`
 export const getInterestRecordSnapshots = gql`
   query getInterestRecordSnapshots($settlementToken: Bytes = "") {
     interestRatesSnapshots(
-      where: {settlementToken: $settlementToken}
+      where: { settlementToken: $settlementToken }
       orderBy: blockNumber
       orderDirection: desc
       first: 1

@@ -21,7 +21,7 @@ describe("lens sdk test", () => {
       .ownedLiquidityBins(market, client.walletClient?.account?.address);
 
     const tokenBalance = await faucetTestToken({ client, testToken: token });
-    expect(tokenBalance).toBeGreaterThan(0n)
+    expect(tokenBalance).toBeGreaterThan(0n);
 
     console.log("Test token balance", tokenBalance);
 
@@ -50,10 +50,9 @@ describe("lens sdk test", () => {
   }, 30000);
 
   test("liquidityBins", async () => {
-    const { market } = await getContracts();
-    const bins = await client.lens().liquidityBins(market);
+    const bins = await client.lens().liquidityBins("0x45b2db1cea3220d486e306970c0bcac1b2764dc5");
     expect(bins.length).toEqual(72);
-    // console.log("liquidityBins", bins);
+    console.log("liquidityBins", bins);
   }, 10000);
 
   test("claimableLiquidities", async () => {

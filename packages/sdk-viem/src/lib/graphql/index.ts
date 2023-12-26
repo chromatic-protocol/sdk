@@ -1,4 +1,5 @@
 import { GraphQLClient, RequestMiddleware, Variables } from "graphql-request";
+
 import * as Analytics from "./sdk/analytics";
 import * as Lp from "./sdk/lp";
 import * as Performance from "./sdk/performance";
@@ -24,7 +25,7 @@ const urlMap: UrlMap = [
     url: `${SUBGRAPH_API_URL}/chromatic-lp`,
   },
   {
-    operations: getOperations(Subgraph),
+    operations: [...getOperations(Subgraph), "getCLBTokenTotalSupplies"],
     url: `${SUBGRAPH_API_URL}/chromatic-subgraph`,
   },
   {
@@ -44,9 +45,12 @@ const urlMap: UrlMap = [
 const getRequestMiddleware =
   (urlMap: UrlMap): RequestMiddleware<Variables> =>
   (request) => {
+    const headerOperationName = (request.headers as Record<string, string>).operationName;
+    const operationName = (request.operationName || headerOperationName || "").toLowerCase();
     const url = urlMap.find((url) =>
-      url.operations.includes((request.operationName || "").toLowerCase())
+      url.operations.map((operation) => operation.toLowerCase()).includes(operationName)
     )?.url;
+
     if (!url) {
       throw new Error("invalid operation");
     }
@@ -61,9 +65,18 @@ const graphClient = new GraphQLClient("", {
   jsonSerializer: JSONbig({ useNativeBigInt: true }),
 });
 
+// function getNewClient(operationName:string){
+//   return new GraphQLClient("", {
+//     requestMiddleware: getRequestMiddleware(urlMap),
+//     jsonSerializer: JSONbig({ useNativeBigInt: true }),
+//     operationName
+//   });
+// }
+
 const lpGraphSdk = Lp.getSdk(graphClient);
 const performanceSdk = Performance.getSdk(graphClient);
 const analyticsSdk = Analytics.getSdk(graphClient);
 const positionSdk = Position.getSdk(graphClient);
 const subgraphSdk = Subgraph.getSdk(graphClient);
-export { analyticsSdk, lpGraphSdk, performanceSdk, positionSdk, subgraphSdk };
+
+export { analyticsSdk, lpGraphSdk, performanceSdk, positionSdk, subgraphSdk, graphClient };

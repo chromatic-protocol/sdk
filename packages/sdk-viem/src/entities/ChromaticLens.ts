@@ -1,8 +1,10 @@
+import { gql } from "graphql-request";
 import groupBy from "lodash/groupBy";
 import { Address, getContract, zeroAddress } from "viem";
 import type { Client } from "../Client";
+import { FEE_RATES } from "../const";
 import { chromaticLensABI, chromaticLensAddress } from "../gen";
-import { subgraphSdk } from "../lib/graphql";
+import { graphClient, subgraphSdk } from "../lib/graphql";
 import { ClbTokenTotalSupply } from "../lib/graphql/sdk/position";
 import {
   checkWalletClient,
@@ -14,6 +16,7 @@ import type { ContractChromaticLens } from "./types";
 /**
  * Represents the result of a liquidity bin.
  */
+
 export interface LiquidityBinResult {
   /** The trading fee rate for the liquidity bin*/
   tradingFeeRate: number;
@@ -117,10 +120,15 @@ export class ChromaticLens {
       lens: this.getContract(),
     };
   }
-  findFromCLBTotalSupplies(bins: Partial<ClbTokenTotalSupply>[]) {
+  findFromCLBTotalSupplies(clbTokenSupplies: Record<string, Partial<ClbTokenTotalSupply>[]>) {
+    const clbTokenMetaById = Object.entries(clbTokenSupplies).reduce((acc, [index, value]) => {
+      const tokenId = index.replaceAll("tokenId_", "");
+      acc[tokenId] = value[0];
+      return acc;
+    }, {} as Record<string, any>);
+
     return (tokenId: bigint) => {
-      const result = bins.find((bin) => BigInt(bin.id || 0) === tokenId);
-      return BigInt(result?.amount || 0n) || 0n;
+      return BigInt(clbTokenMetaById[tokenId.toString()]?.amount || 0n);
     };
   }
   /**
@@ -134,12 +142,12 @@ export class ChromaticLens {
         await subgraphSdk.getChromaticMarketBinStatusesAndCLBMeta({
           market: marketAddress,
         });
-      const [{ decimals: clbTokenDecimals }] = clbTokens;
+      const [{ decimals: clbTokenDecimals, id: clbTokenAddress }] = clbTokens;
 
       const [{ statuses, ...chromaticBinStatusMeta }] = result;
       const blockNumber = chromaticBinStatusMeta.blockNumber;
 
-      const { clbtokenTotalSupplies } = await subgraphSdk.getCLBTokenTotalSupplies({ blockNumber });
+      const clbtokenTotalSupplies = await this.getCLBTokenTotalSupplies(clbTokenAddress);
       const totalAmountFinder = this.findFromCLBTotalSupplies(clbtokenTotalSupplies);
       return statuses.map((binStatus) => {
         const clbTotalSupply = totalAmountFinder(encodeTokenId(binStatus.tradingFeeRate));
@@ -156,6 +164,59 @@ export class ChromaticLens {
         };
       });
     });
+  }
+
+  async getCLBTokenTotalSupplies(
+    clbTokenAddress: string
+  ): Promise<Record<string, ClbTokenTotalSupply[]>> {
+    const tokenIds = [
+      ...FEE_RATES.map((rate) => encodeTokenId(rate)), // LONG COUNTER
+      ...FEE_RATES.map((rate) => encodeTokenId(rate * -1)), // SHORT COUNTER
+    ];
+
+    const fragment = gql`
+      fragment clbTokenFields on CLBTokenTotalSupply {
+        id
+        blockNumber
+        blockTimestamp
+        token
+        tokenId
+        amount
+      }
+    `;
+    function query(tokenId: bigint) {
+      return `
+      tokenId_${tokenId.toString()}:clbtokenTotalSupplies(
+        orderDirection: desc
+        orderBy: blockNumber
+        first: 1
+        where:{ tokenId: "${tokenId.toString()}", token: "${clbTokenAddress}" }
+      ){
+        ...clbTokenFields
+      }
+      
+      `;
+    }
+    const document = gql`
+    query getCLBTokenTotalSupplies {
+      ${tokenIds
+        .map((id) => {
+          return query(id);
+        })
+        .join("\n")}
+      
+    }
+
+    ${fragment}
+  `;
+
+    const clbTokens = await graphClient.request(document, undefined, {
+      operationName: "getCLBTokenTotalSupplies",
+    });
+
+    return {
+      ...(clbTokens || {}),
+    };
   }
 
   /**
@@ -176,11 +237,11 @@ export class ChromaticLens {
           market: marketAddress,
         });
 
-      const [{ decimals: clbTokenDecimals }] = clbTokens;
+      const [{ decimals: clbTokenDecimals, id: clbTokenAddress }] = clbTokens;
       const [{ statuses: binStatuses, ...chromaticBinStatusMeta }] = result;
-      const blockNumber = chromaticBinStatusMeta.blockNumber;
-      const { clbtokenTotalSupplies } = await subgraphSdk.getCLBTokenTotalSupplies({ blockNumber });
-      const totalAmountFinder = this.findFromCLBTotalSupplies(clbtokenTotalSupplies);
+
+      const clbTokenTotalSupplies = await this.getCLBTokenTotalSupplies(clbTokenAddress);
+      const totalAmountFinder = this.findFromCLBTotalSupplies(clbTokenTotalSupplies);
       const [ownedLiquidities] = await Promise.all([
         lens.read.clbBalanceOf([
           marketAddress,
@@ -296,7 +357,7 @@ export class ChromaticLens {
    */
   async lpReceipts(marketAddress: Address, owner?: Address) {
     return await handleBytesError(async () => {
-       //TODO use subgraph data?
+      //TODO use subgraph data?
       checkWalletClient(this._client);
       return await this.getContract().read.lpReceipts([
         marketAddress,

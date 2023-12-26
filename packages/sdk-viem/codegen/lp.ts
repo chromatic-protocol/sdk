@@ -137,24 +137,3 @@ export const REMOVE_LIQUIDITY_SETTLED_COUNT = gql`
     }
   }
 `;
-
-export const GET_CHROMATIC_LP = gql`
-  query GetChromaticLp($id: ID!) {
-    chromaticLP(id: $id) {
-      id
-      longShortInfo
-      lpTokenName
-      market
-      oracleDescription
-      oracleProvider
-      settlementToken
-      settlementTokenDecimals
-      settlementTokenSymbol
-    }
-  }
-`;
-
-// export const GET_CHROMATIC_LP_BY_ADDRESS = gql`
-// query
-// `
-

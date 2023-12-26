@@ -441,6 +441,86 @@ export enum BpDeposited_OrderBy {
   TransactionHash = 'transactionHash'
 }
 
+export type BpSettleUpdated = {
+  __typename?: 'BPSettleUpdated';
+  blockNumber: Scalars['BigInt']['output'];
+  blockTimestamp: Scalars['BigInt']['output'];
+  bp: Scalars['Bytes']['output'];
+  id: Scalars['Bytes']['output'];
+  totalLPToken: Scalars['BigInt']['output'];
+  transactionHash: Scalars['Bytes']['output'];
+};
+
+export type BpSettleUpdated_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  and?: InputMaybe<Array<InputMaybe<BpSettleUpdated_Filter>>>;
+  blockNumber?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  blockNumber_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_not?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  blockTimestamp?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  blockTimestamp_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_not?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  bp?: InputMaybe<Scalars['Bytes']['input']>;
+  bp_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  bp_gt?: InputMaybe<Scalars['Bytes']['input']>;
+  bp_gte?: InputMaybe<Scalars['Bytes']['input']>;
+  bp_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  bp_lt?: InputMaybe<Scalars['Bytes']['input']>;
+  bp_lte?: InputMaybe<Scalars['Bytes']['input']>;
+  bp_not?: InputMaybe<Scalars['Bytes']['input']>;
+  bp_not_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  bp_not_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  id?: InputMaybe<Scalars['Bytes']['input']>;
+  id_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  id_gt?: InputMaybe<Scalars['Bytes']['input']>;
+  id_gte?: InputMaybe<Scalars['Bytes']['input']>;
+  id_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  id_lt?: InputMaybe<Scalars['Bytes']['input']>;
+  id_lte?: InputMaybe<Scalars['Bytes']['input']>;
+  id_not?: InputMaybe<Scalars['Bytes']['input']>;
+  id_not_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  or?: InputMaybe<Array<InputMaybe<BpSettleUpdated_Filter>>>;
+  totalLPToken?: InputMaybe<Scalars['BigInt']['input']>;
+  totalLPToken_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalLPToken_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalLPToken_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalLPToken_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalLPToken_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalLPToken_not?: InputMaybe<Scalars['BigInt']['input']>;
+  totalLPToken_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  transactionHash?: InputMaybe<Scalars['Bytes']['input']>;
+  transactionHash_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  transactionHash_gt?: InputMaybe<Scalars['Bytes']['input']>;
+  transactionHash_gte?: InputMaybe<Scalars['Bytes']['input']>;
+  transactionHash_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  transactionHash_lt?: InputMaybe<Scalars['Bytes']['input']>;
+  transactionHash_lte?: InputMaybe<Scalars['Bytes']['input']>;
+  transactionHash_not?: InputMaybe<Scalars['Bytes']['input']>;
+  transactionHash_not_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  transactionHash_not_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+};
+
+export enum BpSettleUpdated_OrderBy {
+  BlockNumber = 'blockNumber',
+  BlockTimestamp = 'blockTimestamp',
+  Bp = 'bp',
+  Id = 'id',
+  TotalLpToken = 'totalLPToken',
+  TransactionHash = 'transactionHash'
+}
+
 export type BlockChangedFilter = {
   number_gte: Scalars['Int']['input'];
 };
@@ -450,6 +530,172 @@ export type Block_Height = {
   number?: InputMaybe<Scalars['Int']['input']>;
   number_gte?: InputMaybe<Scalars['Int']['input']>;
 };
+
+export type ChromaticBp = {
+  __typename?: 'ChromaticBP';
+  claims: Array<ChromaticBpClaim>;
+  deposits: Array<ChromaticBpDeposit>;
+  id: Scalars['Bytes']['output'];
+  initialEndTimeOfWarmup: Scalars['BigInt']['output'];
+  lp: ChromaticLp;
+  maxRaisingTarget: Scalars['BigInt']['output'];
+  minRaisingTarget: Scalars['BigInt']['output'];
+  refunds: Array<ChromaticBpRefund>;
+  startTimeOfWarmup: Scalars['BigInt']['output'];
+  statuses: Array<ChromaticBpStatus>;
+  totalRaised: Array<ChromaticBpTotalRaised>;
+  totalReward: Scalars['BigInt']['output'];
+};
+
+
+export type ChromaticBpClaimsArgs = {
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<ChromaticBpClaim_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<ChromaticBpClaim_Filter>;
+};
+
+
+export type ChromaticBpDepositsArgs = {
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<ChromaticBpDeposit_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<ChromaticBpDeposit_Filter>;
+};
+
+
+export type ChromaticBpRefundsArgs = {
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<ChromaticBpRefund_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<ChromaticBpRefund_Filter>;
+};
+
+
+export type ChromaticBpStatusesArgs = {
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<ChromaticBpStatus_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<ChromaticBpStatus_Filter>;
+};
+
+
+export type ChromaticBpTotalRaisedArgs = {
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<ChromaticBpTotalRaised_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<ChromaticBpTotalRaised_Filter>;
+};
+
+export type ChromaticBpClaim = {
+  __typename?: 'ChromaticBPClaim';
+  blockNumber: Scalars['BigInt']['output'];
+  blockTimestamp: Scalars['BigInt']['output'];
+  bp: ChromaticBp;
+  bpTokenAmount: Scalars['BigInt']['output'];
+  id: Scalars['ID']['output'];
+  lpTokenAmount: Scalars['BigInt']['output'];
+  provider: Scalars['Bytes']['output'];
+};
+
+export type ChromaticBpClaim_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  and?: InputMaybe<Array<InputMaybe<ChromaticBpClaim_Filter>>>;
+  blockNumber?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  blockNumber_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_not?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  blockTimestamp?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  blockTimestamp_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_not?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  bp?: InputMaybe<Scalars['String']['input']>;
+  bpTokenAmount?: InputMaybe<Scalars['BigInt']['input']>;
+  bpTokenAmount_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  bpTokenAmount_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  bpTokenAmount_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  bpTokenAmount_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  bpTokenAmount_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  bpTokenAmount_not?: InputMaybe<Scalars['BigInt']['input']>;
+  bpTokenAmount_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  bp_?: InputMaybe<ChromaticBp_Filter>;
+  bp_contains?: InputMaybe<Scalars['String']['input']>;
+  bp_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_ends_with?: InputMaybe<Scalars['String']['input']>;
+  bp_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_gt?: InputMaybe<Scalars['String']['input']>;
+  bp_gte?: InputMaybe<Scalars['String']['input']>;
+  bp_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  bp_lt?: InputMaybe<Scalars['String']['input']>;
+  bp_lte?: InputMaybe<Scalars['String']['input']>;
+  bp_not?: InputMaybe<Scalars['String']['input']>;
+  bp_not_contains?: InputMaybe<Scalars['String']['input']>;
+  bp_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  bp_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  bp_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  bp_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_starts_with?: InputMaybe<Scalars['String']['input']>;
+  bp_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  id_gt?: InputMaybe<Scalars['ID']['input']>;
+  id_gte?: InputMaybe<Scalars['ID']['input']>;
+  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_lt?: InputMaybe<Scalars['ID']['input']>;
+  id_lte?: InputMaybe<Scalars['ID']['input']>;
+  id_not?: InputMaybe<Scalars['ID']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  lpTokenAmount?: InputMaybe<Scalars['BigInt']['input']>;
+  lpTokenAmount_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  lpTokenAmount_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  lpTokenAmount_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  lpTokenAmount_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  lpTokenAmount_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  lpTokenAmount_not?: InputMaybe<Scalars['BigInt']['input']>;
+  lpTokenAmount_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  or?: InputMaybe<Array<InputMaybe<ChromaticBpClaim_Filter>>>;
+  provider?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_gt?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_gte?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  provider_lt?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_lte?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_not?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_not_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_not_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+};
+
+export enum ChromaticBpClaim_OrderBy {
+  BlockNumber = 'blockNumber',
+  BlockTimestamp = 'blockTimestamp',
+  Bp = 'bp',
+  BpTokenAmount = 'bpTokenAmount',
+  BpId = 'bp__id',
+  BpInitialEndTimeOfWarmup = 'bp__initialEndTimeOfWarmup',
+  BpMaxRaisingTarget = 'bp__maxRaisingTarget',
+  BpMinRaisingTarget = 'bp__minRaisingTarget',
+  BpStartTimeOfWarmup = 'bp__startTimeOfWarmup',
+  BpTotalReward = 'bp__totalReward',
+  Id = 'id',
+  LpTokenAmount = 'lpTokenAmount',
+  Provider = 'provider'
+}
 
 export type ChromaticBpCreated = {
   __typename?: 'ChromaticBPCreated';
@@ -533,9 +779,508 @@ export enum ChromaticBpCreated_OrderBy {
   TransactionHash = 'transactionHash'
 }
 
+export type ChromaticBpDeposit = {
+  __typename?: 'ChromaticBPDeposit';
+  amount: Scalars['BigInt']['output'];
+  blockNumber: Scalars['BigInt']['output'];
+  blockTimestamp: Scalars['BigInt']['output'];
+  bp: ChromaticBp;
+  id: Scalars['ID']['output'];
+  provider: Scalars['Bytes']['output'];
+};
+
+export type ChromaticBpDeposit_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  amount?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  amount_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_not?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  and?: InputMaybe<Array<InputMaybe<ChromaticBpDeposit_Filter>>>;
+  blockNumber?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  blockNumber_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_not?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  blockTimestamp?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  blockTimestamp_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_not?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  bp?: InputMaybe<Scalars['String']['input']>;
+  bp_?: InputMaybe<ChromaticBp_Filter>;
+  bp_contains?: InputMaybe<Scalars['String']['input']>;
+  bp_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_ends_with?: InputMaybe<Scalars['String']['input']>;
+  bp_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_gt?: InputMaybe<Scalars['String']['input']>;
+  bp_gte?: InputMaybe<Scalars['String']['input']>;
+  bp_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  bp_lt?: InputMaybe<Scalars['String']['input']>;
+  bp_lte?: InputMaybe<Scalars['String']['input']>;
+  bp_not?: InputMaybe<Scalars['String']['input']>;
+  bp_not_contains?: InputMaybe<Scalars['String']['input']>;
+  bp_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  bp_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  bp_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  bp_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_starts_with?: InputMaybe<Scalars['String']['input']>;
+  bp_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  id_gt?: InputMaybe<Scalars['ID']['input']>;
+  id_gte?: InputMaybe<Scalars['ID']['input']>;
+  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_lt?: InputMaybe<Scalars['ID']['input']>;
+  id_lte?: InputMaybe<Scalars['ID']['input']>;
+  id_not?: InputMaybe<Scalars['ID']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  or?: InputMaybe<Array<InputMaybe<ChromaticBpDeposit_Filter>>>;
+  provider?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_gt?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_gte?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  provider_lt?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_lte?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_not?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_not_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_not_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+};
+
+export enum ChromaticBpDeposit_OrderBy {
+  Amount = 'amount',
+  BlockNumber = 'blockNumber',
+  BlockTimestamp = 'blockTimestamp',
+  Bp = 'bp',
+  BpId = 'bp__id',
+  BpInitialEndTimeOfWarmup = 'bp__initialEndTimeOfWarmup',
+  BpMaxRaisingTarget = 'bp__maxRaisingTarget',
+  BpMinRaisingTarget = 'bp__minRaisingTarget',
+  BpStartTimeOfWarmup = 'bp__startTimeOfWarmup',
+  BpTotalReward = 'bp__totalReward',
+  Id = 'id',
+  Provider = 'provider'
+}
+
+export type ChromaticBpRefund = {
+  __typename?: 'ChromaticBPRefund';
+  amount: Scalars['BigInt']['output'];
+  blockNumber: Scalars['BigInt']['output'];
+  blockTimestamp: Scalars['BigInt']['output'];
+  bp: ChromaticBp;
+  id: Scalars['ID']['output'];
+  provider: Scalars['Bytes']['output'];
+};
+
+export type ChromaticBpRefund_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  amount?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  amount_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_not?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  and?: InputMaybe<Array<InputMaybe<ChromaticBpRefund_Filter>>>;
+  blockNumber?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  blockNumber_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_not?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  blockTimestamp?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  blockTimestamp_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_not?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  bp?: InputMaybe<Scalars['String']['input']>;
+  bp_?: InputMaybe<ChromaticBp_Filter>;
+  bp_contains?: InputMaybe<Scalars['String']['input']>;
+  bp_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_ends_with?: InputMaybe<Scalars['String']['input']>;
+  bp_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_gt?: InputMaybe<Scalars['String']['input']>;
+  bp_gte?: InputMaybe<Scalars['String']['input']>;
+  bp_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  bp_lt?: InputMaybe<Scalars['String']['input']>;
+  bp_lte?: InputMaybe<Scalars['String']['input']>;
+  bp_not?: InputMaybe<Scalars['String']['input']>;
+  bp_not_contains?: InputMaybe<Scalars['String']['input']>;
+  bp_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  bp_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  bp_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  bp_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_starts_with?: InputMaybe<Scalars['String']['input']>;
+  bp_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  id_gt?: InputMaybe<Scalars['ID']['input']>;
+  id_gte?: InputMaybe<Scalars['ID']['input']>;
+  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_lt?: InputMaybe<Scalars['ID']['input']>;
+  id_lte?: InputMaybe<Scalars['ID']['input']>;
+  id_not?: InputMaybe<Scalars['ID']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  or?: InputMaybe<Array<InputMaybe<ChromaticBpRefund_Filter>>>;
+  provider?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_gt?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_gte?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  provider_lt?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_lte?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_not?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_not_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  provider_not_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+};
+
+export enum ChromaticBpRefund_OrderBy {
+  Amount = 'amount',
+  BlockNumber = 'blockNumber',
+  BlockTimestamp = 'blockTimestamp',
+  Bp = 'bp',
+  BpId = 'bp__id',
+  BpInitialEndTimeOfWarmup = 'bp__initialEndTimeOfWarmup',
+  BpMaxRaisingTarget = 'bp__maxRaisingTarget',
+  BpMinRaisingTarget = 'bp__minRaisingTarget',
+  BpStartTimeOfWarmup = 'bp__startTimeOfWarmup',
+  BpTotalReward = 'bp__totalReward',
+  Id = 'id',
+  Provider = 'provider'
+}
+
+export type ChromaticBpStatus = {
+  __typename?: 'ChromaticBPStatus';
+  blockNumber: Scalars['BigInt']['output'];
+  blockTimestamp: Scalars['BigInt']['output'];
+  bp: ChromaticBp;
+  currentPeriod: Scalars['Int']['output'];
+  endTimeOfLockup: Scalars['BigInt']['output'];
+  endTimeOfWarmup: Scalars['BigInt']['output'];
+  id: Scalars['ID']['output'];
+  status: Scalars['Int']['output'];
+};
+
+export type ChromaticBpStatus_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  and?: InputMaybe<Array<InputMaybe<ChromaticBpStatus_Filter>>>;
+  blockNumber?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  blockNumber_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_not?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  blockTimestamp?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  blockTimestamp_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_not?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  bp?: InputMaybe<Scalars['String']['input']>;
+  bp_?: InputMaybe<ChromaticBp_Filter>;
+  bp_contains?: InputMaybe<Scalars['String']['input']>;
+  bp_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_ends_with?: InputMaybe<Scalars['String']['input']>;
+  bp_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_gt?: InputMaybe<Scalars['String']['input']>;
+  bp_gte?: InputMaybe<Scalars['String']['input']>;
+  bp_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  bp_lt?: InputMaybe<Scalars['String']['input']>;
+  bp_lte?: InputMaybe<Scalars['String']['input']>;
+  bp_not?: InputMaybe<Scalars['String']['input']>;
+  bp_not_contains?: InputMaybe<Scalars['String']['input']>;
+  bp_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  bp_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  bp_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  bp_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_starts_with?: InputMaybe<Scalars['String']['input']>;
+  bp_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  currentPeriod?: InputMaybe<Scalars['Int']['input']>;
+  currentPeriod_gt?: InputMaybe<Scalars['Int']['input']>;
+  currentPeriod_gte?: InputMaybe<Scalars['Int']['input']>;
+  currentPeriod_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  currentPeriod_lt?: InputMaybe<Scalars['Int']['input']>;
+  currentPeriod_lte?: InputMaybe<Scalars['Int']['input']>;
+  currentPeriod_not?: InputMaybe<Scalars['Int']['input']>;
+  currentPeriod_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  endTimeOfLockup?: InputMaybe<Scalars['BigInt']['input']>;
+  endTimeOfLockup_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  endTimeOfLockup_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  endTimeOfLockup_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  endTimeOfLockup_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  endTimeOfLockup_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  endTimeOfLockup_not?: InputMaybe<Scalars['BigInt']['input']>;
+  endTimeOfLockup_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  endTimeOfWarmup?: InputMaybe<Scalars['BigInt']['input']>;
+  endTimeOfWarmup_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  endTimeOfWarmup_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  endTimeOfWarmup_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  endTimeOfWarmup_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  endTimeOfWarmup_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  endTimeOfWarmup_not?: InputMaybe<Scalars['BigInt']['input']>;
+  endTimeOfWarmup_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  id_gt?: InputMaybe<Scalars['ID']['input']>;
+  id_gte?: InputMaybe<Scalars['ID']['input']>;
+  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_lt?: InputMaybe<Scalars['ID']['input']>;
+  id_lte?: InputMaybe<Scalars['ID']['input']>;
+  id_not?: InputMaybe<Scalars['ID']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  or?: InputMaybe<Array<InputMaybe<ChromaticBpStatus_Filter>>>;
+  status?: InputMaybe<Scalars['Int']['input']>;
+  status_gt?: InputMaybe<Scalars['Int']['input']>;
+  status_gte?: InputMaybe<Scalars['Int']['input']>;
+  status_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  status_lt?: InputMaybe<Scalars['Int']['input']>;
+  status_lte?: InputMaybe<Scalars['Int']['input']>;
+  status_not?: InputMaybe<Scalars['Int']['input']>;
+  status_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+};
+
+export enum ChromaticBpStatus_OrderBy {
+  BlockNumber = 'blockNumber',
+  BlockTimestamp = 'blockTimestamp',
+  Bp = 'bp',
+  BpId = 'bp__id',
+  BpInitialEndTimeOfWarmup = 'bp__initialEndTimeOfWarmup',
+  BpMaxRaisingTarget = 'bp__maxRaisingTarget',
+  BpMinRaisingTarget = 'bp__minRaisingTarget',
+  BpStartTimeOfWarmup = 'bp__startTimeOfWarmup',
+  BpTotalReward = 'bp__totalReward',
+  CurrentPeriod = 'currentPeriod',
+  EndTimeOfLockup = 'endTimeOfLockup',
+  EndTimeOfWarmup = 'endTimeOfWarmup',
+  Id = 'id',
+  Status = 'status'
+}
+
+export type ChromaticBpTotalRaised = {
+  __typename?: 'ChromaticBPTotalRaised';
+  amount: Scalars['BigInt']['output'];
+  blockNumber: Scalars['BigInt']['output'];
+  blockTimestamp: Scalars['BigInt']['output'];
+  bp: ChromaticBp;
+  id: Scalars['ID']['output'];
+};
+
+export type ChromaticBpTotalRaised_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  amount?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  amount_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_not?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  and?: InputMaybe<Array<InputMaybe<ChromaticBpTotalRaised_Filter>>>;
+  blockNumber?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  blockNumber_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_not?: InputMaybe<Scalars['BigInt']['input']>;
+  blockNumber_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  blockTimestamp?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  blockTimestamp_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_not?: InputMaybe<Scalars['BigInt']['input']>;
+  blockTimestamp_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  bp?: InputMaybe<Scalars['String']['input']>;
+  bp_?: InputMaybe<ChromaticBp_Filter>;
+  bp_contains?: InputMaybe<Scalars['String']['input']>;
+  bp_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_ends_with?: InputMaybe<Scalars['String']['input']>;
+  bp_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_gt?: InputMaybe<Scalars['String']['input']>;
+  bp_gte?: InputMaybe<Scalars['String']['input']>;
+  bp_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  bp_lt?: InputMaybe<Scalars['String']['input']>;
+  bp_lte?: InputMaybe<Scalars['String']['input']>;
+  bp_not?: InputMaybe<Scalars['String']['input']>;
+  bp_not_contains?: InputMaybe<Scalars['String']['input']>;
+  bp_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  bp_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  bp_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  bp_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  bp_starts_with?: InputMaybe<Scalars['String']['input']>;
+  bp_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  id_gt?: InputMaybe<Scalars['ID']['input']>;
+  id_gte?: InputMaybe<Scalars['ID']['input']>;
+  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_lt?: InputMaybe<Scalars['ID']['input']>;
+  id_lte?: InputMaybe<Scalars['ID']['input']>;
+  id_not?: InputMaybe<Scalars['ID']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  or?: InputMaybe<Array<InputMaybe<ChromaticBpTotalRaised_Filter>>>;
+};
+
+export enum ChromaticBpTotalRaised_OrderBy {
+  Amount = 'amount',
+  BlockNumber = 'blockNumber',
+  BlockTimestamp = 'blockTimestamp',
+  Bp = 'bp',
+  BpId = 'bp__id',
+  BpInitialEndTimeOfWarmup = 'bp__initialEndTimeOfWarmup',
+  BpMaxRaisingTarget = 'bp__maxRaisingTarget',
+  BpMinRaisingTarget = 'bp__minRaisingTarget',
+  BpStartTimeOfWarmup = 'bp__startTimeOfWarmup',
+  BpTotalReward = 'bp__totalReward',
+  Id = 'id'
+}
+
+export type ChromaticBp_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  and?: InputMaybe<Array<InputMaybe<ChromaticBp_Filter>>>;
+  claims_?: InputMaybe<ChromaticBpClaim_Filter>;
+  deposits_?: InputMaybe<ChromaticBpDeposit_Filter>;
+  id?: InputMaybe<Scalars['Bytes']['input']>;
+  id_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  id_gt?: InputMaybe<Scalars['Bytes']['input']>;
+  id_gte?: InputMaybe<Scalars['Bytes']['input']>;
+  id_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  id_lt?: InputMaybe<Scalars['Bytes']['input']>;
+  id_lte?: InputMaybe<Scalars['Bytes']['input']>;
+  id_not?: InputMaybe<Scalars['Bytes']['input']>;
+  id_not_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  initialEndTimeOfWarmup?: InputMaybe<Scalars['BigInt']['input']>;
+  initialEndTimeOfWarmup_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  initialEndTimeOfWarmup_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  initialEndTimeOfWarmup_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  initialEndTimeOfWarmup_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  initialEndTimeOfWarmup_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  initialEndTimeOfWarmup_not?: InputMaybe<Scalars['BigInt']['input']>;
+  initialEndTimeOfWarmup_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  lp?: InputMaybe<Scalars['String']['input']>;
+  lp_?: InputMaybe<ChromaticLp_Filter>;
+  lp_contains?: InputMaybe<Scalars['String']['input']>;
+  lp_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  lp_ends_with?: InputMaybe<Scalars['String']['input']>;
+  lp_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  lp_gt?: InputMaybe<Scalars['String']['input']>;
+  lp_gte?: InputMaybe<Scalars['String']['input']>;
+  lp_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  lp_lt?: InputMaybe<Scalars['String']['input']>;
+  lp_lte?: InputMaybe<Scalars['String']['input']>;
+  lp_not?: InputMaybe<Scalars['String']['input']>;
+  lp_not_contains?: InputMaybe<Scalars['String']['input']>;
+  lp_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  lp_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  lp_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  lp_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  lp_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  lp_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  lp_starts_with?: InputMaybe<Scalars['String']['input']>;
+  lp_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  maxRaisingTarget?: InputMaybe<Scalars['BigInt']['input']>;
+  maxRaisingTarget_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  maxRaisingTarget_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  maxRaisingTarget_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  maxRaisingTarget_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  maxRaisingTarget_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  maxRaisingTarget_not?: InputMaybe<Scalars['BigInt']['input']>;
+  maxRaisingTarget_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  minRaisingTarget?: InputMaybe<Scalars['BigInt']['input']>;
+  minRaisingTarget_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  minRaisingTarget_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  minRaisingTarget_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  minRaisingTarget_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  minRaisingTarget_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  minRaisingTarget_not?: InputMaybe<Scalars['BigInt']['input']>;
+  minRaisingTarget_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  or?: InputMaybe<Array<InputMaybe<ChromaticBp_Filter>>>;
+  refunds_?: InputMaybe<ChromaticBpRefund_Filter>;
+  startTimeOfWarmup?: InputMaybe<Scalars['BigInt']['input']>;
+  startTimeOfWarmup_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  startTimeOfWarmup_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  startTimeOfWarmup_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  startTimeOfWarmup_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  startTimeOfWarmup_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  startTimeOfWarmup_not?: InputMaybe<Scalars['BigInt']['input']>;
+  startTimeOfWarmup_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  statuses_?: InputMaybe<ChromaticBpStatus_Filter>;
+  totalRaised_?: InputMaybe<ChromaticBpTotalRaised_Filter>;
+  totalReward?: InputMaybe<Scalars['BigInt']['input']>;
+  totalReward_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalReward_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalReward_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalReward_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalReward_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalReward_not?: InputMaybe<Scalars['BigInt']['input']>;
+  totalReward_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+};
+
+export enum ChromaticBp_OrderBy {
+  Claims = 'claims',
+  Deposits = 'deposits',
+  Id = 'id',
+  InitialEndTimeOfWarmup = 'initialEndTimeOfWarmup',
+  Lp = 'lp',
+  LpId = 'lp__id',
+  LpLongShortInfo = 'lp__longShortInfo',
+  LpLpTokenDecimals = 'lp__lpTokenDecimals',
+  LpLpTokenName = 'lp__lpTokenName',
+  LpLpTokenSymbol = 'lp__lpTokenSymbol',
+  LpMarket = 'lp__market',
+  LpOracleDescription = 'lp__oracleDescription',
+  LpOracleProvider = 'lp__oracleProvider',
+  LpRebalanceBps = 'lp__rebalanceBPS',
+  LpRebalanceCheckingInterval = 'lp__rebalanceCheckingInterval',
+  LpSettlementToken = 'lp__settlementToken',
+  LpSettlementTokenDecimals = 'lp__settlementTokenDecimals',
+  LpSettlementTokenSymbol = 'lp__settlementTokenSymbol',
+  LpUtilizationTargetBps = 'lp__utilizationTargetBPS',
+  MaxRaisingTarget = 'maxRaisingTarget',
+  MinRaisingTarget = 'minRaisingTarget',
+  Refunds = 'refunds',
+  StartTimeOfWarmup = 'startTimeOfWarmup',
+  Statuses = 'statuses',
+  TotalRaised = 'totalRaised',
+  TotalReward = 'totalReward'
+}
+
 export type ChromaticLp = {
   __typename?: 'ChromaticLP';
   clbTokenIds: Array<Scalars['BigInt']['output']>;
+  configs: Array<ChromaticLpConfig>;
   distributionRates: Array<Scalars['Int']['output']>;
   feeRates: Array<Scalars['Int']['output']>;
   id: Scalars['Bytes']['output'];
@@ -544,6 +1289,7 @@ export type ChromaticLp = {
   lpTokenName: Scalars['String']['output'];
   lpTokenSymbol: Scalars['String']['output'];
   market: Scalars['Bytes']['output'];
+  metas: Array<ChromaticLpMeta>;
   oracleDescription: Scalars['String']['output'];
   oracleProvider: Scalars['Bytes']['output'];
   rebalanceBPS: Scalars['BigInt']['output'];
@@ -554,13 +1300,31 @@ export type ChromaticLp = {
   utilizationTargetBPS: Scalars['BigInt']['output'];
 };
 
+
+export type ChromaticLpConfigsArgs = {
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<ChromaticLpConfig_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<ChromaticLpConfig_Filter>;
+};
+
+
+export type ChromaticLpMetasArgs = {
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<ChromaticLpMeta_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<ChromaticLpMeta_Filter>;
+};
+
 export type ChromaticLpConfig = {
   __typename?: 'ChromaticLPConfig';
   automationFeeReserved: Scalars['BigInt']['output'];
   blockNumber: Scalars['BigInt']['output'];
   blockTimestamp: Scalars['BigInt']['output'];
   id: Scalars['ID']['output'];
-  lp: Scalars['Bytes']['output'];
+  lp: ChromaticLp;
   minHoldingValueToRebalance: Scalars['BigInt']['output'];
 };
 
@@ -600,16 +1364,27 @@ export type ChromaticLpConfig_Filter = {
   id_lte?: InputMaybe<Scalars['ID']['input']>;
   id_not?: InputMaybe<Scalars['ID']['input']>;
   id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
-  lp?: InputMaybe<Scalars['Bytes']['input']>;
-  lp_contains?: InputMaybe<Scalars['Bytes']['input']>;
-  lp_gt?: InputMaybe<Scalars['Bytes']['input']>;
-  lp_gte?: InputMaybe<Scalars['Bytes']['input']>;
-  lp_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
-  lp_lt?: InputMaybe<Scalars['Bytes']['input']>;
-  lp_lte?: InputMaybe<Scalars['Bytes']['input']>;
-  lp_not?: InputMaybe<Scalars['Bytes']['input']>;
-  lp_not_contains?: InputMaybe<Scalars['Bytes']['input']>;
-  lp_not_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  lp?: InputMaybe<Scalars['String']['input']>;
+  lp_?: InputMaybe<ChromaticLp_Filter>;
+  lp_contains?: InputMaybe<Scalars['String']['input']>;
+  lp_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  lp_ends_with?: InputMaybe<Scalars['String']['input']>;
+  lp_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  lp_gt?: InputMaybe<Scalars['String']['input']>;
+  lp_gte?: InputMaybe<Scalars['String']['input']>;
+  lp_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  lp_lt?: InputMaybe<Scalars['String']['input']>;
+  lp_lte?: InputMaybe<Scalars['String']['input']>;
+  lp_not?: InputMaybe<Scalars['String']['input']>;
+  lp_not_contains?: InputMaybe<Scalars['String']['input']>;
+  lp_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  lp_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  lp_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  lp_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  lp_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  lp_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  lp_starts_with?: InputMaybe<Scalars['String']['input']>;
+  lp_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
   minHoldingValueToRebalance?: InputMaybe<Scalars['BigInt']['input']>;
   minHoldingValueToRebalance_gt?: InputMaybe<Scalars['BigInt']['input']>;
   minHoldingValueToRebalance_gte?: InputMaybe<Scalars['BigInt']['input']>;
@@ -627,6 +1402,20 @@ export enum ChromaticLpConfig_OrderBy {
   BlockTimestamp = 'blockTimestamp',
   Id = 'id',
   Lp = 'lp',
+  LpId = 'lp__id',
+  LpLongShortInfo = 'lp__longShortInfo',
+  LpLpTokenDecimals = 'lp__lpTokenDecimals',
+  LpLpTokenName = 'lp__lpTokenName',
+  LpLpTokenSymbol = 'lp__lpTokenSymbol',
+  LpMarket = 'lp__market',
+  LpOracleDescription = 'lp__oracleDescription',
+  LpOracleProvider = 'lp__oracleProvider',
+  LpRebalanceBps = 'lp__rebalanceBPS',
+  LpRebalanceCheckingInterval = 'lp__rebalanceCheckingInterval',
+  LpSettlementToken = 'lp__settlementToken',
+  LpSettlementTokenDecimals = 'lp__settlementTokenDecimals',
+  LpSettlementTokenSymbol = 'lp__settlementTokenSymbol',
+  LpUtilizationTargetBps = 'lp__utilizationTargetBPS',
   MinHoldingValueToRebalance = 'minHoldingValueToRebalance'
 }
 
@@ -635,7 +1424,7 @@ export type ChromaticLpMeta = {
   blockNumber: Scalars['BigInt']['output'];
   blockTimestamp: Scalars['BigInt']['output'];
   id: Scalars['ID']['output'];
-  lp: Scalars['Bytes']['output'];
+  lp: ChromaticLp;
   lpName: Scalars['String']['output'];
   lpTag: Scalars['String']['output'];
 };
@@ -668,7 +1457,7 @@ export type ChromaticLpMeta_Filter = {
   id_lte?: InputMaybe<Scalars['ID']['input']>;
   id_not?: InputMaybe<Scalars['ID']['input']>;
   id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
-  lp?: InputMaybe<Scalars['Bytes']['input']>;
+  lp?: InputMaybe<Scalars['String']['input']>;
   lpName?: InputMaybe<Scalars['String']['input']>;
   lpName_contains?: InputMaybe<Scalars['String']['input']>;
   lpName_contains_nocase?: InputMaybe<Scalars['String']['input']>;
@@ -709,15 +1498,26 @@ export type ChromaticLpMeta_Filter = {
   lpTag_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
   lpTag_starts_with?: InputMaybe<Scalars['String']['input']>;
   lpTag_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
-  lp_contains?: InputMaybe<Scalars['Bytes']['input']>;
-  lp_gt?: InputMaybe<Scalars['Bytes']['input']>;
-  lp_gte?: InputMaybe<Scalars['Bytes']['input']>;
-  lp_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
-  lp_lt?: InputMaybe<Scalars['Bytes']['input']>;
-  lp_lte?: InputMaybe<Scalars['Bytes']['input']>;
-  lp_not?: InputMaybe<Scalars['Bytes']['input']>;
-  lp_not_contains?: InputMaybe<Scalars['Bytes']['input']>;
-  lp_not_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  lp_?: InputMaybe<ChromaticLp_Filter>;
+  lp_contains?: InputMaybe<Scalars['String']['input']>;
+  lp_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  lp_ends_with?: InputMaybe<Scalars['String']['input']>;
+  lp_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  lp_gt?: InputMaybe<Scalars['String']['input']>;
+  lp_gte?: InputMaybe<Scalars['String']['input']>;
+  lp_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  lp_lt?: InputMaybe<Scalars['String']['input']>;
+  lp_lte?: InputMaybe<Scalars['String']['input']>;
+  lp_not?: InputMaybe<Scalars['String']['input']>;
+  lp_not_contains?: InputMaybe<Scalars['String']['input']>;
+  lp_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  lp_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  lp_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  lp_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  lp_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  lp_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  lp_starts_with?: InputMaybe<Scalars['String']['input']>;
+  lp_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
   or?: InputMaybe<Array<InputMaybe<ChromaticLpMeta_Filter>>>;
 };
 
@@ -727,7 +1527,21 @@ export enum ChromaticLpMeta_OrderBy {
   Id = 'id',
   Lp = 'lp',
   LpName = 'lpName',
-  LpTag = 'lpTag'
+  LpTag = 'lpTag',
+  LpId = 'lp__id',
+  LpLongShortInfo = 'lp__longShortInfo',
+  LpLpTokenDecimals = 'lp__lpTokenDecimals',
+  LpLpTokenName = 'lp__lpTokenName',
+  LpLpTokenSymbol = 'lp__lpTokenSymbol',
+  LpMarket = 'lp__market',
+  LpOracleDescription = 'lp__oracleDescription',
+  LpOracleProvider = 'lp__oracleProvider',
+  LpRebalanceBps = 'lp__rebalanceBPS',
+  LpRebalanceCheckingInterval = 'lp__rebalanceCheckingInterval',
+  LpSettlementToken = 'lp__settlementToken',
+  LpSettlementTokenDecimals = 'lp__settlementTokenDecimals',
+  LpSettlementTokenSymbol = 'lp__settlementTokenSymbol',
+  LpUtilizationTargetBps = 'lp__utilizationTargetBPS'
 }
 
 export type ChromaticLpRegistered = {
@@ -938,6 +1752,7 @@ export type ChromaticLp_Filter = {
   clbTokenIds_not?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   clbTokenIds_not_contains?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   clbTokenIds_not_contains_nocase?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  configs_?: InputMaybe<ChromaticLpConfig_Filter>;
   distributionRates?: InputMaybe<Array<Scalars['Int']['input']>>;
   distributionRates_contains?: InputMaybe<Array<Scalars['Int']['input']>>;
   distributionRates_contains_nocase?: InputMaybe<Array<Scalars['Int']['input']>>;
@@ -1026,6 +1841,7 @@ export type ChromaticLp_Filter = {
   market_not?: InputMaybe<Scalars['Bytes']['input']>;
   market_not_contains?: InputMaybe<Scalars['Bytes']['input']>;
   market_not_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  metas_?: InputMaybe<ChromaticLpMeta_Filter>;
   or?: InputMaybe<Array<InputMaybe<ChromaticLp_Filter>>>;
   oracleDescription?: InputMaybe<Scalars['String']['input']>;
   oracleDescription_contains?: InputMaybe<Scalars['String']['input']>;
@@ -1123,6 +1939,7 @@ export type ChromaticLp_Filter = {
 
 export enum ChromaticLp_OrderBy {
   ClbTokenIds = 'clbTokenIds',
+  Configs = 'configs',
   DistributionRates = 'distributionRates',
   FeeRates = 'feeRates',
   Id = 'id',
@@ -1131,6 +1948,7 @@ export enum ChromaticLp_OrderBy {
   LpTokenName = 'lpTokenName',
   LpTokenSymbol = 'lpTokenSymbol',
   Market = 'market',
+  Metas = 'metas',
   OracleDescription = 'oracleDescription',
   OracleProvider = 'oracleProvider',
   RebalanceBps = 'rebalanceBPS',
@@ -1225,8 +2043,22 @@ export type Query = {
   bpboostTaskExecuteds: Array<BpBoostTaskExecuted>;
   bpdeposited?: Maybe<BpDeposited>;
   bpdepositeds: Array<BpDeposited>;
+  bpsettleUpdated?: Maybe<BpSettleUpdated>;
+  bpsettleUpdateds: Array<BpSettleUpdated>;
+  chromaticBP?: Maybe<ChromaticBp>;
+  chromaticBPClaim?: Maybe<ChromaticBpClaim>;
+  chromaticBPClaims: Array<ChromaticBpClaim>;
   chromaticBPCreated?: Maybe<ChromaticBpCreated>;
   chromaticBPCreateds: Array<ChromaticBpCreated>;
+  chromaticBPDeposit?: Maybe<ChromaticBpDeposit>;
+  chromaticBPDeposits: Array<ChromaticBpDeposit>;
+  chromaticBPRefund?: Maybe<ChromaticBpRefund>;
+  chromaticBPRefunds: Array<ChromaticBpRefund>;
+  chromaticBPStatus?: Maybe<ChromaticBpStatus>;
+  chromaticBPStatuses: Array<ChromaticBpStatus>;
+  chromaticBPTotalRaised?: Maybe<ChromaticBpTotalRaised>;
+  chromaticBPTotalRaiseds: Array<ChromaticBpTotalRaised>;
+  chromaticBPs: Array<ChromaticBp>;
   chromaticLP?: Maybe<ChromaticLp>;
   chromaticLPConfig?: Maybe<ChromaticLpConfig>;
   chromaticLPConfigs: Array<ChromaticLpConfig>;
@@ -1329,6 +2161,49 @@ export type QueryBpdepositedsArgs = {
 };
 
 
+export type QueryBpsettleUpdatedArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryBpsettleUpdatedsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<BpSettleUpdated_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<BpSettleUpdated_Filter>;
+};
+
+
+export type QueryChromaticBpArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryChromaticBpClaimArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryChromaticBpClaimsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<ChromaticBpClaim_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<ChromaticBpClaim_Filter>;
+};
+
+
 export type QueryChromaticBpCreatedArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID']['input'];
@@ -1344,6 +2219,89 @@ export type QueryChromaticBpCreatedsArgs = {
   skip?: InputMaybe<Scalars['Int']['input']>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<ChromaticBpCreated_Filter>;
+};
+
+
+export type QueryChromaticBpDepositArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryChromaticBpDepositsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<ChromaticBpDeposit_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<ChromaticBpDeposit_Filter>;
+};
+
+
+export type QueryChromaticBpRefundArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryChromaticBpRefundsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<ChromaticBpRefund_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<ChromaticBpRefund_Filter>;
+};
+
+
+export type QueryChromaticBpStatusArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryChromaticBpStatusesArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<ChromaticBpStatus_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<ChromaticBpStatus_Filter>;
+};
+
+
+export type QueryChromaticBpTotalRaisedArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryChromaticBpTotalRaisedsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<ChromaticBpTotalRaised_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<ChromaticBpTotalRaised_Filter>;
+};
+
+
+export type QueryChromaticBPsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<ChromaticBp_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<ChromaticBp_Filter>;
 };
 
 
@@ -2124,8 +3082,22 @@ export type Subscription = {
   bpboostTaskExecuteds: Array<BpBoostTaskExecuted>;
   bpdeposited?: Maybe<BpDeposited>;
   bpdepositeds: Array<BpDeposited>;
+  bpsettleUpdated?: Maybe<BpSettleUpdated>;
+  bpsettleUpdateds: Array<BpSettleUpdated>;
+  chromaticBP?: Maybe<ChromaticBp>;
+  chromaticBPClaim?: Maybe<ChromaticBpClaim>;
+  chromaticBPClaims: Array<ChromaticBpClaim>;
   chromaticBPCreated?: Maybe<ChromaticBpCreated>;
   chromaticBPCreateds: Array<ChromaticBpCreated>;
+  chromaticBPDeposit?: Maybe<ChromaticBpDeposit>;
+  chromaticBPDeposits: Array<ChromaticBpDeposit>;
+  chromaticBPRefund?: Maybe<ChromaticBpRefund>;
+  chromaticBPRefunds: Array<ChromaticBpRefund>;
+  chromaticBPStatus?: Maybe<ChromaticBpStatus>;
+  chromaticBPStatuses: Array<ChromaticBpStatus>;
+  chromaticBPTotalRaised?: Maybe<ChromaticBpTotalRaised>;
+  chromaticBPTotalRaiseds: Array<ChromaticBpTotalRaised>;
+  chromaticBPs: Array<ChromaticBp>;
   chromaticLP?: Maybe<ChromaticLp>;
   chromaticLPConfig?: Maybe<ChromaticLpConfig>;
   chromaticLPConfigs: Array<ChromaticLpConfig>;
@@ -2228,6 +3200,49 @@ export type SubscriptionBpdepositedsArgs = {
 };
 
 
+export type SubscriptionBpsettleUpdatedArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionBpsettleUpdatedsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<BpSettleUpdated_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<BpSettleUpdated_Filter>;
+};
+
+
+export type SubscriptionChromaticBpArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionChromaticBpClaimArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionChromaticBpClaimsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<ChromaticBpClaim_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<ChromaticBpClaim_Filter>;
+};
+
+
 export type SubscriptionChromaticBpCreatedArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID']['input'];
@@ -2243,6 +3258,89 @@ export type SubscriptionChromaticBpCreatedsArgs = {
   skip?: InputMaybe<Scalars['Int']['input']>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<ChromaticBpCreated_Filter>;
+};
+
+
+export type SubscriptionChromaticBpDepositArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionChromaticBpDepositsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<ChromaticBpDeposit_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<ChromaticBpDeposit_Filter>;
+};
+
+
+export type SubscriptionChromaticBpRefundArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionChromaticBpRefundsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<ChromaticBpRefund_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<ChromaticBpRefund_Filter>;
+};
+
+
+export type SubscriptionChromaticBpStatusArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionChromaticBpStatusesArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<ChromaticBpStatus_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<ChromaticBpStatus_Filter>;
+};
+
+
+export type SubscriptionChromaticBpTotalRaisedArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionChromaticBpTotalRaisedsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<ChromaticBpTotalRaised_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<ChromaticBpTotalRaised_Filter>;
+};
+
+
+export type SubscriptionChromaticBPsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<ChromaticBp_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<ChromaticBp_Filter>;
 };
 
 
@@ -2551,13 +3649,6 @@ export type RemoveLiquiditySettledCountQueryVariables = Exact<{
 
 export type RemoveLiquiditySettledCountQuery = { __typename?: 'Query', removeLiquiditySettleds: Array<{ __typename?: 'RemoveLiquiditySettled', id: `0x${string}`, lp: `0x${string}`, receiptId: string, recipient: `0x${string}`, provider: `0x${string}` }> };
 
-export type GetChromaticLpQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
-
-
-export type GetChromaticLpQuery = { __typename?: 'Query', chromaticLP?: { __typename?: 'ChromaticLP', id: `0x${string}`, longShortInfo: number, lpTokenName: string, market: `0x${string}`, oracleDescription: string, oracleProvider: `0x${string}`, settlementToken: `0x${string}`, settlementTokenDecimals: number, settlementTokenSymbol: string } | null };
-
 
 export const AddLiquiditiesDocument = gql`
     query AddLiquidities($count: Int!, $orderBy: AddLiquidity_orderBy!, $orderDirection: OrderDirection!, $walletAddress: Bytes!, $lpAddress: Bytes!, $toBlockTimestamp: BigInt) {
@@ -2677,21 +3768,6 @@ export const RemoveLiquiditySettledCountDocument = gql`
   }
 }
     `;
-export const GetChromaticLpDocument = gql`
-    query GetChromaticLp($id: ID!) {
-  chromaticLP(id: $id) {
-    id
-    longShortInfo
-    lpTokenName
-    market
-    oracleDescription
-    oracleProvider
-    settlementToken
-    settlementTokenDecimals
-    settlementTokenSymbol
-  }
-}
-    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string, variables?: any) => Promise<T>;
 
@@ -2723,9 +3799,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     RemoveLiquiditySettledCount(variables: RemoveLiquiditySettledCountQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<RemoveLiquiditySettledCountQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<RemoveLiquiditySettledCountQuery>(RemoveLiquiditySettledCountDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'RemoveLiquiditySettledCount', 'query', variables);
-    },
-    GetChromaticLp(variables: GetChromaticLpQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<GetChromaticLpQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetChromaticLpQuery>(GetChromaticLpDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetChromaticLp', 'query', variables);
     }
   };
 }

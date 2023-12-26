@@ -1,14 +1,11 @@
 import { GraphQLClient, RequestMiddleware, Variables } from "graphql-request";
-export const SUBGRAPH_API_URL =
-  "https://graph-arbitrum-sepolia.api.chromatic.finance/subgraphs/name";
-export const HASURA_API_URL = "https://hasura-arbitrum-sepolia.api.chromatic.finance/v1/graphql";
-
 import * as Analytics from "./sdk/analytics";
 import * as Lp from "./sdk/lp";
 import * as Performance from "./sdk/performance";
 import * as Position from "./sdk/position";
 import * as Subgraph from "./sdk/subgraph";
 import JSONbig from "json-bigint";
+import { HASURA_API_URL, SUBGRAPH_API_URL } from "../../const";
 type UrlMap = {
   operations: string[];
   url: string;
@@ -18,7 +15,7 @@ function getOperations(object: Object) {
   const documentSuffix = "Document";
   return Object.keys(object)
     .filter((k) => k.endsWith(documentSuffix))
-    .map((k) => k.slice(0, -documentSuffix.length));
+    .map((k) => k.slice(0, -documentSuffix.length).toLowerCase());
 }
 
 const urlMap: UrlMap = [
@@ -47,7 +44,9 @@ const urlMap: UrlMap = [
 const getRequestMiddleware =
   (urlMap: UrlMap): RequestMiddleware<Variables> =>
   (request) => {
-    const url = urlMap.find((url) => url.operations.includes(request.operationName!))?.url;
+    const url = urlMap.find((url) =>
+      url.operations.includes((request.operationName || "").toLowerCase())
+    )?.url;
     if (!url) {
       throw new Error("invalid operation");
     }

@@ -1,5 +1,6 @@
 import type { CodegenConfig } from "@graphql-codegen/cli";
-import { SUBGRAPH_API_URL, HASURA_API_URL } from "../../src/lib/graphql/index";
+import { HASURA_API_URL, SUBGRAPH_API_URL } from "../../src/const";
+
 
 const GENERATED_PATH = "src/lib/graphql/sdk";
 const PLUGINS = ["typescript", "typescript-operations", "typescript-graphql-request"];

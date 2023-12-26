@@ -50,7 +50,7 @@ const getRequestMiddleware =
     const url = urlMap.find((url) =>
       url.operations.map((operation) => operation.toLowerCase()).includes(operationName)
     )?.url;
-
+    delete (request.headers as Record<string, string>).operationName;
     if (!url) {
       throw new Error("invalid operation");
     }

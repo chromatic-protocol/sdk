@@ -1,6 +1,9 @@
+import groupBy from "lodash/groupBy";
 import { Address, getContract, zeroAddress } from "viem";
 import type { Client } from "../Client";
-import { chromaticLensABI, chromaticLensAddress, clbTokenABI } from "../gen";
+import { chromaticLensABI, chromaticLensAddress } from "../gen";
+import { subgraphSdk } from "../lib/graphql";
+import { ClbTokenTotalSupply } from "../lib/graphql/sdk/position";
 import {
   checkWalletClient,
   decodeTokenId,
@@ -8,14 +11,6 @@ import {
   handleBytesError,
 } from "../utils/helpers";
 import type { ContractChromaticLens } from "./types";
-import groupBy from "lodash/groupBy";
-import { lpGraphSdk, subgraphSdk } from "../lib/graphql";
-import { GetBlockNumberParameters } from "viem";
-import {
-  GetChromaticMarketBinStatusesQuery,
-  LiquidityBinStatus,
-} from "../lib/graphql/sdk/subgraph";
-import { ClbTokenTotalSupply } from "../lib/graphql/sdk/position";
 /**
  * Represents the result of a liquidity bin.
  */

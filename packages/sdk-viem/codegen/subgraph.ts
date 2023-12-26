@@ -20,11 +20,11 @@ export const getLiquidityBinStatuses = gql`
         tradingFeeRate
       }
     }
-    clbtokens(where: {market: $market}) {
-        decimals
-        market
-        id
-      }
+    clbtokens(where: { market: $market }) {
+      decimals
+      market
+      id
+    }
   }
 `;
 
@@ -40,6 +40,39 @@ export const getCLBTokenTotalSupplies = gql`
       tokenId
       blockNumber
       amount
+    }
+  }
+`;
+
+export const getMarketMeta = gql`
+  query getMarketMeta($id: ID = "") {
+    chromaticMarket(id: $id) {
+      id
+      settlementToken
+      settlementTokenDecimals
+      settlementTokenSymbol
+      oracleDescription
+    }
+  }
+`;
+
+export const getInterestRecordSnapshots = gql`
+  query getInterestRecordSnapshots($settlementToken: Bytes = "") {
+    interestRatesSnapshots(
+      where: {settlementToken: $settlementToken}
+      orderBy: blockNumber
+      orderDirection: desc
+      first: 1
+    ) {
+      id
+      rates {
+        id
+        annualRateBPS
+        beginTimestamp
+      }
+      settlementToken
+      blockTimestamp
+      blockNumber
     }
   }
 `;

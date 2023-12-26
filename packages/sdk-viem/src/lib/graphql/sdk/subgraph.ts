@@ -2101,6 +2101,20 @@ export type GetClbTokenTotalSuppliesQueryVariables = Exact<{
 
 export type GetClbTokenTotalSuppliesQuery = { __typename?: 'Query', clbtokenTotalSupplies: Array<{ __typename?: 'CLBTokenTotalSupply', id: string, token: `0x${string}`, tokenId: string, blockNumber: string, amount: string }> };
 
+export type GetMarketMetaQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['ID']['input']>;
+}>;
+
+
+export type GetMarketMetaQuery = { __typename?: 'Query', chromaticMarket?: { __typename?: 'ChromaticMarket', id: `0x${string}`, settlementToken: `0x${string}`, settlementTokenDecimals: number, settlementTokenSymbol: string, oracleDescription: string } | null };
+
+export type GetInterestRecordSnapshotsQueryVariables = Exact<{
+  settlementToken?: InputMaybe<Scalars['Bytes']['input']>;
+}>;
+
+
+export type GetInterestRecordSnapshotsQuery = { __typename?: 'Query', interestRatesSnapshots: Array<{ __typename?: 'InterestRatesSnapshot', id: string, settlementToken: `0x${string}`, blockTimestamp: string, blockNumber: string, rates: Array<{ __typename?: 'InterestRate', id: string, annualRateBPS: string, beginTimestamp: string }> }> };
+
 
 export const GetChromaticMarketBinStatusesAndClbMetaDocument = gql`
     query getChromaticMarketBinStatusesAndCLBMeta($market: Bytes = "") {
@@ -2144,6 +2158,37 @@ export const GetClbTokenTotalSuppliesDocument = gql`
   }
 }
     `;
+export const GetMarketMetaDocument = gql`
+    query getMarketMeta($id: ID = "") {
+  chromaticMarket(id: $id) {
+    id
+    settlementToken
+    settlementTokenDecimals
+    settlementTokenSymbol
+    oracleDescription
+  }
+}
+    `;
+export const GetInterestRecordSnapshotsDocument = gql`
+    query getInterestRecordSnapshots($settlementToken: Bytes = "") {
+  interestRatesSnapshots(
+    where: {settlementToken: $settlementToken}
+    orderBy: blockNumber
+    orderDirection: desc
+    first: 1
+  ) {
+    id
+    rates {
+      id
+      annualRateBPS
+      beginTimestamp
+    }
+    settlementToken
+    blockTimestamp
+    blockNumber
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string, variables?: any) => Promise<T>;
 
@@ -2157,6 +2202,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getCLBTokenTotalSupplies(variables?: GetClbTokenTotalSuppliesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<GetClbTokenTotalSuppliesQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetClbTokenTotalSuppliesQuery>(GetClbTokenTotalSuppliesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getCLBTokenTotalSupplies', 'query', variables);
+    },
+    getMarketMeta(variables?: GetMarketMetaQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<GetMarketMetaQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetMarketMetaQuery>(GetMarketMetaDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getMarketMeta', 'query', variables);
+    },
+    getInterestRecordSnapshots(variables?: GetInterestRecordSnapshotsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<GetInterestRecordSnapshotsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetInterestRecordSnapshotsQuery>(GetInterestRecordSnapshotsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getInterestRecordSnapshots', 'query', variables);
     }
   };
 }

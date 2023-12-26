@@ -1,6 +1,7 @@
 import { Address } from "viem";
 import { Client } from "../Client";
 import { handleBytesError } from "../utils/helpers";
+import { subgraphSdk } from "../lib/graphql";
 
 type InterestParam = Pick<PositionParam, "makerMargin" | "claimTimestamp" | "openTimestamp">;
 
@@ -54,7 +55,7 @@ export interface IPosition {
   owner: string;
   /** The bin margins for the position, it represents the amount of collateral for each bin */
   _binMargins: IBinMargin[];
-    
+
   /** The protocol fee rate for the market */
   _protocolFeeRate: number;
   /** The amount of maker's margin */
@@ -140,18 +141,23 @@ export class ChromaticPosition {
     if (this.interestRateRecords != null) {
       return this.interestRateRecords;
     }
+    const { chromaticMarket: chromaticMarketMeta } = await subgraphSdk.getMarketMeta({
+      id: marketAddress,
+    });
     if (!this.settlementTokenAddress) {
-      this.settlementTokenAddress = await handleBytesError(
-        async () => await this.contracts().market(marketAddress).read.settlementToken()
-      );
+      this.settlementTokenAddress = chromaticMarketMeta?.settlementToken;
     }
+    const { interestRatesSnapshots } = await subgraphSdk.getInterestRecordSnapshots({
+      settlementToken: this.settlementTokenAddress,
+    });
+
     this.interestRateRecords = [
-      ...(await handleBytesError(
-        async () =>
-          await this.contracts().marketFactory.read.getInterestRateRecords([
-            this.settlementTokenAddress!,
-          ])
-      )),
+      ...interestRatesSnapshots[0]?.rates.map((rate) => {
+        return {
+          annualRateBPS: BigInt(rate.annualRateBPS || 0n),
+          beginTimestamp: BigInt(rate.beginTimestamp || 0n),
+        };
+      }),
     ];
     return this.interestRateRecords;
   }

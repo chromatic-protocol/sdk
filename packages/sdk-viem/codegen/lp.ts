@@ -143,7 +143,7 @@ export const GET_CHROMATIC_LP = gql`
     chromaticLP(id: $id) {
       id
       longShortInfo
-      lpName
+      lpTokenName
       market
       oracleDescription
       oracleProvider
@@ -154,7 +154,7 @@ export const GET_CHROMATIC_LP = gql`
   }
 `;
 
-export const GET_CHROMATIC_LP_BY_ADDRESS = gql`
-query
-`
+// export const GET_CHROMATIC_LP_BY_ADDRESS = gql`
+// query
+// `
 

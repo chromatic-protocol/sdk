@@ -2087,85 +2087,105 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny'
 }
 
-export type HistoryQueryVariables = Exact<{
-  count: Scalars['Int']['input'];
-  offset: Scalars['Int']['input'];
-  orderBy: ClaimedPosition_OrderBy;
-  orderDirection: OrderDirection;
-  accountAddress: Scalars['Bytes']['input'];
-  marketAddresses: Array<Scalars['Bytes']['input']> | Scalars['Bytes']['input'];
+export type GetChromaticMarketBinStatusesAndClbMetaQueryVariables = Exact<{
+  market?: InputMaybe<Scalars['Bytes']['input']>;
 }>;
 
 
-export type HistoryQuery = { __typename?: 'Query', claimedPositions: Array<{ __typename?: 'ClaimedPosition', id: string, entryPrice: string, exitPrice: string, realizedPnl: string, interest: string, cause: string, blockTimestamp: string, position: { __typename?: 'Position', id: string, marketAddress: `0x${string}`, account: `0x${string}`, positionId: string, qty: string, takerMargin: string, makerMargin: string, tradingFee: string, openVersion: string, openTimestamp: string, closedPosition?: { __typename?: 'ClosedPosition', closeVersion: string, closeTimestamp: string } | null } }> };
+export type GetChromaticMarketBinStatusesAndClbMetaQuery = { __typename?: 'Query', chromaticMarketBinStatuses: Array<{ __typename?: 'ChromaticMarketBinStatus', id: string, longBinValue: string, longFreeLiquidity: string, longLiquidity: string, market: `0x${string}`, shortBinValue: string, shortFreeLiquidity: string, shortLiquidity: string, blockNumber: string, statuses: Array<{ __typename?: 'LiquidityBinStatus', binValue: string, freeLiquidity: string, id: string, liquidity: string, tradingFeeRate: number }> }>, clbtokens: Array<{ __typename?: 'CLBToken', decimals: number, market: `0x${string}`, id: `0x${string}` }> };
 
-export type TradeLogsQueryVariables = Exact<{
-  count: Scalars['Int']['input'];
-  offset: Scalars['Int']['input'];
-  orderBy: Position_OrderBy;
-  orderDirection: OrderDirection;
-  accountAddress: Scalars['Bytes']['input'];
-  marketAddresses: Array<Scalars['Bytes']['input']> | Scalars['Bytes']['input'];
+export type GetClbTokenTotalSuppliesQueryVariables = Exact<{
+  blockNumber?: InputMaybe<Scalars['BigInt']['input']>;
 }>;
 
 
-export type TradeLogsQuery = { __typename?: 'Query', positions: Array<{ __typename?: 'Position', id: string, account: `0x${string}`, marketAddress: `0x${string}`, positionId: string, qty: string, takerMargin: string, makerMargin: string, tradingFee: string, openVersion: string, openTimestamp: string }> };
+export type GetClbTokenTotalSuppliesQuery = { __typename?: 'Query', clbtokenTotalSupplies: Array<{ __typename?: 'CLBTokenTotalSupply', id: string, token: `0x${string}`, tokenId: string, blockNumber: string, amount: string }> };
+
+export type GetMarketMetaQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['ID']['input']>;
+}>;
 
 
-export const HistoryDocument = gql`
-    query History($count: Int!, $offset: Int!, $orderBy: ClaimedPosition_orderBy!, $orderDirection: OrderDirection!, $accountAddress: Bytes!, $marketAddresses: [Bytes!]!) {
-  claimedPositions(
-    first: $count
-    skip: $offset
-    orderBy: $orderBy
-    orderDirection: $orderDirection
-    where: {position_: {account: $accountAddress, marketAddress_in: $marketAddresses}}
-  ) {
+export type GetMarketMetaQuery = { __typename?: 'Query', chromaticMarket?: { __typename?: 'ChromaticMarket', id: `0x${string}`, settlementToken: `0x${string}`, settlementTokenDecimals: number, settlementTokenSymbol: string, oracleDescription: string } | null };
+
+export type GetInterestRecordSnapshotsQueryVariables = Exact<{
+  settlementToken?: InputMaybe<Scalars['Bytes']['input']>;
+}>;
+
+
+export type GetInterestRecordSnapshotsQuery = { __typename?: 'Query', interestRatesSnapshots: Array<{ __typename?: 'InterestRatesSnapshot', id: string, settlementToken: `0x${string}`, blockTimestamp: string, blockNumber: string, rates: Array<{ __typename?: 'InterestRate', id: string, annualRateBPS: string, beginTimestamp: string }> }> };
+
+
+export const GetChromaticMarketBinStatusesAndClbMetaDocument = gql`
+    query getChromaticMarketBinStatusesAndCLBMeta($market: Bytes = "") {
+  chromaticMarketBinStatuses(orderBy: blockNumber, orderDirection: desc, first: 1) {
     id
-    entryPrice
-    exitPrice
-    realizedPnl
-    interest
-    cause
-    blockTimestamp
-    position {
+    longBinValue
+    longFreeLiquidity
+    longLiquidity
+    market
+    shortBinValue
+    shortFreeLiquidity
+    shortLiquidity
+    blockNumber
+    statuses {
+      binValue
+      freeLiquidity
       id
-      marketAddress
-      account
-      positionId
-      qty
-      takerMargin
-      makerMargin
-      tradingFee
-      openVersion
-      openTimestamp
-      closedPosition {
-        closeVersion
-        closeTimestamp
-      }
+      liquidity
+      tradingFeeRate
     }
+  }
+  clbtokens(where: {market: $market}) {
+    decimals
+    market
+    id
   }
 }
     `;
-export const TradeLogsDocument = gql`
-    query TradeLogs($count: Int!, $offset: Int!, $orderBy: Position_orderBy!, $orderDirection: OrderDirection!, $accountAddress: Bytes!, $marketAddresses: [Bytes!]!) {
-  positions(
-    first: $count
-    skip: $offset
-    orderBy: $orderBy
-    orderDirection: $orderDirection
-    where: {account: $accountAddress, marketAddress_in: $marketAddresses}
+export const GetClbTokenTotalSuppliesDocument = gql`
+    query getCLBTokenTotalSupplies($blockNumber: BigInt) {
+  clbtokenTotalSupplies(
+    orderDirection: desc
+    orderBy: blockNumber
+    where: {blockNumber: $blockNumber}
   ) {
     id
-    account
-    marketAddress
-    positionId
-    qty
-    takerMargin
-    makerMargin
-    tradingFee
-    openVersion
-    openTimestamp
+    token
+    tokenId
+    blockNumber
+    amount
+  }
+}
+    `;
+export const GetMarketMetaDocument = gql`
+    query getMarketMeta($id: ID = "") {
+  chromaticMarket(id: $id) {
+    id
+    settlementToken
+    settlementTokenDecimals
+    settlementTokenSymbol
+    oracleDescription
+  }
+}
+    `;
+export const GetInterestRecordSnapshotsDocument = gql`
+    query getInterestRecordSnapshots($settlementToken: Bytes = "") {
+  interestRatesSnapshots(
+    where: {settlementToken: $settlementToken}
+    orderBy: blockNumber
+    orderDirection: desc
+    first: 1
+  ) {
+    id
+    rates {
+      id
+      annualRateBPS
+      beginTimestamp
+    }
+    settlementToken
+    blockTimestamp
+    blockNumber
   }
 }
     `;
@@ -2177,11 +2197,17 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    History(variables: HistoryQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<HistoryQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<HistoryQuery>(HistoryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'History', 'query', variables);
+    getChromaticMarketBinStatusesAndCLBMeta(variables?: GetChromaticMarketBinStatusesAndClbMetaQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<GetChromaticMarketBinStatusesAndClbMetaQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetChromaticMarketBinStatusesAndClbMetaQuery>(GetChromaticMarketBinStatusesAndClbMetaDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getChromaticMarketBinStatusesAndCLBMeta', 'query', variables);
     },
-    TradeLogs(variables: TradeLogsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<TradeLogsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<TradeLogsQuery>(TradeLogsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'TradeLogs', 'query', variables);
+    getCLBTokenTotalSupplies(variables?: GetClbTokenTotalSuppliesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<GetClbTokenTotalSuppliesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetClbTokenTotalSuppliesQuery>(GetClbTokenTotalSuppliesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getCLBTokenTotalSupplies', 'query', variables);
+    },
+    getMarketMeta(variables?: GetMarketMetaQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<GetMarketMetaQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetMarketMetaQuery>(GetMarketMetaDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getMarketMeta', 'query', variables);
+    },
+    getInterestRecordSnapshots(variables?: GetInterestRecordSnapshotsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<GetInterestRecordSnapshotsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetInterestRecordSnapshotsQuery>(GetInterestRecordSnapshotsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getInterestRecordSnapshots', 'query', variables);
     }
   };
 }

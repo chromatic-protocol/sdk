@@ -150,9 +150,9 @@ export class ChromaticLens {
               ? 0n
               : (BigInt(binStatus.binValue || 0n) * 10n ** BigInt(clbTokenDecimals)) /
                 clbTotalSupply,
-          liquidity: binStatus.liquidity,
+          liquidity: BigInt(binStatus.liquidity || 0n),
           clbTokenTotalSupply: clbTotalSupply,
-          freeLiquidity: binStatus.freeLiquidity,
+          freeLiquidity: BigInt(binStatus.freeLiquidity || 0n),
         };
       });
     });

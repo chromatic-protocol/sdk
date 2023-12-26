@@ -31,7 +31,7 @@
     "dist"
   ],
   "scripts": {
-    "codegen": "rm -rf lib/graphql/sdk && graphql-codegen --config codegen/config/index.ts",
+    "codegen": "rm -rf src/lib/graphql/sdk && graphql-codegen --config codegen/config/index.ts",
     "build:cjs": "rm -rf ./dist/cjs && tsc --build --force tsconfig.cjs.build.json",
     "build:esm": "rm -rf ./dist/esm && tsc --build --force tsconfig.build.json",
     "build": "yarn build:cjs && yarn build:esm",

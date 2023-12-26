@@ -9,6 +9,7 @@ import {
 } from "../utils/helpers";
 import type { ContractChromaticLens } from "./types";
 import groupBy from "lodash/groupBy";
+import { lpGraphSdk } from "../lib/graphql";
 /**
  * Represents the result of a liquidity bin.
  */
@@ -124,6 +125,7 @@ export class ChromaticLens {
   async liquidityBins(marketAddress: Address) {
     return await handleBytesError(async () => {
       const market = this._client.market();
+      lpGraphSdk.GetChromaticLp()
       const totalLiquidityBins = await this.getContract().read.liquidityBinStatuses([
         marketAddress,
       ]);

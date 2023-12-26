@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "./dist/esm"
   },
-  "exclude": ["test"],
+  "exclude": ["test","codegen"],
   "include": ["**/*.d.ts", "**/*.ts", "**/*.js"]
  
 }

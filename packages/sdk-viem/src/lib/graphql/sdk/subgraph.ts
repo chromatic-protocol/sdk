@@ -2111,7 +2111,12 @@ export type GetInterestRecordSnapshotsQuery = { __typename?: 'Query', interestRa
 
 export const GetChromaticMarketBinStatusesAndClbMetaDocument = gql`
     query getChromaticMarketBinStatusesAndCLBMeta($market: Bytes = "") {
-  chromaticMarketBinStatuses(orderBy: blockNumber, orderDirection: desc, first: 1) {
+  chromaticMarketBinStatuses(
+    orderBy: blockNumber
+    orderDirection: desc
+    first: 1
+    where: {market: $market}
+  ) {
     id
     longBinValue
     longFreeLiquidity

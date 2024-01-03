@@ -2,7 +2,12 @@ import { gql } from "graphql-request";
 
 export const getLiquidityBinStatuses = gql`
   query getChromaticMarketBinStatusesAndCLBMeta($market: Bytes = "") {
-    chromaticMarketBinStatuses(orderBy: blockNumber, orderDirection: desc, first: 1) {
+    chromaticMarketBinStatuses(
+      orderBy: blockNumber
+      orderDirection: desc
+      first: 1
+      where: { market: $market }
+    ) {
       id
       longBinValue
       longFreeLiquidity

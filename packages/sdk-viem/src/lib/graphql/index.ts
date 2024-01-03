@@ -65,14 +65,6 @@ const graphClient = new GraphQLClient("", {
   jsonSerializer: JSONbig({ useNativeBigInt: true }),
 });
 
-// function getNewClient(operationName:string){
-//   return new GraphQLClient("", {
-//     requestMiddleware: getRequestMiddleware(urlMap),
-//     jsonSerializer: JSONbig({ useNativeBigInt: true }),
-//     operationName
-//   });
-// }
-
 const lpGraphSdk = Lp.getSdk(graphClient);
 const performanceSdk = Performance.getSdk(graphClient);
 const analyticsSdk = Analytics.getSdk(graphClient);

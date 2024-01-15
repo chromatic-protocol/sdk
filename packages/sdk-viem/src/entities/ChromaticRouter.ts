@@ -1,7 +1,7 @@
 import { Address, getContract, zeroAddress } from "viem";
 import { Client } from "../Client";
 import { chromaticRouterABI, chromaticRouterAddress } from "../gen";
-import { Contract, MAX_UINT256, checkClient, handleBytesError } from "../utils/helpers";
+import { Contract, checkClient, handleBytesError } from "../utils/helpers";
 /**
  * Represents the parameters for adding liquidity to a market using the ChromaticRouter.
  */
@@ -156,20 +156,22 @@ export class ChromaticRouter {
     const clbToken = await this._client.market().contracts().clbToken(marketAddress);
     const routerAddress = this.contracts().router().address;
     const account = this._client.walletClient.account!.address;
-    if (
-      !(await clbToken.read.isApprovedForAll([account, routerAddress], {
+    const isApprovedForAll = async () =>
+      await clbToken.read.isApprovedForAll([account, routerAddress], {
         account: this._client.walletClient!.account,
-      }))
-    ) {
+      });
+    if (!(await isApprovedForAll())) {
       const { request } = await clbToken.simulate.setApprovalForAll([routerAddress, true], {
         account: this._client.walletClient!.account,
       });
 
       const hash = await this._client.walletClient.writeContract(request);
 
-      // TODO false condition
       const receipt = await this._client.publicClient.waitForTransactionReceipt({ hash });
-      return receipt !== undefined;
+      if (receipt) {
+        return await isApprovedForAll();
+      }
+      return false;
     }
     return true;
   }
@@ -185,18 +187,22 @@ export class ChromaticRouter {
     const settlementToken = await this._client.market().contracts().settlementToken(marketAddress);
     const routerAddress = this.contracts().router().address;
     const account = this._client.walletClient.account!.address;
-    const allowance = await settlementToken.read.allowance([account, routerAddress], {
-      account: this._client.walletClient!.account,
-    });
-    if (allowance < amount) {
-      const { request } = await settlementToken.simulate.approve([routerAddress, MAX_UINT256], {
+    const allowance = async () =>
+      await settlementToken.read.allowance([account, routerAddress], {
+        account: this._client.walletClient!.account,
+      });
+
+    if ((await allowance()) < amount) {
+      const { request } = await settlementToken.simulate.approve([routerAddress, amount], {
         account: this._client.walletClient!.account,
       });
 
       const hash = await this._client.walletClient.writeContract(request);
-      // TODO false condition
       const receipt = await this._client.publicClient.waitForTransactionReceipt({ hash });
-      return receipt !== undefined;
+      if (receipt) {
+        return (await allowance()) >= amount;
+      }
+      return false;
     }
     return true;
   }
@@ -211,9 +217,8 @@ export class ChromaticRouter {
   async addLiquidity(marketAddress: Address, param: RouterAddLiquidityParam, recipient?: Address) {
     checkClient(this._client);
 
-    // TODO check option flag
     if (!(await this.approvalSettlementTokenToRouter(marketAddress, param.amount))) {
-      return;
+      throw new Error("SettlementToken: insufficient allowance");
     }
 
     const { request } = await this.contracts()
@@ -248,10 +253,9 @@ export class ChromaticRouter {
       throw new Error("Wallet Client is not set");
     }
 
-    // TODO check option flag
     const totalAmount = params.reduce((prev, curr) => prev + curr.amount, BigInt(0));
     if (!(await this.approvalSettlementTokenToRouter(marketAddress, totalAmount))) {
-      return;
+      throw new Error("SettlementToken: insufficient allowance");
     }
 
     return await handleBytesError(async () => {
@@ -287,9 +291,8 @@ export class ChromaticRouter {
       throw new Error("Wallet Client is not set");
     }
 
-    // TODO check option flag
     if (!(await this.approvalClbTokenToRouter(marketAddress))) {
-      return;
+      throw new Error("CLB Token: not approved");
     }
 
     return await handleBytesError(async () => {
@@ -325,9 +328,8 @@ export class ChromaticRouter {
     params: RouterRemoveLiquidityParam[],
     recipient?: Address
   ) {
-    // TODO check option flag
     if (!(await this.approvalClbTokenToRouter(marketAddress))) {
-      return;
+      throw new Error("CLB Token: not approved");
     }
 
     return await handleBytesError(async () => {

@@ -1,4 +1,4 @@
-import { BigNumberish, Provider, Signer, ethers } from "ethers";
+import { BigNumberish, Provider, Signer } from "ethers";
 import { Client } from "../Client";
 import { ChromaticRouter__factory, getDeployedAddress } from "../gen";
 import { handleBytesError } from "../utils/helpers";
@@ -120,11 +120,15 @@ export class ChromaticRouter {
     const clbToken = await this._client.market().clbToken(marketAddress);
     const routerAddress = await this.contracts().router().getAddress();
     const signerAddress = await this._client.signer.getAddress();
-    if (!(await clbToken.isApprovedForAll(signerAddress, routerAddress))) {
+    const isApprovedForAll = async () =>
+      await clbToken.isApprovedForAll(signerAddress, routerAddress);
+    if (!(await isApprovedForAll())) {
       const tx = await clbToken.setApprovalForAll(routerAddress, true);
       await tx.wait();
-      // TODO verify tx
-      return tx.blockHash !== undefined;
+      if (tx.blockHash) {
+        return await isApprovedForAll();
+      }
+      return false;
     }
     return true;
   }
@@ -139,12 +143,14 @@ export class ChromaticRouter {
     const settlementToken = await this._client.market().settlementToken(marketAddress);
     const routerAddress = await this.contracts().router().getAddress();
     const signerAddress = await this._client.signer.getAddress();
-    const allowance = await settlementToken.allowance(signerAddress, routerAddress);
-    if (allowance < amount) {
-      const tx = await settlementToken.approve(routerAddress, ethers.MaxUint256);
+    const allowance = async () => await settlementToken.allowance(signerAddress, routerAddress);
+    if ((await allowance()) < amount) {
+      const tx = await settlementToken.approve(routerAddress, amount);
       await tx.wait();
-      // TODO verify tx
-      return tx.blockHash !== undefined;
+      if (tx.blockHash) {
+        return (await allowance()) >= amount;
+      }
+      return false;
     }
     return true;
   }
@@ -157,9 +163,8 @@ export class ChromaticRouter {
    * @returns A promise that resolves to the transaction receipt of the liquidity addition.
    */
   async addLiquidity(marketAddress: string, param: RouterAddLiquidityParam, recipient?: string) {
-    // TODO check option flag
     if (!(await this.approvalSettlementTokenToRouter(marketAddress, BigInt(param.amount)))) {
-      return;
+      throw new Error("SettlementToken: insufficient allowance");
     }
 
     return await handleBytesError(async () => {
@@ -190,7 +195,7 @@ export class ChromaticRouter {
     // TODO check option flag
     const totalAmount = params.reduce((prev, curr) => prev + BigInt(curr.amount), BigInt(0));
     if (!(await this.approvalSettlementTokenToRouter(marketAddress, totalAmount))) {
-      return;
+      throw new Error("SettlementToken: insufficient allowance");
     }
 
     return await handleBytesError(async () => {
@@ -216,9 +221,8 @@ export class ChromaticRouter {
    * @returns A promise that resolves to the transaction receipt of the liquidity removal.
    */
   async removeLiquidity(marketAddress: string, param: RouterRemoveLiquidityParam) {
-    // TODO check option flag
     if (!(await this.approvalClbTokenToRouter(marketAddress))) {
-      return;
+      throw new Error("CLB Token: not approved");
     }
 
     return await handleBytesError(async () => {
@@ -246,9 +250,8 @@ export class ChromaticRouter {
     params: RouterRemoveLiquidityParam[],
     recipient?: string
   ) {
-    // TODO check option flag
     if (!(await this.approvalClbTokenToRouter(marketAddress))) {
-      return;
+      throw new Error("CLB Token: not approved");
     }
 
     return await handleBytesError(async () => {

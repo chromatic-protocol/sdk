@@ -1,5 +1,5 @@
 import { Provider } from "@ethersproject/providers";
-import { BigNumber, BigNumberish, Signer, ethers } from "ethers";
+import { BigNumber, BigNumberish, Signer } from "ethers";
 import { Client } from "../Client";
 import { ChromaticRouter__factory, getDeployedAddress } from "../gen";
 import { handleBytesError } from "../utils/helpers";
@@ -149,7 +149,7 @@ export class ChromaticRouter {
     const signerAddress = await this._client.signer.getAddress();
     const allowance = async () => await settlementToken.allowance(signerAddress, routerAddress);
     if ((await allowance()).lt(amount)) {
-      const tx = await settlementToken.approve(routerAddress, ethers.constants.MaxUint256);
+      const tx = await settlementToken.approve(routerAddress, amount);
       await tx.wait();
       if (tx.blockHash) {
         return (await allowance()).gte(amount);

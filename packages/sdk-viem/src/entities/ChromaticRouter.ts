@@ -208,8 +208,9 @@ export class ChromaticRouter {
         account: this._client.walletClient!.account,
       });
 
-    if ((await allowance()) < amount) {
-      const { request } = await settlementToken.simulate.approve([routerAddress, amount], {
+    const requiredAmount = amount - (await allowance());
+    if (requiredAmount > 0) {
+      const { request } = await settlementToken.simulate.approve([routerAddress, requiredAmount], {
         account: this._client.walletClient!.account,
       });
 

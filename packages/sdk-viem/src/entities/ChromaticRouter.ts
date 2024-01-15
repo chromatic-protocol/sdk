@@ -84,20 +84,24 @@ export class ChromaticRouter {
     return await handleBytesError(async () => {
       checkClient(this._client);
 
-      const { request } = await this.contracts()
-        .router()
-        .simulate.openPosition(
-          [
-            marketAddress,
-            param.quantity,
-            param.takerMargin,
-            param.makerMargin,
-            param.maxAllowableTradingFee,
-          ],
-          { account: this._client.walletClient.account }
-        );
+      const args = [
+        marketAddress,
+        param.quantity,
+        param.takerMargin,
+        param.makerMargin,
+        param.maxAllowableTradingFee,
+      ] as const;
 
-      const hash = await this._client.walletClient.writeContract(request);
+      const options = { account: this._client.walletClient.account! };
+
+      const { request } = await this.contracts().router().simulate.openPosition(args, options);
+
+      const estimatedGas = await this.contracts().router().estimateGas.openPosition(args, options);
+
+      const hash = await this._client.walletClient.writeContract({
+        ...request,
+        gas: estimatedGas + estimatedGas / 2n,
+      });
       return await this._client.publicClient.waitForTransactionReceipt({ hash });
     });
   }
@@ -111,13 +115,19 @@ export class ChromaticRouter {
   async closePosition(marketAddress: Address, positionId: bigint) {
     return await handleBytesError(async () => {
       checkClient(this._client);
-      const { request } = await this.contracts()
-        .router()
-        .simulate.closePosition([marketAddress, positionId], {
-          account: this._client.walletClient.account,
-        });
 
-      const hash = await this._client.walletClient.writeContract(request);
+      const args = [marketAddress, positionId] as const;
+      const options = {
+        account: this._client.walletClient.account!,
+      };
+      const { request } = await this.contracts().router().simulate.closePosition(args, options);
+
+      const estimatedGas = await this.contracts().router().estimateGas.closePosition(args, options);
+
+      const hash = await this._client.walletClient.writeContract({
+        ...request,
+        gas: estimatedGas + estimatedGas / 2n,
+      });
       return await this._client.publicClient.waitForTransactionReceipt({ hash });
     });
   }
@@ -135,13 +145,19 @@ export class ChromaticRouter {
 
     return await handleBytesError(async () => {
       checkClient(this._client);
-      const { request } = await this.contracts()
-        .router()
-        .simulate.claimPosition([marketAdress, positionId], {
-          account: this._client.walletClient.account,
-        });
 
-      const hash = await this._client.walletClient.writeContract(request);
+      const args = [marketAdress, positionId] as const;
+      const options = {
+        account: this._client.walletClient.account!,
+      };
+      const { request } = await this.contracts().router().simulate.claimPosition(args, options);
+
+      const estimatedGas = await this.contracts().router().estimateGas.closePosition(args, options);
+
+      const hash = await this._client.walletClient.writeContract({
+        ...request,
+        gas: estimatedGas + estimatedGas / 2n,
+      });
       return await this._client.publicClient.waitForTransactionReceipt({ hash });
     });
   }
@@ -221,19 +237,22 @@ export class ChromaticRouter {
       throw new Error("SettlementToken: insufficient allowance");
     }
 
-    const { request } = await this.contracts()
-      .router()
-      .simulate.addLiquidity(
-        [
-          marketAddress,
-          param.feeRate,
-          param.amount,
-          recipient || this._client.walletClient.account?.address || zeroAddress,
-        ],
-        { account: this._client.walletClient.account }
-      );
+    const args = [
+      marketAddress,
+      param.feeRate,
+      param.amount,
+      recipient || this._client.walletClient.account?.address || zeroAddress,
+    ] as const;
 
-    const hash = await this._client.walletClient.writeContract(request);
+    const options = { account: this._client.walletClient.account! };
+
+    const { request } = await this.contracts().router().simulate.addLiquidity(args, options);
+    const estimatedGas = await this.contracts().router().estimateGas.addLiquidity(args, options);
+
+    const hash = await this._client.walletClient.writeContract({
+      ...request,
+      gas: estimatedGas + estimatedGas / 2n,
+    });
     return await this._client.publicClient.waitForTransactionReceipt({ hash });
   }
 
@@ -269,13 +288,18 @@ export class ChromaticRouter {
         amounts.push(param.amount);
       });
 
-      const { request } = await this.contracts()
-        .router()
-        .simulate.addLiquidityBatch([marketAddress, recipient, feeRates, amounts], {
-          account: this._client.walletClient.account,
-        });
+      const args = [marketAddress, recipient, feeRates, amounts] as const;
+      const options = { account: this._client.walletClient.account! };
 
-      const hash = await this._client.walletClient.writeContract(request);
+      const { request } = await this.contracts().router().simulate.addLiquidityBatch(args, options);
+      const estimatedGas = await this.contracts()
+        .router()
+        .estimateGas.addLiquidityBatch(args, options);
+
+      const hash = await this._client.walletClient.writeContract({
+        ...request,
+        gas: estimatedGas + estimatedGas / 2n,
+      });
       return await this._client.publicClient.waitForTransactionReceipt({ hash });
     });
   }
@@ -297,21 +321,23 @@ export class ChromaticRouter {
 
     return await handleBytesError(async () => {
       checkClient(this._client);
-      const { request } = await this.contracts()
-        .router()
-        .simulate.removeLiquidity(
-          [
-            marketAddress,
-            param.feeRate,
-            param.clbTokenAmount,
-            param.recipient || this._client.walletClient.account!.address,
-          ],
-          {
-            account: this._client.walletClient.account,
-          }
-        );
 
-      const hash = await this._client.walletClient.writeContract(request);
+      const args = [
+        marketAddress,
+        param.feeRate,
+        param.clbTokenAmount,
+        param.recipient || this._client.walletClient.account!.address,
+      ] as const;
+      const options = { account: this._client.walletClient.account! };
+      const { request } = await this.contracts().router().simulate.removeLiquidity(args, options);
+      const estimatedGas = await this.contracts()
+        .router()
+        .estimateGas.removeLiquidity(args, options);
+
+      const hash = await this._client.walletClient.writeContract({
+        ...request,
+        gas: estimatedGas + estimatedGas / 2n,
+      });
       return await this._client.publicClient.waitForTransactionReceipt({ hash });
     });
   }
@@ -347,16 +373,26 @@ export class ChromaticRouter {
         } as { clbTokenAmount: bigint[]; feeRate: number[] }
       );
 
+      const args = [
+        marketAddress,
+        recipient,
+        contractParam.feeRate,
+        contractParam.clbTokenAmount,
+      ] as const;
+      const options = { account: this._client.walletClient.account! };
+
       const { request } = await this.contracts()
         .router()
-        .simulate.removeLiquidityBatch(
-          [marketAddress, recipient, contractParam.feeRate, contractParam.clbTokenAmount],
-          {
-            account: this._client.walletClient!.account,
-          }
-        );
+        .simulate.removeLiquidityBatch(args, options);
 
-      const hash = await this._client.walletClient.writeContract(request);
+      const estimatedGas = await this.contracts()
+        .router()
+        .estimateGas.removeLiquidityBatch(args, options);
+
+      const hash = await this._client.walletClient.writeContract({
+        ...request,
+        gas: estimatedGas + estimatedGas / 2n,
+      });
       return await this._client.publicClient.waitForTransactionReceipt({ hash });
     });
   }
@@ -370,13 +406,19 @@ export class ChromaticRouter {
   async claimLiquidity(marketAddress: Address, receiptId: bigint) {
     return await handleBytesError(async () => {
       checkClient(this._client);
-      const { request } = await this.contracts()
-        .router()
-        .simulate.claimLiquidity([marketAddress, receiptId], {
-          account: this._client.walletClient.account,
-        });
 
-      const hash = await this._client.walletClient.writeContract(request);
+      const args = [marketAddress, receiptId] as const;
+      const options = { account: this._client.walletClient.account! };
+
+      const { request } = await this.contracts().router().simulate.claimLiquidity(args, options);
+      const estimatedGas = await this.contracts()
+        .router()
+        .estimateGas.claimLiquidity(args, options);
+
+      const hash = await this._client.walletClient.writeContract({
+        ...request,
+        gas: estimatedGas + estimatedGas / 2n,
+      });
       return await this._client.publicClient.waitForTransactionReceipt({ hash });
     });
   }
@@ -390,13 +432,22 @@ export class ChromaticRouter {
   async claimLiquidites(marketAddress: Address, receiptIds: bigint[]) {
     return await handleBytesError(async () => {
       checkClient(this._client);
+
+      const args = [marketAddress, receiptIds] as const;
+      const options = { account: this._client.walletClient.account! };
+
       const { request } = await this.contracts()
         .router()
-        .simulate.claimLiquidityBatch([marketAddress, receiptIds], {
-          account: this._client.walletClient.account,
-        });
+        .simulate.claimLiquidityBatch(args, options);
 
-      const hash = await this._client.walletClient.writeContract(request);
+      const estimatedGas = await this.contracts()
+        .router()
+        .estimateGas.claimLiquidityBatch(args, options);
+
+      const hash = await this._client.walletClient.writeContract({
+        ...request,
+        gas: estimatedGas + estimatedGas / 2n,
+      });
       return await this._client.publicClient.waitForTransactionReceipt({ hash });
     });
   }
@@ -410,13 +461,19 @@ export class ChromaticRouter {
   async withdrawLiquidity(marketAddress: Address, receiptId: bigint) {
     return await handleBytesError(async () => {
       checkClient(this._client);
-      const { request } = await this.contracts()
-        .router()
-        .simulate.withdrawLiquidity([marketAddress, receiptId], {
-          account: this._client.walletClient.account,
-        });
 
-      const hash = await this._client.walletClient.writeContract(request);
+      const args = [marketAddress, receiptId] as const;
+      const options = { account: this._client.walletClient.account! };
+
+      const { request } = await this.contracts().router().simulate.withdrawLiquidity(args, options);
+      const estimatedGas = await this.contracts()
+        .router()
+        .estimateGas.withdrawLiquidity(args, options);
+
+      const hash = await this._client.walletClient.writeContract({
+        ...request,
+        gas: estimatedGas + estimatedGas / 2n,
+      });
       return await this._client.publicClient.waitForTransactionReceipt({ hash });
     });
   }
@@ -430,13 +487,22 @@ export class ChromaticRouter {
   async withdrawLiquidities(marketAddress: Address, receiptIds: bigint[]) {
     return await handleBytesError(async () => {
       checkClient(this._client);
+
+      const args = [marketAddress, receiptIds] as const;
+      const options = { account: this._client.walletClient.account! };
+
       const { request } = await this.contracts()
         .router()
-        .simulate.withdrawLiquidityBatch([marketAddress, receiptIds], {
-          account: this._client.walletClient.account,
-        });
+        .simulate.withdrawLiquidityBatch(args, options);
 
-      const hash = await this._client.walletClient.writeContract(request);
+      const estimatedGas = await this.contracts()
+        .router()
+        .estimateGas.withdrawLiquidityBatch(args, options);
+
+      const hash = await this._client.walletClient.writeContract({
+        ...request,
+        gas: estimatedGas + estimatedGas / 2n,
+      });
       return await this._client.publicClient.waitForTransactionReceipt({ hash });
     });
   }

@@ -72,15 +72,19 @@ export class ChromaticRouter {
    */
   async openPosition(marketAddress: string, param: RouterOpenPositionParam) {
     return await handleBytesError(async () => {
+      const args = [
+        marketAddress,
+        BigInt(param.quantity),
+        BigInt(param.takerMargin),
+        BigInt(param.makerMargin),
+        BigInt(param.maxAllowableTradingFee),
+      ] as const;
+      const estimatedGas = await this.contracts()
+        .router()
+        .openPosition.estimateGas(...args);
       const transaction = await this.contracts()
         .router()
-        .openPosition(
-          marketAddress,
-          BigInt(param.quantity),
-          BigInt(param.takerMargin),
-          BigInt(param.makerMargin),
-          BigInt(param.maxAllowableTradingFee)
-        );
+        .openPosition(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
       return await transaction.wait();
     }, this._client.provider);
   }
@@ -93,7 +97,13 @@ export class ChromaticRouter {
    */
   async closePosition(marketAddress: string, positionId: BigNumberish) {
     return await handleBytesError(async () => {
-      const transaction = await this.contracts().router().closePosition(marketAddress, positionId);
+      const args = [marketAddress, positionId] as const;
+      const estimatedGas = await this.contracts()
+        .router()
+        .closePosition.estimateGas(...args);
+      const transaction = await this.contracts()
+        .router()
+        .closePosition(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
       return transaction.wait();
     }, this._client.provider);
   }
@@ -104,9 +114,15 @@ export class ChromaticRouter {
    * @param positionId The ID of the position to claim.
    * @returns A promise that resolves to the transaction receipt of the position claiming.
    */
-  async claimPosition(marketAdress: string, positionId: BigNumberish) {
+  async claimPosition(marketAddress: string, positionId: BigNumberish) {
     return await handleBytesError(async () => {
-      const tx = await this.contracts().router().claimPosition(marketAdress, positionId);
+      const args = [marketAddress, positionId] as const;
+      const estimatedGas = await this.contracts()
+        .router()
+        .claimPosition.estimateGas(...args);
+      const tx = await this.contracts()
+        .router()
+        .claimPosition(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
       return tx.wait();
     }, this._client.provider);
   }
@@ -168,14 +184,19 @@ export class ChromaticRouter {
     }
 
     return await handleBytesError(async () => {
+      const args = [
+        marketAddress,
+        param.feeRate,
+        param.amount,
+        recipient || this._client.signer.getAddress(),
+      ] as const;
+      const estimatedGas = await this.contracts()
+        .router()
+        .addLiquidity.estimateGas(...args);
       const tx = await this.contracts()
         .router()
-        .addLiquidity(
-          marketAddress,
-          param.feeRate,
-          param.amount,
-          recipient || this._client.signer.getAddress()
-        );
+        .addLiquidity(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
+
       return await tx.wait();
     }, this._client.provider);
   }
@@ -207,9 +228,15 @@ export class ChromaticRouter {
         feeRates.push(param.feeRate);
         amounts.push(param.amount);
       });
+      const args = [marketAddress, recipient, feeRates, amounts] as const;
+      const estimatedGas = await this.contracts()
+        .router()
+        .addLiquidityBatch.estimateGas(...args);
+
       const tx = await this.contracts()
         .router()
-        .addLiquidityBatch(marketAddress, recipient, feeRates, amounts);
+        .addLiquidityBatch(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
+
       return await tx.wait();
     }, this._client.provider);
   }
@@ -226,14 +253,20 @@ export class ChromaticRouter {
     }
 
     return await handleBytesError(async () => {
+      const args = [
+        marketAddress,
+        BigInt(param.feeRate),
+        BigInt(param.clbTokenAmount),
+        param.recipient || this._client.signer.getAddress(),
+      ] as const;
+      const estimatedGas = await this.contracts()
+        .router()
+        .removeLiquidity.estimateGas(...args);
+
       const tx = await this.contracts()
         .router()
-        .removeLiquidity(
-          marketAddress,
-          BigInt(param.feeRate),
-          BigInt(param.clbTokenAmount),
-          param.recipient || this._client.signer.getAddress()
-        );
+        .removeLiquidity(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
+
       return await tx.wait();
     }, this._client.provider);
   }
@@ -267,14 +300,21 @@ export class ChromaticRouter {
           feeRate: [],
         } as { clbTokenAmount: BigNumberish[]; feeRate: BigNumberish[] }
       );
+
+      const args = [
+        marketAddress,
+        recipient,
+        contractParam.feeRate,
+        contractParam.clbTokenAmount,
+      ] as const;
+      const estimatedGas = await this.contracts()
+        .router()
+        .removeLiquidityBatch.estimateGas(...args);
+
       const tx = await this.contracts()
         .router()
-        .removeLiquidityBatch(
-          marketAddress,
-          recipient,
-          contractParam.feeRate,
-          contractParam.clbTokenAmount
-        );
+        .removeLiquidityBatch(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
+
       return await tx.wait();
     }, this._client.provider);
   }
@@ -287,7 +327,15 @@ export class ChromaticRouter {
    */
   async claimLiquidity(marketAddress: string, receiptId: BigNumberish) {
     return await handleBytesError(async () => {
-      const tx = await this.contracts().router().claimLiquidity(marketAddress, BigInt(receiptId));
+      const args = [marketAddress, BigInt(receiptId)] as const;
+      const estimatedGas = await this.contracts()
+        .router()
+        .claimLiquidity.estimateGas(...args);
+
+      const tx = await this.contracts()
+        .router()
+        .claimLiquidity(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
+
       return await tx.wait();
     }, this._client.provider);
   }
@@ -300,7 +348,15 @@ export class ChromaticRouter {
    */
   async claimLiquidites(marketAddress: string, receiptIds: BigNumberish[]) {
     return await handleBytesError(async () => {
-      const tx = await this.contracts().router().claimLiquidityBatch(marketAddress, receiptIds);
+      const args = [marketAddress, receiptIds] as const;
+      const estimatedGas = await this.contracts()
+        .router()
+        .claimLiquidityBatch.estimateGas(...args);
+
+      const tx = await this.contracts()
+        .router()
+        .claimLiquidityBatch(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
+
       return await tx.wait();
     }, this._client.provider);
   }
@@ -313,9 +369,15 @@ export class ChromaticRouter {
    */
   async withdrawLiquidity(marketAddress: string, receiptId: BigNumberish) {
     return await handleBytesError(async () => {
+      const args = [marketAddress, BigInt(receiptId)] as const;
+      const estimatedGas = await this.contracts()
+        .router()
+        .withdrawLiquidity.estimateGas(...args);
+
       const tx = await this.contracts()
         .router()
-        .withdrawLiquidity(marketAddress, BigInt(receiptId));
+        .withdrawLiquidity(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
+
       return await tx.wait();
     }, this._client.provider);
   }
@@ -328,7 +390,15 @@ export class ChromaticRouter {
    */
   async withdrawLiquidities(marketAddress: string, receiptIds: BigNumberish[]) {
     return await handleBytesError(async () => {
-      const tx = await this.contracts().router().withdrawLiquidityBatch(marketAddress, receiptIds);
+      const args = [marketAddress, receiptIds] as const;
+      const estimatedGas = await this.contracts()
+        .router()
+        .withdrawLiquidityBatch.estimateGas(...args);
+
+      const tx = await this.contracts()
+        .router()
+        .withdrawLiquidityBatch(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
+
       return await tx.wait();
     }, this._client.provider);
   }

@@ -73,16 +73,23 @@ export class ChromaticRouter {
    */
   async openPosition(marketAddress: string, param: RouterOpenPositionParam) {
     return await handleBytesError(async () => {
-      const transaction = await this.contracts()
+      const args = [
+        marketAddress,
+        BigNumber.from(param.quantity),
+        BigNumber.from(param.takerMargin),
+        BigNumber.from(param.makerMargin),
+        BigNumber.from(param.maxAllowableTradingFee),
+      ] as const;
+
+      const estimatedGas = await this.contracts()
         .router()
-        .openPosition(
-          marketAddress,
-          BigNumber.from(param.quantity),
-          BigNumber.from(param.takerMargin),
-          BigNumber.from(param.makerMargin),
-          BigNumber.from(param.maxAllowableTradingFee)
-        );
-      return await transaction.wait();
+        .estimateGas.openPosition(...args);
+
+      const tx = await this.contracts()
+        .router()
+        .openPosition(...args, { gasLimit: estimatedGas.add(estimatedGas.div(2)) });
+
+      return await tx.wait();
     }, this._client.provider);
   }
 
@@ -94,8 +101,15 @@ export class ChromaticRouter {
    */
   async closePosition(marketAddress: string, positionId: BigNumberish) {
     return await handleBytesError(async () => {
-      const transaction = await this.contracts().router().closePosition(marketAddress, positionId);
-      return transaction.wait();
+      const args = [marketAddress, positionId] as const;
+      const estimatedGas = await this.contracts()
+        .router()
+        .estimateGas.closePosition(...args);
+      const tx = await this.contracts()
+        .router()
+        .closePosition(...args, { gasLimit: estimatedGas.add(estimatedGas.div(2)) });
+
+      return tx.wait();
     }, this._client.provider);
   }
 
@@ -105,9 +119,16 @@ export class ChromaticRouter {
    * @param positionId The ID of the position to claim.
    * @returns A promise that resolves to the transaction receipt of the position claiming.
    */
-  async claimPosition(marketAdress: string, positionId: BigNumberish) {
+  async claimPosition(marketAddress: string, positionId: BigNumberish) {
     return await handleBytesError(async () => {
-      const tx = await this.contracts().router().claimPosition(marketAdress, positionId);
+      const args = [marketAddress, positionId] as const;
+      const estimatedGas = await this.contracts()
+        .router()
+        .estimateGas.claimPosition(...args);
+      const tx = await this.contracts()
+        .router()
+        .claimPosition(...args, { gasLimit: estimatedGas.add(estimatedGas.div(2)) });
+
       return tx.wait();
     }, this._client.provider);
   }
@@ -172,14 +193,19 @@ export class ChromaticRouter {
     }
 
     return await handleBytesError(async () => {
+      const args = [
+        marketAddress,
+        param.feeRate,
+        param.amount,
+        recipient || (await this._client.signer.getAddress()),
+      ] as const;
+      const estimatedGas = await this.contracts()
+        .router()
+        .estimateGas.addLiquidity(...args);
       const tx = await this.contracts()
         .router()
-        .addLiquidity(
-          marketAddress,
-          param.feeRate,
-          param.amount,
-          recipient || (await this._client.signer.getAddress())
-        );
+        .addLiquidity(...args, { gasLimit: estimatedGas.add(estimatedGas.div(2)) });
+
       return await tx.wait();
     }, this._client.provider);
   }
@@ -210,9 +236,15 @@ export class ChromaticRouter {
         feeRates.push(param.feeRate);
         amounts.push(param.amount);
       });
+
+      const args = [marketAddress, recipient, feeRates, amounts] as const;
+      const estimatedGas = await this.contracts()
+        .router()
+        .estimateGas.addLiquidityBatch(...args);
       const tx = await this.contracts()
         .router()
-        .addLiquidityBatch(marketAddress, recipient, feeRates, amounts);
+        .addLiquidityBatch(...args, { gasLimit: estimatedGas.add(estimatedGas.div(2)) });
+
       return await tx.wait();
     }, this._client.provider);
   }
@@ -229,14 +261,19 @@ export class ChromaticRouter {
     }
 
     return await handleBytesError(async () => {
+      const args = [
+        marketAddress,
+        BigNumber.from(param.feeRate),
+        BigNumber.from(param.clbTokenAmount),
+        param.recipient || (await this._client.signer.getAddress()),
+      ] as const;
+      const estimatedGas = await this.contracts()
+        .router()
+        .estimateGas.removeLiquidity(...args);
       const tx = await this.contracts()
         .router()
-        .removeLiquidity(
-          marketAddress,
-          BigNumber.from(param.feeRate),
-          BigNumber.from(param.clbTokenAmount),
-          param.recipient || (await this._client.signer.getAddress())
-        );
+        .removeLiquidity(...args, { gasLimit: estimatedGas.add(estimatedGas.div(2)) });
+
       return await tx.wait();
     }, this._client.provider);
   }
@@ -270,14 +307,20 @@ export class ChromaticRouter {
           feeRate: [],
         } as { clbTokenAmount: BigNumberish[]; feeRate: BigNumberish[] }
       );
+
+      const args = [
+        marketAddress,
+        recipient,
+        contractParam.feeRate,
+        contractParam.clbTokenAmount,
+      ] as const;
+      const estimatedGas = await this.contracts()
+        .router()
+        .estimateGas.removeLiquidityBatch(...args);
       const tx = await this.contracts()
         .router()
-        .removeLiquidityBatch(
-          marketAddress,
-          recipient,
-          contractParam.feeRate,
-          contractParam.clbTokenAmount
-        );
+        .removeLiquidityBatch(...args, { gasLimit: estimatedGas.add(estimatedGas.div(2)) });
+
       return await tx.wait();
     }, this._client.provider);
   }
@@ -290,9 +333,14 @@ export class ChromaticRouter {
    */
   async claimLiquidity(marketAddress: string, receiptId: BigNumberish) {
     return await handleBytesError(async () => {
+      const args = [marketAddress, BigNumber.from(receiptId)] as const;
+      const estimatedGas = await this.contracts()
+        .router()
+        .estimateGas.claimLiquidity(...args);
       const tx = await this.contracts()
         .router()
-        .claimLiquidity(marketAddress, BigNumber.from(receiptId));
+        .claimLiquidity(...args, { gasLimit: estimatedGas.add(estimatedGas.div(2)) });
+
       return await tx.wait();
     }, this._client.provider);
   }
@@ -305,7 +353,14 @@ export class ChromaticRouter {
    */
   async claimLiquidites(marketAddress: string, receiptIds: BigNumberish[]) {
     return await handleBytesError(async () => {
-      const tx = await this.contracts().router().claimLiquidityBatch(marketAddress, receiptIds);
+      const args = [marketAddress, receiptIds] as const;
+      const estimatedGas = await this.contracts()
+        .router()
+        .estimateGas.claimLiquidityBatch(...args);
+      const tx = await this.contracts()
+        .router()
+        .claimLiquidityBatch(...args, { gasLimit: estimatedGas.add(estimatedGas.div(2)) });
+
       return await tx.wait();
     }, this._client.provider);
   }
@@ -318,9 +373,14 @@ export class ChromaticRouter {
    */
   async withdrawLiquidity(marketAddress: string, receiptId: BigNumberish) {
     return await handleBytesError(async () => {
+      const args = [marketAddress, BigNumber.from(receiptId)] as const;
+      const estimatedGas = await this.contracts()
+        .router()
+        .estimateGas.withdrawLiquidity(...args);
       const tx = await this.contracts()
         .router()
-        .withdrawLiquidity(marketAddress, BigNumber.from(receiptId));
+        .withdrawLiquidity(...args, { gasLimit: estimatedGas.add(estimatedGas.div(2)) });
+
       return await tx.wait();
     }, this._client.provider);
   }
@@ -333,7 +393,14 @@ export class ChromaticRouter {
    */
   async withdrawLiquidities(marketAddress: string, receiptIds: BigNumberish[]) {
     return await handleBytesError(async () => {
-      const tx = await this.contracts().router().withdrawLiquidityBatch(marketAddress, receiptIds);
+      const args = [marketAddress, receiptIds] as const;
+      const estimatedGas = await this.contracts()
+        .router()
+        .estimateGas.withdrawLiquidityBatch(...args);
+      const tx = await this.contracts()
+        .router()
+        .withdrawLiquidityBatch(...args, { gasLimit: estimatedGas.add(estimatedGas.div(2)) });
+
       return await tx.wait();
     }, this._client.provider);
   }

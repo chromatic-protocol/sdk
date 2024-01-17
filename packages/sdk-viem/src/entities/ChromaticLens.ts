@@ -1,4 +1,4 @@
-import { gql } from "graphql-request";
+import { gql } from "@chromatic-protocol/graphql-request";
 import groupBy from "lodash/groupBy";
 import { Address, getContract, zeroAddress } from "viem";
 import type { Client } from "../Client";

@@ -764,6 +764,13 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@chromatic-protocol/graphql-request@0.0.1-rc.7":
+  version "0.0.1-rc.7"
+  resolved "https://registry.yarnpkg.com/@chromatic-protocol/graphql-request/-/graphql-request-0.0.1-rc.7.tgz#a4435e24620abdcc9c323b26029c5d9886927972"
+  integrity sha512-3EOTXPKb+44aEqfgoIFeMhcDBFkxgMwLavZaoBi8VQWSKccSARnxqYQdvz20Y3dmaOyfUcyFI00uChgBFkEkyA==
+  dependencies:
+    "@graphql-typed-document-node/core" "^3.2.0"
+
 "@ethersproject/abi@5.7.0", "@ethersproject/abi@^5.0.0", "@ethersproject/abi@^5.7.0":
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/abi/-/abi-5.7.0.tgz#b3f3e045bbbeed1af3947335c247ad625a44e449"
@@ -3272,7 +3279,7 @@ graphql-config@^5.0.2:
     string-env-interpolation "^1.0.1"
     tslib "^2.4.0"
 
-graphql-request@^6.0.0, graphql-request@^6.1.0:
+graphql-request@^6.0.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/graphql-request/-/graphql-request-6.1.0.tgz#f4eb2107967af3c7a5907eb3131c671eac89be4f"
   integrity sha512-p+XPfS4q7aIpKVcgmnZKhMNqhltk20hfXtkaIkTfjjmiKMJ5xrt5c743cL03y/K7y1rg3WrIC49xGiEQ4mxdNw==

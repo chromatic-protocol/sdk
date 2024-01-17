@@ -1,4 +1,4 @@
-import { GraphQLClient, RequestMiddleware, Variables } from "graphql-request";
+import { GraphQLClient, RequestMiddleware, Variables } from "@chromatic-protocol/graphql-request";
 
 import * as Analytics from "./sdk/analytics";
 import * as Lp from "./sdk/lp";

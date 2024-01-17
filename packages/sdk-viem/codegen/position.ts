@@ -1,4 +1,4 @@
-import { gql } from 'graphql-request';
+import { gql } from '@chromatic-protocol/graphql-request';
 
 export const POSITIONS = gql`
   query History(

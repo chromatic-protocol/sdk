@@ -1,4 +1,4 @@
-import { gql } from 'graphql-request';
+import { gql } from '@chromatic-protocol/graphql-request';
 
 export const CLP_DAILY_HISTORIES = gql`
   query ClpDailyHistories($start: date!, $end: date!, $address: citext!) {

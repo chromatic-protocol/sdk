@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "graphql": "^16.8.1",
-    "graphql-request": "^6.1.0",
+    "@chromatic-protocol/graphql-request": "0.0.1-rc.7",
     "json-bigint": "^1.0.0",
     "viem": "^1.21.0"
   },

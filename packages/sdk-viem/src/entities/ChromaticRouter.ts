@@ -1,5 +1,6 @@
 import { Address, getContract, zeroAddress } from "viem";
 import { Client } from "../Client";
+import { MIN_GAS_LIMIT_SETTLE_ALL, MIN_GAS_LIMIT_SETTLE_HALF } from "../const/index";
 import { chromaticRouterABI, chromaticRouterAddress } from "../gen";
 import { Contract, checkClient, handleBytesError } from "../utils/helpers";
 /**
@@ -41,6 +42,12 @@ export interface RouterRemoveLiquidityParam {
 /** @ignore */
 export interface ContractChromaticRouter extends Contract<typeof chromaticRouterABI> {}
 
+export function adjustTakerGasLimit(gas: bigint): bigint {
+  return gas >= MIN_GAS_LIMIT_SETTLE_HALF ? gas : MIN_GAS_LIMIT_SETTLE_HALF;
+}
+export function adjustMakerGasLimit(gas: bigint): bigint {
+  return gas >= MIN_GAS_LIMIT_SETTLE_ALL ? gas : MIN_GAS_LIMIT_SETTLE_ALL;
+}
 /**
  * Represents the ChromaticRouter, which is used to interact with ChromaticRouter contracts.
  */
@@ -100,7 +107,7 @@ export class ChromaticRouter {
 
       const hash = await this._client.walletClient.writeContract({
         ...request,
-        gas: estimatedGas + estimatedGas / 2n,
+        gas: adjustTakerGasLimit(estimatedGas),
       });
       return await this._client.publicClient.waitForTransactionReceipt({ hash });
     });
@@ -126,7 +133,7 @@ export class ChromaticRouter {
 
       const hash = await this._client.walletClient.writeContract({
         ...request,
-        gas: estimatedGas + estimatedGas / 2n,
+        gas: adjustTakerGasLimit(estimatedGas),
       });
       return await this._client.publicClient.waitForTransactionReceipt({ hash });
     });
@@ -156,7 +163,7 @@ export class ChromaticRouter {
 
       const hash = await this._client.walletClient.writeContract({
         ...request,
-        gas: estimatedGas + estimatedGas / 2n,
+        gas: adjustTakerGasLimit(estimatedGas),
       });
       return await this._client.publicClient.waitForTransactionReceipt({ hash });
     });
@@ -252,7 +259,7 @@ export class ChromaticRouter {
 
     const hash = await this._client.walletClient.writeContract({
       ...request,
-      gas: estimatedGas + estimatedGas / 2n,
+      gas: adjustMakerGasLimit(estimatedGas),
     });
     return await this._client.publicClient.waitForTransactionReceipt({ hash });
   }
@@ -299,7 +306,7 @@ export class ChromaticRouter {
 
       const hash = await this._client.walletClient.writeContract({
         ...request,
-        gas: estimatedGas + estimatedGas / 2n,
+        gas: adjustMakerGasLimit(estimatedGas),
       });
       return await this._client.publicClient.waitForTransactionReceipt({ hash });
     });
@@ -337,7 +344,7 @@ export class ChromaticRouter {
 
       const hash = await this._client.walletClient.writeContract({
         ...request,
-        gas: estimatedGas + estimatedGas / 2n,
+        gas: adjustMakerGasLimit(estimatedGas),
       });
       return await this._client.publicClient.waitForTransactionReceipt({ hash });
     });
@@ -392,7 +399,7 @@ export class ChromaticRouter {
 
       const hash = await this._client.walletClient.writeContract({
         ...request,
-        gas: estimatedGas + estimatedGas / 2n,
+        gas: adjustMakerGasLimit(estimatedGas),
       });
       return await this._client.publicClient.waitForTransactionReceipt({ hash });
     });
@@ -418,7 +425,7 @@ export class ChromaticRouter {
 
       const hash = await this._client.walletClient.writeContract({
         ...request,
-        gas: estimatedGas + estimatedGas / 2n,
+        gas: adjustMakerGasLimit(estimatedGas),
       });
       return await this._client.publicClient.waitForTransactionReceipt({ hash });
     });
@@ -447,7 +454,7 @@ export class ChromaticRouter {
 
       const hash = await this._client.walletClient.writeContract({
         ...request,
-        gas: estimatedGas + estimatedGas / 2n,
+        gas: adjustMakerGasLimit(estimatedGas),
       });
       return await this._client.publicClient.waitForTransactionReceipt({ hash });
     });
@@ -473,7 +480,7 @@ export class ChromaticRouter {
 
       const hash = await this._client.walletClient.writeContract({
         ...request,
-        gas: estimatedGas + estimatedGas / 2n,
+        gas: adjustMakerGasLimit(estimatedGas),
       });
       return await this._client.publicClient.waitForTransactionReceipt({ hash });
     });
@@ -502,7 +509,7 @@ export class ChromaticRouter {
 
       const hash = await this._client.walletClient.writeContract({
         ...request,
-        gas: estimatedGas + estimatedGas / 2n,
+        gas: adjustMakerGasLimit(estimatedGas),
       });
       return await this._client.publicClient.waitForTransactionReceipt({ hash });
     });

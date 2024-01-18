@@ -39,6 +39,16 @@ export interface RouterRemoveLiquidityParam {
   clbTokenAmount: BigNumberish;
 }
 
+export const MIN_GAS_LIMIT_SETTLE_ALL = 10n ** 7n;
+export const MIN_GAS_LIMIT_SETTLE_HALF = MIN_GAS_LIMIT_SETTLE_ALL / 2n;
+
+export function adjustTakerGasLimit(gas: bigint): bigint {
+  return gas >= MIN_GAS_LIMIT_SETTLE_HALF ? gas : MIN_GAS_LIMIT_SETTLE_HALF;
+}
+export function adjustMakerGasLimit(gas: bigint): bigint {
+  return gas >= MIN_GAS_LIMIT_SETTLE_ALL ? gas : MIN_GAS_LIMIT_SETTLE_ALL;
+}
+
 /**
  * Represents the ChromaticRouter, which is used to interact with ChromaticRouter contracts.
  */
@@ -84,7 +94,7 @@ export class ChromaticRouter {
         .openPosition.estimateGas(...args);
       const transaction = await this.contracts()
         .router()
-        .openPosition(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
+        .openPosition(...args, { gasLimit: adjustTakerGasLimit(estimatedGas) });
       return await transaction.wait();
     }, this._client.provider);
   }
@@ -103,7 +113,7 @@ export class ChromaticRouter {
         .closePosition.estimateGas(...args);
       const transaction = await this.contracts()
         .router()
-        .closePosition(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
+        .closePosition(...args, { gasLimit: adjustTakerGasLimit(estimatedGas) });
       return transaction.wait();
     }, this._client.provider);
   }
@@ -122,7 +132,7 @@ export class ChromaticRouter {
         .claimPosition.estimateGas(...args);
       const tx = await this.contracts()
         .router()
-        .claimPosition(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
+        .claimPosition(...args, { gasLimit: adjustTakerGasLimit(estimatedGas) });
       return tx.wait();
     }, this._client.provider);
   }
@@ -196,7 +206,7 @@ export class ChromaticRouter {
         .addLiquidity.estimateGas(...args);
       const tx = await this.contracts()
         .router()
-        .addLiquidity(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
+        .addLiquidity(...args, { gasLimit: adjustMakerGasLimit(estimatedGas) });
 
       return await tx.wait();
     }, this._client.provider);
@@ -236,7 +246,7 @@ export class ChromaticRouter {
 
       const tx = await this.contracts()
         .router()
-        .addLiquidityBatch(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
+        .addLiquidityBatch(...args, { gasLimit: adjustMakerGasLimit(estimatedGas) });
 
       return await tx.wait();
     }, this._client.provider);
@@ -266,7 +276,7 @@ export class ChromaticRouter {
 
       const tx = await this.contracts()
         .router()
-        .removeLiquidity(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
+        .removeLiquidity(...args, { gasLimit: adjustMakerGasLimit(estimatedGas) });
 
       return await tx.wait();
     }, this._client.provider);
@@ -314,7 +324,7 @@ export class ChromaticRouter {
 
       const tx = await this.contracts()
         .router()
-        .removeLiquidityBatch(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
+        .removeLiquidityBatch(...args, { gasLimit: adjustMakerGasLimit(estimatedGas) });
 
       return await tx.wait();
     }, this._client.provider);
@@ -335,7 +345,7 @@ export class ChromaticRouter {
 
       const tx = await this.contracts()
         .router()
-        .claimLiquidity(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
+        .claimLiquidity(...args, { gasLimit: adjustMakerGasLimit(estimatedGas) });
 
       return await tx.wait();
     }, this._client.provider);
@@ -356,7 +366,7 @@ export class ChromaticRouter {
 
       const tx = await this.contracts()
         .router()
-        .claimLiquidityBatch(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
+        .claimLiquidityBatch(...args, { gasLimit: adjustMakerGasLimit(estimatedGas) });
 
       return await tx.wait();
     }, this._client.provider);
@@ -377,7 +387,7 @@ export class ChromaticRouter {
 
       const tx = await this.contracts()
         .router()
-        .withdrawLiquidity(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
+        .withdrawLiquidity(...args, { gasLimit: adjustMakerGasLimit(estimatedGas) });
 
       return await tx.wait();
     }, this._client.provider);
@@ -398,7 +408,7 @@ export class ChromaticRouter {
 
       const tx = await this.contracts()
         .router()
-        .withdrawLiquidityBatch(...args, { gasLimit: estimatedGas + estimatedGas / 2n });
+        .withdrawLiquidityBatch(...args, { gasLimit: adjustMakerGasLimit(estimatedGas) });
 
       return await tx.wait();
     }, this._client.provider);

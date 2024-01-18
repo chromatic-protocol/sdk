@@ -45,12 +45,12 @@ const urlMap: UrlMap = [
 const getRequestMiddleware =
   (urlMap: UrlMap): RequestMiddleware<Variables> =>
   (request) => {
-    const headerOperationName = (request.headers as Record<string, string>).operationName;
-    const operationName = (request.operationName || headerOperationName || "").toLowerCase();
+    // const headerOperationName = (request.headers as Record<string, string>).operationName;
+    const operationName = (request.operationName || "").toLowerCase();
     const url = urlMap.find((url) =>
       url.operations.map((operation) => operation.toLowerCase()).includes(operationName)
     )?.url;
-    delete (request.headers as Record<string, string>).operationName;
+    // delete (request.headers as Record<string, string>).operationName;
     if (!url) {
       throw new Error("invalid operation");
     }

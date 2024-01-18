@@ -210,8 +210,8 @@ export class ChromaticLens {
     ${fragment}
   `;
 
-    const clbTokens = await graphClient.request(document, undefined, {
-      operationName: "getCLBTokenTotalSupplies",
+    const clbTokens = await graphClient.request({
+      document
     });
 
     return {

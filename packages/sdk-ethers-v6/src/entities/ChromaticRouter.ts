@@ -39,7 +39,7 @@ export interface RouterRemoveLiquidityParam {
   clbTokenAmount: BigNumberish;
 }
 
-export const MIN_GAS_LIMIT_SETTLE_ALL = 10n ** 7n;
+export const MIN_GAS_LIMIT_SETTLE_ALL = 10n ** 7n * 5n;
 export const MIN_GAS_LIMIT_SETTLE_HALF = MIN_GAS_LIMIT_SETTLE_ALL / 2n;
 
 export function adjustTakerGasLimit(gas: bigint): bigint {

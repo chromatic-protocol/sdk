@@ -41,5 +41,5 @@ export const FEE_RATES = [
   5000, // 10% ~ 50%, step 5%
 ];
 
-export const MIN_GAS_LIMIT_SETTLE_ALL = 10n ** 7n
+export const MIN_GAS_LIMIT_SETTLE_ALL = 10n ** 7n * 5n
 export const MIN_GAS_LIMIT_SETTLE_HALF = MIN_GAS_LIMIT_SETTLE_ALL / 2n

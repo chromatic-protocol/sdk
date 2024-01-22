@@ -159,7 +159,7 @@ export class ChromaticRouter {
       };
       const { request } = await this.contracts().router().simulate.claimPosition(args, options);
 
-      const estimatedGas = await this.contracts().router().estimateGas.closePosition(args, options);
+      const estimatedGas = await this.contracts().router().estimateGas.claimPosition(args, options);
 
       const hash = await this._client.walletClient.writeContract({
         ...request,

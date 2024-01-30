@@ -73,11 +73,26 @@ export type PositionStructOutput = [
   _binMargins: BinMarginStructOutput[];
 };
 
+export declare namespace IOracleProvider {
+  export type OracleVersionStruct = {
+    version: BigNumberish;
+    timestamp: BigNumberish;
+    price: BigNumberish;
+  };
+
+  export type OracleVersionStructOutput = [
+    version: bigint,
+    timestamp: bigint,
+    price: bigint
+  ] & { version: bigint; timestamp: bigint; price: bigint };
+}
+
 export interface MarketLiquidateFacetInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "checkClaimPosition"
       | "checkLiquidation"
+      | "checkLiquidationWithOracleVersion"
       | "claimPosition"
       | "liquidate"
   ): FunctionFragment;
@@ -95,6 +110,10 @@ export interface MarketLiquidateFacetInterface extends Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "checkLiquidationWithOracleVersion",
+    values: [BigNumberish, IOracleProvider.OracleVersionStruct]
+  ): string;
+  encodeFunctionData(
     functionFragment: "claimPosition",
     values: [BigNumberish, AddressLike, BigNumberish]
   ): string;
@@ -109,6 +128,10 @@ export interface MarketLiquidateFacetInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "checkLiquidation",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "checkLiquidationWithOracleVersion",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -237,6 +260,15 @@ export interface MarketLiquidateFacet extends BaseContract {
     "view"
   >;
 
+  checkLiquidationWithOracleVersion: TypedContractMethod<
+    [
+      positionId: BigNumberish,
+      oracleVersion: IOracleProvider.OracleVersionStruct
+    ],
+    [boolean],
+    "view"
+  >;
+
   /**
    * This function can only be called by the chromatic liquidator contract.      Throws a `NotExistPosition` error if the requested position does not exist.      Throws a `NotClaimablePosition` error if the position's close version is not in the past, indicating that it is not claimable.
    * @param keeper The address of the keeper claiming the position.
@@ -271,6 +303,16 @@ export interface MarketLiquidateFacet extends BaseContract {
   getFunction(
     nameOrSignature: "checkLiquidation"
   ): TypedContractMethod<[positionId: BigNumberish], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "checkLiquidationWithOracleVersion"
+  ): TypedContractMethod<
+    [
+      positionId: BigNumberish,
+      oracleVersion: IOracleProvider.OracleVersionStruct
+    ],
+    [boolean],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "claimPosition"
   ): TypedContractMethod<

@@ -29,6 +29,63 @@ const _abi = [
     inputs: [
       {
         indexed: false,
+        internalType: "enum DisplayMode",
+        name: "displayModeOld",
+        type: "uint8",
+      },
+      {
+        indexed: false,
+        internalType: "enum DisplayMode",
+        name: "displayModeNew",
+        type: "uint8",
+      },
+    ],
+    name: "DisplayModeUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "enum LiquidityMode",
+        name: "liquidityModeOld",
+        type: "uint8",
+      },
+      {
+        indexed: false,
+        internalType: "enum LiquidityMode",
+        name: "liquidityModeNew",
+        type: "uint8",
+      },
+    ],
+    name: "LiquidityModeUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "enum PositionMode",
+        name: "positionModeOld",
+        type: "uint8",
+      },
+      {
+        indexed: false,
+        internalType: "enum PositionMode",
+        name: "positionModeNew",
+        type: "uint8",
+      },
+    ],
+    name: "PositionModeUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
         internalType: "uint16",
         name: "protocolFeeRateOld",
         type: "uint16",
@@ -40,7 +97,7 @@ const _abi = [
         type: "uint16",
       },
     ],
-    name: "ProtocolFeeRateSet",
+    name: "ProtocolFeeRateUpdated",
     type: "event",
   },
   {
@@ -51,6 +108,19 @@ const _abi = [
         internalType: "contract ICLBToken",
         name: "_token",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "displayMode",
+    outputs: [
+      {
+        internalType: "enum DisplayMode",
+        name: "_displayMode",
+        type: "uint8",
       },
     ],
     stateMutability: "view",
@@ -71,12 +141,38 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "liquidityMode",
+    outputs: [
+      {
+        internalType: "enum LiquidityMode",
+        name: "_liquidityMode",
+        type: "uint8",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "oracleProvider",
     outputs: [
       {
         internalType: "contract IOracleProvider",
         name: "_provider",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "positionMode",
+    outputs: [
+      {
+        internalType: "enum PositionMode",
+        name: "_positionMode",
+        type: "uint8",
       },
     ],
     stateMutability: "view",
@@ -96,19 +192,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "uint16",
-        name: "_protocolFeeRate",
-        type: "uint16",
-      },
-    ],
-    name: "setProtocolFeeRate",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
     inputs: [],
     name: "settlementToken",
     outputs: [
@@ -119,6 +202,58 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "enum DisplayMode",
+        name: "_displayMode",
+        type: "uint8",
+      },
+    ],
+    name: "updateDisplayMode",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "enum LiquidityMode",
+        name: "_liquidityMode",
+        type: "uint8",
+      },
+    ],
+    name: "updateLiquidityMode",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "enum PositionMode",
+        name: "_positionMode",
+        type: "uint8",
+      },
+    ],
+    name: "updatePositionMode",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint16",
+        name: "_protocolFeeRate",
+        type: "uint16",
+      },
+    ],
+    name: "updateProtocolFeeRate",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {

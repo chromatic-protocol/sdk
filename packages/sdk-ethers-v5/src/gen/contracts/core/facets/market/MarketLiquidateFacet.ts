@@ -76,10 +76,25 @@ export type PositionStructOutput = [
   _binMargins: BinMarginStructOutput[];
 };
 
+export declare namespace IOracleProvider {
+  export type OracleVersionStruct = {
+    version: BigNumberish;
+    timestamp: BigNumberish;
+    price: BigNumberish;
+  };
+
+  export type OracleVersionStructOutput = [BigNumber, BigNumber, BigNumber] & {
+    version: BigNumber;
+    timestamp: BigNumber;
+    price: BigNumber;
+  };
+}
+
 export interface MarketLiquidateFacetInterface extends utils.Interface {
   functions: {
     "checkClaimPosition(uint256)": FunctionFragment;
     "checkLiquidation(uint256)": FunctionFragment;
+    "checkLiquidationWithOracleVersion(uint256,(uint256,uint256,int256))": FunctionFragment;
     "claimPosition(uint256,address,uint256)": FunctionFragment;
     "liquidate(uint256,address,uint256)": FunctionFragment;
   };
@@ -88,6 +103,7 @@ export interface MarketLiquidateFacetInterface extends utils.Interface {
     nameOrSignatureOrTopic:
       | "checkClaimPosition"
       | "checkLiquidation"
+      | "checkLiquidationWithOracleVersion"
       | "claimPosition"
       | "liquidate"
   ): FunctionFragment;
@@ -99,6 +115,10 @@ export interface MarketLiquidateFacetInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "checkLiquidation",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "checkLiquidationWithOracleVersion",
+    values: [BigNumberish, IOracleProvider.OracleVersionStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "claimPosition",
@@ -115,6 +135,10 @@ export interface MarketLiquidateFacetInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "checkLiquidation",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "checkLiquidationWithOracleVersion",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -206,6 +230,12 @@ export interface MarketLiquidateFacet extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean] & { _liquidate: boolean }>;
 
+    checkLiquidationWithOracleVersion(
+      positionId: BigNumberish,
+      oracleVersion: IOracleProvider.OracleVersionStruct,
+      overrides?: CallOverrides
+    ): Promise<[boolean] & { _liquidate: boolean }>;
+
     /**
      * This function can only be called by the chromatic liquidator contract.      Throws a `NotExistPosition` error if the requested position does not exist.      Throws a `NotClaimablePosition` error if the position's close version is not in the past, indicating that it is not claimable.
      * @param keeper The address of the keeper claiming the position.
@@ -251,6 +281,12 @@ export interface MarketLiquidateFacet extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  checkLiquidationWithOracleVersion(
+    positionId: BigNumberish,
+    oracleVersion: IOracleProvider.OracleVersionStruct,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   /**
    * This function can only be called by the chromatic liquidator contract.      Throws a `NotExistPosition` error if the requested position does not exist.      Throws a `NotClaimablePosition` error if the position's close version is not in the past, indicating that it is not claimable.
    * @param keeper The address of the keeper claiming the position.
@@ -293,6 +329,12 @@ export interface MarketLiquidateFacet extends BaseContract {
      */
     checkLiquidation(
       positionId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    checkLiquidationWithOracleVersion(
+      positionId: BigNumberish,
+      oracleVersion: IOracleProvider.OracleVersionStruct,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -374,6 +416,12 @@ export interface MarketLiquidateFacet extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    checkLiquidationWithOracleVersion(
+      positionId: BigNumberish,
+      oracleVersion: IOracleProvider.OracleVersionStruct,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     /**
      * This function can only be called by the chromatic liquidator contract.      Throws a `NotExistPosition` error if the requested position does not exist.      Throws a `NotClaimablePosition` error if the position's close version is not in the past, indicating that it is not claimable.
      * @param keeper The address of the keeper claiming the position.
@@ -417,6 +465,12 @@ export interface MarketLiquidateFacet extends BaseContract {
      */
     checkLiquidation(
       positionId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    checkLiquidationWithOracleVersion(
+      positionId: BigNumberish,
+      oracleVersion: IOracleProvider.OracleVersionStruct,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

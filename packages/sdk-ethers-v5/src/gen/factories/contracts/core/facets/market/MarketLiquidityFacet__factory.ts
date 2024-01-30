@@ -12,6 +12,11 @@ import type {
 const _abi = [
   {
     inputs: [],
+    name: "AddLiquidityDisabled",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "Empty",
     type: "error",
   },
@@ -58,6 +63,11 @@ const _abi = [
   {
     inputs: [],
     name: "OutOfBounds",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "RemoveLiquidityDisabled",
     type: "error",
   },
   {

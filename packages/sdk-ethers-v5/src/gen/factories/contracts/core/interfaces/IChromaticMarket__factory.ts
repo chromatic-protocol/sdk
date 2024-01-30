@@ -500,6 +500,25 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "enum DisplayMode",
+        name: "displayModeOld",
+        type: "uint8",
+      },
+      {
+        indexed: false,
+        internalType: "enum DisplayMode",
+        name: "displayModeNew",
+        type: "uint8",
+      },
+    ],
+    name: "DisplayModeUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: "address",
         name: "account",
@@ -606,6 +625,25 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "enum LiquidityMode",
+        name: "liquidityModeOld",
+        type: "uint8",
+      },
+      {
+        indexed: false,
+        internalType: "enum LiquidityMode",
+        name: "liquidityModeNew",
+        type: "uint8",
+      },
+    ],
+    name: "LiquidityModeUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: "address",
         name: "account",
@@ -695,6 +733,25 @@ const _abi = [
     inputs: [
       {
         indexed: false,
+        internalType: "enum PositionMode",
+        name: "positionModeOld",
+        type: "uint8",
+      },
+      {
+        indexed: false,
+        internalType: "enum PositionMode",
+        name: "positionModeNew",
+        type: "uint8",
+      },
+    ],
+    name: "PositionModeUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
         internalType: "uint16",
         name: "protocolFeeRateOld",
         type: "uint16",
@@ -706,7 +763,7 @@ const _abi = [
         type: "uint16",
       },
     ],
-    name: "ProtocolFeeRateSet",
+    name: "ProtocolFeeRateUpdated",
     type: "event",
   },
   {
@@ -1101,6 +1158,47 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "positionId",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "version",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "timestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "price",
+            type: "int256",
+          },
+        ],
+        internalType: "struct IOracleProvider.OracleVersion",
+        name: "oracleVersion",
+        type: "tuple",
+      },
+    ],
+    name: "checkLiquidationWithOracleVersion",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "receiptId",
         type: "uint256",
       },
@@ -1417,6 +1515,19 @@ const _abi = [
         internalType: "struct ClosingPosition[]",
         name: "",
         type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "displayMode",
+    outputs: [
+      {
+        internalType: "enum DisplayMode",
+        name: "",
+        type: "uint8",
       },
     ],
     stateMutability: "view",
@@ -1847,6 +1958,19 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "liquidityMode",
+    outputs: [
+      {
+        internalType: "enum LiquidityMode",
+        name: "",
+        type: "uint8",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "int256",
@@ -2091,6 +2215,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "positionMode",
+    outputs: [
+      {
+        internalType: "enum PositionMode",
+        name: "",
+        type: "uint8",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "protocolFeeRate",
     outputs: [
       {
@@ -2232,19 +2369,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint16",
-        name: "_protocolFeeRate",
-        type: "uint16",
-      },
-    ],
-    name: "setProtocolFeeRate",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "int16[]",
         name: "feeRates",
         type: "int16[]",
@@ -2273,6 +2397,58 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "enum DisplayMode",
+        name: "_displayMode",
+        type: "uint8",
+      },
+    ],
+    name: "updateDisplayMode",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "enum LiquidityMode",
+        name: "_liquidityMode",
+        type: "uint8",
+      },
+    ],
+    name: "updateLiquidityMode",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "enum PositionMode",
+        name: "_positionMode",
+        type: "uint8",
+      },
+    ],
+    name: "updatePositionMode",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint16",
+        name: "_protocolFeeRate",
+        type: "uint16",
+      },
+    ],
+    name: "updateProtocolFeeRate",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {

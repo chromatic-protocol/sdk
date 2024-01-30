@@ -22,6 +22,11 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "ClosePositionDisabled",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "Empty",
     type: "error",
   },
@@ -73,6 +78,11 @@ const _abi = [
   {
     inputs: [],
     name: "OnlyAccessableByVault",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OpenPositionDisabled",
     type: "error",
   },
   {

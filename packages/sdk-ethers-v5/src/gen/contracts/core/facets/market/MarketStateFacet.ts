@@ -29,29 +29,53 @@ import type {
 export interface MarketStateFacetInterface extends utils.Interface {
   functions: {
     "clbToken()": FunctionFragment;
+    "displayMode()": FunctionFragment;
     "factory()": FunctionFragment;
+    "liquidityMode()": FunctionFragment;
     "oracleProvider()": FunctionFragment;
+    "positionMode()": FunctionFragment;
     "protocolFeeRate()": FunctionFragment;
-    "setProtocolFeeRate(uint16)": FunctionFragment;
     "settlementToken()": FunctionFragment;
+    "updateDisplayMode(uint8)": FunctionFragment;
+    "updateLiquidityMode(uint8)": FunctionFragment;
+    "updatePositionMode(uint8)": FunctionFragment;
+    "updateProtocolFeeRate(uint16)": FunctionFragment;
     "vault()": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
       | "clbToken"
+      | "displayMode"
       | "factory"
+      | "liquidityMode"
       | "oracleProvider"
+      | "positionMode"
       | "protocolFeeRate"
-      | "setProtocolFeeRate"
       | "settlementToken"
+      | "updateDisplayMode"
+      | "updateLiquidityMode"
+      | "updatePositionMode"
+      | "updateProtocolFeeRate"
       | "vault"
   ): FunctionFragment;
 
   encodeFunctionData(functionFragment: "clbToken", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "displayMode",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "factory", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "liquidityMode",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "oracleProvider",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "positionMode",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -59,19 +83,43 @@ export interface MarketStateFacetInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "setProtocolFeeRate",
+    functionFragment: "settlementToken",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateDisplayMode",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "settlementToken",
-    values?: undefined
+    functionFragment: "updateLiquidityMode",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updatePositionMode",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateProtocolFeeRate",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "vault", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "clbToken", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "displayMode",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "liquidityMode",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "oracleProvider",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "positionMode",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -79,33 +127,87 @@ export interface MarketStateFacetInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setProtocolFeeRate",
+    functionFragment: "settlementToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "settlementToken",
+    functionFragment: "updateDisplayMode",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateLiquidityMode",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updatePositionMode",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateProtocolFeeRate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "vault", data: BytesLike): Result;
 
   events: {
-    "ProtocolFeeRateSet(uint16,uint16)": EventFragment;
+    "DisplayModeUpdated(uint8,uint8)": EventFragment;
+    "LiquidityModeUpdated(uint8,uint8)": EventFragment;
+    "PositionModeUpdated(uint8,uint8)": EventFragment;
+    "ProtocolFeeRateUpdated(uint16,uint16)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "ProtocolFeeRateSet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "DisplayModeUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "LiquidityModeUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PositionModeUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ProtocolFeeRateUpdated"): EventFragment;
 }
 
-export interface ProtocolFeeRateSetEventObject {
+export interface DisplayModeUpdatedEventObject {
+  displayModeOld: number;
+  displayModeNew: number;
+}
+export type DisplayModeUpdatedEvent = TypedEvent<
+  [number, number],
+  DisplayModeUpdatedEventObject
+>;
+
+export type DisplayModeUpdatedEventFilter =
+  TypedEventFilter<DisplayModeUpdatedEvent>;
+
+export interface LiquidityModeUpdatedEventObject {
+  liquidityModeOld: number;
+  liquidityModeNew: number;
+}
+export type LiquidityModeUpdatedEvent = TypedEvent<
+  [number, number],
+  LiquidityModeUpdatedEventObject
+>;
+
+export type LiquidityModeUpdatedEventFilter =
+  TypedEventFilter<LiquidityModeUpdatedEvent>;
+
+export interface PositionModeUpdatedEventObject {
+  positionModeOld: number;
+  positionModeNew: number;
+}
+export type PositionModeUpdatedEvent = TypedEvent<
+  [number, number],
+  PositionModeUpdatedEventObject
+>;
+
+export type PositionModeUpdatedEventFilter =
+  TypedEventFilter<PositionModeUpdatedEvent>;
+
+export interface ProtocolFeeRateUpdatedEventObject {
   protocolFeeRateOld: number;
   protocolFeeRateNew: number;
 }
-export type ProtocolFeeRateSetEvent = TypedEvent<
+export type ProtocolFeeRateUpdatedEvent = TypedEvent<
   [number, number],
-  ProtocolFeeRateSetEventObject
+  ProtocolFeeRateUpdatedEventObject
 >;
 
-export type ProtocolFeeRateSetEventFilter =
-  TypedEventFilter<ProtocolFeeRateSetEvent>;
+export type ProtocolFeeRateUpdatedEventFilter =
+  TypedEventFilter<ProtocolFeeRateUpdatedEvent>;
 
 export interface MarketStateFacet extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -140,11 +242,25 @@ export interface MarketStateFacet extends BaseContract {
     clbToken(overrides?: CallOverrides): Promise<[string] & { _token: string }>;
 
     /**
+     * Returns the display mode
+     */
+    displayMode(
+      overrides?: CallOverrides
+    ): Promise<[number] & { _displayMode: number }>;
+
+    /**
      * Returns the factory contract for the market.
      */
     factory(
       overrides?: CallOverrides
     ): Promise<[string] & { _factory: string }>;
+
+    /**
+     * Returns the liquidity mode
+     */
+    liquidityMode(
+      overrides?: CallOverrides
+    ): Promise<[number] & { _liquidityMode: number }>;
 
     /**
      * Returns the oracle provider contract for the market.
@@ -154,6 +270,13 @@ export interface MarketStateFacet extends BaseContract {
     ): Promise<[string] & { _provider: string }>;
 
     /**
+     * Returns the position mode
+     */
+    positionMode(
+      overrides?: CallOverrides
+    ): Promise<[number] & { _positionMode: number }>;
+
+    /**
      * Returns the protocol fee rate
      */
     protocolFeeRate(
@@ -161,20 +284,47 @@ export interface MarketStateFacet extends BaseContract {
     ): Promise<[number] & { _protocolFeeRate: number }>;
 
     /**
-     * Set the new protocol fee rate
-     * @param _protocolFeeRate new protocol fee rate for the market
-     */
-    setProtocolFeeRate(
-      _protocolFeeRate: BigNumberish,
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
-
-    /**
      * Returns the settlement token of the market.
      */
     settlementToken(
       overrides?: CallOverrides
     ): Promise<[string] & { _token: string }>;
+
+    /**
+     * Update the new display mode
+     * @param _displayMode new display mode for the market
+     */
+    updateDisplayMode(
+      _displayMode: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Update the new liquidity mode
+     * @param _liquidityMode new liquidity mode for the market
+     */
+    updateLiquidityMode(
+      _liquidityMode: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Update the new position mode
+     * @param _positionMode new position mode for the market
+     */
+    updatePositionMode(
+      _positionMode: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Update the new protocol fee rate
+     * @param _protocolFeeRate new protocol fee rate for the market
+     */
+    updateProtocolFeeRate(
+      _protocolFeeRate: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
 
     /**
      * Returns the vault contract for the market.
@@ -188,9 +338,19 @@ export interface MarketStateFacet extends BaseContract {
   clbToken(overrides?: CallOverrides): Promise<string>;
 
   /**
+   * Returns the display mode
+   */
+  displayMode(overrides?: CallOverrides): Promise<number>;
+
+  /**
    * Returns the factory contract for the market.
    */
   factory(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Returns the liquidity mode
+   */
+  liquidityMode(overrides?: CallOverrides): Promise<number>;
 
   /**
    * Returns the oracle provider contract for the market.
@@ -198,23 +358,55 @@ export interface MarketStateFacet extends BaseContract {
   oracleProvider(overrides?: CallOverrides): Promise<string>;
 
   /**
+   * Returns the position mode
+   */
+  positionMode(overrides?: CallOverrides): Promise<number>;
+
+  /**
    * Returns the protocol fee rate
    */
   protocolFeeRate(overrides?: CallOverrides): Promise<number>;
 
   /**
-   * Set the new protocol fee rate
-   * @param _protocolFeeRate new protocol fee rate for the market
+   * Returns the settlement token of the market.
    */
-  setProtocolFeeRate(
-    _protocolFeeRate: BigNumberish,
+  settlementToken(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Update the new display mode
+   * @param _displayMode new display mode for the market
+   */
+  updateDisplayMode(
+    _displayMode: BigNumberish,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
-   * Returns the settlement token of the market.
+   * Update the new liquidity mode
+   * @param _liquidityMode new liquidity mode for the market
    */
-  settlementToken(overrides?: CallOverrides): Promise<string>;
+  updateLiquidityMode(
+    _liquidityMode: BigNumberish,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Update the new position mode
+   * @param _positionMode new position mode for the market
+   */
+  updatePositionMode(
+    _positionMode: BigNumberish,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Update the new protocol fee rate
+   * @param _protocolFeeRate new protocol fee rate for the market
+   */
+  updateProtocolFeeRate(
+    _protocolFeeRate: BigNumberish,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
 
   /**
    * Returns the vault contract for the market.
@@ -228,9 +420,19 @@ export interface MarketStateFacet extends BaseContract {
     clbToken(overrides?: CallOverrides): Promise<string>;
 
     /**
+     * Returns the display mode
+     */
+    displayMode(overrides?: CallOverrides): Promise<number>;
+
+    /**
      * Returns the factory contract for the market.
      */
     factory(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Returns the liquidity mode
+     */
+    liquidityMode(overrides?: CallOverrides): Promise<number>;
 
     /**
      * Returns the oracle provider contract for the market.
@@ -238,23 +440,55 @@ export interface MarketStateFacet extends BaseContract {
     oracleProvider(overrides?: CallOverrides): Promise<string>;
 
     /**
+     * Returns the position mode
+     */
+    positionMode(overrides?: CallOverrides): Promise<number>;
+
+    /**
      * Returns the protocol fee rate
      */
     protocolFeeRate(overrides?: CallOverrides): Promise<number>;
 
     /**
-     * Set the new protocol fee rate
-     * @param _protocolFeeRate new protocol fee rate for the market
+     * Returns the settlement token of the market.
      */
-    setProtocolFeeRate(
-      _protocolFeeRate: BigNumberish,
+    settlementToken(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Update the new display mode
+     * @param _displayMode new display mode for the market
+     */
+    updateDisplayMode(
+      _displayMode: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     /**
-     * Returns the settlement token of the market.
+     * Update the new liquidity mode
+     * @param _liquidityMode new liquidity mode for the market
      */
-    settlementToken(overrides?: CallOverrides): Promise<string>;
+    updateLiquidityMode(
+      _liquidityMode: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * Update the new position mode
+     * @param _positionMode new position mode for the market
+     */
+    updatePositionMode(
+      _positionMode: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * Update the new protocol fee rate
+     * @param _protocolFeeRate new protocol fee rate for the market
+     */
+    updateProtocolFeeRate(
+      _protocolFeeRate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     /**
      * Returns the vault contract for the market.
@@ -263,14 +497,41 @@ export interface MarketStateFacet extends BaseContract {
   };
 
   filters: {
-    "ProtocolFeeRateSet(uint16,uint16)"(
+    "DisplayModeUpdated(uint8,uint8)"(
+      displayModeOld?: null,
+      displayModeNew?: null
+    ): DisplayModeUpdatedEventFilter;
+    DisplayModeUpdated(
+      displayModeOld?: null,
+      displayModeNew?: null
+    ): DisplayModeUpdatedEventFilter;
+
+    "LiquidityModeUpdated(uint8,uint8)"(
+      liquidityModeOld?: null,
+      liquidityModeNew?: null
+    ): LiquidityModeUpdatedEventFilter;
+    LiquidityModeUpdated(
+      liquidityModeOld?: null,
+      liquidityModeNew?: null
+    ): LiquidityModeUpdatedEventFilter;
+
+    "PositionModeUpdated(uint8,uint8)"(
+      positionModeOld?: null,
+      positionModeNew?: null
+    ): PositionModeUpdatedEventFilter;
+    PositionModeUpdated(
+      positionModeOld?: null,
+      positionModeNew?: null
+    ): PositionModeUpdatedEventFilter;
+
+    "ProtocolFeeRateUpdated(uint16,uint16)"(
       protocolFeeRateOld?: null,
       protocolFeeRateNew?: null
-    ): ProtocolFeeRateSetEventFilter;
-    ProtocolFeeRateSet(
+    ): ProtocolFeeRateUpdatedEventFilter;
+    ProtocolFeeRateUpdated(
       protocolFeeRateOld?: null,
       protocolFeeRateNew?: null
-    ): ProtocolFeeRateSetEventFilter;
+    ): ProtocolFeeRateUpdatedEventFilter;
   };
 
   estimateGas: {
@@ -280,9 +541,19 @@ export interface MarketStateFacet extends BaseContract {
     clbToken(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
+     * Returns the display mode
+     */
+    displayMode(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
      * Returns the factory contract for the market.
      */
     factory(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Returns the liquidity mode
+     */
+    liquidityMode(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * Returns the oracle provider contract for the market.
@@ -290,23 +561,55 @@ export interface MarketStateFacet extends BaseContract {
     oracleProvider(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
+     * Returns the position mode
+     */
+    positionMode(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
      * Returns the protocol fee rate
      */
     protocolFeeRate(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Set the new protocol fee rate
-     * @param _protocolFeeRate new protocol fee rate for the market
+     * Returns the settlement token of the market.
      */
-    setProtocolFeeRate(
-      _protocolFeeRate: BigNumberish,
+    settlementToken(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Update the new display mode
+     * @param _displayMode new display mode for the market
+     */
+    updateDisplayMode(
+      _displayMode: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
-     * Returns the settlement token of the market.
+     * Update the new liquidity mode
+     * @param _liquidityMode new liquidity mode for the market
      */
-    settlementToken(overrides?: CallOverrides): Promise<BigNumber>;
+    updateLiquidityMode(
+      _liquidityMode: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     * Update the new position mode
+     * @param _positionMode new position mode for the market
+     */
+    updatePositionMode(
+      _positionMode: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     * Update the new protocol fee rate
+     * @param _protocolFeeRate new protocol fee rate for the market
+     */
+    updateProtocolFeeRate(
+      _protocolFeeRate: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
 
     /**
      * Returns the vault contract for the market.
@@ -321,9 +624,19 @@ export interface MarketStateFacet extends BaseContract {
     clbToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
+     * Returns the display mode
+     */
+    displayMode(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
      * Returns the factory contract for the market.
      */
     factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Returns the liquidity mode
+     */
+    liquidityMode(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
      * Returns the oracle provider contract for the market.
@@ -331,23 +644,55 @@ export interface MarketStateFacet extends BaseContract {
     oracleProvider(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
+     * Returns the position mode
+     */
+    positionMode(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
      * Returns the protocol fee rate
      */
     protocolFeeRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Set the new protocol fee rate
-     * @param _protocolFeeRate new protocol fee rate for the market
+     * Returns the settlement token of the market.
      */
-    setProtocolFeeRate(
-      _protocolFeeRate: BigNumberish,
+    settlementToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Update the new display mode
+     * @param _displayMode new display mode for the market
+     */
+    updateDisplayMode(
+      _displayMode: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Returns the settlement token of the market.
+     * Update the new liquidity mode
+     * @param _liquidityMode new liquidity mode for the market
      */
-    settlementToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    updateLiquidityMode(
+      _liquidityMode: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Update the new position mode
+     * @param _positionMode new position mode for the market
+     */
+    updatePositionMode(
+      _positionMode: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Update the new protocol fee rate
+     * @param _protocolFeeRate new protocol fee rate for the market
+     */
+    updateProtocolFeeRate(
+      _protocolFeeRate: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
 
     /**
      * Returns the vault contract for the market.

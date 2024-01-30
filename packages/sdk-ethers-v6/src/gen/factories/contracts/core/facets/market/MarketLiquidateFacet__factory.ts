@@ -312,6 +312,47 @@ const _abi = [
         type: "uint256",
       },
       {
+        components: [
+          {
+            internalType: "uint256",
+            name: "version",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "timestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "price",
+            type: "int256",
+          },
+        ],
+        internalType: "struct IOracleProvider.OracleVersion",
+        name: "oracleVersion",
+        type: "tuple",
+      },
+    ],
+    name: "checkLiquidationWithOracleVersion",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "_liquidate",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "positionId",
+        type: "uint256",
+      },
+      {
         internalType: "address",
         name: "keeper",
         type: "address",

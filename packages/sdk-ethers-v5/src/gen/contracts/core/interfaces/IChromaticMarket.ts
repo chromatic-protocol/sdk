@@ -235,12 +235,27 @@ export type PendingPositionStructOutput = [
   totalTakerMargin: BigNumber;
 };
 
+export declare namespace IOracleProvider {
+  export type OracleVersionStruct = {
+    version: BigNumberish;
+    timestamp: BigNumberish;
+    price: BigNumberish;
+  };
+
+  export type OracleVersionStructOutput = [BigNumber, BigNumber, BigNumber] & {
+    version: BigNumber;
+    timestamp: BigNumber;
+    price: BigNumber;
+  };
+}
+
 export interface IChromaticMarketInterface extends utils.Interface {
   functions: {
     "addLiquidity(address,int16,bytes)": FunctionFragment;
     "addLiquidityBatch(address,int16[],uint256[],bytes)": FunctionFragment;
     "checkClaimPosition(uint256)": FunctionFragment;
     "checkLiquidation(uint256)": FunctionFragment;
+    "checkLiquidationWithOracleVersion(uint256,(uint256,uint256,int256))": FunctionFragment;
     "claimLiquidity(uint256,bytes)": FunctionFragment;
     "claimLiquidityBatch(uint256[],bytes)": FunctionFragment;
     "claimPosition(uint256,address,bytes)": FunctionFragment;
@@ -251,6 +266,7 @@ export interface IChromaticMarketInterface extends utils.Interface {
     "closePosition(uint256)": FunctionFragment;
     "closingPosition(int16)": FunctionFragment;
     "closingPositionBatch(int16[])": FunctionFragment;
+    "displayMode()": FunctionFragment;
     "distributeEarningToBins(uint256,uint256)": FunctionFragment;
     "factory()": FunctionFragment;
     "getBinFreeLiquidity(int16)": FunctionFragment;
@@ -262,19 +278,24 @@ export interface IChromaticMarketInterface extends utils.Interface {
     "getPositions(uint256[])": FunctionFragment;
     "liquidate(uint256,address,uint256)": FunctionFragment;
     "liquidityBinStatuses()": FunctionFragment;
+    "liquidityMode()": FunctionFragment;
     "openPosition(int256,uint256,uint256,uint256,bytes)": FunctionFragment;
     "oracleProvider()": FunctionFragment;
     "pendingLiquidity(int16)": FunctionFragment;
     "pendingLiquidityBatch(int16[])": FunctionFragment;
     "pendingPosition(int16)": FunctionFragment;
     "pendingPositionBatch(int16[])": FunctionFragment;
+    "positionMode()": FunctionFragment;
     "protocolFeeRate()": FunctionFragment;
     "removeLiquidity(address,int16,bytes)": FunctionFragment;
     "removeLiquidityBatch(address,int16[],uint256[],bytes)": FunctionFragment;
-    "setProtocolFeeRate(uint16)": FunctionFragment;
     "settle(int16[])": FunctionFragment;
     "settleAll()": FunctionFragment;
     "settlementToken()": FunctionFragment;
+    "updateDisplayMode(uint8)": FunctionFragment;
+    "updateLiquidityMode(uint8)": FunctionFragment;
+    "updatePositionMode(uint8)": FunctionFragment;
+    "updateProtocolFeeRate(uint16)": FunctionFragment;
     "vault()": FunctionFragment;
     "withdrawLiquidity(uint256,bytes)": FunctionFragment;
     "withdrawLiquidityBatch(uint256[],bytes)": FunctionFragment;
@@ -286,6 +307,7 @@ export interface IChromaticMarketInterface extends utils.Interface {
       | "addLiquidityBatch"
       | "checkClaimPosition"
       | "checkLiquidation"
+      | "checkLiquidationWithOracleVersion"
       | "claimLiquidity"
       | "claimLiquidityBatch"
       | "claimPosition(uint256,address,bytes)"
@@ -296,6 +318,7 @@ export interface IChromaticMarketInterface extends utils.Interface {
       | "closePosition"
       | "closingPosition"
       | "closingPositionBatch"
+      | "displayMode"
       | "distributeEarningToBins"
       | "factory"
       | "getBinFreeLiquidity"
@@ -307,19 +330,24 @@ export interface IChromaticMarketInterface extends utils.Interface {
       | "getPositions"
       | "liquidate"
       | "liquidityBinStatuses"
+      | "liquidityMode"
       | "openPosition"
       | "oracleProvider"
       | "pendingLiquidity"
       | "pendingLiquidityBatch"
       | "pendingPosition"
       | "pendingPositionBatch"
+      | "positionMode"
       | "protocolFeeRate"
       | "removeLiquidity"
       | "removeLiquidityBatch"
-      | "setProtocolFeeRate"
       | "settle"
       | "settleAll"
       | "settlementToken"
+      | "updateDisplayMode"
+      | "updateLiquidityMode"
+      | "updatePositionMode"
+      | "updateProtocolFeeRate"
       | "vault"
       | "withdrawLiquidity"
       | "withdrawLiquidityBatch"
@@ -340,6 +368,10 @@ export interface IChromaticMarketInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "checkLiquidation",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "checkLiquidationWithOracleVersion",
+    values: [BigNumberish, IOracleProvider.OracleVersionStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "claimLiquidity",
@@ -377,6 +409,10 @@ export interface IChromaticMarketInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "closingPositionBatch",
     values: [BigNumberish[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "displayMode",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "distributeEarningToBins",
@@ -420,6 +456,10 @@ export interface IChromaticMarketInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "liquidityMode",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "openPosition",
     values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish, BytesLike]
   ): string;
@@ -444,6 +484,10 @@ export interface IChromaticMarketInterface extends utils.Interface {
     values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
+    functionFragment: "positionMode",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "protocolFeeRate",
     values?: undefined
   ): string;
@@ -456,10 +500,6 @@ export interface IChromaticMarketInterface extends utils.Interface {
     values: [string, BigNumberish[], BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "setProtocolFeeRate",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "settle",
     values: [BigNumberish[]]
   ): string;
@@ -467,6 +507,22 @@ export interface IChromaticMarketInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "settlementToken",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateDisplayMode",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateLiquidityMode",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updatePositionMode",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateProtocolFeeRate",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "vault", values?: undefined): string;
   encodeFunctionData(
@@ -492,6 +548,10 @@ export interface IChromaticMarketInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "checkLiquidation",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "checkLiquidationWithOracleVersion",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -529,6 +589,10 @@ export interface IChromaticMarketInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "closingPositionBatch",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "displayMode",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -570,6 +634,10 @@ export interface IChromaticMarketInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "liquidityMode",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "openPosition",
     data: BytesLike
   ): Result;
@@ -594,6 +662,10 @@ export interface IChromaticMarketInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "positionMode",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "protocolFeeRate",
     data: BytesLike
   ): Result;
@@ -605,14 +677,26 @@ export interface IChromaticMarketInterface extends utils.Interface {
     functionFragment: "removeLiquidityBatch",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "setProtocolFeeRate",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "settle", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "settleAll", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "settlementToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateDisplayMode",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateLiquidityMode",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updatePositionMode",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateProtocolFeeRate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "vault", data: BytesLike): Result;
@@ -633,9 +717,12 @@ export interface IChromaticMarketInterface extends utils.Interface {
     "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
     "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
     "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
+    "DisplayModeUpdated(uint8,uint8)": EventFragment;
     "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
+    "LiquidityModeUpdated(uint8,uint8)": EventFragment;
     "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
-    "ProtocolFeeRateSet(uint16,uint16)": EventFragment;
+    "PositionModeUpdated(uint8,uint8)": EventFragment;
+    "ProtocolFeeRateUpdated(uint16,uint16)": EventFragment;
     "RemoveLiquidity((uint256,uint256,uint256,address,uint8,int16))": EventFragment;
     "RemoveLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])": EventFragment;
     "TransferProtocolFee(uint256,uint256)": EventFragment;
@@ -650,9 +737,12 @@ export interface IChromaticMarketInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "ClaimPosition"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ClaimPositionByKeeper"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ClosePosition"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "DisplayModeUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Liquidate"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "LiquidityModeUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OpenPosition"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "ProtocolFeeRateSet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PositionModeUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ProtocolFeeRateUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveLiquidity"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveLiquidityBatch"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferProtocolFee"): EventFragment;
@@ -743,6 +833,18 @@ export type ClosePositionEvent = TypedEvent<
 
 export type ClosePositionEventFilter = TypedEventFilter<ClosePositionEvent>;
 
+export interface DisplayModeUpdatedEventObject {
+  displayModeOld: number;
+  displayModeNew: number;
+}
+export type DisplayModeUpdatedEvent = TypedEvent<
+  [number, number],
+  DisplayModeUpdatedEventObject
+>;
+
+export type DisplayModeUpdatedEventFilter =
+  TypedEventFilter<DisplayModeUpdatedEvent>;
+
 export interface LiquidateEventObject {
   account: string;
   pnl: BigNumber;
@@ -757,6 +859,18 @@ export type LiquidateEvent = TypedEvent<
 
 export type LiquidateEventFilter = TypedEventFilter<LiquidateEvent>;
 
+export interface LiquidityModeUpdatedEventObject {
+  liquidityModeOld: number;
+  liquidityModeNew: number;
+}
+export type LiquidityModeUpdatedEvent = TypedEvent<
+  [number, number],
+  LiquidityModeUpdatedEventObject
+>;
+
+export type LiquidityModeUpdatedEventFilter =
+  TypedEventFilter<LiquidityModeUpdatedEvent>;
+
 export interface OpenPositionEventObject {
   account: string;
   position: PositionStructOutput;
@@ -768,17 +882,29 @@ export type OpenPositionEvent = TypedEvent<
 
 export type OpenPositionEventFilter = TypedEventFilter<OpenPositionEvent>;
 
-export interface ProtocolFeeRateSetEventObject {
+export interface PositionModeUpdatedEventObject {
+  positionModeOld: number;
+  positionModeNew: number;
+}
+export type PositionModeUpdatedEvent = TypedEvent<
+  [number, number],
+  PositionModeUpdatedEventObject
+>;
+
+export type PositionModeUpdatedEventFilter =
+  TypedEventFilter<PositionModeUpdatedEvent>;
+
+export interface ProtocolFeeRateUpdatedEventObject {
   protocolFeeRateOld: number;
   protocolFeeRateNew: number;
 }
-export type ProtocolFeeRateSetEvent = TypedEvent<
+export type ProtocolFeeRateUpdatedEvent = TypedEvent<
   [number, number],
-  ProtocolFeeRateSetEventObject
+  ProtocolFeeRateUpdatedEventObject
 >;
 
-export type ProtocolFeeRateSetEventFilter =
-  TypedEventFilter<ProtocolFeeRateSetEvent>;
+export type ProtocolFeeRateUpdatedEventFilter =
+  TypedEventFilter<ProtocolFeeRateUpdatedEvent>;
 
 export interface RemoveLiquidityEventObject {
   receipt: LpReceiptStructOutput;
@@ -912,6 +1038,12 @@ export interface IChromaticMarket extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    checkLiquidationWithOracleVersion(
+      positionId: BigNumberish,
+      oracleVersion: IOracleProvider.OracleVersionStruct,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     /**
      * Claims liquidity from a liquidity receipt.
      * @param data Additional data for the liquidity callback.
@@ -1015,6 +1147,11 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<[ClosingPositionStructOutput[]]>;
 
     /**
+     * Returns the display mode
+     */
+    displayMode(overrides?: CallOverrides): Promise<[number]>;
+
+    /**
      * Distributes earning to the liquidity bins.
      * @param earning The amount of earning to distribute.
      * @param marketBalance The balance of the market.
@@ -1116,6 +1253,11 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<[LiquidityBinStatusStructOutput[]]>;
 
     /**
+     * Returns the liquidity mode
+     */
+    liquidityMode(overrides?: CallOverrides): Promise<[number]>;
+
+    /**
      * Opens a new position in the market.
      * @param data Additional data for the position callback.
      * @param makerMargin The margin amount provided by the maker.
@@ -1174,6 +1316,11 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<[PendingPositionStructOutput[]]>;
 
     /**
+     * Returns the position mode
+     */
+    positionMode(overrides?: CallOverrides): Promise<[number]>;
+
+    /**
      * Returns the protocol fee rate
      */
     protocolFeeRate(overrides?: CallOverrides): Promise<[number]>;
@@ -1207,15 +1354,6 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * Set the new protocol fee rate
-     * @param _protocolFeeRate new protocol fee rate for the market
-     */
-    setProtocolFeeRate(
-      _protocolFeeRate: BigNumberish,
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
-
-    /**
      * This function is called to settle the market.
      * Executes the settlement process for the Chromatic market.
      * @param feeRates The feeRate list of liquidity bin to settle.
@@ -1237,6 +1375,42 @@ export interface IChromaticMarket extends BaseContract {
      * Returns the settlement token of the market.
      */
     settlementToken(overrides?: CallOverrides): Promise<[string]>;
+
+    /**
+     * Update the new display mode
+     * @param _displayMode new display mode for the market
+     */
+    updateDisplayMode(
+      _displayMode: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Update the new liquidity mode
+     * @param _liquidityMode new liquidity mode for the market
+     */
+    updateLiquidityMode(
+      _liquidityMode: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Update the new position mode
+     * @param _positionMode new position mode for the market
+     */
+    updatePositionMode(
+      _positionMode: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Update the new protocol fee rate
+     * @param _protocolFeeRate new protocol fee rate for the market
+     */
+    updateProtocolFeeRate(
+      _protocolFeeRate: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
 
     /**
      * Returns the vault contract for the market.
@@ -1309,6 +1483,12 @@ export interface IChromaticMarket extends BaseContract {
    */
   checkLiquidation(
     positionId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  checkLiquidationWithOracleVersion(
+    positionId: BigNumberish,
+    oracleVersion: IOracleProvider.OracleVersionStruct,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -1415,6 +1595,11 @@ export interface IChromaticMarket extends BaseContract {
   ): Promise<ClosingPositionStructOutput[]>;
 
   /**
+   * Returns the display mode
+   */
+  displayMode(overrides?: CallOverrides): Promise<number>;
+
+  /**
    * Distributes earning to the liquidity bins.
    * @param earning The amount of earning to distribute.
    * @param marketBalance The balance of the market.
@@ -1514,6 +1699,11 @@ export interface IChromaticMarket extends BaseContract {
   ): Promise<LiquidityBinStatusStructOutput[]>;
 
   /**
+   * Returns the liquidity mode
+   */
+  liquidityMode(overrides?: CallOverrides): Promise<number>;
+
+  /**
    * Opens a new position in the market.
    * @param data Additional data for the position callback.
    * @param makerMargin The margin amount provided by the maker.
@@ -1572,6 +1762,11 @@ export interface IChromaticMarket extends BaseContract {
   ): Promise<PendingPositionStructOutput[]>;
 
   /**
+   * Returns the position mode
+   */
+  positionMode(overrides?: CallOverrides): Promise<number>;
+
+  /**
    * Returns the protocol fee rate
    */
   protocolFeeRate(overrides?: CallOverrides): Promise<number>;
@@ -1605,15 +1800,6 @@ export interface IChromaticMarket extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * Set the new protocol fee rate
-   * @param _protocolFeeRate new protocol fee rate for the market
-   */
-  setProtocolFeeRate(
-    _protocolFeeRate: BigNumberish,
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
-
-  /**
    * This function is called to settle the market.
    * Executes the settlement process for the Chromatic market.
    * @param feeRates The feeRate list of liquidity bin to settle.
@@ -1635,6 +1821,42 @@ export interface IChromaticMarket extends BaseContract {
    * Returns the settlement token of the market.
    */
   settlementToken(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Update the new display mode
+   * @param _displayMode new display mode for the market
+   */
+  updateDisplayMode(
+    _displayMode: BigNumberish,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Update the new liquidity mode
+   * @param _liquidityMode new liquidity mode for the market
+   */
+  updateLiquidityMode(
+    _liquidityMode: BigNumberish,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Update the new position mode
+   * @param _positionMode new position mode for the market
+   */
+  updatePositionMode(
+    _positionMode: BigNumberish,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Update the new protocol fee rate
+   * @param _protocolFeeRate new protocol fee rate for the market
+   */
+  updateProtocolFeeRate(
+    _protocolFeeRate: BigNumberish,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
 
   /**
    * Returns the vault contract for the market.
@@ -1707,6 +1929,12 @@ export interface IChromaticMarket extends BaseContract {
      */
     checkLiquidation(
       positionId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    checkLiquidationWithOracleVersion(
+      positionId: BigNumberish,
+      oracleVersion: IOracleProvider.OracleVersionStruct,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -1813,6 +2041,11 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<ClosingPositionStructOutput[]>;
 
     /**
+     * Returns the display mode
+     */
+    displayMode(overrides?: CallOverrides): Promise<number>;
+
+    /**
      * Distributes earning to the liquidity bins.
      * @param earning The amount of earning to distribute.
      * @param marketBalance The balance of the market.
@@ -1912,6 +2145,11 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<LiquidityBinStatusStructOutput[]>;
 
     /**
+     * Returns the liquidity mode
+     */
+    liquidityMode(overrides?: CallOverrides): Promise<number>;
+
+    /**
      * Opens a new position in the market.
      * @param data Additional data for the position callback.
      * @param makerMargin The margin amount provided by the maker.
@@ -1970,6 +2208,11 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<PendingPositionStructOutput[]>;
 
     /**
+     * Returns the position mode
+     */
+    positionMode(overrides?: CallOverrides): Promise<number>;
+
+    /**
      * Returns the protocol fee rate
      */
     protocolFeeRate(overrides?: CallOverrides): Promise<number>;
@@ -2003,15 +2246,6 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<LpReceiptStructOutput[]>;
 
     /**
-     * Set the new protocol fee rate
-     * @param _protocolFeeRate new protocol fee rate for the market
-     */
-    setProtocolFeeRate(
-      _protocolFeeRate: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    /**
      * This function is called to settle the market.
      * Executes the settlement process for the Chromatic market.
      * @param feeRates The feeRate list of liquidity bin to settle.
@@ -2028,6 +2262,42 @@ export interface IChromaticMarket extends BaseContract {
      * Returns the settlement token of the market.
      */
     settlementToken(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Update the new display mode
+     * @param _displayMode new display mode for the market
+     */
+    updateDisplayMode(
+      _displayMode: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * Update the new liquidity mode
+     * @param _liquidityMode new liquidity mode for the market
+     */
+    updateLiquidityMode(
+      _liquidityMode: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * Update the new position mode
+     * @param _positionMode new position mode for the market
+     */
+    updatePositionMode(
+      _positionMode: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * Update the new protocol fee rate
+     * @param _protocolFeeRate new protocol fee rate for the market
+     */
+    updateProtocolFeeRate(
+      _protocolFeeRate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     /**
      * Returns the vault contract for the market.
@@ -2123,6 +2393,15 @@ export interface IChromaticMarket extends BaseContract {
       position?: null
     ): ClosePositionEventFilter;
 
+    "DisplayModeUpdated(uint8,uint8)"(
+      displayModeOld?: null,
+      displayModeNew?: null
+    ): DisplayModeUpdatedEventFilter;
+    DisplayModeUpdated(
+      displayModeOld?: null,
+      displayModeNew?: null
+    ): DisplayModeUpdatedEventFilter;
+
     "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
       account?: string | null,
       pnl?: BigNumberish | null,
@@ -2138,6 +2417,15 @@ export interface IChromaticMarket extends BaseContract {
       position?: null
     ): LiquidateEventFilter;
 
+    "LiquidityModeUpdated(uint8,uint8)"(
+      liquidityModeOld?: null,
+      liquidityModeNew?: null
+    ): LiquidityModeUpdatedEventFilter;
+    LiquidityModeUpdated(
+      liquidityModeOld?: null,
+      liquidityModeNew?: null
+    ): LiquidityModeUpdatedEventFilter;
+
     "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
       account?: string | null,
       position?: null
@@ -2147,14 +2435,23 @@ export interface IChromaticMarket extends BaseContract {
       position?: null
     ): OpenPositionEventFilter;
 
-    "ProtocolFeeRateSet(uint16,uint16)"(
+    "PositionModeUpdated(uint8,uint8)"(
+      positionModeOld?: null,
+      positionModeNew?: null
+    ): PositionModeUpdatedEventFilter;
+    PositionModeUpdated(
+      positionModeOld?: null,
+      positionModeNew?: null
+    ): PositionModeUpdatedEventFilter;
+
+    "ProtocolFeeRateUpdated(uint16,uint16)"(
       protocolFeeRateOld?: null,
       protocolFeeRateNew?: null
-    ): ProtocolFeeRateSetEventFilter;
-    ProtocolFeeRateSet(
+    ): ProtocolFeeRateUpdatedEventFilter;
+    ProtocolFeeRateUpdated(
       protocolFeeRateOld?: null,
       protocolFeeRateNew?: null
-    ): ProtocolFeeRateSetEventFilter;
+    ): ProtocolFeeRateUpdatedEventFilter;
 
     "RemoveLiquidity((uint256,uint256,uint256,address,uint8,int16))"(
       receipt?: null
@@ -2242,6 +2539,12 @@ export interface IChromaticMarket extends BaseContract {
      */
     checkLiquidation(
       positionId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    checkLiquidationWithOracleVersion(
+      positionId: BigNumberish,
+      oracleVersion: IOracleProvider.OracleVersionStruct,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2348,6 +2651,11 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * Returns the display mode
+     */
+    displayMode(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
      * Distributes earning to the liquidity bins.
      * @param earning The amount of earning to distribute.
      * @param marketBalance The balance of the market.
@@ -2445,6 +2753,11 @@ export interface IChromaticMarket extends BaseContract {
     liquidityBinStatuses(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
+     * Returns the liquidity mode
+     */
+    liquidityMode(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
      * Opens a new position in the market.
      * @param data Additional data for the position callback.
      * @param makerMargin The margin amount provided by the maker.
@@ -2503,6 +2816,11 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * Returns the position mode
+     */
+    positionMode(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
      * Returns the protocol fee rate
      */
     protocolFeeRate(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2536,15 +2854,6 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Set the new protocol fee rate
-     * @param _protocolFeeRate new protocol fee rate for the market
-     */
-    setProtocolFeeRate(
-      _protocolFeeRate: BigNumberish,
-      overrides?: Overrides & { from?: string }
-    ): Promise<BigNumber>;
-
-    /**
      * This function is called to settle the market.
      * Executes the settlement process for the Chromatic market.
      * @param feeRates The feeRate list of liquidity bin to settle.
@@ -2564,6 +2873,42 @@ export interface IChromaticMarket extends BaseContract {
      * Returns the settlement token of the market.
      */
     settlementToken(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Update the new display mode
+     * @param _displayMode new display mode for the market
+     */
+    updateDisplayMode(
+      _displayMode: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     * Update the new liquidity mode
+     * @param _liquidityMode new liquidity mode for the market
+     */
+    updateLiquidityMode(
+      _liquidityMode: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     * Update the new position mode
+     * @param _positionMode new position mode for the market
+     */
+    updatePositionMode(
+      _positionMode: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     * Update the new protocol fee rate
+     * @param _protocolFeeRate new protocol fee rate for the market
+     */
+    updateProtocolFeeRate(
+      _protocolFeeRate: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
 
     /**
      * Returns the vault contract for the market.
@@ -2637,6 +2982,12 @@ export interface IChromaticMarket extends BaseContract {
      */
     checkLiquidation(
       positionId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    checkLiquidationWithOracleVersion(
+      positionId: BigNumberish,
+      oracleVersion: IOracleProvider.OracleVersionStruct,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2743,6 +3094,11 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * Returns the display mode
+     */
+    displayMode(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
      * Distributes earning to the liquidity bins.
      * @param earning The amount of earning to distribute.
      * @param marketBalance The balance of the market.
@@ -2842,6 +3198,11 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * Returns the liquidity mode
+     */
+    liquidityMode(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
      * Opens a new position in the market.
      * @param data Additional data for the position callback.
      * @param makerMargin The margin amount provided by the maker.
@@ -2900,6 +3261,11 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * Returns the position mode
+     */
+    positionMode(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
      * Returns the protocol fee rate
      */
     protocolFeeRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -2933,15 +3299,6 @@ export interface IChromaticMarket extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Set the new protocol fee rate
-     * @param _protocolFeeRate new protocol fee rate for the market
-     */
-    setProtocolFeeRate(
-      _protocolFeeRate: BigNumberish,
-      overrides?: Overrides & { from?: string }
-    ): Promise<PopulatedTransaction>;
-
-    /**
      * This function is called to settle the market.
      * Executes the settlement process for the Chromatic market.
      * @param feeRates The feeRate list of liquidity bin to settle.
@@ -2963,6 +3320,42 @@ export interface IChromaticMarket extends BaseContract {
      * Returns the settlement token of the market.
      */
     settlementToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Update the new display mode
+     * @param _displayMode new display mode for the market
+     */
+    updateDisplayMode(
+      _displayMode: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Update the new liquidity mode
+     * @param _liquidityMode new liquidity mode for the market
+     */
+    updateLiquidityMode(
+      _liquidityMode: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Update the new position mode
+     * @param _positionMode new position mode for the market
+     */
+    updatePositionMode(
+      _positionMode: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Update the new protocol fee rate
+     * @param _protocolFeeRate new protocol fee rate for the market
+     */
+    updateProtocolFeeRate(
+      _protocolFeeRate: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
 
     /**
      * Returns the vault contract for the market.

@@ -45,8 +45,9 @@
     "url": "git+https://github.com/chromatic-protocol/sdk.git"
   },
   "dependencies": {
-    "graphql": "^16.8.1",
     "@chromatic-protocol/graphql-request": "0.0.1-rc.7",
+    "graphql": "^16.8.1",
+    "graphql-tag": "^2.11.0",
     "json-bigint": "^1.0.0",
     "viem": "^1.21.0"
   },

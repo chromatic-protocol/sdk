@@ -98,124 +98,36 @@ export type PositionStructOutput = [
   _binMargins: BinMarginStructOutput[];
 };
 
-export type ClaimableLiquidityStruct = {
-  mintingTokenAmountRequested: BigNumberish;
-  mintingCLBTokenAmount: BigNumberish;
-  burningCLBTokenAmountRequested: BigNumberish;
-  burningCLBTokenAmount: BigNumberish;
-  burningTokenAmount: BigNumberish;
-};
-
-export type ClaimableLiquidityStructOutput = [
-  mintingTokenAmountRequested: bigint,
-  mintingCLBTokenAmount: bigint,
-  burningCLBTokenAmountRequested: bigint,
-  burningCLBTokenAmount: bigint,
-  burningTokenAmount: bigint
-] & {
-  mintingTokenAmountRequested: bigint;
-  mintingCLBTokenAmount: bigint;
-  burningCLBTokenAmountRequested: bigint;
-  burningCLBTokenAmount: bigint;
-  burningTokenAmount: bigint;
-};
-
-export type ClosingPositionStruct = {
-  closeVersion: BigNumberish;
-  totalQty: BigNumberish;
-  totalEntryAmount: BigNumberish;
-  totalMakerMargin: BigNumberish;
-  totalTakerMargin: BigNumberish;
-};
-
-export type ClosingPositionStructOutput = [
-  closeVersion: bigint,
-  totalQty: bigint,
-  totalEntryAmount: bigint,
-  totalMakerMargin: bigint,
-  totalTakerMargin: bigint
-] & {
-  closeVersion: bigint;
-  totalQty: bigint;
-  totalEntryAmount: bigint;
-  totalMakerMargin: bigint;
-  totalTakerMargin: bigint;
-};
-
-export type LiquidityBinStatusStruct = {
-  liquidity: BigNumberish;
-  freeLiquidity: BigNumberish;
-  binValue: BigNumberish;
-  tradingFeeRate: BigNumberish;
-};
-
-export type LiquidityBinStatusStructOutput = [
-  liquidity: bigint,
-  freeLiquidity: bigint,
-  binValue: bigint,
-  tradingFeeRate: bigint
-] & {
-  liquidity: bigint;
-  freeLiquidity: bigint;
-  binValue: bigint;
-  tradingFeeRate: bigint;
-};
-
-export type PendingLiquidityStruct = {
-  oracleVersion: BigNumberish;
-  mintingTokenAmountRequested: BigNumberish;
-  burningCLBTokenAmountRequested: BigNumberish;
-};
-
-export type PendingLiquidityStructOutput = [
-  oracleVersion: bigint,
-  mintingTokenAmountRequested: bigint,
-  burningCLBTokenAmountRequested: bigint
-] & {
-  oracleVersion: bigint;
-  mintingTokenAmountRequested: bigint;
-  burningCLBTokenAmountRequested: bigint;
-};
-
-export type PendingPositionStruct = {
+export type OpenPositionInfoStruct = {
+  id: BigNumberish;
   openVersion: BigNumberish;
-  totalQty: BigNumberish;
-  totalMakerMargin: BigNumberish;
-  totalTakerMargin: BigNumberish;
+  qty: BigNumberish;
+  openTimestamp: BigNumberish;
+  takerMargin: BigNumberish;
+  makerMargin: BigNumberish;
+  tradingFee: BigNumberish;
 };
 
-export type PendingPositionStructOutput = [
+export type OpenPositionInfoStructOutput = [
+  id: bigint,
   openVersion: bigint,
-  totalQty: bigint,
-  totalMakerMargin: bigint,
-  totalTakerMargin: bigint
+  qty: bigint,
+  openTimestamp: bigint,
+  takerMargin: bigint,
+  makerMargin: bigint,
+  tradingFee: bigint
 ] & {
+  id: bigint;
   openVersion: bigint;
-  totalQty: bigint;
-  totalMakerMargin: bigint;
-  totalTakerMargin: bigint;
+  qty: bigint;
+  openTimestamp: bigint;
+  takerMargin: bigint;
+  makerMargin: bigint;
+  tradingFee: bigint;
 };
 
-export interface MarketLensFacetInterface extends Interface {
-  getFunction(
-    nameOrSignature:
-      | "claimableLiquidity"
-      | "claimableLiquidityBatch"
-      | "closingPosition"
-      | "closingPositionBatch"
-      | "getBinFreeLiquidity"
-      | "getBinLiquidity"
-      | "getBinValues"
-      | "getLpReceipt"
-      | "getLpReceipts"
-      | "getPosition"
-      | "getPositions"
-      | "liquidityBinStatuses"
-      | "pendingLiquidity"
-      | "pendingLiquidityBatch"
-      | "pendingPosition"
-      | "pendingPositionBatch"
-  ): FunctionFragment;
+export interface MarketTradeOpenPositionFacetInterface extends Interface {
+  getFunction(nameOrSignature: "openPosition"): FunctionFragment;
 
   getEvent(
     nameOrSignatureOrTopic:
@@ -239,132 +151,12 @@ export interface MarketLensFacetInterface extends Interface {
   ): EventFragment;
 
   encodeFunctionData(
-    functionFragment: "claimableLiquidity",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "claimableLiquidityBatch",
-    values: [BigNumberish[], BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "closingPosition",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "closingPositionBatch",
-    values: [BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getBinFreeLiquidity",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getBinLiquidity",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getBinValues",
-    values: [BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getLpReceipt",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getLpReceipts",
-    values: [BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getPosition",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getPositions",
-    values: [BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "liquidityBinStatuses",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "pendingLiquidity",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "pendingLiquidityBatch",
-    values: [BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "pendingPosition",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "pendingPositionBatch",
-    values: [BigNumberish[]]
+    functionFragment: "openPosition",
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish, BytesLike]
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "claimableLiquidity",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "claimableLiquidityBatch",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "closingPosition",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "closingPositionBatch",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getBinFreeLiquidity",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getBinLiquidity",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getBinValues",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getLpReceipt",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getLpReceipts",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getPosition",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getPositions",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "liquidityBinStatuses",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "pendingLiquidity",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "pendingLiquidityBatch",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "pendingPosition",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "pendingPositionBatch",
+    functionFragment: "openPosition",
     data: BytesLike
   ): Result;
 }
@@ -676,11 +468,11 @@ export namespace WithdrawLiquidityBatchEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface MarketLensFacet extends BaseContract {
-  connect(runner?: ContractRunner | null): MarketLensFacet;
+export interface MarketTradeOpenPositionFacet extends BaseContract {
+  connect(runner?: ContractRunner | null): MarketTradeOpenPositionFacet;
   waitForDeployment(): Promise<this>;
 
-  interface: MarketLensFacetInterface;
+  interface: MarketTradeOpenPositionFacetInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -720,164 +512,23 @@ export interface MarketLensFacet extends BaseContract {
   ): Promise<this>;
 
   /**
-   * Retrieves the claimable liquidity information for a specific trading fee rate and oracle version from the associated LiquidityPool.
-   * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
-   * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
+   * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
+   * @param data Additional data for the position callback.
+   * @param makerMargin The margin amount provided by the maker.
+   * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
+   * @param qty The quantity of the position.
+   * @param takerMargin The margin amount provided by the taker.
    */
-  claimableLiquidity: TypedContractMethod<
-    [tradingFeeRate: BigNumberish, oracleVersion: BigNumberish],
-    [ClaimableLiquidityStructOutput],
-    "view"
-  >;
-
-  /**
-   * Retrieves the claimable liquidity information for multiple trading fee rates and a specific oracle version from the associated LiquidityPool.
-   * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
-   * @param tradingFeeRates The list of trading fee rates for which to retrieve the claimable liquidity.
-   */
-  claimableLiquidityBatch: TypedContractMethod<
-    [tradingFeeRates: BigNumberish[], oracleVersion: BigNumberish],
-    [ClaimableLiquidityStructOutput[]],
-    "view"
-  >;
-
-  /**
-   * Retrieves the closing position information for a specific trading fee rate from the associated LiquidityPool.
-   * @param tradingFeeRate The trading fee rate for which to retrieve the closing position.
-   */
-  closingPosition: TypedContractMethod<
-    [tradingFeeRate: BigNumberish],
-    [ClosingPositionStructOutput],
-    "view"
-  >;
-
-  /**
-   * Retrieves the closing position information for multiple trading fee rates from the associated LiquidityPool.
-   * @param tradingFeeRates The list of trading fee rates for which to retrieve the closing position.
-   */
-  closingPositionBatch: TypedContractMethod<
-    [tradingFeeRates: BigNumberish[]],
-    [ClosingPositionStructOutput[]],
-    "view"
-  >;
-
-  /**
-   * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
-   * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
-   */
-  getBinFreeLiquidity: TypedContractMethod<
-    [tradingFeeRate: BigNumberish],
-    [bigint],
-    "view"
-  >;
-
-  /**
-   * Retrieves the total liquidity amount for a specific trading fee rate in the liquidity pool.
-   * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
-   */
-  getBinLiquidity: TypedContractMethod<
-    [tradingFeeRate: BigNumberish],
-    [bigint],
-    "view"
-  >;
-
-  /**
-   * Retrieves the values of a specific trading fee rate's bins in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
-   * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
-   */
-  getBinValues: TypedContractMethod<
-    [tradingFeeRates: BigNumberish[]],
-    [bigint[]],
-    "view"
-  >;
-
-  /**
-   * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
-   * @param receiptId The ID of the liquidity receipt to retrieve.
-   */
-  getLpReceipt: TypedContractMethod<
-    [receiptId: BigNumberish],
-    [LpReceiptStructOutput],
-    "view"
-  >;
-
-  /**
-   * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
-   * @param receiptIds The ID list of the liquidity receipt to retrieve.
-   */
-  getLpReceipts: TypedContractMethod<
-    [receiptIds: BigNumberish[]],
-    [LpReceiptStructOutput[]],
-    "view"
-  >;
-
-  /**
-   * Throws a `NotExistPosition` error if the position does not exist.
-   * @param positionId The ID of the position to retrieve.
-   */
-  getPosition: TypedContractMethod<
-    [positionId: BigNumberish],
-    [PositionStructOutput],
-    "view"
-  >;
-
-  /**
-   * Retrieves multiple positions by their IDs.
-   * @param positionIds The IDs of the positions to retrieve.
-   */
-  getPositions: TypedContractMethod<
-    [positionIds: BigNumberish[]],
-    [PositionStructOutput[]],
-    "view"
-  >;
-
-  /**
-   * Retrieves the liquidity bin statuses for the caller's liquidity pool.
-   */
-  liquidityBinStatuses: TypedContractMethod<
-    [],
-    [LiquidityBinStatusStructOutput[]],
-    "view"
-  >;
-
-  /**
-   * Retrieves the pending liquidity information for a specific trading fee rate from the associated LiquidityPool.
-   * @param tradingFeeRate The trading fee rate for which to retrieve the pending liquidity.
-   */
-  pendingLiquidity: TypedContractMethod<
-    [tradingFeeRate: BigNumberish],
-    [PendingLiquidityStructOutput],
-    "view"
-  >;
-
-  /**
-   * Retrieves the pending liquidity information for multiple trading fee rates from the associated LiquidityPool.
-   * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending liquidity.
-   */
-  pendingLiquidityBatch: TypedContractMethod<
-    [tradingFeeRates: BigNumberish[]],
-    [PendingLiquidityStructOutput[]],
-    "view"
-  >;
-
-  /**
-   * Retrieves the pending position information for a specific trading fee rate from the associated LiquidityPool.
-   * @param tradingFeeRate The trading fee rate for which to retrieve the pending position.
-   */
-  pendingPosition: TypedContractMethod<
-    [tradingFeeRate: BigNumberish],
-    [PendingPositionStructOutput],
-    "view"
-  >;
-
-  /**
-   * Retrieves the pending position information for multiple trading fee rates from the associated LiquidityPool.
-   * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending position.
-   */
-  pendingPositionBatch: TypedContractMethod<
-    [tradingFeeRates: BigNumberish[]],
-    [PendingPositionStructOutput[]],
-    "view"
+  openPosition: TypedContractMethod<
+    [
+      qty: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
+      data: BytesLike
+    ],
+    [OpenPositionInfoStructOutput],
+    "nonpayable"
   >;
 
   getFunction<T extends ContractMethod = ContractMethod>(
@@ -885,100 +536,17 @@ export interface MarketLensFacet extends BaseContract {
   ): T;
 
   getFunction(
-    nameOrSignature: "claimableLiquidity"
+    nameOrSignature: "openPosition"
   ): TypedContractMethod<
-    [tradingFeeRate: BigNumberish, oracleVersion: BigNumberish],
-    [ClaimableLiquidityStructOutput],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "claimableLiquidityBatch"
-  ): TypedContractMethod<
-    [tradingFeeRates: BigNumberish[], oracleVersion: BigNumberish],
-    [ClaimableLiquidityStructOutput[]],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "closingPosition"
-  ): TypedContractMethod<
-    [tradingFeeRate: BigNumberish],
-    [ClosingPositionStructOutput],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "closingPositionBatch"
-  ): TypedContractMethod<
-    [tradingFeeRates: BigNumberish[]],
-    [ClosingPositionStructOutput[]],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "getBinFreeLiquidity"
-  ): TypedContractMethod<[tradingFeeRate: BigNumberish], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "getBinLiquidity"
-  ): TypedContractMethod<[tradingFeeRate: BigNumberish], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "getBinValues"
-  ): TypedContractMethod<[tradingFeeRates: BigNumberish[]], [bigint[]], "view">;
-  getFunction(
-    nameOrSignature: "getLpReceipt"
-  ): TypedContractMethod<
-    [receiptId: BigNumberish],
-    [LpReceiptStructOutput],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "getLpReceipts"
-  ): TypedContractMethod<
-    [receiptIds: BigNumberish[]],
-    [LpReceiptStructOutput[]],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "getPosition"
-  ): TypedContractMethod<
-    [positionId: BigNumberish],
-    [PositionStructOutput],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "getPositions"
-  ): TypedContractMethod<
-    [positionIds: BigNumberish[]],
-    [PositionStructOutput[]],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "liquidityBinStatuses"
-  ): TypedContractMethod<[], [LiquidityBinStatusStructOutput[]], "view">;
-  getFunction(
-    nameOrSignature: "pendingLiquidity"
-  ): TypedContractMethod<
-    [tradingFeeRate: BigNumberish],
-    [PendingLiquidityStructOutput],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "pendingLiquidityBatch"
-  ): TypedContractMethod<
-    [tradingFeeRates: BigNumberish[]],
-    [PendingLiquidityStructOutput[]],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "pendingPosition"
-  ): TypedContractMethod<
-    [tradingFeeRate: BigNumberish],
-    [PendingPositionStructOutput],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "pendingPositionBatch"
-  ): TypedContractMethod<
-    [tradingFeeRates: BigNumberish[]],
-    [PendingPositionStructOutput[]],
-    "view"
+    [
+      qty: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
+      data: BytesLike
+    ],
+    [OpenPositionInfoStructOutput],
+    "nonpayable"
   >;
 
   getEvent(

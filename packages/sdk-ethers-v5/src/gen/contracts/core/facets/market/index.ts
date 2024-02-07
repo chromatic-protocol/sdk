@@ -9,5 +9,6 @@ export type { MarketLiquidityFacet } from "./MarketLiquidityFacet";
 export type { MarketLiquidityFacetBase } from "./MarketLiquidityFacetBase";
 export type { MarketSettleFacet } from "./MarketSettleFacet";
 export type { MarketStateFacet } from "./MarketStateFacet";
-export type { MarketTradeFacet } from "./MarketTradeFacet";
+export type { MarketTradeClosePositionFacet } from "./MarketTradeClosePositionFacet";
 export type { MarketTradeFacetBase } from "./MarketTradeFacetBase";
+export type { MarketTradeOpenPositionFacet } from "./MarketTradeOpenPositionFacet";

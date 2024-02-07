@@ -2,11 +2,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Interface, type ContractRunner } from "ethers";
+import { Contract, Signer, utils } from "ethers";
+import type { Provider } from "@ethersproject/providers";
 import type {
-  MarketTradeFacetBase,
-  MarketTradeFacetBaseInterface,
-} from "../../../../../contracts/core/facets/market/MarketTradeFacetBase";
+  MarketTradeClosePositionFacet,
+  MarketTradeClosePositionFacetInterface,
+} from "../../../../../contracts/core/facets/market/MarketTradeClosePositionFacet";
 
 const _abi = [
   {
@@ -32,6 +33,11 @@ const _abi = [
   {
     inputs: [],
     name: "DuplicatedTradingFeeRate",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "Empty",
     type: "error",
   },
   {
@@ -117,6 +123,11 @@ const _abi = [
   {
     inputs: [],
     name: "OpenPositionDisabled",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OutOfBounds",
     type: "error",
   },
   {
@@ -1094,21 +1105,80 @@ const _abi = [
     name: "WithdrawLiquidityBatch",
     type: "event",
   },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "positionId",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+    ],
+    name: "claimPosition",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "positionId",
+        type: "uint256",
+      },
+    ],
+    name: "closePosition",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeTimestamp",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct ClosePositionInfo",
+        name: "closed",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
 ] as const;
 
-export class MarketTradeFacetBase__factory {
+export class MarketTradeClosePositionFacet__factory {
   static readonly abi = _abi;
-  static createInterface(): MarketTradeFacetBaseInterface {
-    return new Interface(_abi) as MarketTradeFacetBaseInterface;
+  static createInterface(): MarketTradeClosePositionFacetInterface {
+    return new utils.Interface(_abi) as MarketTradeClosePositionFacetInterface;
   }
   static connect(
     address: string,
-    runner?: ContractRunner | null
-  ): MarketTradeFacetBase {
+    signerOrProvider: Signer | Provider
+  ): MarketTradeClosePositionFacet {
     return new Contract(
       address,
       _abi,
-      runner
-    ) as unknown as MarketTradeFacetBase;
+      signerOrProvider
+    ) as MarketTradeClosePositionFacet;
   }
 }

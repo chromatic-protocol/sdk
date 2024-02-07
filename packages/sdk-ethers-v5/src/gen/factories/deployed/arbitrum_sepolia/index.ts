@@ -7,3 +7,4 @@ export { ChromaticRouter__factory } from "./ChromaticRouter__factory";
 export { ChromaticVault__factory } from "./ChromaticVault__factory";
 export { CBTC__factory } from "./CBTC__factory";
 export { CETH__factory } from "./CETH__factory";
+export { CUSDT__factory } from "./CUSDT__factory";

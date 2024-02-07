@@ -2,11 +2,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Interface, type ContractRunner } from "ethers";
+import { Contract, Signer, utils } from "ethers";
+import type { Provider } from "@ethersproject/providers";
 import type {
-  MarketTradeFacetBase,
-  MarketTradeFacetBaseInterface,
-} from "../../../../../contracts/core/facets/market/MarketTradeFacetBase";
+  MarketTradeOpenPositionFacet,
+  MarketTradeOpenPositionFacetInterface,
+} from "../../../../../contracts/core/facets/market/MarketTradeOpenPositionFacet";
 
 const _abi = [
   {
@@ -32,6 +33,11 @@ const _abi = [
   {
     inputs: [],
     name: "DuplicatedTradingFeeRate",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "Empty",
     type: "error",
   },
   {
@@ -117,6 +123,11 @@ const _abi = [
   {
     inputs: [],
     name: "OpenPositionDisabled",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OutOfBounds",
     type: "error",
   },
   {
@@ -1094,21 +1105,97 @@ const _abi = [
     name: "WithdrawLiquidityBatch",
     type: "event",
   },
+  {
+    inputs: [
+      {
+        internalType: "int256",
+        name: "qty",
+        type: "int256",
+      },
+      {
+        internalType: "uint256",
+        name: "takerMargin",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "makerMargin",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "maxAllowableTradingFee",
+        type: "uint256",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+    ],
+    name: "openPosition",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "openVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "qty",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "openTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "takerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "makerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "tradingFee",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct OpenPositionInfo",
+        name: "positionInfo",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
 ] as const;
 
-export class MarketTradeFacetBase__factory {
+export class MarketTradeOpenPositionFacet__factory {
   static readonly abi = _abi;
-  static createInterface(): MarketTradeFacetBaseInterface {
-    return new Interface(_abi) as MarketTradeFacetBaseInterface;
+  static createInterface(): MarketTradeOpenPositionFacetInterface {
+    return new utils.Interface(_abi) as MarketTradeOpenPositionFacetInterface;
   }
   static connect(
     address: string,
-    runner?: ContractRunner | null
-  ): MarketTradeFacetBase {
+    signerOrProvider: Signer | Provider
+  ): MarketTradeOpenPositionFacet {
     return new Contract(
       address,
       _abi,
-      runner
-    ) as unknown as MarketTradeFacetBase;
+      signerOrProvider
+    ) as MarketTradeOpenPositionFacet;
   }
 }

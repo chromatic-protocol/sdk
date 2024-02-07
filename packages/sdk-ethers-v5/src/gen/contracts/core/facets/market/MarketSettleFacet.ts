@@ -13,7 +13,11 @@ import type {
   Signer,
   utils,
 } from "ethers";
-import type { FunctionFragment, Result } from "@ethersproject/abi";
+import type {
+  FunctionFragment,
+  Result,
+  EventFragment,
+} from "@ethersproject/abi";
 import type { Listener, Provider } from "@ethersproject/providers";
 import type {
   TypedEventFilter,
@@ -21,6 +25,81 @@ import type {
   TypedListener,
   OnEvent,
 } from "../../../../common";
+
+export type LpReceiptStruct = {
+  id: BigNumberish;
+  oracleVersion: BigNumberish;
+  amount: BigNumberish;
+  recipient: string;
+  action: BigNumberish;
+  tradingFeeRate: BigNumberish;
+};
+
+export type LpReceiptStructOutput = [
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  string,
+  number,
+  number
+] & {
+  id: BigNumber;
+  oracleVersion: BigNumber;
+  amount: BigNumber;
+  recipient: string;
+  action: number;
+  tradingFeeRate: number;
+};
+
+export type BinMarginStruct = {
+  tradingFeeRate: BigNumberish;
+  amount: BigNumberish;
+};
+
+export type BinMarginStructOutput = [number, BigNumber] & {
+  tradingFeeRate: number;
+  amount: BigNumber;
+};
+
+export type PositionStruct = {
+  id: BigNumberish;
+  openVersion: BigNumberish;
+  closeVersion: BigNumberish;
+  qty: BigNumberish;
+  openTimestamp: BigNumberish;
+  closeTimestamp: BigNumberish;
+  takerMargin: BigNumberish;
+  owner: string;
+  liquidator: string;
+  _protocolFeeRate: BigNumberish;
+  _binMargins: BinMarginStruct[];
+};
+
+export type PositionStructOutput = [
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  string,
+  string,
+  number,
+  BinMarginStructOutput[]
+] & {
+  id: BigNumber;
+  openVersion: BigNumber;
+  closeVersion: BigNumber;
+  qty: BigNumber;
+  openTimestamp: BigNumber;
+  closeTimestamp: BigNumber;
+  takerMargin: BigNumber;
+  owner: string;
+  liquidator: string;
+  _protocolFeeRate: number;
+  _binMargins: BinMarginStructOutput[];
+};
 
 export interface MarketSettleFacetInterface extends utils.Interface {
   functions: {
@@ -39,8 +118,247 @@ export interface MarketSettleFacetInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "settle", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "settleAll", data: BytesLike): Result;
 
-  events: {};
+  events: {
+    "AddLiquidity((uint256,uint256,uint256,address,uint8,int16))": EventFragment;
+    "AddLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])": EventFragment;
+    "ClaimLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256)": EventFragment;
+    "ClaimLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[])": EventFragment;
+    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
+    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
+    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
+    "DisplayModeUpdated(uint8,uint8)": EventFragment;
+    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
+    "LiquidityModeUpdated(uint8,uint8)": EventFragment;
+    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
+    "PositionModeUpdated(uint8,uint8)": EventFragment;
+    "ProtocolFeeRateUpdated(uint16,uint16)": EventFragment;
+    "RemoveLiquidity((uint256,uint256,uint256,address,uint8,int16))": EventFragment;
+    "RemoveLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])": EventFragment;
+    "WithdrawLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256,uint256)": EventFragment;
+    "WithdrawLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[],uint256[])": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "AddLiquidity"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "AddLiquidityBatch"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ClaimLiquidity"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ClaimLiquidityBatch"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ClaimPosition"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ClaimPositionByKeeper"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ClosePosition"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "DisplayModeUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Liquidate"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "LiquidityModeUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OpenPosition"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PositionModeUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ProtocolFeeRateUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RemoveLiquidity"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RemoveLiquidityBatch"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "WithdrawLiquidity"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "WithdrawLiquidityBatch"): EventFragment;
 }
+
+export interface AddLiquidityEventObject {
+  receipt: LpReceiptStructOutput;
+}
+export type AddLiquidityEvent = TypedEvent<
+  [LpReceiptStructOutput],
+  AddLiquidityEventObject
+>;
+
+export type AddLiquidityEventFilter = TypedEventFilter<AddLiquidityEvent>;
+
+export interface AddLiquidityBatchEventObject {
+  receipts: LpReceiptStructOutput[];
+}
+export type AddLiquidityBatchEvent = TypedEvent<
+  [LpReceiptStructOutput[]],
+  AddLiquidityBatchEventObject
+>;
+
+export type AddLiquidityBatchEventFilter =
+  TypedEventFilter<AddLiquidityBatchEvent>;
+
+export interface ClaimLiquidityEventObject {
+  receipt: LpReceiptStructOutput;
+  clbTokenAmount: BigNumber;
+}
+export type ClaimLiquidityEvent = TypedEvent<
+  [LpReceiptStructOutput, BigNumber],
+  ClaimLiquidityEventObject
+>;
+
+export type ClaimLiquidityEventFilter = TypedEventFilter<ClaimLiquidityEvent>;
+
+export interface ClaimLiquidityBatchEventObject {
+  receipts: LpReceiptStructOutput[];
+  clbTokenAmounts: BigNumber[];
+}
+export type ClaimLiquidityBatchEvent = TypedEvent<
+  [LpReceiptStructOutput[], BigNumber[]],
+  ClaimLiquidityBatchEventObject
+>;
+
+export type ClaimLiquidityBatchEventFilter =
+  TypedEventFilter<ClaimLiquidityBatchEvent>;
+
+export interface ClaimPositionEventObject {
+  account: string;
+  pnl: BigNumber;
+  interest: BigNumber;
+  position: PositionStructOutput;
+}
+export type ClaimPositionEvent = TypedEvent<
+  [string, BigNumber, BigNumber, PositionStructOutput],
+  ClaimPositionEventObject
+>;
+
+export type ClaimPositionEventFilter = TypedEventFilter<ClaimPositionEvent>;
+
+export interface ClaimPositionByKeeperEventObject {
+  account: string;
+  pnl: BigNumber;
+  interest: BigNumber;
+  usedKeeperFee: BigNumber;
+  position: PositionStructOutput;
+}
+export type ClaimPositionByKeeperEvent = TypedEvent<
+  [string, BigNumber, BigNumber, BigNumber, PositionStructOutput],
+  ClaimPositionByKeeperEventObject
+>;
+
+export type ClaimPositionByKeeperEventFilter =
+  TypedEventFilter<ClaimPositionByKeeperEvent>;
+
+export interface ClosePositionEventObject {
+  account: string;
+  position: PositionStructOutput;
+}
+export type ClosePositionEvent = TypedEvent<
+  [string, PositionStructOutput],
+  ClosePositionEventObject
+>;
+
+export type ClosePositionEventFilter = TypedEventFilter<ClosePositionEvent>;
+
+export interface DisplayModeUpdatedEventObject {
+  displayModeOld: number;
+  displayModeNew: number;
+}
+export type DisplayModeUpdatedEvent = TypedEvent<
+  [number, number],
+  DisplayModeUpdatedEventObject
+>;
+
+export type DisplayModeUpdatedEventFilter =
+  TypedEventFilter<DisplayModeUpdatedEvent>;
+
+export interface LiquidateEventObject {
+  account: string;
+  pnl: BigNumber;
+  interest: BigNumber;
+  usedKeeperFee: BigNumber;
+  position: PositionStructOutput;
+}
+export type LiquidateEvent = TypedEvent<
+  [string, BigNumber, BigNumber, BigNumber, PositionStructOutput],
+  LiquidateEventObject
+>;
+
+export type LiquidateEventFilter = TypedEventFilter<LiquidateEvent>;
+
+export interface LiquidityModeUpdatedEventObject {
+  liquidityModeOld: number;
+  liquidityModeNew: number;
+}
+export type LiquidityModeUpdatedEvent = TypedEvent<
+  [number, number],
+  LiquidityModeUpdatedEventObject
+>;
+
+export type LiquidityModeUpdatedEventFilter =
+  TypedEventFilter<LiquidityModeUpdatedEvent>;
+
+export interface OpenPositionEventObject {
+  account: string;
+  position: PositionStructOutput;
+}
+export type OpenPositionEvent = TypedEvent<
+  [string, PositionStructOutput],
+  OpenPositionEventObject
+>;
+
+export type OpenPositionEventFilter = TypedEventFilter<OpenPositionEvent>;
+
+export interface PositionModeUpdatedEventObject {
+  positionModeOld: number;
+  positionModeNew: number;
+}
+export type PositionModeUpdatedEvent = TypedEvent<
+  [number, number],
+  PositionModeUpdatedEventObject
+>;
+
+export type PositionModeUpdatedEventFilter =
+  TypedEventFilter<PositionModeUpdatedEvent>;
+
+export interface ProtocolFeeRateUpdatedEventObject {
+  protocolFeeRateOld: number;
+  protocolFeeRateNew: number;
+}
+export type ProtocolFeeRateUpdatedEvent = TypedEvent<
+  [number, number],
+  ProtocolFeeRateUpdatedEventObject
+>;
+
+export type ProtocolFeeRateUpdatedEventFilter =
+  TypedEventFilter<ProtocolFeeRateUpdatedEvent>;
+
+export interface RemoveLiquidityEventObject {
+  receipt: LpReceiptStructOutput;
+}
+export type RemoveLiquidityEvent = TypedEvent<
+  [LpReceiptStructOutput],
+  RemoveLiquidityEventObject
+>;
+
+export type RemoveLiquidityEventFilter = TypedEventFilter<RemoveLiquidityEvent>;
+
+export interface RemoveLiquidityBatchEventObject {
+  receipts: LpReceiptStructOutput[];
+}
+export type RemoveLiquidityBatchEvent = TypedEvent<
+  [LpReceiptStructOutput[]],
+  RemoveLiquidityBatchEventObject
+>;
+
+export type RemoveLiquidityBatchEventFilter =
+  TypedEventFilter<RemoveLiquidityBatchEvent>;
+
+export interface WithdrawLiquidityEventObject {
+  receipt: LpReceiptStructOutput;
+  amount: BigNumber;
+  burnedCLBTokenAmount: BigNumber;
+}
+export type WithdrawLiquidityEvent = TypedEvent<
+  [LpReceiptStructOutput, BigNumber, BigNumber],
+  WithdrawLiquidityEventObject
+>;
+
+export type WithdrawLiquidityEventFilter =
+  TypedEventFilter<WithdrawLiquidityEvent>;
+
+export interface WithdrawLiquidityBatchEventObject {
+  receipts: LpReceiptStructOutput[];
+  amounts: BigNumber[];
+  burnedCLBTokenAmounts: BigNumber[];
+}
+export type WithdrawLiquidityBatchEvent = TypedEvent<
+  [LpReceiptStructOutput[], BigNumber[], BigNumber[]],
+  WithdrawLiquidityBatchEventObject
+>;
+
+export type WithdrawLiquidityBatchEventFilter =
+  TypedEventFilter<WithdrawLiquidityBatchEvent>;
 
 export interface MarketSettleFacet extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -121,7 +439,164 @@ export interface MarketSettleFacet extends BaseContract {
     settleAll(overrides?: CallOverrides): Promise<void>;
   };
 
-  filters: {};
+  filters: {
+    "AddLiquidity((uint256,uint256,uint256,address,uint8,int16))"(
+      receipt?: null
+    ): AddLiquidityEventFilter;
+    AddLiquidity(receipt?: null): AddLiquidityEventFilter;
+
+    "AddLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])"(
+      receipts?: null
+    ): AddLiquidityBatchEventFilter;
+    AddLiquidityBatch(receipts?: null): AddLiquidityBatchEventFilter;
+
+    "ClaimLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256)"(
+      receipt?: null,
+      clbTokenAmount?: BigNumberish | null
+    ): ClaimLiquidityEventFilter;
+    ClaimLiquidity(
+      receipt?: null,
+      clbTokenAmount?: BigNumberish | null
+    ): ClaimLiquidityEventFilter;
+
+    "ClaimLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[])"(
+      receipts?: null,
+      clbTokenAmounts?: null
+    ): ClaimLiquidityBatchEventFilter;
+    ClaimLiquidityBatch(
+      receipts?: null,
+      clbTokenAmounts?: null
+    ): ClaimLiquidityBatchEventFilter;
+
+    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
+      position?: null
+    ): ClaimPositionEventFilter;
+    ClaimPosition(
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
+      position?: null
+    ): ClaimPositionEventFilter;
+
+    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
+      usedKeeperFee?: null,
+      position?: null
+    ): ClaimPositionByKeeperEventFilter;
+    ClaimPositionByKeeper(
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
+      usedKeeperFee?: null,
+      position?: null
+    ): ClaimPositionByKeeperEventFilter;
+
+    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
+      account?: string | null,
+      position?: null
+    ): ClosePositionEventFilter;
+    ClosePosition(
+      account?: string | null,
+      position?: null
+    ): ClosePositionEventFilter;
+
+    "DisplayModeUpdated(uint8,uint8)"(
+      displayModeOld?: null,
+      displayModeNew?: null
+    ): DisplayModeUpdatedEventFilter;
+    DisplayModeUpdated(
+      displayModeOld?: null,
+      displayModeNew?: null
+    ): DisplayModeUpdatedEventFilter;
+
+    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
+      usedKeeperFee?: null,
+      position?: null
+    ): LiquidateEventFilter;
+    Liquidate(
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
+      usedKeeperFee?: null,
+      position?: null
+    ): LiquidateEventFilter;
+
+    "LiquidityModeUpdated(uint8,uint8)"(
+      liquidityModeOld?: null,
+      liquidityModeNew?: null
+    ): LiquidityModeUpdatedEventFilter;
+    LiquidityModeUpdated(
+      liquidityModeOld?: null,
+      liquidityModeNew?: null
+    ): LiquidityModeUpdatedEventFilter;
+
+    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
+      account?: string | null,
+      position?: null
+    ): OpenPositionEventFilter;
+    OpenPosition(
+      account?: string | null,
+      position?: null
+    ): OpenPositionEventFilter;
+
+    "PositionModeUpdated(uint8,uint8)"(
+      positionModeOld?: null,
+      positionModeNew?: null
+    ): PositionModeUpdatedEventFilter;
+    PositionModeUpdated(
+      positionModeOld?: null,
+      positionModeNew?: null
+    ): PositionModeUpdatedEventFilter;
+
+    "ProtocolFeeRateUpdated(uint16,uint16)"(
+      protocolFeeRateOld?: null,
+      protocolFeeRateNew?: null
+    ): ProtocolFeeRateUpdatedEventFilter;
+    ProtocolFeeRateUpdated(
+      protocolFeeRateOld?: null,
+      protocolFeeRateNew?: null
+    ): ProtocolFeeRateUpdatedEventFilter;
+
+    "RemoveLiquidity((uint256,uint256,uint256,address,uint8,int16))"(
+      receipt?: null
+    ): RemoveLiquidityEventFilter;
+    RemoveLiquidity(receipt?: null): RemoveLiquidityEventFilter;
+
+    "RemoveLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])"(
+      receipts?: null
+    ): RemoveLiquidityBatchEventFilter;
+    RemoveLiquidityBatch(receipts?: null): RemoveLiquidityBatchEventFilter;
+
+    "WithdrawLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256,uint256)"(
+      receipt?: null,
+      amount?: BigNumberish | null,
+      burnedCLBTokenAmount?: BigNumberish | null
+    ): WithdrawLiquidityEventFilter;
+    WithdrawLiquidity(
+      receipt?: null,
+      amount?: BigNumberish | null,
+      burnedCLBTokenAmount?: BigNumberish | null
+    ): WithdrawLiquidityEventFilter;
+
+    "WithdrawLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[],uint256[])"(
+      receipts?: null,
+      amounts?: null,
+      burnedCLBTokenAmounts?: null
+    ): WithdrawLiquidityBatchEventFilter;
+    WithdrawLiquidityBatch(
+      receipts?: null,
+      amounts?: null,
+      burnedCLBTokenAmounts?: null
+    ): WithdrawLiquidityBatchEventFilter;
+  };
 
   estimateGas: {
     /**

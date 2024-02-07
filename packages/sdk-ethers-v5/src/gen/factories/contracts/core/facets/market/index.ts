@@ -9,5 +9,6 @@ export { MarketLiquidityFacet__factory } from "./MarketLiquidityFacet__factory";
 export { MarketLiquidityFacetBase__factory } from "./MarketLiquidityFacetBase__factory";
 export { MarketSettleFacet__factory } from "./MarketSettleFacet__factory";
 export { MarketStateFacet__factory } from "./MarketStateFacet__factory";
-export { MarketTradeFacet__factory } from "./MarketTradeFacet__factory";
+export { MarketTradeClosePositionFacet__factory } from "./MarketTradeClosePositionFacet__factory";
 export { MarketTradeFacetBase__factory } from "./MarketTradeFacetBase__factory";
+export { MarketTradeOpenPositionFacet__factory } from "./MarketTradeOpenPositionFacet__factory";

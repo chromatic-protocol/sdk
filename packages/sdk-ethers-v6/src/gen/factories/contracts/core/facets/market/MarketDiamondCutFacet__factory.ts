@@ -10,6 +10,41 @@ import type {
 
 const _abi = [
   {
+    inputs: [],
+    name: "AddLiquidityDisabled",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "AlreadyClosedPosition",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ClaimPositionCallbackError",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ClosePositionDisabled",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "DuplicatedTradingFeeRate",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ExceedMaxAllowableLeverage",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ExceedMaxAllowableTradingFee",
+    type: "error",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -27,7 +62,92 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "InvalidLpReceiptAction",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "InvalidTransferredTokenAmount",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotAllowableMakerMargin",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotClaimableLpReceipt",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotClaimablePosition",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotEnoughMarginTransferred",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotExistLpReceipt",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotExistPosition",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotPermitted",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotWithdrawableLpReceipt",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OnlyAccessableByDao",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "OnlyAccessableByFactoryOrDao",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OnlyAccessableByLiquidator",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OnlyAccessableByVault",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OpenPositionDisabled",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "RemoveLiquidityDisabled",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "TooSmallAmount",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "TooSmallTakerMargin",
     type: "error",
   },
   {

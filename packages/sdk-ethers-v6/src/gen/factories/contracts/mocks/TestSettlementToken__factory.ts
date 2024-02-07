@@ -31,6 +31,11 @@ const _abi = [
         name: "faucetMinInterval_",
         type: "uint256",
       },
+      {
+        internalType: "uint8",
+        name: "decimals_",
+        type: "uint8",
+      },
     ],
     stateMutability: "nonpayable",
     type: "constructor",

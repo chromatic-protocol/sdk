@@ -48,6 +48,56 @@ export type LpReceiptStructOutput = [
   tradingFeeRate: bigint;
 };
 
+export type BinMarginStruct = {
+  tradingFeeRate: BigNumberish;
+  amount: BigNumberish;
+};
+
+export type BinMarginStructOutput = [tradingFeeRate: bigint, amount: bigint] & {
+  tradingFeeRate: bigint;
+  amount: bigint;
+};
+
+export type PositionStruct = {
+  id: BigNumberish;
+  openVersion: BigNumberish;
+  closeVersion: BigNumberish;
+  qty: BigNumberish;
+  openTimestamp: BigNumberish;
+  closeTimestamp: BigNumberish;
+  takerMargin: BigNumberish;
+  owner: AddressLike;
+  liquidator: AddressLike;
+  _protocolFeeRate: BigNumberish;
+  _binMargins: BinMarginStruct[];
+};
+
+export type PositionStructOutput = [
+  id: bigint,
+  openVersion: bigint,
+  closeVersion: bigint,
+  qty: bigint,
+  openTimestamp: bigint,
+  closeTimestamp: bigint,
+  takerMargin: bigint,
+  owner: string,
+  liquidator: string,
+  _protocolFeeRate: bigint,
+  _binMargins: BinMarginStructOutput[]
+] & {
+  id: bigint;
+  openVersion: bigint;
+  closeVersion: bigint;
+  qty: bigint;
+  openTimestamp: bigint;
+  closeTimestamp: bigint;
+  takerMargin: bigint;
+  owner: string;
+  liquidator: string;
+  _protocolFeeRate: bigint;
+  _binMargins: BinMarginStructOutput[];
+};
+
 export interface MarketLiquidityFacetInterface extends Interface {
   getFunction(
     nameOrSignature:
@@ -71,6 +121,15 @@ export interface MarketLiquidityFacetInterface extends Interface {
       | "AddLiquidityBatch"
       | "ClaimLiquidity"
       | "ClaimLiquidityBatch"
+      | "ClaimPosition"
+      | "ClaimPositionByKeeper"
+      | "ClosePosition"
+      | "DisplayModeUpdated"
+      | "Liquidate"
+      | "LiquidityModeUpdated"
+      | "OpenPosition"
+      | "PositionModeUpdated"
+      | "ProtocolFeeRateUpdated"
       | "RemoveLiquidity"
       | "RemoveLiquidityBatch"
       | "WithdrawLiquidity"
@@ -237,6 +296,183 @@ export namespace ClaimLiquidityBatchEvent {
   export interface OutputObject {
     receipts: LpReceiptStructOutput[];
     clbTokenAmounts: bigint[];
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace ClaimPositionEvent {
+  export type InputTuple = [
+    account: AddressLike,
+    pnl: BigNumberish,
+    interest: BigNumberish,
+    position: PositionStruct
+  ];
+  export type OutputTuple = [
+    account: string,
+    pnl: bigint,
+    interest: bigint,
+    position: PositionStructOutput
+  ];
+  export interface OutputObject {
+    account: string;
+    pnl: bigint;
+    interest: bigint;
+    position: PositionStructOutput;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace ClaimPositionByKeeperEvent {
+  export type InputTuple = [
+    account: AddressLike,
+    pnl: BigNumberish,
+    interest: BigNumberish,
+    usedKeeperFee: BigNumberish,
+    position: PositionStruct
+  ];
+  export type OutputTuple = [
+    account: string,
+    pnl: bigint,
+    interest: bigint,
+    usedKeeperFee: bigint,
+    position: PositionStructOutput
+  ];
+  export interface OutputObject {
+    account: string;
+    pnl: bigint;
+    interest: bigint;
+    usedKeeperFee: bigint;
+    position: PositionStructOutput;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace ClosePositionEvent {
+  export type InputTuple = [account: AddressLike, position: PositionStruct];
+  export type OutputTuple = [account: string, position: PositionStructOutput];
+  export interface OutputObject {
+    account: string;
+    position: PositionStructOutput;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace DisplayModeUpdatedEvent {
+  export type InputTuple = [
+    displayModeOld: BigNumberish,
+    displayModeNew: BigNumberish
+  ];
+  export type OutputTuple = [displayModeOld: bigint, displayModeNew: bigint];
+  export interface OutputObject {
+    displayModeOld: bigint;
+    displayModeNew: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace LiquidateEvent {
+  export type InputTuple = [
+    account: AddressLike,
+    pnl: BigNumberish,
+    interest: BigNumberish,
+    usedKeeperFee: BigNumberish,
+    position: PositionStruct
+  ];
+  export type OutputTuple = [
+    account: string,
+    pnl: bigint,
+    interest: bigint,
+    usedKeeperFee: bigint,
+    position: PositionStructOutput
+  ];
+  export interface OutputObject {
+    account: string;
+    pnl: bigint;
+    interest: bigint;
+    usedKeeperFee: bigint;
+    position: PositionStructOutput;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace LiquidityModeUpdatedEvent {
+  export type InputTuple = [
+    liquidityModeOld: BigNumberish,
+    liquidityModeNew: BigNumberish
+  ];
+  export type OutputTuple = [
+    liquidityModeOld: bigint,
+    liquidityModeNew: bigint
+  ];
+  export interface OutputObject {
+    liquidityModeOld: bigint;
+    liquidityModeNew: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace OpenPositionEvent {
+  export type InputTuple = [account: AddressLike, position: PositionStruct];
+  export type OutputTuple = [account: string, position: PositionStructOutput];
+  export interface OutputObject {
+    account: string;
+    position: PositionStructOutput;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace PositionModeUpdatedEvent {
+  export type InputTuple = [
+    positionModeOld: BigNumberish,
+    positionModeNew: BigNumberish
+  ];
+  export type OutputTuple = [positionModeOld: bigint, positionModeNew: bigint];
+  export interface OutputObject {
+    positionModeOld: bigint;
+    positionModeNew: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace ProtocolFeeRateUpdatedEvent {
+  export type InputTuple = [
+    protocolFeeRateOld: BigNumberish,
+    protocolFeeRateNew: BigNumberish
+  ];
+  export type OutputTuple = [
+    protocolFeeRateOld: bigint,
+    protocolFeeRateNew: bigint
+  ];
+  export interface OutputObject {
+    protocolFeeRateOld: bigint;
+    protocolFeeRateNew: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -460,7 +696,7 @@ export interface MarketLiquidityFacet extends BaseContract {
   >;
 
   /**
-   * This function is called by the liquidity provider to remove their liquidity from the market.      The liquidity provider must have previously added liquidity to the market.      Throws a `TooSmallAmount` error if the CLB tokne amount of liquidity to be removed is zero.
+   * This function is called by the liquidity provider to remove their liquidity from the market.      The liquidity provider must have previously added liquidity to the market.      Throws a `TooSmallAmount` error if the CLB token amount of liquidity to be removed is zero.
    * @param data Additional data for the liquidity callback.
    * @param recipient The address to receive the removed liquidity.
    * @param tradingFeeRate The trading fee rate for the liquidity.
@@ -656,6 +892,69 @@ export interface MarketLiquidityFacet extends BaseContract {
     ClaimLiquidityBatchEvent.OutputObject
   >;
   getEvent(
+    key: "ClaimPosition"
+  ): TypedContractEvent<
+    ClaimPositionEvent.InputTuple,
+    ClaimPositionEvent.OutputTuple,
+    ClaimPositionEvent.OutputObject
+  >;
+  getEvent(
+    key: "ClaimPositionByKeeper"
+  ): TypedContractEvent<
+    ClaimPositionByKeeperEvent.InputTuple,
+    ClaimPositionByKeeperEvent.OutputTuple,
+    ClaimPositionByKeeperEvent.OutputObject
+  >;
+  getEvent(
+    key: "ClosePosition"
+  ): TypedContractEvent<
+    ClosePositionEvent.InputTuple,
+    ClosePositionEvent.OutputTuple,
+    ClosePositionEvent.OutputObject
+  >;
+  getEvent(
+    key: "DisplayModeUpdated"
+  ): TypedContractEvent<
+    DisplayModeUpdatedEvent.InputTuple,
+    DisplayModeUpdatedEvent.OutputTuple,
+    DisplayModeUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: "Liquidate"
+  ): TypedContractEvent<
+    LiquidateEvent.InputTuple,
+    LiquidateEvent.OutputTuple,
+    LiquidateEvent.OutputObject
+  >;
+  getEvent(
+    key: "LiquidityModeUpdated"
+  ): TypedContractEvent<
+    LiquidityModeUpdatedEvent.InputTuple,
+    LiquidityModeUpdatedEvent.OutputTuple,
+    LiquidityModeUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: "OpenPosition"
+  ): TypedContractEvent<
+    OpenPositionEvent.InputTuple,
+    OpenPositionEvent.OutputTuple,
+    OpenPositionEvent.OutputObject
+  >;
+  getEvent(
+    key: "PositionModeUpdated"
+  ): TypedContractEvent<
+    PositionModeUpdatedEvent.InputTuple,
+    PositionModeUpdatedEvent.OutputTuple,
+    PositionModeUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: "ProtocolFeeRateUpdated"
+  ): TypedContractEvent<
+    ProtocolFeeRateUpdatedEvent.InputTuple,
+    ProtocolFeeRateUpdatedEvent.OutputTuple,
+    ProtocolFeeRateUpdatedEvent.OutputObject
+  >;
+  getEvent(
     key: "RemoveLiquidity"
   ): TypedContractEvent<
     RemoveLiquidityEvent.InputTuple,
@@ -727,6 +1026,105 @@ export interface MarketLiquidityFacet extends BaseContract {
       ClaimLiquidityBatchEvent.InputTuple,
       ClaimLiquidityBatchEvent.OutputTuple,
       ClaimLiquidityBatchEvent.OutputObject
+    >;
+
+    "ClaimPosition(address,int256,uint256,tuple)": TypedContractEvent<
+      ClaimPositionEvent.InputTuple,
+      ClaimPositionEvent.OutputTuple,
+      ClaimPositionEvent.OutputObject
+    >;
+    ClaimPosition: TypedContractEvent<
+      ClaimPositionEvent.InputTuple,
+      ClaimPositionEvent.OutputTuple,
+      ClaimPositionEvent.OutputObject
+    >;
+
+    "ClaimPositionByKeeper(address,int256,uint256,uint256,tuple)": TypedContractEvent<
+      ClaimPositionByKeeperEvent.InputTuple,
+      ClaimPositionByKeeperEvent.OutputTuple,
+      ClaimPositionByKeeperEvent.OutputObject
+    >;
+    ClaimPositionByKeeper: TypedContractEvent<
+      ClaimPositionByKeeperEvent.InputTuple,
+      ClaimPositionByKeeperEvent.OutputTuple,
+      ClaimPositionByKeeperEvent.OutputObject
+    >;
+
+    "ClosePosition(address,tuple)": TypedContractEvent<
+      ClosePositionEvent.InputTuple,
+      ClosePositionEvent.OutputTuple,
+      ClosePositionEvent.OutputObject
+    >;
+    ClosePosition: TypedContractEvent<
+      ClosePositionEvent.InputTuple,
+      ClosePositionEvent.OutputTuple,
+      ClosePositionEvent.OutputObject
+    >;
+
+    "DisplayModeUpdated(uint8,uint8)": TypedContractEvent<
+      DisplayModeUpdatedEvent.InputTuple,
+      DisplayModeUpdatedEvent.OutputTuple,
+      DisplayModeUpdatedEvent.OutputObject
+    >;
+    DisplayModeUpdated: TypedContractEvent<
+      DisplayModeUpdatedEvent.InputTuple,
+      DisplayModeUpdatedEvent.OutputTuple,
+      DisplayModeUpdatedEvent.OutputObject
+    >;
+
+    "Liquidate(address,int256,uint256,uint256,tuple)": TypedContractEvent<
+      LiquidateEvent.InputTuple,
+      LiquidateEvent.OutputTuple,
+      LiquidateEvent.OutputObject
+    >;
+    Liquidate: TypedContractEvent<
+      LiquidateEvent.InputTuple,
+      LiquidateEvent.OutputTuple,
+      LiquidateEvent.OutputObject
+    >;
+
+    "LiquidityModeUpdated(uint8,uint8)": TypedContractEvent<
+      LiquidityModeUpdatedEvent.InputTuple,
+      LiquidityModeUpdatedEvent.OutputTuple,
+      LiquidityModeUpdatedEvent.OutputObject
+    >;
+    LiquidityModeUpdated: TypedContractEvent<
+      LiquidityModeUpdatedEvent.InputTuple,
+      LiquidityModeUpdatedEvent.OutputTuple,
+      LiquidityModeUpdatedEvent.OutputObject
+    >;
+
+    "OpenPosition(address,tuple)": TypedContractEvent<
+      OpenPositionEvent.InputTuple,
+      OpenPositionEvent.OutputTuple,
+      OpenPositionEvent.OutputObject
+    >;
+    OpenPosition: TypedContractEvent<
+      OpenPositionEvent.InputTuple,
+      OpenPositionEvent.OutputTuple,
+      OpenPositionEvent.OutputObject
+    >;
+
+    "PositionModeUpdated(uint8,uint8)": TypedContractEvent<
+      PositionModeUpdatedEvent.InputTuple,
+      PositionModeUpdatedEvent.OutputTuple,
+      PositionModeUpdatedEvent.OutputObject
+    >;
+    PositionModeUpdated: TypedContractEvent<
+      PositionModeUpdatedEvent.InputTuple,
+      PositionModeUpdatedEvent.OutputTuple,
+      PositionModeUpdatedEvent.OutputObject
+    >;
+
+    "ProtocolFeeRateUpdated(uint16,uint16)": TypedContractEvent<
+      ProtocolFeeRateUpdatedEvent.InputTuple,
+      ProtocolFeeRateUpdatedEvent.OutputTuple,
+      ProtocolFeeRateUpdatedEvent.OutputObject
+    >;
+    ProtocolFeeRateUpdated: TypedContractEvent<
+      ProtocolFeeRateUpdatedEvent.InputTuple,
+      ProtocolFeeRateUpdatedEvent.OutputTuple,
+      ProtocolFeeRateUpdatedEvent.OutputObject
     >;
 
     "RemoveLiquidity(tuple)": TypedContractEvent<

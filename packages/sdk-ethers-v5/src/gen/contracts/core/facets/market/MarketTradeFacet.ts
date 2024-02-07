@@ -26,31 +26,6 @@ import type {
   OnEvent,
 } from "../../../../common";
 
-export type LpReceiptStruct = {
-  id: BigNumberish;
-  oracleVersion: BigNumberish;
-  amount: BigNumberish;
-  recipient: string;
-  action: BigNumberish;
-  tradingFeeRate: BigNumberish;
-};
-
-export type LpReceiptStructOutput = [
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  string,
-  number,
-  number
-] & {
-  id: BigNumber;
-  oracleVersion: BigNumber;
-  amount: BigNumber;
-  recipient: string;
-  action: number;
-  tradingFeeRate: number;
-};
-
 export type BinMarginStruct = {
   tradingFeeRate: BigNumberish;
   amount: BigNumberish;
@@ -113,15 +88,43 @@ export type ClosePositionInfoStructOutput = [
   BigNumber
 ] & { id: BigNumber; closeVersion: BigNumber; closeTimestamp: BigNumber };
 
-export interface MarketTradeClosePositionFacetInterface
-  extends utils.Interface {
+export type OpenPositionInfoStruct = {
+  id: BigNumberish;
+  openVersion: BigNumberish;
+  qty: BigNumberish;
+  openTimestamp: BigNumberish;
+  takerMargin: BigNumberish;
+  makerMargin: BigNumberish;
+  tradingFee: BigNumberish;
+};
+
+export type OpenPositionInfoStructOutput = [
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber
+] & {
+  id: BigNumber;
+  openVersion: BigNumber;
+  qty: BigNumber;
+  openTimestamp: BigNumber;
+  takerMargin: BigNumber;
+  makerMargin: BigNumber;
+  tradingFee: BigNumber;
+};
+
+export interface MarketTradeFacetInterface extends utils.Interface {
   functions: {
     "claimPosition(uint256,address,bytes)": FunctionFragment;
     "closePosition(uint256)": FunctionFragment;
+    "openPosition(int256,uint256,uint256,uint256,bytes)": FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic: "claimPosition" | "closePosition"
+    nameOrSignatureOrTopic: "claimPosition" | "closePosition" | "openPosition"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -132,6 +135,10 @@ export interface MarketTradeClosePositionFacetInterface
     functionFragment: "closePosition",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "openPosition",
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish, BytesLike]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "claimPosition",
@@ -141,89 +148,23 @@ export interface MarketTradeClosePositionFacetInterface
     functionFragment: "closePosition",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "openPosition",
+    data: BytesLike
+  ): Result;
 
   events: {
-    "AddLiquidity((uint256,uint256,uint256,address,uint8,int16))": EventFragment;
-    "AddLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])": EventFragment;
-    "ClaimLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256)": EventFragment;
-    "ClaimLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[])": EventFragment;
     "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
-    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
     "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
-    "DisplayModeUpdated(uint8,uint8)": EventFragment;
-    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
-    "LiquidityModeUpdated(uint8,uint8)": EventFragment;
     "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
-    "PositionModeUpdated(uint8,uint8)": EventFragment;
-    "ProtocolFeeRateUpdated(uint16,uint16)": EventFragment;
-    "RemoveLiquidity((uint256,uint256,uint256,address,uint8,int16))": EventFragment;
-    "RemoveLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])": EventFragment;
-    "WithdrawLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256,uint256)": EventFragment;
-    "WithdrawLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[],uint256[])": EventFragment;
+    "TransferProtocolFee(uint256,uint256)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "AddLiquidity"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "AddLiquidityBatch"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "ClaimLiquidity"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "ClaimLiquidityBatch"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ClaimPosition"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "ClaimPositionByKeeper"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ClosePosition"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "DisplayModeUpdated"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Liquidate"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "LiquidityModeUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OpenPosition"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "PositionModeUpdated"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "ProtocolFeeRateUpdated"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "RemoveLiquidity"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "RemoveLiquidityBatch"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "WithdrawLiquidity"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "WithdrawLiquidityBatch"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TransferProtocolFee"): EventFragment;
 }
-
-export interface AddLiquidityEventObject {
-  receipt: LpReceiptStructOutput;
-}
-export type AddLiquidityEvent = TypedEvent<
-  [LpReceiptStructOutput],
-  AddLiquidityEventObject
->;
-
-export type AddLiquidityEventFilter = TypedEventFilter<AddLiquidityEvent>;
-
-export interface AddLiquidityBatchEventObject {
-  receipts: LpReceiptStructOutput[];
-}
-export type AddLiquidityBatchEvent = TypedEvent<
-  [LpReceiptStructOutput[]],
-  AddLiquidityBatchEventObject
->;
-
-export type AddLiquidityBatchEventFilter =
-  TypedEventFilter<AddLiquidityBatchEvent>;
-
-export interface ClaimLiquidityEventObject {
-  receipt: LpReceiptStructOutput;
-  clbTokenAmount: BigNumber;
-}
-export type ClaimLiquidityEvent = TypedEvent<
-  [LpReceiptStructOutput, BigNumber],
-  ClaimLiquidityEventObject
->;
-
-export type ClaimLiquidityEventFilter = TypedEventFilter<ClaimLiquidityEvent>;
-
-export interface ClaimLiquidityBatchEventObject {
-  receipts: LpReceiptStructOutput[];
-  clbTokenAmounts: BigNumber[];
-}
-export type ClaimLiquidityBatchEvent = TypedEvent<
-  [LpReceiptStructOutput[], BigNumber[]],
-  ClaimLiquidityBatchEventObject
->;
-
-export type ClaimLiquidityBatchEventFilter =
-  TypedEventFilter<ClaimLiquidityBatchEvent>;
 
 export interface ClaimPositionEventObject {
   account: string;
@@ -238,21 +179,6 @@ export type ClaimPositionEvent = TypedEvent<
 
 export type ClaimPositionEventFilter = TypedEventFilter<ClaimPositionEvent>;
 
-export interface ClaimPositionByKeeperEventObject {
-  account: string;
-  pnl: BigNumber;
-  interest: BigNumber;
-  usedKeeperFee: BigNumber;
-  position: PositionStructOutput;
-}
-export type ClaimPositionByKeeperEvent = TypedEvent<
-  [string, BigNumber, BigNumber, BigNumber, PositionStructOutput],
-  ClaimPositionByKeeperEventObject
->;
-
-export type ClaimPositionByKeeperEventFilter =
-  TypedEventFilter<ClaimPositionByKeeperEvent>;
-
 export interface ClosePositionEventObject {
   account: string;
   position: PositionStructOutput;
@@ -263,44 +189,6 @@ export type ClosePositionEvent = TypedEvent<
 >;
 
 export type ClosePositionEventFilter = TypedEventFilter<ClosePositionEvent>;
-
-export interface DisplayModeUpdatedEventObject {
-  displayModeOld: number;
-  displayModeNew: number;
-}
-export type DisplayModeUpdatedEvent = TypedEvent<
-  [number, number],
-  DisplayModeUpdatedEventObject
->;
-
-export type DisplayModeUpdatedEventFilter =
-  TypedEventFilter<DisplayModeUpdatedEvent>;
-
-export interface LiquidateEventObject {
-  account: string;
-  pnl: BigNumber;
-  interest: BigNumber;
-  usedKeeperFee: BigNumber;
-  position: PositionStructOutput;
-}
-export type LiquidateEvent = TypedEvent<
-  [string, BigNumber, BigNumber, BigNumber, PositionStructOutput],
-  LiquidateEventObject
->;
-
-export type LiquidateEventFilter = TypedEventFilter<LiquidateEvent>;
-
-export interface LiquidityModeUpdatedEventObject {
-  liquidityModeOld: number;
-  liquidityModeNew: number;
-}
-export type LiquidityModeUpdatedEvent = TypedEvent<
-  [number, number],
-  LiquidityModeUpdatedEventObject
->;
-
-export type LiquidityModeUpdatedEventFilter =
-  TypedEventFilter<LiquidityModeUpdatedEvent>;
 
 export interface OpenPositionEventObject {
   account: string;
@@ -313,83 +201,24 @@ export type OpenPositionEvent = TypedEvent<
 
 export type OpenPositionEventFilter = TypedEventFilter<OpenPositionEvent>;
 
-export interface PositionModeUpdatedEventObject {
-  positionModeOld: number;
-  positionModeNew: number;
-}
-export type PositionModeUpdatedEvent = TypedEvent<
-  [number, number],
-  PositionModeUpdatedEventObject
->;
-
-export type PositionModeUpdatedEventFilter =
-  TypedEventFilter<PositionModeUpdatedEvent>;
-
-export interface ProtocolFeeRateUpdatedEventObject {
-  protocolFeeRateOld: number;
-  protocolFeeRateNew: number;
-}
-export type ProtocolFeeRateUpdatedEvent = TypedEvent<
-  [number, number],
-  ProtocolFeeRateUpdatedEventObject
->;
-
-export type ProtocolFeeRateUpdatedEventFilter =
-  TypedEventFilter<ProtocolFeeRateUpdatedEvent>;
-
-export interface RemoveLiquidityEventObject {
-  receipt: LpReceiptStructOutput;
-}
-export type RemoveLiquidityEvent = TypedEvent<
-  [LpReceiptStructOutput],
-  RemoveLiquidityEventObject
->;
-
-export type RemoveLiquidityEventFilter = TypedEventFilter<RemoveLiquidityEvent>;
-
-export interface RemoveLiquidityBatchEventObject {
-  receipts: LpReceiptStructOutput[];
-}
-export type RemoveLiquidityBatchEvent = TypedEvent<
-  [LpReceiptStructOutput[]],
-  RemoveLiquidityBatchEventObject
->;
-
-export type RemoveLiquidityBatchEventFilter =
-  TypedEventFilter<RemoveLiquidityBatchEvent>;
-
-export interface WithdrawLiquidityEventObject {
-  receipt: LpReceiptStructOutput;
+export interface TransferProtocolFeeEventObject {
+  positionId: BigNumber;
   amount: BigNumber;
-  burnedCLBTokenAmount: BigNumber;
 }
-export type WithdrawLiquidityEvent = TypedEvent<
-  [LpReceiptStructOutput, BigNumber, BigNumber],
-  WithdrawLiquidityEventObject
+export type TransferProtocolFeeEvent = TypedEvent<
+  [BigNumber, BigNumber],
+  TransferProtocolFeeEventObject
 >;
 
-export type WithdrawLiquidityEventFilter =
-  TypedEventFilter<WithdrawLiquidityEvent>;
+export type TransferProtocolFeeEventFilter =
+  TypedEventFilter<TransferProtocolFeeEvent>;
 
-export interface WithdrawLiquidityBatchEventObject {
-  receipts: LpReceiptStructOutput[];
-  amounts: BigNumber[];
-  burnedCLBTokenAmounts: BigNumber[];
-}
-export type WithdrawLiquidityBatchEvent = TypedEvent<
-  [LpReceiptStructOutput[], BigNumber[], BigNumber[]],
-  WithdrawLiquidityBatchEventObject
->;
-
-export type WithdrawLiquidityBatchEventFilter =
-  TypedEventFilter<WithdrawLiquidityBatchEvent>;
-
-export interface MarketTradeClosePositionFacet extends BaseContract {
+export interface MarketTradeFacet extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: MarketTradeClosePositionFacetInterface;
+  interface: MarketTradeFacetInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -432,6 +261,23 @@ export interface MarketTradeClosePositionFacet extends BaseContract {
       positionId: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
+
+    /**
+     * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
+     * @param data Additional data for the position callback.
+     * @param makerMargin The margin amount provided by the maker.
+     * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
+     * @param qty The quantity of the position.
+     * @param takerMargin The margin amount provided by the taker.
+     */
+    openPosition(
+      qty: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
   };
 
   /**
@@ -453,6 +299,23 @@ export interface MarketTradeClosePositionFacet extends BaseContract {
    */
   closePosition(
     positionId: BigNumberish,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
+   * @param data Additional data for the position callback.
+   * @param makerMargin The margin amount provided by the maker.
+   * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
+   * @param qty The quantity of the position.
+   * @param takerMargin The margin amount provided by the taker.
+   */
+  openPosition(
+    qty: BigNumberish,
+    takerMargin: BigNumberish,
+    makerMargin: BigNumberish,
+    maxAllowableTradingFee: BigNumberish,
+    data: BytesLike,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -478,37 +341,26 @@ export interface MarketTradeClosePositionFacet extends BaseContract {
       positionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<ClosePositionInfoStructOutput>;
+
+    /**
+     * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
+     * @param data Additional data for the position callback.
+     * @param makerMargin The margin amount provided by the maker.
+     * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
+     * @param qty The quantity of the position.
+     * @param takerMargin The margin amount provided by the taker.
+     */
+    openPosition(
+      qty: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<OpenPositionInfoStructOutput>;
   };
 
   filters: {
-    "AddLiquidity((uint256,uint256,uint256,address,uint8,int16))"(
-      receipt?: null
-    ): AddLiquidityEventFilter;
-    AddLiquidity(receipt?: null): AddLiquidityEventFilter;
-
-    "AddLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])"(
-      receipts?: null
-    ): AddLiquidityBatchEventFilter;
-    AddLiquidityBatch(receipts?: null): AddLiquidityBatchEventFilter;
-
-    "ClaimLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256)"(
-      receipt?: null,
-      clbTokenAmount?: BigNumberish | null
-    ): ClaimLiquidityEventFilter;
-    ClaimLiquidity(
-      receipt?: null,
-      clbTokenAmount?: BigNumberish | null
-    ): ClaimLiquidityEventFilter;
-
-    "ClaimLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[])"(
-      receipts?: null,
-      clbTokenAmounts?: null
-    ): ClaimLiquidityBatchEventFilter;
-    ClaimLiquidityBatch(
-      receipts?: null,
-      clbTokenAmounts?: null
-    ): ClaimLiquidityBatchEventFilter;
-
     "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
       account?: string | null,
       pnl?: BigNumberish | null,
@@ -522,21 +374,6 @@ export interface MarketTradeClosePositionFacet extends BaseContract {
       position?: null
     ): ClaimPositionEventFilter;
 
-    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
-      account?: string | null,
-      pnl?: BigNumberish | null,
-      interest?: BigNumberish | null,
-      usedKeeperFee?: null,
-      position?: null
-    ): ClaimPositionByKeeperEventFilter;
-    ClaimPositionByKeeper(
-      account?: string | null,
-      pnl?: BigNumberish | null,
-      interest?: BigNumberish | null,
-      usedKeeperFee?: null,
-      position?: null
-    ): ClaimPositionByKeeperEventFilter;
-
     "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
       account?: string | null,
       position?: null
@@ -545,39 +382,6 @@ export interface MarketTradeClosePositionFacet extends BaseContract {
       account?: string | null,
       position?: null
     ): ClosePositionEventFilter;
-
-    "DisplayModeUpdated(uint8,uint8)"(
-      displayModeOld?: null,
-      displayModeNew?: null
-    ): DisplayModeUpdatedEventFilter;
-    DisplayModeUpdated(
-      displayModeOld?: null,
-      displayModeNew?: null
-    ): DisplayModeUpdatedEventFilter;
-
-    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
-      account?: string | null,
-      pnl?: BigNumberish | null,
-      interest?: BigNumberish | null,
-      usedKeeperFee?: null,
-      position?: null
-    ): LiquidateEventFilter;
-    Liquidate(
-      account?: string | null,
-      pnl?: BigNumberish | null,
-      interest?: BigNumberish | null,
-      usedKeeperFee?: null,
-      position?: null
-    ): LiquidateEventFilter;
-
-    "LiquidityModeUpdated(uint8,uint8)"(
-      liquidityModeOld?: null,
-      liquidityModeNew?: null
-    ): LiquidityModeUpdatedEventFilter;
-    LiquidityModeUpdated(
-      liquidityModeOld?: null,
-      liquidityModeNew?: null
-    ): LiquidityModeUpdatedEventFilter;
 
     "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
       account?: string | null,
@@ -588,55 +392,14 @@ export interface MarketTradeClosePositionFacet extends BaseContract {
       position?: null
     ): OpenPositionEventFilter;
 
-    "PositionModeUpdated(uint8,uint8)"(
-      positionModeOld?: null,
-      positionModeNew?: null
-    ): PositionModeUpdatedEventFilter;
-    PositionModeUpdated(
-      positionModeOld?: null,
-      positionModeNew?: null
-    ): PositionModeUpdatedEventFilter;
-
-    "ProtocolFeeRateUpdated(uint16,uint16)"(
-      protocolFeeRateOld?: null,
-      protocolFeeRateNew?: null
-    ): ProtocolFeeRateUpdatedEventFilter;
-    ProtocolFeeRateUpdated(
-      protocolFeeRateOld?: null,
-      protocolFeeRateNew?: null
-    ): ProtocolFeeRateUpdatedEventFilter;
-
-    "RemoveLiquidity((uint256,uint256,uint256,address,uint8,int16))"(
-      receipt?: null
-    ): RemoveLiquidityEventFilter;
-    RemoveLiquidity(receipt?: null): RemoveLiquidityEventFilter;
-
-    "RemoveLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])"(
-      receipts?: null
-    ): RemoveLiquidityBatchEventFilter;
-    RemoveLiquidityBatch(receipts?: null): RemoveLiquidityBatchEventFilter;
-
-    "WithdrawLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256,uint256)"(
-      receipt?: null,
-      amount?: BigNumberish | null,
-      burnedCLBTokenAmount?: BigNumberish | null
-    ): WithdrawLiquidityEventFilter;
-    WithdrawLiquidity(
-      receipt?: null,
-      amount?: BigNumberish | null,
-      burnedCLBTokenAmount?: BigNumberish | null
-    ): WithdrawLiquidityEventFilter;
-
-    "WithdrawLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[],uint256[])"(
-      receipts?: null,
-      amounts?: null,
-      burnedCLBTokenAmounts?: null
-    ): WithdrawLiquidityBatchEventFilter;
-    WithdrawLiquidityBatch(
-      receipts?: null,
-      amounts?: null,
-      burnedCLBTokenAmounts?: null
-    ): WithdrawLiquidityBatchEventFilter;
+    "TransferProtocolFee(uint256,uint256)"(
+      positionId?: BigNumberish | null,
+      amount?: BigNumberish | null
+    ): TransferProtocolFeeEventFilter;
+    TransferProtocolFee(
+      positionId?: BigNumberish | null,
+      amount?: BigNumberish | null
+    ): TransferProtocolFeeEventFilter;
   };
 
   estimateGas: {
@@ -661,6 +424,23 @@ export interface MarketTradeClosePositionFacet extends BaseContract {
       positionId: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
+
+    /**
+     * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
+     * @param data Additional data for the position callback.
+     * @param makerMargin The margin amount provided by the maker.
+     * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
+     * @param qty The quantity of the position.
+     * @param takerMargin The margin amount provided by the taker.
+     */
+    openPosition(
+      qty: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -683,6 +463,23 @@ export interface MarketTradeClosePositionFacet extends BaseContract {
      */
     closePosition(
       positionId: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Throws a `TooSmallTakerMargin` error if the `takerMargin` is smaller than the minimum required margin for the settlement token.      Throws an `ExceedMaxAllowableLeverage` if the leverage exceeds the maximum allowable leverage.      Throws a `NotAllowableMakerMargin` if the maker margin is not within the allowable range based on the absolute quantity and min/max take-profit basis points (BPS).      Throws an `ExceedMaxAllowableTradingFee` if the total trading fee (including protocol fee) exceeds the maximum allowable trading fee (`maxAllowableTradingFee`).      Throws a `NotEnoughMarginTransferred` if the margin settlement token balance did not increase by the required margin amount after the callback. Requirements:  - The `takerMargin` must be greater than or equal to the minimum required margin for the settlement token.  - The position parameters must pass the validity check, including leverage limits and allowable margin ranges.  - The position is assigned a new ID and stored in the position storage.  - A keeper task for potential liquidation is created by the liquidator.  - An `OpenPosition` event is emitted with the owner's address and the newly opened position details.
+     * @param data Additional data for the position callback.
+     * @param makerMargin The margin amount provided by the maker.
+     * @param maxAllowableTradingFee The maximum allowable trading fee for the position.
+     * @param qty The quantity of the position.
+     * @param takerMargin The margin amount provided by the taker.
+     */
+    openPosition(
+      qty: BigNumberish,
+      takerMargin: BigNumberish,
+      makerMargin: BigNumberish,
+      maxAllowableTradingFee: BigNumberish,
+      data: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
   };

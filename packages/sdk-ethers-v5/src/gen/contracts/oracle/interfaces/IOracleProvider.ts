@@ -42,7 +42,6 @@ export interface IOracleProviderInterface extends utils.Interface {
     "currentVersion()": FunctionFragment;
     "description()": FunctionFragment;
     "oracleProviderName()": FunctionFragment;
-    "supportsInterface(bytes4)": FunctionFragment;
     "sync()": FunctionFragment;
   };
 
@@ -52,7 +51,6 @@ export interface IOracleProviderInterface extends utils.Interface {
       | "currentVersion"
       | "description"
       | "oracleProviderName"
-      | "supportsInterface"
       | "sync"
   ): FunctionFragment;
 
@@ -72,10 +70,6 @@ export interface IOracleProviderInterface extends utils.Interface {
     functionFragment: "oracleProviderName",
     values?: undefined
   ): string;
-  encodeFunctionData(
-    functionFragment: "supportsInterface",
-    values: [BytesLike]
-  ): string;
   encodeFunctionData(functionFragment: "sync", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "atVersion", data: BytesLike): Result;
@@ -89,10 +83,6 @@ export interface IOracleProviderInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "oracleProviderName",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "sync", data: BytesLike): Result;
@@ -154,14 +144,6 @@ export interface IOracleProvider extends BaseContract {
     oracleProviderName(overrides?: CallOverrides): Promise<[string]>;
 
     /**
-     * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
-     */
-    supportsInterface(
-      interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    /**
      * `sync` is expected to be called soon after a phase update occurs in the underlying proxy.      Phase updates should be detected using off-chain mechanism and should trigger a `sync` call      This is feasible in the short term due to how infrequent phase updates are, but phase update      and roundCount detection should eventually be implemented at the contract level.      Reverts if there is more than 1 phase to update in a single sync because we currently cannot      determine the startingRoundId for the intermediary phase.
      * Checks for a new price and updates the internal phase annotation state accordingly
      */
@@ -197,14 +179,6 @@ export interface IOracleProvider extends BaseContract {
   oracleProviderName(overrides?: CallOverrides): Promise<string>;
 
   /**
-   * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
-   */
-  supportsInterface(
-    interfaceId: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  /**
    * `sync` is expected to be called soon after a phase update occurs in the underlying proxy.      Phase updates should be detected using off-chain mechanism and should trigger a `sync` call      This is feasible in the short term due to how infrequent phase updates are, but phase update      and roundCount detection should eventually be implemented at the contract level.      Reverts if there is more than 1 phase to update in a single sync because we currently cannot      determine the startingRoundId for the intermediary phase.
    * Checks for a new price and updates the internal phase annotation state accordingly
    */
@@ -236,14 +210,6 @@ export interface IOracleProvider extends BaseContract {
      * Retrieves the name of the Oracle Provider.
      */
     oracleProviderName(overrides?: CallOverrides): Promise<string>;
-
-    /**
-     * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
-     */
-    supportsInterface(
-      interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
 
     /**
      * `sync` is expected to be called soon after a phase update occurs in the underlying proxy.      Phase updates should be detected using off-chain mechanism and should trigger a `sync` call      This is feasible in the short term due to how infrequent phase updates are, but phase update      and roundCount detection should eventually be implemented at the contract level.      Reverts if there is more than 1 phase to update in a single sync because we currently cannot      determine the startingRoundId for the intermediary phase.
@@ -282,14 +248,6 @@ export interface IOracleProvider extends BaseContract {
     oracleProviderName(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
-     */
-    supportsInterface(
-      interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
      * `sync` is expected to be called soon after a phase update occurs in the underlying proxy.      Phase updates should be detected using off-chain mechanism and should trigger a `sync` call      This is feasible in the short term due to how infrequent phase updates are, but phase update      and roundCount detection should eventually be implemented at the contract level.      Reverts if there is more than 1 phase to update in a single sync because we currently cannot      determine the startingRoundId for the intermediary phase.
      * Checks for a new price and updates the internal phase annotation state accordingly
      */
@@ -320,14 +278,6 @@ export interface IOracleProvider extends BaseContract {
      * Retrieves the name of the Oracle Provider.
      */
     oracleProviderName(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
-     */
-    supportsInterface(
-      interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

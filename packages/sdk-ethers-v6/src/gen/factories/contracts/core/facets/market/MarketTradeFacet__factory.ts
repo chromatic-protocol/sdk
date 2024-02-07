@@ -4,9 +4,9 @@
 
 import { Contract, Interface, type ContractRunner } from "ethers";
 import type {
-  MarketLiquidateFacet,
-  MarketLiquidateFacetInterface,
-} from "../../../../../contracts/core/facets/market/MarketLiquidateFacet";
+  MarketTradeFacet,
+  MarketTradeFacetInterface,
+} from "../../../../../contracts/core/facets/market/MarketTradeFacet";
 
 const _abi = [
   {
@@ -21,7 +21,27 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "ClosePositionDisabled",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "Empty",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ExceedMaxAllowableLeverage",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ExceedMaxAllowableTradingFee",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotAllowableMakerMargin",
     type: "error",
   },
   {
@@ -31,7 +51,17 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "NotEnoughMarginTransferred",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "NotExistPosition",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotPermitted",
     type: "error",
   },
   {
@@ -51,7 +81,17 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "OpenPositionDisabled",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "OutOfBounds",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "TooSmallTakerMargin",
     type: "error",
   },
   {
@@ -76,12 +116,6 @@ const _abi = [
         type: "uint256",
       },
       {
-        indexed: false,
-        internalType: "uint256",
-        name: "usedKeeperFee",
-        type: "uint256",
-      },
-      {
         components: [
           {
             internalType: "uint256",
@@ -157,7 +191,7 @@ const _abi = [
         type: "tuple",
       },
     ],
-    name: "ClaimPositionByKeeper",
+    name: "ClaimPosition",
     type: "event",
   },
   {
@@ -170,22 +204,92 @@ const _abi = [
         type: "address",
       },
       {
-        indexed: true,
-        internalType: "int256",
-        name: "pnl",
-        type: "int256",
-      },
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "interest",
-        type: "uint256",
-      },
-      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "openVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "qty",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "openTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "takerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "liquidator",
+            type: "address",
+          },
+          {
+            internalType: "uint16",
+            name: "_protocolFeeRate",
+            type: "uint16",
+          },
+          {
+            components: [
+              {
+                internalType: "uint16",
+                name: "tradingFeeRate",
+                type: "uint16",
+              },
+              {
+                internalType: "uint256",
+                name: "amount",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct BinMargin[]",
+            name: "_binMargins",
+            type: "tuple[]",
+          },
+        ],
         indexed: false,
-        internalType: "uint256",
-        name: "usedKeeperFee",
-        type: "uint256",
+        internalType: "struct Position",
+        name: "position",
+        type: "tuple",
+      },
+    ],
+    name: "ClosePosition",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
       },
       {
         components: [
@@ -263,87 +367,27 @@ const _abi = [
         type: "tuple",
       },
     ],
-    name: "Liquidate",
+    name: "OpenPosition",
     type: "event",
   },
   {
+    anonymous: false,
     inputs: [
       {
-        internalType: "uint256",
-        name: "positionId",
-        type: "uint256",
-      },
-    ],
-    name: "checkClaimPosition",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "positionId",
-        type: "uint256",
-      },
-    ],
-    name: "checkLiquidation",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "_liquidate",
-        type: "bool",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
+        indexed: true,
         internalType: "uint256",
         name: "positionId",
         type: "uint256",
       },
       {
-        components: [
-          {
-            internalType: "uint256",
-            name: "version",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "timestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "int256",
-            name: "price",
-            type: "int256",
-          },
-        ],
-        internalType: "struct IOracleProvider.OracleVersion",
-        name: "oracleVersion",
-        type: "tuple",
+        indexed: true,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
       },
     ],
-    name: "checkLiquidationWithOracleVersion",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "_liquidate",
-        type: "bool",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
+    name: "TransferProtocolFee",
+    type: "event",
   },
   {
     inputs: [
@@ -354,13 +398,13 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "keeper",
+        name: "recipient",
         type: "address",
       },
       {
-        internalType: "uint256",
-        name: "keeperFee",
-        type: "uint256",
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
       },
     ],
     name: "claimPosition",
@@ -375,37 +419,122 @@ const _abi = [
         name: "positionId",
         type: "uint256",
       },
+    ],
+    name: "closePosition",
+    outputs: [
       {
-        internalType: "address",
-        name: "keeper",
-        type: "address",
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeTimestamp",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct ClosePositionInfo",
+        name: "closed",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "int256",
+        name: "qty",
+        type: "int256",
       },
       {
         internalType: "uint256",
-        name: "keeperFee",
+        name: "takerMargin",
         type: "uint256",
       },
+      {
+        internalType: "uint256",
+        name: "makerMargin",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "maxAllowableTradingFee",
+        type: "uint256",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
     ],
-    name: "liquidate",
-    outputs: [],
+    name: "openPosition",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "openVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "qty",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "openTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "takerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "makerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "tradingFee",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct OpenPositionInfo",
+        name: "positionInfo",
+        type: "tuple",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
 ] as const;
 
-export class MarketLiquidateFacet__factory {
+export class MarketTradeFacet__factory {
   static readonly abi = _abi;
-  static createInterface(): MarketLiquidateFacetInterface {
-    return new Interface(_abi) as MarketLiquidateFacetInterface;
+  static createInterface(): MarketTradeFacetInterface {
+    return new Interface(_abi) as MarketTradeFacetInterface;
   }
   static connect(
     address: string,
     runner?: ContractRunner | null
-  ): MarketLiquidateFacet {
-    return new Contract(
-      address,
-      _abi,
-      runner
-    ) as unknown as MarketLiquidateFacet;
+  ): MarketTradeFacet {
+    return new Contract(address, _abi, runner) as unknown as MarketTradeFacet;
   }
 }

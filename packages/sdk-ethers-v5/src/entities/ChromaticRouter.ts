@@ -179,9 +179,9 @@ export class ChromaticRouter {
     const routerAddress = this.contracts().router().address;
     const signerAddress = await this._client.signer.getAddress();
     const allowance = async () => await settlementToken.allowance(signerAddress, routerAddress);
-    const requiredAmount = BigNumber.from(amount).sub(await allowance());
-    if (requiredAmount.gt(0)) {
-      const tx = await settlementToken.approve(routerAddress, requiredAmount);
+
+    if (BigNumber.from(amount).gt(await allowance())) {
+      const tx = await settlementToken.approve(routerAddress, amount);
       await tx.wait();
       if (tx.blockHash) {
         return (await allowance()).gte(amount);

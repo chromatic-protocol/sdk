@@ -5,9 +5,9 @@
 import { Contract, Signer, utils } from "ethers";
 import type { Provider } from "@ethersproject/providers";
 import type {
-  MarketLiquidityFacet,
-  MarketLiquidityFacetInterface,
-} from "../../../../../contracts/core/facets/market/MarketLiquidityFacet";
+  MarketRemoveLiquidityFacet,
+  MarketRemoveLiquidityFacetInterface,
+} from "../../../../../contracts/core/facets/market/MarketRemoveLiquidityFacet";
 
 const _abi = [
   {
@@ -17,7 +17,37 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "AlreadyClosedPosition",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ClaimPositionCallbackError",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ClosePositionDisabled",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "DuplicatedTradingFeeRate",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "Empty",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ExceedMaxAllowableLeverage",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ExceedMaxAllowableTradingFee",
     type: "error",
   },
   {
@@ -32,12 +62,37 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "NotAllowableMakerMargin",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "NotClaimableLpReceipt",
     type: "error",
   },
   {
     inputs: [],
+    name: "NotClaimablePosition",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotEnoughMarginTransferred",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "NotExistLpReceipt",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotExistPosition",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotPermitted",
     type: "error",
   },
   {
@@ -52,12 +107,22 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "OnlyAccessableByFactoryOrDao",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "OnlyAccessableByLiquidator",
     type: "error",
   },
   {
     inputs: [],
     name: "OnlyAccessableByVault",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OpenPositionDisabled",
     type: "error",
   },
   {
@@ -73,6 +138,11 @@ const _abi = [
   {
     inputs: [],
     name: "TooSmallAmount",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "TooSmallTakerMargin",
     type: "error",
   },
   {
@@ -265,6 +335,570 @@ const _abi = [
       },
     ],
     name: "ClaimLiquidityBatch",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "int256",
+        name: "pnl",
+        type: "int256",
+      },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "interest",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "openVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "qty",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "openTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "takerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "liquidator",
+            type: "address",
+          },
+          {
+            internalType: "uint16",
+            name: "_protocolFeeRate",
+            type: "uint16",
+          },
+          {
+            components: [
+              {
+                internalType: "uint16",
+                name: "tradingFeeRate",
+                type: "uint16",
+              },
+              {
+                internalType: "uint256",
+                name: "amount",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct BinMargin[]",
+            name: "_binMargins",
+            type: "tuple[]",
+          },
+        ],
+        indexed: false,
+        internalType: "struct Position",
+        name: "position",
+        type: "tuple",
+      },
+    ],
+    name: "ClaimPosition",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "int256",
+        name: "pnl",
+        type: "int256",
+      },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "interest",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "usedKeeperFee",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "openVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "qty",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "openTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "takerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "liquidator",
+            type: "address",
+          },
+          {
+            internalType: "uint16",
+            name: "_protocolFeeRate",
+            type: "uint16",
+          },
+          {
+            components: [
+              {
+                internalType: "uint16",
+                name: "tradingFeeRate",
+                type: "uint16",
+              },
+              {
+                internalType: "uint256",
+                name: "amount",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct BinMargin[]",
+            name: "_binMargins",
+            type: "tuple[]",
+          },
+        ],
+        indexed: false,
+        internalType: "struct Position",
+        name: "position",
+        type: "tuple",
+      },
+    ],
+    name: "ClaimPositionByKeeper",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "openVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "qty",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "openTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "takerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "liquidator",
+            type: "address",
+          },
+          {
+            internalType: "uint16",
+            name: "_protocolFeeRate",
+            type: "uint16",
+          },
+          {
+            components: [
+              {
+                internalType: "uint16",
+                name: "tradingFeeRate",
+                type: "uint16",
+              },
+              {
+                internalType: "uint256",
+                name: "amount",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct BinMargin[]",
+            name: "_binMargins",
+            type: "tuple[]",
+          },
+        ],
+        indexed: false,
+        internalType: "struct Position",
+        name: "position",
+        type: "tuple",
+      },
+    ],
+    name: "ClosePosition",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "enum DisplayMode",
+        name: "displayModeOld",
+        type: "uint8",
+      },
+      {
+        indexed: false,
+        internalType: "enum DisplayMode",
+        name: "displayModeNew",
+        type: "uint8",
+      },
+    ],
+    name: "DisplayModeUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "int256",
+        name: "pnl",
+        type: "int256",
+      },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "interest",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "usedKeeperFee",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "openVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "qty",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "openTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "takerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "liquidator",
+            type: "address",
+          },
+          {
+            internalType: "uint16",
+            name: "_protocolFeeRate",
+            type: "uint16",
+          },
+          {
+            components: [
+              {
+                internalType: "uint16",
+                name: "tradingFeeRate",
+                type: "uint16",
+              },
+              {
+                internalType: "uint256",
+                name: "amount",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct BinMargin[]",
+            name: "_binMargins",
+            type: "tuple[]",
+          },
+        ],
+        indexed: false,
+        internalType: "struct Position",
+        name: "position",
+        type: "tuple",
+      },
+    ],
+    name: "Liquidate",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "enum LiquidityMode",
+        name: "liquidityModeOld",
+        type: "uint8",
+      },
+      {
+        indexed: false,
+        internalType: "enum LiquidityMode",
+        name: "liquidityModeNew",
+        type: "uint8",
+      },
+    ],
+    name: "LiquidityModeUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "openVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "qty",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "openTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "closeTimestamp",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "takerMargin",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "liquidator",
+            type: "address",
+          },
+          {
+            internalType: "uint16",
+            name: "_protocolFeeRate",
+            type: "uint16",
+          },
+          {
+            components: [
+              {
+                internalType: "uint16",
+                name: "tradingFeeRate",
+                type: "uint16",
+              },
+              {
+                internalType: "uint256",
+                name: "amount",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct BinMargin[]",
+            name: "_binMargins",
+            type: "tuple[]",
+          },
+        ],
+        indexed: false,
+        internalType: "struct Position",
+        name: "position",
+        type: "tuple",
+      },
+    ],
+    name: "OpenPosition",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "enum PositionMode",
+        name: "positionModeOld",
+        type: "uint8",
+      },
+      {
+        indexed: false,
+        internalType: "enum PositionMode",
+        name: "positionModeNew",
+        type: "uint8",
+      },
+    ],
+    name: "PositionModeUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint16",
+        name: "protocolFeeRateOld",
+        type: "uint16",
+      },
+      {
+        indexed: false,
+        internalType: "uint16",
+        name: "protocolFeeRateNew",
+        type: "uint16",
+      },
+    ],
+    name: "ProtocolFeeRateUpdated",
     type: "event",
   },
   {
@@ -470,187 +1104,6 @@ const _abi = [
     ],
     name: "WithdrawLiquidityBatch",
     type: "event",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "recipient",
-        type: "address",
-      },
-      {
-        internalType: "int16",
-        name: "tradingFeeRate",
-        type: "int16",
-      },
-      {
-        internalType: "bytes",
-        name: "data",
-        type: "bytes",
-      },
-    ],
-    name: "addLiquidity",
-    outputs: [
-      {
-        components: [
-          {
-            internalType: "uint256",
-            name: "id",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "oracleVersion",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "amount",
-            type: "uint256",
-          },
-          {
-            internalType: "address",
-            name: "recipient",
-            type: "address",
-          },
-          {
-            internalType: "enum LpAction",
-            name: "action",
-            type: "uint8",
-          },
-          {
-            internalType: "int16",
-            name: "tradingFeeRate",
-            type: "int16",
-          },
-        ],
-        internalType: "struct LpReceipt",
-        name: "receipt",
-        type: "tuple",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "recipient",
-        type: "address",
-      },
-      {
-        internalType: "int16[]",
-        name: "tradingFeeRates",
-        type: "int16[]",
-      },
-      {
-        internalType: "uint256[]",
-        name: "amounts",
-        type: "uint256[]",
-      },
-      {
-        internalType: "bytes",
-        name: "data",
-        type: "bytes",
-      },
-    ],
-    name: "addLiquidityBatch",
-    outputs: [
-      {
-        components: [
-          {
-            internalType: "uint256",
-            name: "id",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "oracleVersion",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "amount",
-            type: "uint256",
-          },
-          {
-            internalType: "address",
-            name: "recipient",
-            type: "address",
-          },
-          {
-            internalType: "enum LpAction",
-            name: "action",
-            type: "uint8",
-          },
-          {
-            internalType: "int16",
-            name: "tradingFeeRate",
-            type: "int16",
-          },
-        ],
-        internalType: "struct LpReceipt[]",
-        name: "receipts",
-        type: "tuple[]",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "receiptId",
-        type: "uint256",
-      },
-      {
-        internalType: "bytes",
-        name: "data",
-        type: "bytes",
-      },
-    ],
-    name: "claimLiquidity",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256[]",
-        name: "receiptIds",
-        type: "uint256[]",
-      },
-      {
-        internalType: "bytes",
-        name: "data",
-        type: "bytes",
-      },
-    ],
-    name: "claimLiquidityBatch",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "earning",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "marketBalance",
-        type: "uint256",
-      },
-    ],
-    name: "distributeEarningToBins",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
   },
   {
     inputs: [
@@ -914,19 +1367,19 @@ const _abi = [
   },
 ] as const;
 
-export class MarketLiquidityFacet__factory {
+export class MarketRemoveLiquidityFacet__factory {
   static readonly abi = _abi;
-  static createInterface(): MarketLiquidityFacetInterface {
-    return new utils.Interface(_abi) as MarketLiquidityFacetInterface;
+  static createInterface(): MarketRemoveLiquidityFacetInterface {
+    return new utils.Interface(_abi) as MarketRemoveLiquidityFacetInterface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): MarketLiquidityFacet {
+  ): MarketRemoveLiquidityFacet {
     return new Contract(
       address,
       _abi,
       signerOrProvider
-    ) as MarketLiquidityFacet;
+    ) as MarketRemoveLiquidityFacet;
   }
 }

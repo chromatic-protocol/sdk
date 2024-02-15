@@ -5,10 +5,19 @@ import type {
   BaseContract,
   BigNumber,
   BigNumberish,
+  BytesLike,
+  CallOverrides,
+  ContractTransaction,
+  Overrides,
+  PopulatedTransaction,
   Signer,
   utils,
 } from "ethers";
-import type { EventFragment } from "@ethersproject/abi";
+import type {
+  FunctionFragment,
+  Result,
+  EventFragment,
+} from "@ethersproject/abi";
 import type { Listener, Provider } from "@ethersproject/providers";
 import type {
   TypedEventFilter,
@@ -92,8 +101,65 @@ export type PositionStructOutput = [
   _binMargins: BinMarginStructOutput[];
 };
 
-export interface MarketTradeFacetBaseInterface extends utils.Interface {
-  functions: {};
+export interface MarketAddLiquidityFacetInterface extends utils.Interface {
+  functions: {
+    "addLiquidity(address,int16,bytes)": FunctionFragment;
+    "addLiquidityBatch(address,int16[],uint256[],bytes)": FunctionFragment;
+    "claimLiquidity(uint256,bytes)": FunctionFragment;
+    "claimLiquidityBatch(uint256[],bytes)": FunctionFragment;
+    "distributeEarningToBins(uint256,uint256)": FunctionFragment;
+  };
+
+  getFunction(
+    nameOrSignatureOrTopic:
+      | "addLiquidity"
+      | "addLiquidityBatch"
+      | "claimLiquidity"
+      | "claimLiquidityBatch"
+      | "distributeEarningToBins"
+  ): FunctionFragment;
+
+  encodeFunctionData(
+    functionFragment: "addLiquidity",
+    values: [string, BigNumberish, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addLiquidityBatch",
+    values: [string, BigNumberish[], BigNumberish[], BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "claimLiquidity",
+    values: [BigNumberish, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "claimLiquidityBatch",
+    values: [BigNumberish[], BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "distributeEarningToBins",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+
+  decodeFunctionResult(
+    functionFragment: "addLiquidity",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "addLiquidityBatch",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "claimLiquidity",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "claimLiquidityBatch",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "distributeEarningToBins",
+    data: BytesLike
+  ): Result;
 
   events: {
     "AddLiquidity((uint256,uint256,uint256,address,uint8,int16))": EventFragment;
@@ -337,12 +403,12 @@ export type WithdrawLiquidityBatchEvent = TypedEvent<
 export type WithdrawLiquidityBatchEventFilter =
   TypedEventFilter<WithdrawLiquidityBatchEvent>;
 
-export interface MarketTradeFacetBase extends BaseContract {
+export interface MarketAddLiquidityFacet extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: MarketTradeFacetBaseInterface;
+  interface: MarketAddLiquidityFacetInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -363,9 +429,195 @@ export interface MarketTradeFacetBase extends BaseContract {
   once: OnEvent<this>;
   removeListener: OnEvent<this>;
 
-  functions: {};
+  functions: {
+    /**
+     * Adds liquidity to the market.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address to receive the liquidity tokens.
+     * @param tradingFeeRate The trading fee rate for the liquidity.
+     */
+    addLiquidity(
+      recipient: string,
+      tradingFeeRate: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
 
-  callStatic: {};
+    /**
+     * Throws an `InvalidTransferredTokenAmount` error if the transferred amount does not match the sum of amounts param.
+     * Adds liquidity to multiple liquidity bins of the market in a batch.
+     * @param amounts An array of amounts to add as liquidity for each bin.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address of the recipient for each liquidity bin.
+     * @param tradingFeeRates An array of fee rates for each liquidity bin.
+     */
+    addLiquidityBatch(
+      recipient: string,
+      tradingFeeRates: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptId The ID of the liquidity receipt.
+     */
+    claimLiquidity(
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptIds The array of the liquidity receipt IDs.
+     */
+    claimLiquidityBatch(
+      receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Distributes earning to the liquidity bins.
+     * @param earning The amount of earning to distribute.
+     * @param marketBalance The balance of the market.
+     */
+    distributeEarningToBins(
+      earning: BigNumberish,
+      marketBalance: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+  };
+
+  /**
+   * Adds liquidity to the market.
+   * @param data Additional data for the liquidity callback.
+   * @param recipient The address to receive the liquidity tokens.
+   * @param tradingFeeRate The trading fee rate for the liquidity.
+   */
+  addLiquidity(
+    recipient: string,
+    tradingFeeRate: BigNumberish,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Throws an `InvalidTransferredTokenAmount` error if the transferred amount does not match the sum of amounts param.
+   * Adds liquidity to multiple liquidity bins of the market in a batch.
+   * @param amounts An array of amounts to add as liquidity for each bin.
+   * @param data Additional data for the liquidity callback.
+   * @param recipient The address of the recipient for each liquidity bin.
+   * @param tradingFeeRates An array of fee rates for each liquidity bin.
+   */
+  addLiquidityBatch(
+    recipient: string,
+    tradingFeeRates: BigNumberish[],
+    amounts: BigNumberish[],
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
+   * @param data Additional data for the liquidity callback.
+   * @param receiptId The ID of the liquidity receipt.
+   */
+  claimLiquidity(
+    receiptId: BigNumberish,
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
+   * @param data Additional data for the liquidity callback.
+   * @param receiptIds The array of the liquidity receipt IDs.
+   */
+  claimLiquidityBatch(
+    receiptIds: BigNumberish[],
+    data: BytesLike,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Distributes earning to the liquidity bins.
+   * @param earning The amount of earning to distribute.
+   * @param marketBalance The balance of the market.
+   */
+  distributeEarningToBins(
+    earning: BigNumberish,
+    marketBalance: BigNumberish,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  callStatic: {
+    /**
+     * Adds liquidity to the market.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address to receive the liquidity tokens.
+     * @param tradingFeeRate The trading fee rate for the liquidity.
+     */
+    addLiquidity(
+      recipient: string,
+      tradingFeeRate: BigNumberish,
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<LpReceiptStructOutput>;
+
+    /**
+     * Throws an `InvalidTransferredTokenAmount` error if the transferred amount does not match the sum of amounts param.
+     * Adds liquidity to multiple liquidity bins of the market in a batch.
+     * @param amounts An array of amounts to add as liquidity for each bin.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address of the recipient for each liquidity bin.
+     * @param tradingFeeRates An array of fee rates for each liquidity bin.
+     */
+    addLiquidityBatch(
+      recipient: string,
+      tradingFeeRates: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<LpReceiptStructOutput[]>;
+
+    /**
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptId The ID of the liquidity receipt.
+     */
+    claimLiquidity(
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptIds The array of the liquidity receipt IDs.
+     */
+    claimLiquidityBatch(
+      receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * Distributes earning to the liquidity bins.
+     * @param earning The amount of earning to distribute.
+     * @param marketBalance The balance of the market.
+     */
+    distributeEarningToBins(
+      earning: BigNumberish,
+      marketBalance: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+  };
 
   filters: {
     "AddLiquidity((uint256,uint256,uint256,address,uint8,int16))"(
@@ -526,7 +778,131 @@ export interface MarketTradeFacetBase extends BaseContract {
     ): WithdrawLiquidityBatchEventFilter;
   };
 
-  estimateGas: {};
+  estimateGas: {
+    /**
+     * Adds liquidity to the market.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address to receive the liquidity tokens.
+     * @param tradingFeeRate The trading fee rate for the liquidity.
+     */
+    addLiquidity(
+      recipient: string,
+      tradingFeeRate: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
 
-  populateTransaction: {};
+    /**
+     * Throws an `InvalidTransferredTokenAmount` error if the transferred amount does not match the sum of amounts param.
+     * Adds liquidity to multiple liquidity bins of the market in a batch.
+     * @param amounts An array of amounts to add as liquidity for each bin.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address of the recipient for each liquidity bin.
+     * @param tradingFeeRates An array of fee rates for each liquidity bin.
+     */
+    addLiquidityBatch(
+      recipient: string,
+      tradingFeeRates: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptId The ID of the liquidity receipt.
+     */
+    claimLiquidity(
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptIds The array of the liquidity receipt IDs.
+     */
+    claimLiquidityBatch(
+      receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     * Distributes earning to the liquidity bins.
+     * @param earning The amount of earning to distribute.
+     * @param marketBalance The balance of the market.
+     */
+    distributeEarningToBins(
+      earning: BigNumberish,
+      marketBalance: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+  };
+
+  populateTransaction: {
+    /**
+     * Adds liquidity to the market.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address to receive the liquidity tokens.
+     * @param tradingFeeRate The trading fee rate for the liquidity.
+     */
+    addLiquidity(
+      recipient: string,
+      tradingFeeRate: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Throws an `InvalidTransferredTokenAmount` error if the transferred amount does not match the sum of amounts param.
+     * Adds liquidity to multiple liquidity bins of the market in a batch.
+     * @param amounts An array of amounts to add as liquidity for each bin.
+     * @param data Additional data for the liquidity callback.
+     * @param recipient The address of the recipient for each liquidity bin.
+     * @param tradingFeeRates An array of fee rates for each liquidity bin.
+     */
+    addLiquidityBatch(
+      recipient: string,
+      tradingFeeRates: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptId The ID of the liquidity receipt.
+     */
+    claimLiquidity(
+      receiptId: BigNumberish,
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
+     * @param data Additional data for the liquidity callback.
+     * @param receiptIds The array of the liquidity receipt IDs.
+     */
+    claimLiquidityBatch(
+      receiptIds: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Distributes earning to the liquidity bins.
+     * @param earning The amount of earning to distribute.
+     * @param marketBalance The balance of the market.
+     */
+    distributeEarningToBins(
+      earning: BigNumberish,
+      marketBalance: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+  };
 }

@@ -98,123 +98,16 @@ export type PositionStructOutput = [
   _binMargins: BinMarginStructOutput[];
 };
 
-export type ClaimableLiquidityStruct = {
-  mintingTokenAmountRequested: BigNumberish;
-  mintingCLBTokenAmount: BigNumberish;
-  burningCLBTokenAmountRequested: BigNumberish;
-  burningCLBTokenAmount: BigNumberish;
-  burningTokenAmount: BigNumberish;
-};
-
-export type ClaimableLiquidityStructOutput = [
-  mintingTokenAmountRequested: bigint,
-  mintingCLBTokenAmount: bigint,
-  burningCLBTokenAmountRequested: bigint,
-  burningCLBTokenAmount: bigint,
-  burningTokenAmount: bigint
-] & {
-  mintingTokenAmountRequested: bigint;
-  mintingCLBTokenAmount: bigint;
-  burningCLBTokenAmountRequested: bigint;
-  burningCLBTokenAmount: bigint;
-  burningTokenAmount: bigint;
-};
-
-export type ClosingPositionStruct = {
-  closeVersion: BigNumberish;
-  totalQty: BigNumberish;
-  totalEntryAmount: BigNumberish;
-  totalMakerMargin: BigNumberish;
-  totalTakerMargin: BigNumberish;
-};
-
-export type ClosingPositionStructOutput = [
-  closeVersion: bigint,
-  totalQty: bigint,
-  totalEntryAmount: bigint,
-  totalMakerMargin: bigint,
-  totalTakerMargin: bigint
-] & {
-  closeVersion: bigint;
-  totalQty: bigint;
-  totalEntryAmount: bigint;
-  totalMakerMargin: bigint;
-  totalTakerMargin: bigint;
-};
-
-export type LiquidityBinStatusStruct = {
-  liquidity: BigNumberish;
-  freeLiquidity: BigNumberish;
-  binValue: BigNumberish;
-  tradingFeeRate: BigNumberish;
-};
-
-export type LiquidityBinStatusStructOutput = [
-  liquidity: bigint,
-  freeLiquidity: bigint,
-  binValue: bigint,
-  tradingFeeRate: bigint
-] & {
-  liquidity: bigint;
-  freeLiquidity: bigint;
-  binValue: bigint;
-  tradingFeeRate: bigint;
-};
-
-export type PendingLiquidityStruct = {
-  oracleVersion: BigNumberish;
-  mintingTokenAmountRequested: BigNumberish;
-  burningCLBTokenAmountRequested: BigNumberish;
-};
-
-export type PendingLiquidityStructOutput = [
-  oracleVersion: bigint,
-  mintingTokenAmountRequested: bigint,
-  burningCLBTokenAmountRequested: bigint
-] & {
-  oracleVersion: bigint;
-  mintingTokenAmountRequested: bigint;
-  burningCLBTokenAmountRequested: bigint;
-};
-
-export type PendingPositionStruct = {
-  openVersion: BigNumberish;
-  totalQty: BigNumberish;
-  totalMakerMargin: BigNumberish;
-  totalTakerMargin: BigNumberish;
-};
-
-export type PendingPositionStructOutput = [
-  openVersion: bigint,
-  totalQty: bigint,
-  totalMakerMargin: bigint,
-  totalTakerMargin: bigint
-] & {
-  openVersion: bigint;
-  totalQty: bigint;
-  totalMakerMargin: bigint;
-  totalTakerMargin: bigint;
-};
-
-export interface MarketLensFacetInterface extends Interface {
+export interface MarketRemoveLiquidityFacetInterface extends Interface {
   getFunction(
     nameOrSignature:
-      | "claimableLiquidity"
-      | "claimableLiquidityBatch"
-      | "closingPosition"
-      | "closingPositionBatch"
-      | "getBinFreeLiquidity"
-      | "getBinLiquidity"
-      | "getBinValues"
-      | "getLpReceipt"
-      | "getLpReceipts"
-      | "getPosition"
-      | "getPositions"
-      | "liquidityBinStatuses"
-      | "pendingLiquidity"
-      | "pendingLiquidityBatch"
-      | "pendingPosition"
-      | "pendingPositionBatch"
+      | "onERC1155BatchReceived"
+      | "onERC1155Received"
+      | "removeLiquidity"
+      | "removeLiquidityBatch"
+      | "supportsInterface"
+      | "withdrawLiquidity"
+      | "withdrawLiquidityBatch"
   ): FunctionFragment;
 
   getEvent(
@@ -239,132 +132,66 @@ export interface MarketLensFacetInterface extends Interface {
   ): EventFragment;
 
   encodeFunctionData(
-    functionFragment: "claimableLiquidity",
-    values: [BigNumberish, BigNumberish]
+    functionFragment: "onERC1155BatchReceived",
+    values: [
+      AddressLike,
+      AddressLike,
+      BigNumberish[],
+      BigNumberish[],
+      BytesLike
+    ]
   ): string;
   encodeFunctionData(
-    functionFragment: "claimableLiquidityBatch",
-    values: [BigNumberish[], BigNumberish]
+    functionFragment: "onERC1155Received",
+    values: [AddressLike, AddressLike, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "closingPosition",
-    values: [BigNumberish]
+    functionFragment: "removeLiquidity",
+    values: [AddressLike, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "closingPositionBatch",
-    values: [BigNumberish[]]
+    functionFragment: "removeLiquidityBatch",
+    values: [AddressLike, BigNumberish[], BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "getBinFreeLiquidity",
-    values: [BigNumberish]
+    functionFragment: "supportsInterface",
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "getBinLiquidity",
-    values: [BigNumberish]
+    functionFragment: "withdrawLiquidity",
+    values: [BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "getBinValues",
-    values: [BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getLpReceipt",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getLpReceipts",
-    values: [BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getPosition",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getPositions",
-    values: [BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "liquidityBinStatuses",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "pendingLiquidity",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "pendingLiquidityBatch",
-    values: [BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "pendingPosition",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "pendingPositionBatch",
-    values: [BigNumberish[]]
+    functionFragment: "withdrawLiquidityBatch",
+    values: [BigNumberish[], BytesLike]
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "claimableLiquidity",
+    functionFragment: "onERC1155BatchReceived",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "claimableLiquidityBatch",
+    functionFragment: "onERC1155Received",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "closingPosition",
+    functionFragment: "removeLiquidity",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "closingPositionBatch",
+    functionFragment: "removeLiquidityBatch",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getBinFreeLiquidity",
+    functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getBinLiquidity",
+    functionFragment: "withdrawLiquidity",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getBinValues",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getLpReceipt",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getLpReceipts",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getPosition",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getPositions",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "liquidityBinStatuses",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "pendingLiquidity",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "pendingLiquidityBatch",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "pendingPosition",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "pendingPositionBatch",
+    functionFragment: "withdrawLiquidityBatch",
     data: BytesLike
   ): Result;
 }
@@ -676,11 +503,11 @@ export namespace WithdrawLiquidityBatchEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface MarketLensFacet extends BaseContract {
-  connect(runner?: ContractRunner | null): MarketLensFacet;
+export interface MarketRemoveLiquidityFacet extends BaseContract {
+  connect(runner?: ContractRunner | null): MarketRemoveLiquidityFacet;
   waitForDeployment(): Promise<this>;
 
-  interface: MarketLensFacetInterface;
+  interface: MarketRemoveLiquidityFacetInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -720,164 +547,104 @@ export interface MarketLensFacet extends BaseContract {
   ): Promise<this>;
 
   /**
-   * Retrieves the claimable liquidity information for a specific trading fee rate and oracle version from the associated LiquidityPool.
-   * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
-   * @param tradingFeeRate The trading fee rate for which to retrieve the claimable liquidity.
+   * Handles the receipt of a multiple ERC1155 token types. This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated. NOTE: To accept the transfer(s), this must return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81, or its own function selector).
+   * @param data Additional data with no specified format
+   * @param from The address which previously owned the token
+   * @param ids An array containing ids of each token being transferred (order and length must match values array)
+   * @param operator The address which initiated the batch transfer (i.e. msg.sender)
+   * @param values An array containing amounts of each token being transferred (order and length must match ids array)
    */
-  claimableLiquidity: TypedContractMethod<
-    [tradingFeeRate: BigNumberish, oracleVersion: BigNumberish],
-    [ClaimableLiquidityStructOutput],
+  onERC1155BatchReceived: TypedContractMethod<
+    [
+      arg0: AddressLike,
+      arg1: AddressLike,
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike
+    ],
+    [string],
     "view"
   >;
 
   /**
-   * Retrieves the claimable liquidity information for multiple trading fee rates and a specific oracle version from the associated LiquidityPool.
-   * @param oracleVersion The oracle version for which to retrieve the claimable liquidity.
-   * @param tradingFeeRates The list of trading fee rates for which to retrieve the claimable liquidity.
+   * Handles the receipt of a single ERC1155 token type. This function is called at the end of a `safeTransferFrom` after the balance has been updated. NOTE: To accept the transfer, this must return `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))` (i.e. 0xf23a6e61, or its own function selector).
+   * @param data Additional data with no specified format
+   * @param from The address which previously owned the token
+   * @param id The ID of the token being transferred
+   * @param operator The address which initiated the transfer (i.e. msg.sender)
+   * @param value The amount of tokens being transferred
    */
-  claimableLiquidityBatch: TypedContractMethod<
-    [tradingFeeRates: BigNumberish[], oracleVersion: BigNumberish],
-    [ClaimableLiquidityStructOutput[]],
+  onERC1155Received: TypedContractMethod<
+    [
+      arg0: AddressLike,
+      arg1: AddressLike,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike
+    ],
+    [string],
     "view"
   >;
 
   /**
-   * Retrieves the closing position information for a specific trading fee rate from the associated LiquidityPool.
-   * @param tradingFeeRate The trading fee rate for which to retrieve the closing position.
+   * This function is called by the liquidity provider to remove their liquidity from the market.      The liquidity provider must have previously added liquidity to the market.      Throws a `TooSmallAmount` error if the CLB token amount of liquidity to be removed is zero.
+   * @param data Additional data for the liquidity callback.
+   * @param recipient The address to receive the removed liquidity.
+   * @param tradingFeeRate The trading fee rate for the liquidity.
    */
-  closingPosition: TypedContractMethod<
-    [tradingFeeRate: BigNumberish],
-    [ClosingPositionStructOutput],
-    "view"
-  >;
-
-  /**
-   * Retrieves the closing position information for multiple trading fee rates from the associated LiquidityPool.
-   * @param tradingFeeRates The list of trading fee rates for which to retrieve the closing position.
-   */
-  closingPositionBatch: TypedContractMethod<
-    [tradingFeeRates: BigNumberish[]],
-    [ClosingPositionStructOutput[]],
-    "view"
-  >;
-
-  /**
-   * Retrieves the available (free) liquidity amount for a specific trading fee rate in the liquidity pool.
-   * @param tradingFeeRate The trading fee rate for which to retrieve the available liquidity amount.
-   */
-  getBinFreeLiquidity: TypedContractMethod<
-    [tradingFeeRate: BigNumberish],
-    [bigint],
-    "view"
-  >;
-
-  /**
-   * Retrieves the total liquidity amount for a specific trading fee rate in the liquidity pool.
-   * @param tradingFeeRate The trading fee rate for which to retrieve the liquidity amount.
-   */
-  getBinLiquidity: TypedContractMethod<
-    [tradingFeeRate: BigNumberish],
-    [bigint],
-    "view"
-  >;
-
-  /**
-   * Retrieves the values of a specific trading fee rate's bins in the liquidity pool.      The value of a bin represents the total valuation of the liquidity in the bin.
-   * @param tradingFeeRates The list of trading fee rate for which to retrieve the bin value.
-   */
-  getBinValues: TypedContractMethod<
-    [tradingFeeRates: BigNumberish[]],
-    [bigint[]],
-    "view"
-  >;
-
-  /**
-   * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
-   * @param receiptId The ID of the liquidity receipt to retrieve.
-   */
-  getLpReceipt: TypedContractMethod<
-    [receiptId: BigNumberish],
+  removeLiquidity: TypedContractMethod<
+    [recipient: AddressLike, tradingFeeRate: BigNumberish, data: BytesLike],
     [LpReceiptStructOutput],
-    "view"
+    "nonpayable"
   >;
 
   /**
-   * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.
-   * @param receiptIds The ID list of the liquidity receipt to retrieve.
+   * Throws an `InvalidTransferredTokenAmount` error if the transferred CLB token amount does not match the expected amount (clbTokenAmounts param).
+   * @param clbTokenAmounts An array of clb token amounts to remove as liquidity for each bin.
+   * @param data Additional data for the liquidity callback.
+   * @param recipient The address to receive the removed liquidity.
+   * @param tradingFeeRates An array of fee rates for each liquidity bin.
    */
-  getLpReceipts: TypedContractMethod<
-    [receiptIds: BigNumberish[]],
+  removeLiquidityBatch: TypedContractMethod<
+    [
+      recipient: AddressLike,
+      tradingFeeRates: BigNumberish[],
+      clbTokenAmounts: BigNumberish[],
+      data: BytesLike
+    ],
     [LpReceiptStructOutput[]],
+    "nonpayable"
+  >;
+
+  /**
+   * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
+   */
+  supportsInterface: TypedContractMethod<
+    [interfaceID: BytesLike],
+    [boolean],
     "view"
   >;
 
   /**
-   * Throws a `NotExistPosition` error if the position does not exist.
-   * @param positionId The ID of the position to retrieve.
+   * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `REMOVE_LIQUIDITY`.      Throws a `NotWithdrawableLpReceipt` error if the liquidity receipt is not withdrawable in the current oracle version.
+   * @param data Additional data for the liquidity callback.
+   * @param receiptId The ID of the liquidity receipt.
    */
-  getPosition: TypedContractMethod<
-    [positionId: BigNumberish],
-    [PositionStructOutput],
-    "view"
+  withdrawLiquidity: TypedContractMethod<
+    [receiptId: BigNumberish, data: BytesLike],
+    [void],
+    "nonpayable"
   >;
 
   /**
-   * Retrieves multiple positions by their IDs.
-   * @param positionIds The IDs of the positions to retrieve.
+   * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `REMOVE_LIQUIDITY`.      Throws a `NotWithdrawableLpReceipt` error if the liquidity receipt is not withdrawable in the current oracle version.
+   * @param data Additional data for the liquidity callback.
+   * @param receiptIds The array of the liquidity receipt IDs.
    */
-  getPositions: TypedContractMethod<
-    [positionIds: BigNumberish[]],
-    [PositionStructOutput[]],
-    "view"
-  >;
-
-  /**
-   * Retrieves the liquidity bin statuses for the caller's liquidity pool.
-   */
-  liquidityBinStatuses: TypedContractMethod<
-    [],
-    [LiquidityBinStatusStructOutput[]],
-    "view"
-  >;
-
-  /**
-   * Retrieves the pending liquidity information for a specific trading fee rate from the associated LiquidityPool.
-   * @param tradingFeeRate The trading fee rate for which to retrieve the pending liquidity.
-   */
-  pendingLiquidity: TypedContractMethod<
-    [tradingFeeRate: BigNumberish],
-    [PendingLiquidityStructOutput],
-    "view"
-  >;
-
-  /**
-   * Retrieves the pending liquidity information for multiple trading fee rates from the associated LiquidityPool.
-   * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending liquidity.
-   */
-  pendingLiquidityBatch: TypedContractMethod<
-    [tradingFeeRates: BigNumberish[]],
-    [PendingLiquidityStructOutput[]],
-    "view"
-  >;
-
-  /**
-   * Retrieves the pending position information for a specific trading fee rate from the associated LiquidityPool.
-   * @param tradingFeeRate The trading fee rate for which to retrieve the pending position.
-   */
-  pendingPosition: TypedContractMethod<
-    [tradingFeeRate: BigNumberish],
-    [PendingPositionStructOutput],
-    "view"
-  >;
-
-  /**
-   * Retrieves the pending position information for multiple trading fee rates from the associated LiquidityPool.
-   * @param tradingFeeRates The list of trading fee rates for which to retrieve the pending position.
-   */
-  pendingPositionBatch: TypedContractMethod<
-    [tradingFeeRates: BigNumberish[]],
-    [PendingPositionStructOutput[]],
-    "view"
+  withdrawLiquidityBatch: TypedContractMethod<
+    [receiptIds: BigNumberish[], data: BytesLike],
+    [void],
+    "nonpayable"
   >;
 
   getFunction<T extends ContractMethod = ContractMethod>(
@@ -885,100 +652,66 @@ export interface MarketLensFacet extends BaseContract {
   ): T;
 
   getFunction(
-    nameOrSignature: "claimableLiquidity"
+    nameOrSignature: "onERC1155BatchReceived"
   ): TypedContractMethod<
-    [tradingFeeRate: BigNumberish, oracleVersion: BigNumberish],
-    [ClaimableLiquidityStructOutput],
+    [
+      arg0: AddressLike,
+      arg1: AddressLike,
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike
+    ],
+    [string],
     "view"
   >;
   getFunction(
-    nameOrSignature: "claimableLiquidityBatch"
+    nameOrSignature: "onERC1155Received"
   ): TypedContractMethod<
-    [tradingFeeRates: BigNumberish[], oracleVersion: BigNumberish],
-    [ClaimableLiquidityStructOutput[]],
+    [
+      arg0: AddressLike,
+      arg1: AddressLike,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike
+    ],
+    [string],
     "view"
   >;
   getFunction(
-    nameOrSignature: "closingPosition"
+    nameOrSignature: "removeLiquidity"
   ): TypedContractMethod<
-    [tradingFeeRate: BigNumberish],
-    [ClosingPositionStructOutput],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "closingPositionBatch"
-  ): TypedContractMethod<
-    [tradingFeeRates: BigNumberish[]],
-    [ClosingPositionStructOutput[]],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "getBinFreeLiquidity"
-  ): TypedContractMethod<[tradingFeeRate: BigNumberish], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "getBinLiquidity"
-  ): TypedContractMethod<[tradingFeeRate: BigNumberish], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "getBinValues"
-  ): TypedContractMethod<[tradingFeeRates: BigNumberish[]], [bigint[]], "view">;
-  getFunction(
-    nameOrSignature: "getLpReceipt"
-  ): TypedContractMethod<
-    [receiptId: BigNumberish],
+    [recipient: AddressLike, tradingFeeRate: BigNumberish, data: BytesLike],
     [LpReceiptStructOutput],
-    "view"
+    "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "getLpReceipts"
+    nameOrSignature: "removeLiquidityBatch"
   ): TypedContractMethod<
-    [receiptIds: BigNumberish[]],
+    [
+      recipient: AddressLike,
+      tradingFeeRates: BigNumberish[],
+      clbTokenAmounts: BigNumberish[],
+      data: BytesLike
+    ],
     [LpReceiptStructOutput[]],
-    "view"
+    "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "getPosition"
+    nameOrSignature: "supportsInterface"
+  ): TypedContractMethod<[interfaceID: BytesLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "withdrawLiquidity"
   ): TypedContractMethod<
-    [positionId: BigNumberish],
-    [PositionStructOutput],
-    "view"
+    [receiptId: BigNumberish, data: BytesLike],
+    [void],
+    "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "getPositions"
+    nameOrSignature: "withdrawLiquidityBatch"
   ): TypedContractMethod<
-    [positionIds: BigNumberish[]],
-    [PositionStructOutput[]],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "liquidityBinStatuses"
-  ): TypedContractMethod<[], [LiquidityBinStatusStructOutput[]], "view">;
-  getFunction(
-    nameOrSignature: "pendingLiquidity"
-  ): TypedContractMethod<
-    [tradingFeeRate: BigNumberish],
-    [PendingLiquidityStructOutput],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "pendingLiquidityBatch"
-  ): TypedContractMethod<
-    [tradingFeeRates: BigNumberish[]],
-    [PendingLiquidityStructOutput[]],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "pendingPosition"
-  ): TypedContractMethod<
-    [tradingFeeRate: BigNumberish],
-    [PendingPositionStructOutput],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "pendingPositionBatch"
-  ): TypedContractMethod<
-    [tradingFeeRates: BigNumberish[]],
-    [PendingPositionStructOutput[]],
-    "view"
+    [receiptIds: BigNumberish[], data: BytesLike],
+    [void],
+    "nonpayable"
   >;
 
   getEvent(

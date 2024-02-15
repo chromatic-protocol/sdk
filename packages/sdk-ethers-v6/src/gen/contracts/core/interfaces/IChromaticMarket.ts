@@ -320,7 +320,6 @@ export interface IChromaticMarketInterface extends Interface {
       | "ProtocolFeeRateUpdated"
       | "RemoveLiquidity"
       | "RemoveLiquidityBatch"
-      | "TransferProtocolFee"
       | "WithdrawLiquidity"
       | "WithdrawLiquidityBatch"
   ): EventFragment;
@@ -938,19 +937,6 @@ export namespace RemoveLiquidityBatchEvent {
   export type OutputTuple = [receipts: LpReceiptStructOutput[]];
   export interface OutputObject {
     receipts: LpReceiptStructOutput[];
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace TransferProtocolFeeEvent {
-  export type InputTuple = [positionId: BigNumberish, amount: BigNumberish];
-  export type OutputTuple = [positionId: bigint, amount: bigint];
-  export interface OutputObject {
-    positionId: bigint;
-    amount: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -1900,13 +1886,6 @@ export interface IChromaticMarket extends BaseContract {
     RemoveLiquidityBatchEvent.OutputObject
   >;
   getEvent(
-    key: "TransferProtocolFee"
-  ): TypedContractEvent<
-    TransferProtocolFeeEvent.InputTuple,
-    TransferProtocolFeeEvent.OutputTuple,
-    TransferProtocolFeeEvent.OutputObject
-  >;
-  getEvent(
     key: "WithdrawLiquidity"
   ): TypedContractEvent<
     WithdrawLiquidityEvent.InputTuple,
@@ -2085,17 +2064,6 @@ export interface IChromaticMarket extends BaseContract {
       RemoveLiquidityBatchEvent.InputTuple,
       RemoveLiquidityBatchEvent.OutputTuple,
       RemoveLiquidityBatchEvent.OutputObject
-    >;
-
-    "TransferProtocolFee(uint256,uint256)": TypedContractEvent<
-      TransferProtocolFeeEvent.InputTuple,
-      TransferProtocolFeeEvent.OutputTuple,
-      TransferProtocolFeeEvent.OutputObject
-    >;
-    TransferProtocolFee: TypedContractEvent<
-      TransferProtocolFeeEvent.InputTuple,
-      TransferProtocolFeeEvent.OutputTuple,
-      TransferProtocolFeeEvent.OutputObject
     >;
 
     "WithdrawLiquidity(tuple,uint256,uint256)": TypedContractEvent<

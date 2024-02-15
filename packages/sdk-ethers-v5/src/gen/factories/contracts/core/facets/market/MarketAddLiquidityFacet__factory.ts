@@ -2,11 +2,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Interface, type ContractRunner } from "ethers";
+import { Contract, Signer, utils } from "ethers";
+import type { Provider } from "@ethersproject/providers";
 import type {
-  MarketTradeFacetBase,
-  MarketTradeFacetBaseInterface,
-} from "../../../../../contracts/core/facets/market/MarketTradeFacetBase";
+  MarketAddLiquidityFacet,
+  MarketAddLiquidityFacetInterface,
+} from "../../../../../contracts/core/facets/market/MarketAddLiquidityFacet";
 
 const _abi = [
   {
@@ -32,6 +33,11 @@ const _abi = [
   {
     inputs: [],
     name: "DuplicatedTradingFeeRate",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "Empty",
     type: "error",
   },
   {
@@ -117,6 +123,11 @@ const _abi = [
   {
     inputs: [],
     name: "OpenPositionDisabled",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OutOfBounds",
     type: "error",
   },
   {
@@ -1094,21 +1105,202 @@ const _abi = [
     name: "WithdrawLiquidityBatch",
     type: "event",
   },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
+        internalType: "int16",
+        name: "tradingFeeRate",
+        type: "int16",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+    ],
+    name: "addLiquidity",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "oracleVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "recipient",
+            type: "address",
+          },
+          {
+            internalType: "enum LpAction",
+            name: "action",
+            type: "uint8",
+          },
+          {
+            internalType: "int16",
+            name: "tradingFeeRate",
+            type: "int16",
+          },
+        ],
+        internalType: "struct LpReceipt",
+        name: "receipt",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
+        internalType: "int16[]",
+        name: "tradingFeeRates",
+        type: "int16[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "amounts",
+        type: "uint256[]",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+    ],
+    name: "addLiquidityBatch",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "oracleVersion",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "recipient",
+            type: "address",
+          },
+          {
+            internalType: "enum LpAction",
+            name: "action",
+            type: "uint8",
+          },
+          {
+            internalType: "int16",
+            name: "tradingFeeRate",
+            type: "int16",
+          },
+        ],
+        internalType: "struct LpReceipt[]",
+        name: "receipts",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "receiptId",
+        type: "uint256",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+    ],
+    name: "claimLiquidity",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256[]",
+        name: "receiptIds",
+        type: "uint256[]",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+    ],
+    name: "claimLiquidityBatch",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "earning",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "marketBalance",
+        type: "uint256",
+      },
+    ],
+    name: "distributeEarningToBins",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
 ] as const;
 
-export class MarketTradeFacetBase__factory {
+export class MarketAddLiquidityFacet__factory {
   static readonly abi = _abi;
-  static createInterface(): MarketTradeFacetBaseInterface {
-    return new Interface(_abi) as MarketTradeFacetBaseInterface;
+  static createInterface(): MarketAddLiquidityFacetInterface {
+    return new utils.Interface(_abi) as MarketAddLiquidityFacetInterface;
   }
   static connect(
     address: string,
-    runner?: ContractRunner | null
-  ): MarketTradeFacetBase {
+    signerOrProvider: Signer | Provider
+  ): MarketAddLiquidityFacet {
     return new Contract(
       address,
       _abi,
-      runner
-    ) as unknown as MarketTradeFacetBase;
+      signerOrProvider
+    ) as MarketAddLiquidityFacet;
   }
 }

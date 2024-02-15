@@ -11,6 +11,131 @@ import type {
 
 const _abi = [
   {
+    inputs: [],
+    name: "AddLiquidityDisabled",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "AlreadyClosedPosition",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ClaimPositionCallbackError",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ClosePositionDisabled",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "DuplicatedTradingFeeRate",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ExceedMaxAllowableLeverage",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ExceedMaxAllowableTradingFee",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "InvalidLpReceiptAction",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "InvalidTransferredTokenAmount",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotAllowableMakerMargin",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotClaimableLpReceipt",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotClaimablePosition",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotEnoughMarginTransferred",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotExistLpReceipt",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotExistPosition",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotPermitted",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotWithdrawableLpReceipt",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OnlyAccessableByDao",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OnlyAccessableByFactoryOrDao",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OnlyAccessableByLiquidator",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OnlyAccessableByVault",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "OpenPositionDisabled",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "RemoveLiquidityDisabled",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "TooSmallAmount",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "TooSmallTakerMargin",
+    type: "error",
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -854,25 +979,6 @@ const _abi = [
       },
     ],
     name: "RemoveLiquidityBatch",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "positionId",
-        type: "uint256",
-      },
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-    ],
-    name: "TransferProtocolFee",
     type: "event",
   },
   {

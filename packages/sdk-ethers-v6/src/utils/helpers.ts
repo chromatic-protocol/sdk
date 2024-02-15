@@ -8,16 +8,7 @@ import {
   IChromaticMarket__factory,
   IOracleProvider__factory,
   MarketDiamondCutFacet__factory,
-  MarketFacetBase__factory,
-  MarketLensFacet__factory,
-  MarketLiquidateFacet__factory,
-  MarketLiquidityFacetBase__factory,
-  MarketLiquidityFacet__factory,
-  MarketSettleFacet__factory,
-  MarketStateFacet__factory,
-  MarketTradeFacetBase__factory,
-  MarketTradeFacet__factory,
-  TestSettlementToken__factory,
+  TestSettlementToken__factory
 } from "../gen";
 
 import debug from "debug";
@@ -100,15 +91,6 @@ interface ErrorSignatures {
 
 export const errorSignitures: ErrorSignatures = [
   ...MarketDiamondCutFacet__factory.abi,
-  ...MarketFacetBase__factory.abi,
-  ...MarketLensFacet__factory.abi,
-  ...MarketLiquidateFacet__factory.abi,
-  ...MarketLiquidityFacet__factory.abi,
-  ...MarketLiquidityFacetBase__factory.abi,
-  ...MarketSettleFacet__factory.abi,
-  ...MarketStateFacet__factory.abi,
-  ...MarketTradeFacet__factory.abi,
-  ...MarketTradeFacetBase__factory.abi,
   ...IChromaticMarket__factory.abi,
   ...ChromaticMarketFactory__factory.abi,
   ...ChromaticVault__factory.abi,

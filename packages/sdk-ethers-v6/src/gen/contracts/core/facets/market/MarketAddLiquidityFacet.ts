@@ -48,7 +48,57 @@ export type LpReceiptStructOutput = [
   tradingFeeRate: bigint;
 };
 
-export interface MarketLiquidityFacetInterface extends Interface {
+export type BinMarginStruct = {
+  tradingFeeRate: BigNumberish;
+  amount: BigNumberish;
+};
+
+export type BinMarginStructOutput = [tradingFeeRate: bigint, amount: bigint] & {
+  tradingFeeRate: bigint;
+  amount: bigint;
+};
+
+export type PositionStruct = {
+  id: BigNumberish;
+  openVersion: BigNumberish;
+  closeVersion: BigNumberish;
+  qty: BigNumberish;
+  openTimestamp: BigNumberish;
+  closeTimestamp: BigNumberish;
+  takerMargin: BigNumberish;
+  owner: AddressLike;
+  liquidator: AddressLike;
+  _protocolFeeRate: BigNumberish;
+  _binMargins: BinMarginStruct[];
+};
+
+export type PositionStructOutput = [
+  id: bigint,
+  openVersion: bigint,
+  closeVersion: bigint,
+  qty: bigint,
+  openTimestamp: bigint,
+  closeTimestamp: bigint,
+  takerMargin: bigint,
+  owner: string,
+  liquidator: string,
+  _protocolFeeRate: bigint,
+  _binMargins: BinMarginStructOutput[]
+] & {
+  id: bigint;
+  openVersion: bigint;
+  closeVersion: bigint;
+  qty: bigint;
+  openTimestamp: bigint;
+  closeTimestamp: bigint;
+  takerMargin: bigint;
+  owner: string;
+  liquidator: string;
+  _protocolFeeRate: bigint;
+  _binMargins: BinMarginStructOutput[];
+};
+
+export interface MarketAddLiquidityFacetInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "addLiquidity"
@@ -56,13 +106,6 @@ export interface MarketLiquidityFacetInterface extends Interface {
       | "claimLiquidity"
       | "claimLiquidityBatch"
       | "distributeEarningToBins"
-      | "onERC1155BatchReceived"
-      | "onERC1155Received"
-      | "removeLiquidity"
-      | "removeLiquidityBatch"
-      | "supportsInterface"
-      | "withdrawLiquidity"
-      | "withdrawLiquidityBatch"
   ): FunctionFragment;
 
   getEvent(
@@ -71,6 +114,15 @@ export interface MarketLiquidityFacetInterface extends Interface {
       | "AddLiquidityBatch"
       | "ClaimLiquidity"
       | "ClaimLiquidityBatch"
+      | "ClaimPosition"
+      | "ClaimPositionByKeeper"
+      | "ClosePosition"
+      | "DisplayModeUpdated"
+      | "Liquidate"
+      | "LiquidityModeUpdated"
+      | "OpenPosition"
+      | "PositionModeUpdated"
+      | "ProtocolFeeRateUpdated"
       | "RemoveLiquidity"
       | "RemoveLiquidityBatch"
       | "WithdrawLiquidity"
@@ -97,40 +149,6 @@ export interface MarketLiquidityFacetInterface extends Interface {
     functionFragment: "distributeEarningToBins",
     values: [BigNumberish, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "onERC1155BatchReceived",
-    values: [
-      AddressLike,
-      AddressLike,
-      BigNumberish[],
-      BigNumberish[],
-      BytesLike
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "onERC1155Received",
-    values: [AddressLike, AddressLike, BigNumberish, BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "removeLiquidity",
-    values: [AddressLike, BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "removeLiquidityBatch",
-    values: [AddressLike, BigNumberish[], BigNumberish[], BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "supportsInterface",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "withdrawLiquidity",
-    values: [BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "withdrawLiquidityBatch",
-    values: [BigNumberish[], BytesLike]
-  ): string;
 
   decodeFunctionResult(
     functionFragment: "addLiquidity",
@@ -150,34 +168,6 @@ export interface MarketLiquidityFacetInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "distributeEarningToBins",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "onERC1155BatchReceived",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "onERC1155Received",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "removeLiquidity",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "removeLiquidityBatch",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "supportsInterface",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "withdrawLiquidity",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "withdrawLiquidityBatch",
     data: BytesLike
   ): Result;
 }
@@ -237,6 +227,183 @@ export namespace ClaimLiquidityBatchEvent {
   export interface OutputObject {
     receipts: LpReceiptStructOutput[];
     clbTokenAmounts: bigint[];
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace ClaimPositionEvent {
+  export type InputTuple = [
+    account: AddressLike,
+    pnl: BigNumberish,
+    interest: BigNumberish,
+    position: PositionStruct
+  ];
+  export type OutputTuple = [
+    account: string,
+    pnl: bigint,
+    interest: bigint,
+    position: PositionStructOutput
+  ];
+  export interface OutputObject {
+    account: string;
+    pnl: bigint;
+    interest: bigint;
+    position: PositionStructOutput;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace ClaimPositionByKeeperEvent {
+  export type InputTuple = [
+    account: AddressLike,
+    pnl: BigNumberish,
+    interest: BigNumberish,
+    usedKeeperFee: BigNumberish,
+    position: PositionStruct
+  ];
+  export type OutputTuple = [
+    account: string,
+    pnl: bigint,
+    interest: bigint,
+    usedKeeperFee: bigint,
+    position: PositionStructOutput
+  ];
+  export interface OutputObject {
+    account: string;
+    pnl: bigint;
+    interest: bigint;
+    usedKeeperFee: bigint;
+    position: PositionStructOutput;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace ClosePositionEvent {
+  export type InputTuple = [account: AddressLike, position: PositionStruct];
+  export type OutputTuple = [account: string, position: PositionStructOutput];
+  export interface OutputObject {
+    account: string;
+    position: PositionStructOutput;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace DisplayModeUpdatedEvent {
+  export type InputTuple = [
+    displayModeOld: BigNumberish,
+    displayModeNew: BigNumberish
+  ];
+  export type OutputTuple = [displayModeOld: bigint, displayModeNew: bigint];
+  export interface OutputObject {
+    displayModeOld: bigint;
+    displayModeNew: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace LiquidateEvent {
+  export type InputTuple = [
+    account: AddressLike,
+    pnl: BigNumberish,
+    interest: BigNumberish,
+    usedKeeperFee: BigNumberish,
+    position: PositionStruct
+  ];
+  export type OutputTuple = [
+    account: string,
+    pnl: bigint,
+    interest: bigint,
+    usedKeeperFee: bigint,
+    position: PositionStructOutput
+  ];
+  export interface OutputObject {
+    account: string;
+    pnl: bigint;
+    interest: bigint;
+    usedKeeperFee: bigint;
+    position: PositionStructOutput;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace LiquidityModeUpdatedEvent {
+  export type InputTuple = [
+    liquidityModeOld: BigNumberish,
+    liquidityModeNew: BigNumberish
+  ];
+  export type OutputTuple = [
+    liquidityModeOld: bigint,
+    liquidityModeNew: bigint
+  ];
+  export interface OutputObject {
+    liquidityModeOld: bigint;
+    liquidityModeNew: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace OpenPositionEvent {
+  export type InputTuple = [account: AddressLike, position: PositionStruct];
+  export type OutputTuple = [account: string, position: PositionStructOutput];
+  export interface OutputObject {
+    account: string;
+    position: PositionStructOutput;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace PositionModeUpdatedEvent {
+  export type InputTuple = [
+    positionModeOld: BigNumberish,
+    positionModeNew: BigNumberish
+  ];
+  export type OutputTuple = [positionModeOld: bigint, positionModeNew: bigint];
+  export interface OutputObject {
+    positionModeOld: bigint;
+    positionModeNew: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace ProtocolFeeRateUpdatedEvent {
+  export type InputTuple = [
+    protocolFeeRateOld: BigNumberish,
+    protocolFeeRateNew: BigNumberish
+  ];
+  export type OutputTuple = [
+    protocolFeeRateOld: bigint,
+    protocolFeeRateNew: bigint
+  ];
+  export interface OutputObject {
+    protocolFeeRateOld: bigint;
+    protocolFeeRateNew: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -312,11 +479,11 @@ export namespace WithdrawLiquidityBatchEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface MarketLiquidityFacet extends BaseContract {
-  connect(runner?: ContractRunner | null): MarketLiquidityFacet;
+export interface MarketAddLiquidityFacet extends BaseContract {
+  connect(runner?: ContractRunner | null): MarketAddLiquidityFacet;
   waitForDeployment(): Promise<this>;
 
-  interface: MarketLiquidityFacetInterface;
+  interface: MarketAddLiquidityFacetInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -419,107 +586,6 @@ export interface MarketLiquidityFacet extends BaseContract {
     "nonpayable"
   >;
 
-  /**
-   * Handles the receipt of a multiple ERC1155 token types. This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated. NOTE: To accept the transfer(s), this must return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81, or its own function selector).
-   * @param data Additional data with no specified format
-   * @param from The address which previously owned the token
-   * @param ids An array containing ids of each token being transferred (order and length must match values array)
-   * @param operator The address which initiated the batch transfer (i.e. msg.sender)
-   * @param values An array containing amounts of each token being transferred (order and length must match ids array)
-   */
-  onERC1155BatchReceived: TypedContractMethod<
-    [
-      arg0: AddressLike,
-      arg1: AddressLike,
-      arg2: BigNumberish[],
-      arg3: BigNumberish[],
-      arg4: BytesLike
-    ],
-    [string],
-    "view"
-  >;
-
-  /**
-   * Handles the receipt of a single ERC1155 token type. This function is called at the end of a `safeTransferFrom` after the balance has been updated. NOTE: To accept the transfer, this must return `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))` (i.e. 0xf23a6e61, or its own function selector).
-   * @param data Additional data with no specified format
-   * @param from The address which previously owned the token
-   * @param id The ID of the token being transferred
-   * @param operator The address which initiated the transfer (i.e. msg.sender)
-   * @param value The amount of tokens being transferred
-   */
-  onERC1155Received: TypedContractMethod<
-    [
-      arg0: AddressLike,
-      arg1: AddressLike,
-      arg2: BigNumberish,
-      arg3: BigNumberish,
-      arg4: BytesLike
-    ],
-    [string],
-    "view"
-  >;
-
-  /**
-   * This function is called by the liquidity provider to remove their liquidity from the market.      The liquidity provider must have previously added liquidity to the market.      Throws a `TooSmallAmount` error if the CLB tokne amount of liquidity to be removed is zero.
-   * @param data Additional data for the liquidity callback.
-   * @param recipient The address to receive the removed liquidity.
-   * @param tradingFeeRate The trading fee rate for the liquidity.
-   */
-  removeLiquidity: TypedContractMethod<
-    [recipient: AddressLike, tradingFeeRate: BigNumberish, data: BytesLike],
-    [LpReceiptStructOutput],
-    "nonpayable"
-  >;
-
-  /**
-   * Throws an `InvalidTransferredTokenAmount` error if the transferred CLB token amount does not match the expected amount (clbTokenAmounts param).
-   * @param clbTokenAmounts An array of clb token amounts to remove as liquidity for each bin.
-   * @param data Additional data for the liquidity callback.
-   * @param recipient The address to receive the removed liquidity.
-   * @param tradingFeeRates An array of fee rates for each liquidity bin.
-   */
-  removeLiquidityBatch: TypedContractMethod<
-    [
-      recipient: AddressLike,
-      tradingFeeRates: BigNumberish[],
-      clbTokenAmounts: BigNumberish[],
-      data: BytesLike
-    ],
-    [LpReceiptStructOutput[]],
-    "nonpayable"
-  >;
-
-  /**
-   * Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.
-   */
-  supportsInterface: TypedContractMethod<
-    [interfaceID: BytesLike],
-    [boolean],
-    "view"
-  >;
-
-  /**
-   * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `REMOVE_LIQUIDITY`.      Throws a `NotWithdrawableLpReceipt` error if the liquidity receipt is not withdrawable in the current oracle version.
-   * @param data Additional data for the liquidity callback.
-   * @param receiptId The ID of the liquidity receipt.
-   */
-  withdrawLiquidity: TypedContractMethod<
-    [receiptId: BigNumberish, data: BytesLike],
-    [void],
-    "nonpayable"
-  >;
-
-  /**
-   * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `REMOVE_LIQUIDITY`.      Throws a `NotWithdrawableLpReceipt` error if the liquidity receipt is not withdrawable in the current oracle version.
-   * @param data Additional data for the liquidity callback.
-   * @param receiptIds The array of the liquidity receipt IDs.
-   */
-  withdrawLiquidityBatch: TypedContractMethod<
-    [receiptIds: BigNumberish[], data: BytesLike],
-    [void],
-    "nonpayable"
-  >;
-
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
@@ -564,68 +630,6 @@ export interface MarketLiquidityFacet extends BaseContract {
     [void],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "onERC1155BatchReceived"
-  ): TypedContractMethod<
-    [
-      arg0: AddressLike,
-      arg1: AddressLike,
-      arg2: BigNumberish[],
-      arg3: BigNumberish[],
-      arg4: BytesLike
-    ],
-    [string],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "onERC1155Received"
-  ): TypedContractMethod<
-    [
-      arg0: AddressLike,
-      arg1: AddressLike,
-      arg2: BigNumberish,
-      arg3: BigNumberish,
-      arg4: BytesLike
-    ],
-    [string],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "removeLiquidity"
-  ): TypedContractMethod<
-    [recipient: AddressLike, tradingFeeRate: BigNumberish, data: BytesLike],
-    [LpReceiptStructOutput],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "removeLiquidityBatch"
-  ): TypedContractMethod<
-    [
-      recipient: AddressLike,
-      tradingFeeRates: BigNumberish[],
-      clbTokenAmounts: BigNumberish[],
-      data: BytesLike
-    ],
-    [LpReceiptStructOutput[]],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "supportsInterface"
-  ): TypedContractMethod<[interfaceID: BytesLike], [boolean], "view">;
-  getFunction(
-    nameOrSignature: "withdrawLiquidity"
-  ): TypedContractMethod<
-    [receiptId: BigNumberish, data: BytesLike],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "withdrawLiquidityBatch"
-  ): TypedContractMethod<
-    [receiptIds: BigNumberish[], data: BytesLike],
-    [void],
-    "nonpayable"
-  >;
 
   getEvent(
     key: "AddLiquidity"
@@ -654,6 +658,69 @@ export interface MarketLiquidityFacet extends BaseContract {
     ClaimLiquidityBatchEvent.InputTuple,
     ClaimLiquidityBatchEvent.OutputTuple,
     ClaimLiquidityBatchEvent.OutputObject
+  >;
+  getEvent(
+    key: "ClaimPosition"
+  ): TypedContractEvent<
+    ClaimPositionEvent.InputTuple,
+    ClaimPositionEvent.OutputTuple,
+    ClaimPositionEvent.OutputObject
+  >;
+  getEvent(
+    key: "ClaimPositionByKeeper"
+  ): TypedContractEvent<
+    ClaimPositionByKeeperEvent.InputTuple,
+    ClaimPositionByKeeperEvent.OutputTuple,
+    ClaimPositionByKeeperEvent.OutputObject
+  >;
+  getEvent(
+    key: "ClosePosition"
+  ): TypedContractEvent<
+    ClosePositionEvent.InputTuple,
+    ClosePositionEvent.OutputTuple,
+    ClosePositionEvent.OutputObject
+  >;
+  getEvent(
+    key: "DisplayModeUpdated"
+  ): TypedContractEvent<
+    DisplayModeUpdatedEvent.InputTuple,
+    DisplayModeUpdatedEvent.OutputTuple,
+    DisplayModeUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: "Liquidate"
+  ): TypedContractEvent<
+    LiquidateEvent.InputTuple,
+    LiquidateEvent.OutputTuple,
+    LiquidateEvent.OutputObject
+  >;
+  getEvent(
+    key: "LiquidityModeUpdated"
+  ): TypedContractEvent<
+    LiquidityModeUpdatedEvent.InputTuple,
+    LiquidityModeUpdatedEvent.OutputTuple,
+    LiquidityModeUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: "OpenPosition"
+  ): TypedContractEvent<
+    OpenPositionEvent.InputTuple,
+    OpenPositionEvent.OutputTuple,
+    OpenPositionEvent.OutputObject
+  >;
+  getEvent(
+    key: "PositionModeUpdated"
+  ): TypedContractEvent<
+    PositionModeUpdatedEvent.InputTuple,
+    PositionModeUpdatedEvent.OutputTuple,
+    PositionModeUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: "ProtocolFeeRateUpdated"
+  ): TypedContractEvent<
+    ProtocolFeeRateUpdatedEvent.InputTuple,
+    ProtocolFeeRateUpdatedEvent.OutputTuple,
+    ProtocolFeeRateUpdatedEvent.OutputObject
   >;
   getEvent(
     key: "RemoveLiquidity"
@@ -727,6 +794,105 @@ export interface MarketLiquidityFacet extends BaseContract {
       ClaimLiquidityBatchEvent.InputTuple,
       ClaimLiquidityBatchEvent.OutputTuple,
       ClaimLiquidityBatchEvent.OutputObject
+    >;
+
+    "ClaimPosition(address,int256,uint256,tuple)": TypedContractEvent<
+      ClaimPositionEvent.InputTuple,
+      ClaimPositionEvent.OutputTuple,
+      ClaimPositionEvent.OutputObject
+    >;
+    ClaimPosition: TypedContractEvent<
+      ClaimPositionEvent.InputTuple,
+      ClaimPositionEvent.OutputTuple,
+      ClaimPositionEvent.OutputObject
+    >;
+
+    "ClaimPositionByKeeper(address,int256,uint256,uint256,tuple)": TypedContractEvent<
+      ClaimPositionByKeeperEvent.InputTuple,
+      ClaimPositionByKeeperEvent.OutputTuple,
+      ClaimPositionByKeeperEvent.OutputObject
+    >;
+    ClaimPositionByKeeper: TypedContractEvent<
+      ClaimPositionByKeeperEvent.InputTuple,
+      ClaimPositionByKeeperEvent.OutputTuple,
+      ClaimPositionByKeeperEvent.OutputObject
+    >;
+
+    "ClosePosition(address,tuple)": TypedContractEvent<
+      ClosePositionEvent.InputTuple,
+      ClosePositionEvent.OutputTuple,
+      ClosePositionEvent.OutputObject
+    >;
+    ClosePosition: TypedContractEvent<
+      ClosePositionEvent.InputTuple,
+      ClosePositionEvent.OutputTuple,
+      ClosePositionEvent.OutputObject
+    >;
+
+    "DisplayModeUpdated(uint8,uint8)": TypedContractEvent<
+      DisplayModeUpdatedEvent.InputTuple,
+      DisplayModeUpdatedEvent.OutputTuple,
+      DisplayModeUpdatedEvent.OutputObject
+    >;
+    DisplayModeUpdated: TypedContractEvent<
+      DisplayModeUpdatedEvent.InputTuple,
+      DisplayModeUpdatedEvent.OutputTuple,
+      DisplayModeUpdatedEvent.OutputObject
+    >;
+
+    "Liquidate(address,int256,uint256,uint256,tuple)": TypedContractEvent<
+      LiquidateEvent.InputTuple,
+      LiquidateEvent.OutputTuple,
+      LiquidateEvent.OutputObject
+    >;
+    Liquidate: TypedContractEvent<
+      LiquidateEvent.InputTuple,
+      LiquidateEvent.OutputTuple,
+      LiquidateEvent.OutputObject
+    >;
+
+    "LiquidityModeUpdated(uint8,uint8)": TypedContractEvent<
+      LiquidityModeUpdatedEvent.InputTuple,
+      LiquidityModeUpdatedEvent.OutputTuple,
+      LiquidityModeUpdatedEvent.OutputObject
+    >;
+    LiquidityModeUpdated: TypedContractEvent<
+      LiquidityModeUpdatedEvent.InputTuple,
+      LiquidityModeUpdatedEvent.OutputTuple,
+      LiquidityModeUpdatedEvent.OutputObject
+    >;
+
+    "OpenPosition(address,tuple)": TypedContractEvent<
+      OpenPositionEvent.InputTuple,
+      OpenPositionEvent.OutputTuple,
+      OpenPositionEvent.OutputObject
+    >;
+    OpenPosition: TypedContractEvent<
+      OpenPositionEvent.InputTuple,
+      OpenPositionEvent.OutputTuple,
+      OpenPositionEvent.OutputObject
+    >;
+
+    "PositionModeUpdated(uint8,uint8)": TypedContractEvent<
+      PositionModeUpdatedEvent.InputTuple,
+      PositionModeUpdatedEvent.OutputTuple,
+      PositionModeUpdatedEvent.OutputObject
+    >;
+    PositionModeUpdated: TypedContractEvent<
+      PositionModeUpdatedEvent.InputTuple,
+      PositionModeUpdatedEvent.OutputTuple,
+      PositionModeUpdatedEvent.OutputObject
+    >;
+
+    "ProtocolFeeRateUpdated(uint16,uint16)": TypedContractEvent<
+      ProtocolFeeRateUpdatedEvent.InputTuple,
+      ProtocolFeeRateUpdatedEvent.OutputTuple,
+      ProtocolFeeRateUpdatedEvent.OutputObject
+    >;
+    ProtocolFeeRateUpdated: TypedContractEvent<
+      ProtocolFeeRateUpdatedEvent.InputTuple,
+      ProtocolFeeRateUpdatedEvent.OutputTuple,
+      ProtocolFeeRateUpdatedEvent.OutputObject
     >;
 
     "RemoveLiquidity(tuple)": TypedContractEvent<

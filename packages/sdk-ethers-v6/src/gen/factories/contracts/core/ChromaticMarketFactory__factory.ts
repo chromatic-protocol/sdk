@@ -28,7 +28,12 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "_marketLiquidityFacet",
+        name: "_marketAddLiquidityFacet",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_marketRemoveLiquidityFacet",
         type: "address",
       },
       {
@@ -38,7 +43,12 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "_marketTradeFacet",
+        name: "_marketTradeOpenPositionFacet",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_marketTradeClosePositionFacet",
         type: "address",
       },
       {

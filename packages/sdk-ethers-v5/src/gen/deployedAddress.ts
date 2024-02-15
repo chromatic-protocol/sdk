@@ -28,10 +28,10 @@ export const deployedAddress: DeployedAddress = {
     "ChromaticVault": "0x5081a39b8A5f0E35a8D959395a630b68B74Dd30f"
   },
   "arbitrum_sepolia": {
-    "ChromaticLens": "0xe199aaa7EF739C6f76899EAf5c06d254d34e92a1",
-    "ChromaticMarketFactory": "0x7e8e54FD9A35B3Bf908dD56Bb18928226d70810a",
-    "ChromaticRouter": "0xCEBBec615a0a3997A9Ee6a9b693524486D9180af",
-    "ChromaticVault": "0xEdA9b65D119694a7bCf3df6282541A65b7B65c3e",
+    "ChromaticLens": "0xE8793D457cbADC7e9a9D17b410b71661F47180dB",
+    "ChromaticMarketFactory": "0x1471332e8e91505a6B20F9bD1C70b52173dECB7d",
+    "ChromaticRouter": "0x236dAEcCe74D1E13b4440573a538013f26B0e2D2",
+    "ChromaticVault": "0x5e8859472e0cBa30a4f4cEa1Ae4fD76FFea77Cf0",
     "cBTC": "0x3d44205cD54CC64C02c0Ad4C86cE53b0E871d54D",
     "cETH": "0x93252009E644138b906aE1a28792229E577239B9",
     "cUSDT": "0x6C0b40bdd3B0f4b2F2d58c325981d5f3eeBA4719"

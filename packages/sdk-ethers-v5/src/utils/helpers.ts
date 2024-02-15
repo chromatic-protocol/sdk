@@ -9,15 +9,6 @@ import {
   IChromaticMarket__factory,
   IOracleProvider__factory,
   MarketDiamondCutFacet__factory,
-  MarketFacetBase__factory,
-  MarketLensFacet__factory,
-  MarketLiquidateFacet__factory,
-  MarketLiquidityFacetBase__factory,
-  MarketLiquidityFacet__factory,
-  MarketSettleFacet__factory,
-  MarketStateFacet__factory,
-  MarketTradeFacetBase__factory,
-  MarketTradeFacet__factory,
   TestSettlementToken__factory,
 } from "../gen";
 
@@ -62,7 +53,7 @@ export async function handleBytesError<T>(fn: () => Promise<T>, provider: Provid
     }
 
     // call revert exception [ See: https://links.ethers.org/v5-errors-CALL_EXCEPTION ] (method="getPositions(uint256[])", data="0x5690b016", errorArgs=null, errorName=null, errorSignature=null, reason=null, code=CALL_EXCEPTION, version=abi/5.7.0)
-    if(`${e.code}`.indexOf('CALL_EXCEPTION')>-1 && `${e.data}`.length == 10){
+    if (`${e.code}`.indexOf("CALL_EXCEPTION") > -1 && `${e.data}`.length == 10) {
       throw Error(parseHexError(e.data));
     }
     // CALL_EXCEPTION
@@ -101,15 +92,6 @@ interface ErrorSignatures {
 
 export const errorSignitures: ErrorSignatures = [
   ...MarketDiamondCutFacet__factory.abi,
-  ...MarketFacetBase__factory.abi,
-  ...MarketLensFacet__factory.abi,
-  ...MarketLiquidateFacet__factory.abi,
-  ...MarketLiquidityFacet__factory.abi,
-  ...MarketLiquidityFacetBase__factory.abi,
-  ...MarketSettleFacet__factory.abi,
-  ...MarketStateFacet__factory.abi,
-  ...MarketTradeFacet__factory.abi,
-  ...MarketTradeFacetBase__factory.abi,
   ...IChromaticMarket__factory.abi,
   ...ChromaticMarketFactory__factory.abi,
   ...ChromaticVault__factory.abi,

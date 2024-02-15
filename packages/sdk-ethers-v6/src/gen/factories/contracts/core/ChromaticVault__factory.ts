@@ -37,6 +37,11 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "NotTradingLockOwner",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "OnlyAccessableByDao",
     type: "error",
   },
@@ -53,6 +58,11 @@ const _abi = [
   {
     inputs: [],
     name: "OnlyAccessableByMarket",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "TradingLockAlreadyAcquired",
     type: "error",
   },
   {
@@ -403,6 +413,13 @@ const _abi = [
     ],
     name: "VaultEarningDistributorSet",
     type: "event",
+  },
+  {
+    inputs: [],
+    name: "acquireTradingLock",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [
@@ -840,6 +857,13 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "releaseTradingLock",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {

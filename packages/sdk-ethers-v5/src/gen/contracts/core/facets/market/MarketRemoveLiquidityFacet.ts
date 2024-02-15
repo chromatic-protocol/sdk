@@ -51,13 +51,58 @@ export type LpReceiptStructOutput = [
   tradingFeeRate: number;
 };
 
-export interface MarketLiquidityFacetInterface extends utils.Interface {
+export type BinMarginStruct = {
+  tradingFeeRate: BigNumberish;
+  amount: BigNumberish;
+};
+
+export type BinMarginStructOutput = [number, BigNumber] & {
+  tradingFeeRate: number;
+  amount: BigNumber;
+};
+
+export type PositionStruct = {
+  id: BigNumberish;
+  openVersion: BigNumberish;
+  closeVersion: BigNumberish;
+  qty: BigNumberish;
+  openTimestamp: BigNumberish;
+  closeTimestamp: BigNumberish;
+  takerMargin: BigNumberish;
+  owner: string;
+  liquidator: string;
+  _protocolFeeRate: BigNumberish;
+  _binMargins: BinMarginStruct[];
+};
+
+export type PositionStructOutput = [
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  string,
+  string,
+  number,
+  BinMarginStructOutput[]
+] & {
+  id: BigNumber;
+  openVersion: BigNumber;
+  closeVersion: BigNumber;
+  qty: BigNumber;
+  openTimestamp: BigNumber;
+  closeTimestamp: BigNumber;
+  takerMargin: BigNumber;
+  owner: string;
+  liquidator: string;
+  _protocolFeeRate: number;
+  _binMargins: BinMarginStructOutput[];
+};
+
+export interface MarketRemoveLiquidityFacetInterface extends utils.Interface {
   functions: {
-    "addLiquidity(address,int16,bytes)": FunctionFragment;
-    "addLiquidityBatch(address,int16[],uint256[],bytes)": FunctionFragment;
-    "claimLiquidity(uint256,bytes)": FunctionFragment;
-    "claimLiquidityBatch(uint256[],bytes)": FunctionFragment;
-    "distributeEarningToBins(uint256,uint256)": FunctionFragment;
     "onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "onERC1155Received(address,address,uint256,uint256,bytes)": FunctionFragment;
     "removeLiquidity(address,int16,bytes)": FunctionFragment;
@@ -69,11 +114,6 @@ export interface MarketLiquidityFacetInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "addLiquidity"
-      | "addLiquidityBatch"
-      | "claimLiquidity"
-      | "claimLiquidityBatch"
-      | "distributeEarningToBins"
       | "onERC1155BatchReceived"
       | "onERC1155Received"
       | "removeLiquidity"
@@ -83,26 +123,6 @@ export interface MarketLiquidityFacetInterface extends utils.Interface {
       | "withdrawLiquidityBatch"
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: "addLiquidity",
-    values: [string, BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "addLiquidityBatch",
-    values: [string, BigNumberish[], BigNumberish[], BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "claimLiquidity",
-    values: [BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "claimLiquidityBatch",
-    values: [BigNumberish[], BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "distributeEarningToBins",
-    values: [BigNumberish, BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: "onERC1155BatchReceived",
     values: [string, string, BigNumberish[], BigNumberish[], BytesLike]
@@ -132,26 +152,6 @@ export interface MarketLiquidityFacetInterface extends utils.Interface {
     values: [BigNumberish[], BytesLike]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: "addLiquidity",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "addLiquidityBatch",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "claimLiquidity",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "claimLiquidityBatch",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "distributeEarningToBins",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "onERC1155BatchReceived",
     data: BytesLike
@@ -186,6 +186,15 @@ export interface MarketLiquidityFacetInterface extends utils.Interface {
     "AddLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])": EventFragment;
     "ClaimLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256)": EventFragment;
     "ClaimLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[])": EventFragment;
+    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
+    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
+    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
+    "DisplayModeUpdated(uint8,uint8)": EventFragment;
+    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
+    "LiquidityModeUpdated(uint8,uint8)": EventFragment;
+    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))": EventFragment;
+    "PositionModeUpdated(uint8,uint8)": EventFragment;
+    "ProtocolFeeRateUpdated(uint16,uint16)": EventFragment;
     "RemoveLiquidity((uint256,uint256,uint256,address,uint8,int16))": EventFragment;
     "RemoveLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])": EventFragment;
     "WithdrawLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256,uint256)": EventFragment;
@@ -196,6 +205,15 @@ export interface MarketLiquidityFacetInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "AddLiquidityBatch"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ClaimLiquidity"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ClaimLiquidityBatch"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ClaimPosition"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ClaimPositionByKeeper"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ClosePosition"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "DisplayModeUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Liquidate"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "LiquidityModeUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OpenPosition"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PositionModeUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ProtocolFeeRateUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveLiquidity"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveLiquidityBatch"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "WithdrawLiquidity"): EventFragment;
@@ -246,6 +264,118 @@ export type ClaimLiquidityBatchEvent = TypedEvent<
 export type ClaimLiquidityBatchEventFilter =
   TypedEventFilter<ClaimLiquidityBatchEvent>;
 
+export interface ClaimPositionEventObject {
+  account: string;
+  pnl: BigNumber;
+  interest: BigNumber;
+  position: PositionStructOutput;
+}
+export type ClaimPositionEvent = TypedEvent<
+  [string, BigNumber, BigNumber, PositionStructOutput],
+  ClaimPositionEventObject
+>;
+
+export type ClaimPositionEventFilter = TypedEventFilter<ClaimPositionEvent>;
+
+export interface ClaimPositionByKeeperEventObject {
+  account: string;
+  pnl: BigNumber;
+  interest: BigNumber;
+  usedKeeperFee: BigNumber;
+  position: PositionStructOutput;
+}
+export type ClaimPositionByKeeperEvent = TypedEvent<
+  [string, BigNumber, BigNumber, BigNumber, PositionStructOutput],
+  ClaimPositionByKeeperEventObject
+>;
+
+export type ClaimPositionByKeeperEventFilter =
+  TypedEventFilter<ClaimPositionByKeeperEvent>;
+
+export interface ClosePositionEventObject {
+  account: string;
+  position: PositionStructOutput;
+}
+export type ClosePositionEvent = TypedEvent<
+  [string, PositionStructOutput],
+  ClosePositionEventObject
+>;
+
+export type ClosePositionEventFilter = TypedEventFilter<ClosePositionEvent>;
+
+export interface DisplayModeUpdatedEventObject {
+  displayModeOld: number;
+  displayModeNew: number;
+}
+export type DisplayModeUpdatedEvent = TypedEvent<
+  [number, number],
+  DisplayModeUpdatedEventObject
+>;
+
+export type DisplayModeUpdatedEventFilter =
+  TypedEventFilter<DisplayModeUpdatedEvent>;
+
+export interface LiquidateEventObject {
+  account: string;
+  pnl: BigNumber;
+  interest: BigNumber;
+  usedKeeperFee: BigNumber;
+  position: PositionStructOutput;
+}
+export type LiquidateEvent = TypedEvent<
+  [string, BigNumber, BigNumber, BigNumber, PositionStructOutput],
+  LiquidateEventObject
+>;
+
+export type LiquidateEventFilter = TypedEventFilter<LiquidateEvent>;
+
+export interface LiquidityModeUpdatedEventObject {
+  liquidityModeOld: number;
+  liquidityModeNew: number;
+}
+export type LiquidityModeUpdatedEvent = TypedEvent<
+  [number, number],
+  LiquidityModeUpdatedEventObject
+>;
+
+export type LiquidityModeUpdatedEventFilter =
+  TypedEventFilter<LiquidityModeUpdatedEvent>;
+
+export interface OpenPositionEventObject {
+  account: string;
+  position: PositionStructOutput;
+}
+export type OpenPositionEvent = TypedEvent<
+  [string, PositionStructOutput],
+  OpenPositionEventObject
+>;
+
+export type OpenPositionEventFilter = TypedEventFilter<OpenPositionEvent>;
+
+export interface PositionModeUpdatedEventObject {
+  positionModeOld: number;
+  positionModeNew: number;
+}
+export type PositionModeUpdatedEvent = TypedEvent<
+  [number, number],
+  PositionModeUpdatedEventObject
+>;
+
+export type PositionModeUpdatedEventFilter =
+  TypedEventFilter<PositionModeUpdatedEvent>;
+
+export interface ProtocolFeeRateUpdatedEventObject {
+  protocolFeeRateOld: number;
+  protocolFeeRateNew: number;
+}
+export type ProtocolFeeRateUpdatedEvent = TypedEvent<
+  [number, number],
+  ProtocolFeeRateUpdatedEventObject
+>;
+
+export type ProtocolFeeRateUpdatedEventFilter =
+  TypedEventFilter<ProtocolFeeRateUpdatedEvent>;
+
 export interface RemoveLiquidityEventObject {
   receipt: LpReceiptStructOutput;
 }
@@ -293,12 +423,12 @@ export type WithdrawLiquidityBatchEvent = TypedEvent<
 export type WithdrawLiquidityBatchEventFilter =
   TypedEventFilter<WithdrawLiquidityBatchEvent>;
 
-export interface MarketLiquidityFacet extends BaseContract {
+export interface MarketRemoveLiquidityFacet extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: MarketLiquidityFacetInterface;
+  interface: MarketRemoveLiquidityFacetInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -320,68 +450,6 @@ export interface MarketLiquidityFacet extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    /**
-     * Adds liquidity to the market.
-     * @param data Additional data for the liquidity callback.
-     * @param recipient The address to receive the liquidity tokens.
-     * @param tradingFeeRate The trading fee rate for the liquidity.
-     */
-    addLiquidity(
-      recipient: string,
-      tradingFeeRate: BigNumberish,
-      data: BytesLike,
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
-
-    /**
-     * Throws an `InvalidTransferredTokenAmount` error if the transferred amount does not match the sum of amounts param.
-     * Adds liquidity to multiple liquidity bins of the market in a batch.
-     * @param amounts An array of amounts to add as liquidity for each bin.
-     * @param data Additional data for the liquidity callback.
-     * @param recipient The address of the recipient for each liquidity bin.
-     * @param tradingFeeRates An array of fee rates for each liquidity bin.
-     */
-    addLiquidityBatch(
-      recipient: string,
-      tradingFeeRates: BigNumberish[],
-      amounts: BigNumberish[],
-      data: BytesLike,
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
-
-    /**
-     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
-     * @param data Additional data for the liquidity callback.
-     * @param receiptId The ID of the liquidity receipt.
-     */
-    claimLiquidity(
-      receiptId: BigNumberish,
-      data: BytesLike,
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
-
-    /**
-     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
-     * @param data Additional data for the liquidity callback.
-     * @param receiptIds The array of the liquidity receipt IDs.
-     */
-    claimLiquidityBatch(
-      receiptIds: BigNumberish[],
-      data: BytesLike,
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
-
-    /**
-     * Distributes earning to the liquidity bins.
-     * @param earning The amount of earning to distribute.
-     * @param marketBalance The balance of the market.
-     */
-    distributeEarningToBins(
-      earning: BigNumberish,
-      marketBalance: BigNumberish,
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
-
     /**
      * Handles the receipt of a multiple ERC1155 token types. This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated. NOTE: To accept the transfer(s), this must return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81, or its own function selector).
      * @param data Additional data with no specified format
@@ -417,7 +485,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<[string]>;
 
     /**
-     * This function is called by the liquidity provider to remove their liquidity from the market.      The liquidity provider must have previously added liquidity to the market.      Throws a `TooSmallAmount` error if the CLB tokne amount of liquidity to be removed is zero.
+     * This function is called by the liquidity provider to remove their liquidity from the market.      The liquidity provider must have previously added liquidity to the market.      Throws a `TooSmallAmount` error if the CLB token amount of liquidity to be removed is zero.
      * @param data Additional data for the liquidity callback.
      * @param recipient The address to receive the removed liquidity.
      * @param tradingFeeRate The trading fee rate for the liquidity.
@@ -476,68 +544,6 @@ export interface MarketLiquidityFacet extends BaseContract {
   };
 
   /**
-   * Adds liquidity to the market.
-   * @param data Additional data for the liquidity callback.
-   * @param recipient The address to receive the liquidity tokens.
-   * @param tradingFeeRate The trading fee rate for the liquidity.
-   */
-  addLiquidity(
-    recipient: string,
-    tradingFeeRate: BigNumberish,
-    data: BytesLike,
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
-
-  /**
-   * Throws an `InvalidTransferredTokenAmount` error if the transferred amount does not match the sum of amounts param.
-   * Adds liquidity to multiple liquidity bins of the market in a batch.
-   * @param amounts An array of amounts to add as liquidity for each bin.
-   * @param data Additional data for the liquidity callback.
-   * @param recipient The address of the recipient for each liquidity bin.
-   * @param tradingFeeRates An array of fee rates for each liquidity bin.
-   */
-  addLiquidityBatch(
-    recipient: string,
-    tradingFeeRates: BigNumberish[],
-    amounts: BigNumberish[],
-    data: BytesLike,
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
-
-  /**
-   * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
-   * @param data Additional data for the liquidity callback.
-   * @param receiptId The ID of the liquidity receipt.
-   */
-  claimLiquidity(
-    receiptId: BigNumberish,
-    data: BytesLike,
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
-
-  /**
-   * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
-   * @param data Additional data for the liquidity callback.
-   * @param receiptIds The array of the liquidity receipt IDs.
-   */
-  claimLiquidityBatch(
-    receiptIds: BigNumberish[],
-    data: BytesLike,
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
-
-  /**
-   * Distributes earning to the liquidity bins.
-   * @param earning The amount of earning to distribute.
-   * @param marketBalance The balance of the market.
-   */
-  distributeEarningToBins(
-    earning: BigNumberish,
-    marketBalance: BigNumberish,
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
-
-  /**
    * Handles the receipt of a multiple ERC1155 token types. This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated. NOTE: To accept the transfer(s), this must return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81, or its own function selector).
    * @param data Additional data with no specified format
    * @param from The address which previously owned the token
@@ -572,7 +578,7 @@ export interface MarketLiquidityFacet extends BaseContract {
   ): Promise<string>;
 
   /**
-   * This function is called by the liquidity provider to remove their liquidity from the market.      The liquidity provider must have previously added liquidity to the market.      Throws a `TooSmallAmount` error if the CLB tokne amount of liquidity to be removed is zero.
+   * This function is called by the liquidity provider to remove their liquidity from the market.      The liquidity provider must have previously added liquidity to the market.      Throws a `TooSmallAmount` error if the CLB token amount of liquidity to be removed is zero.
    * @param data Additional data for the liquidity callback.
    * @param recipient The address to receive the removed liquidity.
    * @param tradingFeeRate The trading fee rate for the liquidity.
@@ -631,68 +637,6 @@ export interface MarketLiquidityFacet extends BaseContract {
 
   callStatic: {
     /**
-     * Adds liquidity to the market.
-     * @param data Additional data for the liquidity callback.
-     * @param recipient The address to receive the liquidity tokens.
-     * @param tradingFeeRate The trading fee rate for the liquidity.
-     */
-    addLiquidity(
-      recipient: string,
-      tradingFeeRate: BigNumberish,
-      data: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<LpReceiptStructOutput>;
-
-    /**
-     * Throws an `InvalidTransferredTokenAmount` error if the transferred amount does not match the sum of amounts param.
-     * Adds liquidity to multiple liquidity bins of the market in a batch.
-     * @param amounts An array of amounts to add as liquidity for each bin.
-     * @param data Additional data for the liquidity callback.
-     * @param recipient The address of the recipient for each liquidity bin.
-     * @param tradingFeeRates An array of fee rates for each liquidity bin.
-     */
-    addLiquidityBatch(
-      recipient: string,
-      tradingFeeRates: BigNumberish[],
-      amounts: BigNumberish[],
-      data: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<LpReceiptStructOutput[]>;
-
-    /**
-     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
-     * @param data Additional data for the liquidity callback.
-     * @param receiptId The ID of the liquidity receipt.
-     */
-    claimLiquidity(
-      receiptId: BigNumberish,
-      data: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    /**
-     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
-     * @param data Additional data for the liquidity callback.
-     * @param receiptIds The array of the liquidity receipt IDs.
-     */
-    claimLiquidityBatch(
-      receiptIds: BigNumberish[],
-      data: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    /**
-     * Distributes earning to the liquidity bins.
-     * @param earning The amount of earning to distribute.
-     * @param marketBalance The balance of the market.
-     */
-    distributeEarningToBins(
-      earning: BigNumberish,
-      marketBalance: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    /**
      * Handles the receipt of a multiple ERC1155 token types. This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated. NOTE: To accept the transfer(s), this must return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81, or its own function selector).
      * @param data Additional data with no specified format
      * @param from The address which previously owned the token
@@ -727,7 +671,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<string>;
 
     /**
-     * This function is called by the liquidity provider to remove their liquidity from the market.      The liquidity provider must have previously added liquidity to the market.      Throws a `TooSmallAmount` error if the CLB tokne amount of liquidity to be removed is zero.
+     * This function is called by the liquidity provider to remove their liquidity from the market.      The liquidity provider must have previously added liquidity to the market.      Throws a `TooSmallAmount` error if the CLB token amount of liquidity to be removed is zero.
      * @param data Additional data for the liquidity callback.
      * @param recipient The address to receive the removed liquidity.
      * @param tradingFeeRate The trading fee rate for the liquidity.
@@ -814,6 +758,103 @@ export interface MarketLiquidityFacet extends BaseContract {
       clbTokenAmounts?: null
     ): ClaimLiquidityBatchEventFilter;
 
+    "ClaimPosition(address,int256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
+      position?: null
+    ): ClaimPositionEventFilter;
+    ClaimPosition(
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
+      position?: null
+    ): ClaimPositionEventFilter;
+
+    "ClaimPositionByKeeper(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
+      usedKeeperFee?: null,
+      position?: null
+    ): ClaimPositionByKeeperEventFilter;
+    ClaimPositionByKeeper(
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
+      usedKeeperFee?: null,
+      position?: null
+    ): ClaimPositionByKeeperEventFilter;
+
+    "ClosePosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
+      account?: string | null,
+      position?: null
+    ): ClosePositionEventFilter;
+    ClosePosition(
+      account?: string | null,
+      position?: null
+    ): ClosePositionEventFilter;
+
+    "DisplayModeUpdated(uint8,uint8)"(
+      displayModeOld?: null,
+      displayModeNew?: null
+    ): DisplayModeUpdatedEventFilter;
+    DisplayModeUpdated(
+      displayModeOld?: null,
+      displayModeNew?: null
+    ): DisplayModeUpdatedEventFilter;
+
+    "Liquidate(address,int256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
+      usedKeeperFee?: null,
+      position?: null
+    ): LiquidateEventFilter;
+    Liquidate(
+      account?: string | null,
+      pnl?: BigNumberish | null,
+      interest?: BigNumberish | null,
+      usedKeeperFee?: null,
+      position?: null
+    ): LiquidateEventFilter;
+
+    "LiquidityModeUpdated(uint8,uint8)"(
+      liquidityModeOld?: null,
+      liquidityModeNew?: null
+    ): LiquidityModeUpdatedEventFilter;
+    LiquidityModeUpdated(
+      liquidityModeOld?: null,
+      liquidityModeNew?: null
+    ): LiquidityModeUpdatedEventFilter;
+
+    "OpenPosition(address,(uint256,uint256,uint256,int256,uint256,uint256,uint256,address,address,uint16,(uint16,uint256)[]))"(
+      account?: string | null,
+      position?: null
+    ): OpenPositionEventFilter;
+    OpenPosition(
+      account?: string | null,
+      position?: null
+    ): OpenPositionEventFilter;
+
+    "PositionModeUpdated(uint8,uint8)"(
+      positionModeOld?: null,
+      positionModeNew?: null
+    ): PositionModeUpdatedEventFilter;
+    PositionModeUpdated(
+      positionModeOld?: null,
+      positionModeNew?: null
+    ): PositionModeUpdatedEventFilter;
+
+    "ProtocolFeeRateUpdated(uint16,uint16)"(
+      protocolFeeRateOld?: null,
+      protocolFeeRateNew?: null
+    ): ProtocolFeeRateUpdatedEventFilter;
+    ProtocolFeeRateUpdated(
+      protocolFeeRateOld?: null,
+      protocolFeeRateNew?: null
+    ): ProtocolFeeRateUpdatedEventFilter;
+
     "RemoveLiquidity((uint256,uint256,uint256,address,uint8,int16))"(
       receipt?: null
     ): RemoveLiquidityEventFilter;
@@ -849,68 +890,6 @@ export interface MarketLiquidityFacet extends BaseContract {
 
   estimateGas: {
     /**
-     * Adds liquidity to the market.
-     * @param data Additional data for the liquidity callback.
-     * @param recipient The address to receive the liquidity tokens.
-     * @param tradingFeeRate The trading fee rate for the liquidity.
-     */
-    addLiquidity(
-      recipient: string,
-      tradingFeeRate: BigNumberish,
-      data: BytesLike,
-      overrides?: Overrides & { from?: string }
-    ): Promise<BigNumber>;
-
-    /**
-     * Throws an `InvalidTransferredTokenAmount` error if the transferred amount does not match the sum of amounts param.
-     * Adds liquidity to multiple liquidity bins of the market in a batch.
-     * @param amounts An array of amounts to add as liquidity for each bin.
-     * @param data Additional data for the liquidity callback.
-     * @param recipient The address of the recipient for each liquidity bin.
-     * @param tradingFeeRates An array of fee rates for each liquidity bin.
-     */
-    addLiquidityBatch(
-      recipient: string,
-      tradingFeeRates: BigNumberish[],
-      amounts: BigNumberish[],
-      data: BytesLike,
-      overrides?: Overrides & { from?: string }
-    ): Promise<BigNumber>;
-
-    /**
-     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
-     * @param data Additional data for the liquidity callback.
-     * @param receiptId The ID of the liquidity receipt.
-     */
-    claimLiquidity(
-      receiptId: BigNumberish,
-      data: BytesLike,
-      overrides?: Overrides & { from?: string }
-    ): Promise<BigNumber>;
-
-    /**
-     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
-     * @param data Additional data for the liquidity callback.
-     * @param receiptIds The array of the liquidity receipt IDs.
-     */
-    claimLiquidityBatch(
-      receiptIds: BigNumberish[],
-      data: BytesLike,
-      overrides?: Overrides & { from?: string }
-    ): Promise<BigNumber>;
-
-    /**
-     * Distributes earning to the liquidity bins.
-     * @param earning The amount of earning to distribute.
-     * @param marketBalance The balance of the market.
-     */
-    distributeEarningToBins(
-      earning: BigNumberish,
-      marketBalance: BigNumberish,
-      overrides?: Overrides & { from?: string }
-    ): Promise<BigNumber>;
-
-    /**
      * Handles the receipt of a multiple ERC1155 token types. This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated. NOTE: To accept the transfer(s), this must return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81, or its own function selector).
      * @param data Additional data with no specified format
      * @param from The address which previously owned the token
@@ -945,7 +924,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * This function is called by the liquidity provider to remove their liquidity from the market.      The liquidity provider must have previously added liquidity to the market.      Throws a `TooSmallAmount` error if the CLB tokne amount of liquidity to be removed is zero.
+     * This function is called by the liquidity provider to remove their liquidity from the market.      The liquidity provider must have previously added liquidity to the market.      Throws a `TooSmallAmount` error if the CLB token amount of liquidity to be removed is zero.
      * @param data Additional data for the liquidity callback.
      * @param recipient The address to receive the removed liquidity.
      * @param tradingFeeRate The trading fee rate for the liquidity.
@@ -1005,68 +984,6 @@ export interface MarketLiquidityFacet extends BaseContract {
 
   populateTransaction: {
     /**
-     * Adds liquidity to the market.
-     * @param data Additional data for the liquidity callback.
-     * @param recipient The address to receive the liquidity tokens.
-     * @param tradingFeeRate The trading fee rate for the liquidity.
-     */
-    addLiquidity(
-      recipient: string,
-      tradingFeeRate: BigNumberish,
-      data: BytesLike,
-      overrides?: Overrides & { from?: string }
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Throws an `InvalidTransferredTokenAmount` error if the transferred amount does not match the sum of amounts param.
-     * Adds liquidity to multiple liquidity bins of the market in a batch.
-     * @param amounts An array of amounts to add as liquidity for each bin.
-     * @param data Additional data for the liquidity callback.
-     * @param recipient The address of the recipient for each liquidity bin.
-     * @param tradingFeeRates An array of fee rates for each liquidity bin.
-     */
-    addLiquidityBatch(
-      recipient: string,
-      tradingFeeRates: BigNumberish[],
-      amounts: BigNumberish[],
-      data: BytesLike,
-      overrides?: Overrides & { from?: string }
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
-     * @param data Additional data for the liquidity callback.
-     * @param receiptId The ID of the liquidity receipt.
-     */
-    claimLiquidity(
-      receiptId: BigNumberish,
-      data: BytesLike,
-      overrides?: Overrides & { from?: string }
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Throws a `NotExistLpReceipt` error if the liquidity receipt does not exist.      Throws an `InvalidLpReceiptAction` error if the action of liquidity receipt is not `ADD_LIQUIDITY`.      Throws a `NotClaimableLpReceipt` error if the liquidity receipt is not claimable in the current oracle version.
-     * @param data Additional data for the liquidity callback.
-     * @param receiptIds The array of the liquidity receipt IDs.
-     */
-    claimLiquidityBatch(
-      receiptIds: BigNumberish[],
-      data: BytesLike,
-      overrides?: Overrides & { from?: string }
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Distributes earning to the liquidity bins.
-     * @param earning The amount of earning to distribute.
-     * @param marketBalance The balance of the market.
-     */
-    distributeEarningToBins(
-      earning: BigNumberish,
-      marketBalance: BigNumberish,
-      overrides?: Overrides & { from?: string }
-    ): Promise<PopulatedTransaction>;
-
-    /**
      * Handles the receipt of a multiple ERC1155 token types. This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated. NOTE: To accept the transfer(s), this must return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81, or its own function selector).
      * @param data Additional data with no specified format
      * @param from The address which previously owned the token
@@ -1101,7 +1018,7 @@ export interface MarketLiquidityFacet extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * This function is called by the liquidity provider to remove their liquidity from the market.      The liquidity provider must have previously added liquidity to the market.      Throws a `TooSmallAmount` error if the CLB tokne amount of liquidity to be removed is zero.
+     * This function is called by the liquidity provider to remove their liquidity from the market.      The liquidity provider must have previously added liquidity to the market.      Throws a `TooSmallAmount` error if the CLB token amount of liquidity to be removed is zero.
      * @param data Additional data for the liquidity callback.
      * @param recipient The address to receive the removed liquidity.
      * @param tradingFeeRate The trading fee rate for the liquidity.

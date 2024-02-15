@@ -725,7 +725,6 @@ export interface IChromaticMarketInterface extends utils.Interface {
     "ProtocolFeeRateUpdated(uint16,uint16)": EventFragment;
     "RemoveLiquidity((uint256,uint256,uint256,address,uint8,int16))": EventFragment;
     "RemoveLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[])": EventFragment;
-    "TransferProtocolFee(uint256,uint256)": EventFragment;
     "WithdrawLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256,uint256)": EventFragment;
     "WithdrawLiquidityBatch((uint256,uint256,uint256,address,uint8,int16)[],uint256[],uint256[])": EventFragment;
   };
@@ -745,7 +744,6 @@ export interface IChromaticMarketInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "ProtocolFeeRateUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveLiquidity"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveLiquidityBatch"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "TransferProtocolFee"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "WithdrawLiquidity"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "WithdrawLiquidityBatch"): EventFragment;
 }
@@ -926,18 +924,6 @@ export type RemoveLiquidityBatchEvent = TypedEvent<
 
 export type RemoveLiquidityBatchEventFilter =
   TypedEventFilter<RemoveLiquidityBatchEvent>;
-
-export interface TransferProtocolFeeEventObject {
-  positionId: BigNumber;
-  amount: BigNumber;
-}
-export type TransferProtocolFeeEvent = TypedEvent<
-  [BigNumber, BigNumber],
-  TransferProtocolFeeEventObject
->;
-
-export type TransferProtocolFeeEventFilter =
-  TypedEventFilter<TransferProtocolFeeEvent>;
 
 export interface WithdrawLiquidityEventObject {
   receipt: LpReceiptStructOutput;
@@ -2462,15 +2448,6 @@ export interface IChromaticMarket extends BaseContract {
       receipts?: null
     ): RemoveLiquidityBatchEventFilter;
     RemoveLiquidityBatch(receipts?: null): RemoveLiquidityBatchEventFilter;
-
-    "TransferProtocolFee(uint256,uint256)"(
-      positionId?: BigNumberish | null,
-      amount?: BigNumberish | null
-    ): TransferProtocolFeeEventFilter;
-    TransferProtocolFee(
-      positionId?: BigNumberish | null,
-      amount?: BigNumberish | null
-    ): TransferProtocolFeeEventFilter;
 
     "WithdrawLiquidity((uint256,uint256,uint256,address,uint8,int16),uint256,uint256)"(
       receipt?: null,

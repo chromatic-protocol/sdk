@@ -7,3 +7,4 @@ export type { ChromaticRouter } from "./ChromaticRouter";
 export type { ChromaticVault } from "./ChromaticVault";
 export type { CBTC } from "./CBTC";
 export type { CETH } from "./CETH";
+export type { CUSDT } from "./CUSDT";

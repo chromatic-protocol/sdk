@@ -28,6 +28,7 @@ import type {
 
 export interface ChromaticVaultInterface extends utils.Interface {
   functions: {
+    "acquireTradingLock()": FunctionFragment;
     "cancelMakerEarningDistributionTask(address)": FunctionFragment;
     "cancelMarketEarningDistributionTask(address)": FunctionFragment;
     "createMakerEarningDistributionTask(address)": FunctionFragment;
@@ -50,6 +51,7 @@ export interface ChromaticVaultInterface extends utils.Interface {
     "pendingMakerEarnings(address)": FunctionFragment;
     "pendingMarketEarnings(address)": FunctionFragment;
     "pendingWithdrawals(address)": FunctionFragment;
+    "releaseTradingLock()": FunctionFragment;
     "setVaultEarningDistributor(address)": FunctionFragment;
     "takerBalances(address)": FunctionFragment;
     "takerMarketBalances(address)": FunctionFragment;
@@ -58,6 +60,7 @@ export interface ChromaticVaultInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "acquireTradingLock"
       | "cancelMakerEarningDistributionTask"
       | "cancelMarketEarningDistributionTask"
       | "createMakerEarningDistributionTask"
@@ -80,12 +83,17 @@ export interface ChromaticVaultInterface extends utils.Interface {
       | "pendingMakerEarnings"
       | "pendingMarketEarnings"
       | "pendingWithdrawals"
+      | "releaseTradingLock"
       | "setVaultEarningDistributor"
       | "takerBalances"
       | "takerMarketBalances"
       | "transferKeeperFee"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "acquireTradingLock",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "cancelMakerEarningDistributionTask",
     values: [string]
@@ -172,6 +180,10 @@ export interface ChromaticVaultInterface extends utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
+    functionFragment: "releaseTradingLock",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "setVaultEarningDistributor",
     values: [string]
   ): string;
@@ -188,6 +200,10 @@ export interface ChromaticVaultInterface extends utils.Interface {
     values: [string, string, BigNumberish, BigNumberish]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "acquireTradingLock",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "cancelMakerEarningDistributionTask",
     data: BytesLike
@@ -268,6 +284,10 @@ export interface ChromaticVaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "pendingWithdrawals",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "releaseTradingLock",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -518,6 +538,10 @@ export interface ChromaticVault extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    acquireTradingLock(
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
     /**
      * Cancels a maker earning distribution task for a token.
      * @param token The address of the settlement token.
@@ -725,6 +749,10 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    releaseTradingLock(
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
     /**
      * This function can only be called by the DAO address.
      */
@@ -759,6 +787,10 @@ export interface ChromaticVault extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
   };
+
+  acquireTradingLock(
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
 
   /**
    * Cancels a maker earning distribution task for a token.
@@ -961,6 +993,10 @@ export interface ChromaticVault extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  releaseTradingLock(
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
   /**
    * This function can only be called by the DAO address.
    */
@@ -993,6 +1029,8 @@ export interface ChromaticVault extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    acquireTradingLock(overrides?: CallOverrides): Promise<void>;
+
     /**
      * Cancels a maker earning distribution task for a token.
      * @param token The address of the settlement token.
@@ -1197,6 +1235,8 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    releaseTradingLock(overrides?: CallOverrides): Promise<void>;
+
     /**
      * This function can only be called by the DAO address.
      */
@@ -1373,6 +1413,10 @@ export interface ChromaticVault extends BaseContract {
   };
 
   estimateGas: {
+    acquireTradingLock(
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
     /**
      * Cancels a maker earning distribution task for a token.
      * @param token The address of the settlement token.
@@ -1577,6 +1621,10 @@ export interface ChromaticVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    releaseTradingLock(
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
     /**
      * This function can only be called by the DAO address.
      */
@@ -1610,6 +1658,10 @@ export interface ChromaticVault extends BaseContract {
   };
 
   populateTransaction: {
+    acquireTradingLock(
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
     /**
      * Cancels a maker earning distribution task for a token.
      * @param token The address of the settlement token.
@@ -1817,6 +1869,10 @@ export interface ChromaticVault extends BaseContract {
     pendingWithdrawals(
       arg0: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    releaseTradingLock(
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**

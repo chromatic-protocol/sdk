@@ -26,6 +26,7 @@ import type {
 export interface ChromaticVaultInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "acquireTradingLock"
       | "cancelMakerEarningDistributionTask"
       | "cancelMarketEarningDistributionTask"
       | "createMakerEarningDistributionTask"
@@ -48,6 +49,7 @@ export interface ChromaticVaultInterface extends Interface {
       | "pendingMakerEarnings"
       | "pendingMarketEarnings"
       | "pendingWithdrawals"
+      | "releaseTradingLock"
       | "setVaultEarningDistributor"
       | "takerBalances"
       | "takerMarketBalances"
@@ -71,6 +73,10 @@ export interface ChromaticVaultInterface extends Interface {
       | "VaultEarningDistributorSet"
   ): EventFragment;
 
+  encodeFunctionData(
+    functionFragment: "acquireTradingLock",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "cancelMakerEarningDistributionTask",
     values: [AddressLike]
@@ -163,6 +169,10 @@ export interface ChromaticVaultInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "releaseTradingLock",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "setVaultEarningDistributor",
     values: [AddressLike]
   ): string;
@@ -179,6 +189,10 @@ export interface ChromaticVaultInterface extends Interface {
     values: [AddressLike, AddressLike, BigNumberish, BigNumberish]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "acquireTradingLock",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "cancelMakerEarningDistributionTask",
     data: BytesLike
@@ -259,6 +273,10 @@ export interface ChromaticVaultInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "pendingWithdrawals",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "releaseTradingLock",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -594,6 +612,8 @@ export interface ChromaticVault extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  acquireTradingLock: TypedContractMethod<[], [void], "nonpayable">;
+
   /**
    * Cancels a maker earning distribution task for a token.
    * @param token The address of the settlement token.
@@ -820,6 +840,8 @@ export interface ChromaticVault extends BaseContract {
     "view"
   >;
 
+  releaseTradingLock: TypedContractMethod<[], [void], "nonpayable">;
+
   /**
    * This function can only be called by the DAO address.
    */
@@ -860,6 +882,9 @@ export interface ChromaticVault extends BaseContract {
     key: string | FunctionFragment
   ): T;
 
+  getFunction(
+    nameOrSignature: "acquireTradingLock"
+  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "cancelMakerEarningDistributionTask"
   ): TypedContractMethod<[token: AddressLike], [void], "nonpayable">;
@@ -995,6 +1020,9 @@ export interface ChromaticVault extends BaseContract {
   getFunction(
     nameOrSignature: "pendingWithdrawals"
   ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "releaseTradingLock"
+  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setVaultEarningDistributor"
   ): TypedContractMethod<

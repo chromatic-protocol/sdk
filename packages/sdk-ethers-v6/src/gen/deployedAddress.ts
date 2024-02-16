@@ -27,6 +27,12 @@ export const deployedAddress: DeployedAddress = {
     "ChromaticRouter": "0x21dF544947ba3E8b3c32561399E88B52Dc8b2823",
     "ChromaticVault": "0x5081a39b8A5f0E35a8D959395a630b68B74Dd30f"
   },
+  "arbitrum_one": {
+    "ChromaticLens": "0x3B7F614389d0b6a5e20dBd3FC3CAE297Ea791590",
+    "ChromaticMarketFactory": "0x0b216AB26E20d6caA770B18596A3D53B683638B4",
+    "ChromaticRouter": "0xbCc97243f965EcbE31071887B5DDBA1Add8E220a",
+    "ChromaticVault": "0x19631A51aeDcd831E29cbCbCfe77010dAfd3343a"
+  },
   "arbitrum_sepolia": {
     "ChromaticLens": "0xE8793D457cbADC7e9a9D17b410b71661F47180dB",
     "ChromaticMarketFactory": "0x1471332e8e91505a6B20F9bD1C70b52173dECB7d",

@@ -1,6 +1,6 @@
 export const SUBGRAPH_API_URL =
-  "https://graph-arbitrum-sepolia.api.chromatic.finance/subgraphs/name";
-export const HASURA_API_URL = "https://hasura-arbitrum-sepolia.api.chromatic.finance/v1/graphql";
+  "https://graph-arbitrum-one.api.chromatic.finance/subgraphs/name";
+export const HASURA_API_URL = "https://hasura-arbitrum-one.api.chromatic.finance/v1/graphql";
 
 export const FEE_RATES = [
   1,

@@ -1,6 +1,12 @@
-export const SUBGRAPH_API_URL =
-  "https://graph-arbitrum-one.api.chromatic.finance/subgraphs/name";
-export const HASURA_API_URL = "https://hasura-arbitrum-one.api.chromatic.finance/v1/graphql";
+export const SUBGRAPH_API_URL: Record<string, string> = {
+  "42161": "https://graph-arbitrum-one.api.chromatic.finance/subgraphs/name", // arbitrum one
+  "421614": "https://graph-arbitrum-sepolia.api.chromatic.finance/subgraphs/name", // arbitrum sepolia
+};
+
+export const HASURA_API_URL: Record<string, string> = {
+  "42161": "https://hasura-arbitrum-one.api.chromatic.finance/v1/graphql", // arbitrum one
+  "421614": "https://hasura-arbitrum-sepolia.api.chromatic.finance/v1/graphql", //arbitrum_sepolia
+};
 
 export const FEE_RATES = [
   1,
@@ -41,5 +47,5 @@ export const FEE_RATES = [
   5000, // 10% ~ 50%, step 5%
 ];
 
-export const MIN_GAS_LIMIT_SETTLE_ALL = 10n ** 7n * 5n
-export const MIN_GAS_LIMIT_SETTLE_HALF = MIN_GAS_LIMIT_SETTLE_ALL / 2n
+export const MIN_GAS_LIMIT_SETTLE_ALL = 10n ** 7n * 5n;
+export const MIN_GAS_LIMIT_SETTLE_HALF = MIN_GAS_LIMIT_SETTLE_ALL / 2n;

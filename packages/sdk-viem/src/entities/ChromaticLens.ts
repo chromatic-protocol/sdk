@@ -4,7 +4,7 @@ import { Address, getContract, zeroAddress } from "viem";
 import type { Client } from "../Client";
 import { FEE_RATES } from "../const";
 import { chromaticLensABI, chromaticLensAddress } from "../gen";
-import { graphClient, subgraphSdk } from "../lib/graphql";
+import { Subgraph, getGraphqlClient } from "../lib/graphql";
 import { ClbTokenTotalSupply } from "../lib/graphql/sdk/position";
 import {
   checkWalletClient,
@@ -138,6 +138,8 @@ export class ChromaticLens {
    */
   async liquidityBins(marketAddress: Address) {
     return await handleBytesError(async () => {
+      const graphqlClient = getGraphqlClient(this._client.publicClient);
+      const subgraphSdk = Subgraph.getSdk(graphqlClient);
       const { chromaticMarketBinStatuses: result, clbtokens: clbTokens } =
         await subgraphSdk.getChromaticMarketBinStatusesAndCLBMeta({
           market: marketAddress,
@@ -209,9 +211,10 @@ export class ChromaticLens {
 
     ${fragment}
   `;
+    const graphqlClient = getGraphqlClient(this._client.publicClient);
 
-    const clbTokens = await graphClient.request({
-      document
+    const clbTokens = await graphqlClient.request({
+      document,
     });
 
     return {
@@ -232,6 +235,8 @@ export class ChromaticLens {
       if (!ownerAddress) {
         checkWalletClient(this._client);
       }
+      const graphqlClient = getGraphqlClient(this._client.publicClient);
+      const subgraphSdk = Subgraph.getSdk(graphqlClient);
       const { chromaticMarketBinStatuses: result, clbtokens: clbTokens } =
         await subgraphSdk.getChromaticMarketBinStatusesAndCLBMeta({
           market: marketAddress,

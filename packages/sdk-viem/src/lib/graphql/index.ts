@@ -1,12 +1,14 @@
 import { GraphQLClient, RequestMiddleware, Variables } from "@chromatic-protocol/graphql-request";
 
+import JSONbig from "json-bigint";
+import { PublicClient } from "viem";
+import { HASURA_API_URL, SUBGRAPH_API_URL } from "../../const";
 import * as Analytics from "./sdk/analytics";
 import * as Lp from "./sdk/lp";
 import * as Performance from "./sdk/performance";
 import * as Position from "./sdk/position";
 import * as Subgraph from "./sdk/subgraph";
-import JSONbig from "json-bigint";
-import { HASURA_API_URL, SUBGRAPH_API_URL } from "../../const";
+
 type UrlMap = {
   operations: string[];
   url: string;
@@ -19,38 +21,43 @@ function getOperations(object: Object) {
     .map((k) => k.slice(0, -documentSuffix.length).toLowerCase());
 }
 
-const urlMap: UrlMap = [
+const urlMap = ({
+  hasura_api_url,
+  subgraph_api_url,
+}: {
+  hasura_api_url: string;
+  subgraph_api_url: string;
+}) => [
   {
     operations: getOperations(Lp),
-    url: `${SUBGRAPH_API_URL}/chromatic-lp`,
+    url: `${subgraph_api_url}/chromatic-lp`,
   },
   {
     operations: [...getOperations(Subgraph), "getCLBTokenTotalSupplies"],
-    url: `${SUBGRAPH_API_URL}/chromatic-subgraph`,
+    url: `${subgraph_api_url}/chromatic-subgraph`,
   },
   {
     operations: getOperations(Performance),
-    url: `${HASURA_API_URL}`,
+    url: `${hasura_api_url}`,
   },
   {
     operations: getOperations(Analytics),
-    url: `${HASURA_API_URL}`,
+    url: `${hasura_api_url}`,
   },
   {
     operations: getOperations(Position),
-    url: `${SUBGRAPH_API_URL}/chromatic-subgraph`,
+    url: `${subgraph_api_url}/chromatic-subgraph`,
   },
 ];
 
 const getRequestMiddleware =
   (urlMap: UrlMap): RequestMiddleware<Variables> =>
   (request) => {
-    // const headerOperationName = (request.headers as Record<string, string>).operationName;
     const operationName = (request.operationName || "").toLowerCase();
     const url = urlMap.find((url) =>
       url.operations.map((operation) => operation.toLowerCase()).includes(operationName)
     )?.url;
-    // delete (request.headers as Record<string, string>).operationName;
+
     if (!url) {
       throw new Error("invalid operation");
     }
@@ -60,15 +67,16 @@ const getRequestMiddleware =
     };
   };
 
-const graphClient = new GraphQLClient("", {
-  requestMiddleware: getRequestMiddleware(urlMap),
-  jsonSerializer: JSONbig({ useNativeBigInt: true }),
-});
+export const getGraphqlClient = (chainIdOrClient: string | PublicClient | undefined) => {
+  const chainId =
+    typeof chainIdOrClient === "string" ? chainIdOrClient : chainIdOrClient?.chain?.id.toString();
+  if (!chainId) throw new Error("Unknown chain id");
+  const hasura_api_url = HASURA_API_URL[chainId];
+  const subgraph_api_url = SUBGRAPH_API_URL[chainId];
+  return new GraphQLClient("", {
+    requestMiddleware: getRequestMiddleware(urlMap({ hasura_api_url, subgraph_api_url })),
+    jsonSerializer: JSONbig({ useNativeBigInt: true }),
+  });
+};
 
-const lpGraphSdk = Lp.getSdk(graphClient);
-const performanceSdk = Performance.getSdk(graphClient);
-const analyticsSdk = Analytics.getSdk(graphClient);
-const positionSdk = Position.getSdk(graphClient);
-const subgraphSdk = Subgraph.getSdk(graphClient);
-
-export { analyticsSdk, lpGraphSdk, performanceSdk, positionSdk, subgraphSdk, graphClient };
+export { Analytics, Lp, Performance, Position, Subgraph };

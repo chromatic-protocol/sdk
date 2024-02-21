@@ -1,7 +1,7 @@
 import { Address } from "viem";
 import { Client } from "../Client";
 import { handleBytesError } from "../utils/helpers";
-import { subgraphSdk } from "../lib/graphql";
+import { Subgraph, getGraphqlClient } from "../lib/graphql";
 
 type InterestParam = Pick<PositionParam, "makerMargin" | "claimTimestamp" | "openTimestamp">;
 
@@ -141,6 +141,8 @@ export class ChromaticPosition {
     if (this.interestRateRecords != null) {
       return this.interestRateRecords;
     }
+    const graphqlClient = getGraphqlClient(this._client.publicClient);
+    const subgraphSdk = Subgraph.getSdk(graphqlClient);
     const { chromaticMarket: chromaticMarketMeta } = await subgraphSdk.getMarketMeta({
       id: marketAddress,
     });

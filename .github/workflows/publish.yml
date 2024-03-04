@@ -31,10 +31,10 @@ jobs:
     if: ${{ github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3 # Checkout our working repository
+    - uses: actions/checkout@v4 # Checkout our working repository
     - name: Conventional Changelog Action
       id: changelog
-      uses: chromatic-protocol/conventional-changelog-action@v4
+      uses: chromatic-protocol/conventional-changelog-action@v5.2.2
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         output-file: false
@@ -46,7 +46,7 @@ jobs:
         git-message: 'chore(release): sdk@{version}'
         # skip-version-file: false
         # skip-commit: false
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       id: setup-node
       with:
         node-version: 18.15
@@ -63,12 +63,12 @@ jobs:
         yarn workspaces run pub --network-timeout 600000
 
     # export markdown docs to docs repository
-    - uses: chromatic-protocol/action-github-app-token@v1
+    - uses: chromatic-protocol/action-github-app-token@v2
       id: generate-token
       with:
         app_id: ${{ secrets.PR_ACTION_APP_ID }}
         private_key: ${{ secrets.PR_ACTION_PRIVATE }}
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         repository: chromatic-protocol/docs
         ref: main
@@ -93,7 +93,7 @@ jobs:
         cp packages/sdk-ethers-v6/src/gen/deployedAddress.ts docs-repo/docs/contracts/reference/
 
     - name: pull-request
-      uses: peter-evans/create-pull-request@v5
+      uses: peter-evans/create-pull-request@v6
       with:
         base: main
         branch: docs/sdk
